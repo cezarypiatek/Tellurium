@@ -99,6 +99,7 @@
     <Compile Include="WebPages\PageFragment.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WebPages\UrlHelper.cs" />
     <Compile Include="WebPages\WebForms\IFormInputAdapter.cs">
       <SubType>Code</SubType>
     </Compile>
