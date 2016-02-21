@@ -26,7 +26,7 @@ namespace MaintainableSelenium.Tests
             {
                 Id = "99",
                 Name = "SomeCategory",
-                Browser = Browser.Chrome,
+                Browser = "Chrome",
                 Tests = new List<Test>
                 {
                     new Test
@@ -58,8 +58,7 @@ namespace MaintainableSelenium.Tests
                 var target = new CategoryRepository(documentSession, asyncFilesSession);
 
                 target.Add(_category);
-                documentSession.SaveChanges();
-                asyncFilesSession.SaveChangesAsync().Wait();
+                target.SaveChanges();
 
                 var result = target.GetById(_category.Id);
 
@@ -75,8 +74,8 @@ namespace MaintainableSelenium.Tests
                 Assert.AreEqual(1, _category.Tests.Count);
 
                 target.Delete(result);
-                documentSession.SaveChanges();
-                asyncFilesSession.SaveChangesAsync().Wait();
+                target.SaveChanges();
+
 
                 var deleteResult = target.GetById(_category.Id);
                 Assert.IsNull(deleteResult);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using MaintainableSelenium.API.Abstract;
 using MaintainableSelenium.API.Models;
 using Raven.Client;
 using Raven.Client.FileSystem;
@@ -24,7 +25,7 @@ namespace MaintainableSelenium.API
             var categories = _documentSession.Query<Category>();
             foreach (var category in categories)
             {
-                LoadTestImages(category.Tests, _asyncFilesSession);
+                LoadTestImages(category.Tests);
             }
 
             return categories;
@@ -34,7 +35,7 @@ namespace MaintainableSelenium.API
         {
             var category = _documentSession.Load<Category>(id);
             if (category != null)
-                LoadTestImages(category.Tests, _asyncFilesSession);
+                LoadTestImages(category.Tests);
 
             return category;
         }
@@ -42,7 +43,7 @@ namespace MaintainableSelenium.API
 
         public void Add(Category entity)
         {
-            SaveTestImages(entity.Tests, _asyncFilesSession);
+            SaveTestImages(entity.Tests);
             _documentSession.Store(entity);
         }
 
@@ -53,47 +54,51 @@ namespace MaintainableSelenium.API
 
         public void Delete(Category entity)
         {
-            RemoveTestImages(entity.Tests, _asyncFilesSession);
+            RemoveTestImages(entity.Tests);
 
             _documentSession.Delete(entity);
         }
 
-        private void LoadTestImages(IEnumerable<Test> tests, IAsyncFilesSession filesSession)
+        public void SaveChanges()
+        {
+            _documentSession.SaveChanges();
+            _asyncFilesSession.SaveChangesAsync().Wait();
+        }
+
+        private void LoadTestImages(IEnumerable<Test> tests)
         {
             foreach (var test in tests)
             {
                 if (!string.IsNullOrEmpty(test.ExpectedImageId))
-                    test.ExpectedImage = Image.FromStream(filesSession.DownloadAsync(test.ExpectedImageId).Result);
+                    test.ExpectedImage = Image.FromStream(_asyncFilesSession.DownloadAsync(test.ExpectedImageId).Result);
 
                 if (!string.IsNullOrEmpty(test.ResultImageId))
-                    test.ExpectedImage = Image.FromStream(filesSession.DownloadAsync(test.ResultImageId).Result);
+                    test.ExpectedImage = Image.FromStream(_asyncFilesSession.DownloadAsync(test.ResultImageId).Result);
             }
         }
 
-        private void SaveTestImages(IEnumerable<Test> tests, IAsyncFilesSession filesSession)
+        private void SaveTestImages(IEnumerable<Test> tests)
         {
             foreach (var test in tests)
             {
                 if (!string.IsNullOrEmpty(test.ExpectedImageId))
-                    filesSession.RegisterUpload(test.ExpectedImageId, test.ExpectedImage.ToStream(ImageFormat.Jpeg));
+                    _asyncFilesSession.RegisterUpload(test.ExpectedImageId, test.ExpectedImage.ToStream(ImageFormat.Jpeg));
 
                 if (!string.IsNullOrEmpty(test.ResultImageId))
-                    filesSession.RegisterUpload(test.ResultImageId, test.ResultImage.ToStream(ImageFormat.Jpeg));
+                    _asyncFilesSession.RegisterUpload(test.ResultImageId, test.ResultImage.ToStream(ImageFormat.Jpeg));
             }
         }
 
-        private void RemoveTestImages(IEnumerable<Test> tests, IAsyncFilesSession filesSession)
+        private void RemoveTestImages(IEnumerable<Test> tests)
         {
             foreach (var test in tests)
             {
                 if (!string.IsNullOrEmpty(test.ExpectedImageId))
-                    filesSession.RegisterFileDeletion(test.ExpectedImageId);
+                    _asyncFilesSession.RegisterFileDeletion(test.ExpectedImageId);
 
                 if (!string.IsNullOrEmpty(test.ResultImageId))
-                    filesSession.RegisterFileDeletion(test.ResultImageId);
+                    _asyncFilesSession.RegisterFileDeletion(test.ResultImageId);
             }
         }
     }
 }
-
- 

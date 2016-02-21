@@ -6,7 +6,7 @@ namespace MaintainableSelenium.API.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public Browser Browser { get; set; }
+        public string Browser { get; set; }
         public List<Test> Tests { get; set; }
     }
 }

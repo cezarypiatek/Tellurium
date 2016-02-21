@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace MaintainableSelenium.API
+namespace MaintainableSelenium.API.Abstract
 {
     public interface IRepository<T>
     {
@@ -10,5 +9,6 @@ namespace MaintainableSelenium.API
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
+        void SaveChanges();
     }
 }

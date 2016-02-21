@@ -52,8 +52,7 @@
   <ItemGroup>
     <Compile Include="Abstract\IUpdatable.cs" />
     <Compile Include="ImageExtensions.cs" />
-    <Compile Include="IRepository.cs" />
-    <Compile Include="Models\Browser.cs" />
+    <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
