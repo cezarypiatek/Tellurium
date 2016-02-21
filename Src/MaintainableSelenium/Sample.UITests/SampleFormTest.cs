@@ -13,7 +13,7 @@ using Sample.Website.Models;
 namespace MaintainableSelenium.Sample.UITests
 {
     //INFO: Run Sample.Website and detach debugger before running test
-    [TestFixture]
+    [TestFixture, Explicit]
     public class SampleFormTest
     {
         [TestCase(SeleniumDriverType.Firefox)]
