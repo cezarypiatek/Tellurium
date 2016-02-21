@@ -16,10 +16,12 @@ namespace MaintainableSelenium.Sample.UITests
     public class SampleFormTest
     {
         [TestCase(SeleniumDriverType.Firefox)]
+        [TestCase(SeleniumDriverType.Chrome)]
+        [TestCase(SeleniumDriverType.InternetExplorer)]
         public void should_be_able_to_fill_sample_form(SeleniumDriverType driverType)
         {
             //Prepare infrastructure for test
-            var driver = SeleniumDriverFactory.CreateLocalDriver(driverType, "");
+            var driver = SeleniumDriverFactory.CreateLocalDriver(driverType, "Drivers");
             driver.Manage().Window.Maximize();
             var camera = new BrowserCamera(driver, "SampleForm", "C:\\MaintainableSelenium\\screenshots", new List<BlindRegion>());
             var navigator = new Navigator(driver, "http://localhost:51767");
