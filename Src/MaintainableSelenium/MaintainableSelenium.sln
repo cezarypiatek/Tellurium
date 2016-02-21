@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toolbox", "Toolbox\Toolbox.csproj", "{3EEBCFFD-1814-4BFC-857C-6081D528E011}"
 EndProject
@@ -17,6 +17,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.UITests", "Sample.UITests\Sample.UITests.csproj", "{9F6C1CA3-730E-46B9-A12A-0607507D6FBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Website", "Sample.Website\Sample.Website.csproj", "{5F8390D3-916D-425C-85EB-4229D3D25F3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintainableSelenium.Tests", "MaintainableSelenium.Test\MaintainableSelenium.Tests.csproj", "{3D97AC27-D7F2-423B-BBB7-1A41878F46C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintainableSelenium.Web", "MaintainableSelenium.Web\MaintainableSelenium.Web.csproj", "{5D6ADD63-FDF2-4AFB-9282-7A6E02A35268}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintainableSelenium.API", "MaintainableSelenium.API\MaintainableSelenium.API.csproj", "{D7DB1533-503B-40C3-9100-1DE000503318}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +42,18 @@ Global
 		{5F8390D3-916D-425C-85EB-4229D3D25F3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F8390D3-916D-425C-85EB-4229D3D25F3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F8390D3-916D-425C-85EB-4229D3D25F3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D97AC27-D7F2-423B-BBB7-1A41878F46C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D97AC27-D7F2-423B-BBB7-1A41878F46C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D97AC27-D7F2-423B-BBB7-1A41878F46C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D97AC27-D7F2-423B-BBB7-1A41878F46C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D6ADD63-FDF2-4AFB-9282-7A6E02A35268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D6ADD63-FDF2-4AFB-9282-7A6E02A35268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D6ADD63-FDF2-4AFB-9282-7A6E02A35268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D6ADD63-FDF2-4AFB-9282-7A6E02A35268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7DB1533-503B-40C3-9100-1DE000503318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7DB1533-503B-40C3-9100-1DE000503318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7DB1533-503B-40C3-9100-1DE000503318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7DB1533-503B-40C3-9100-1DE000503318}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
