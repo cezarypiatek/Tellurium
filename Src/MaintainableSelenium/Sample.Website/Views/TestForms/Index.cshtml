@@ -1,0 +1,46 @@
+﻿@using MaintainableSelenium.Sample.Website.Mvc
+@using Microsoft.Web.Mvc
+@using Sample.Website.Controllers
+@model Sample.Website.Models.SampleFormViewModel
+@{
+    ViewBag.Title = "Maintainable Selenium";
+}
+<h2>@ViewBag.Title</h2>
+<div class="row">
+    <div class="col-md-10">
+        @using (Html.BeginForm<TestFormsController>(c => c.SaveSampleForm(null), FormMethod.Post, new { id = FormsIds.TestForm, @class = "form-horizontal" }))
+        {
+            <h4>Sample form</h4>
+            <hr />
+            <div class="form-group">
+                @Html.LabelFor(m => m.TextInput, new {@class = "col-md-2 control-label"})
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.TextInput, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.TextInput, "", new {@class = "text-danger"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.TextAreaInput, new {@class = "col-md-2 control-label"})
+                <div class="col-md-10">
+                    @Html.TextAreaFor(m => m.TextAreaInput, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.TextAreaInput, "", new {@class = "text-danger"})
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.PasswordInput, new {@class = "col-md-2 control-label"})
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.PasswordInput, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.PasswordInput, "", new {@class = "text-danger"})
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.CheckboxInput, new {@class = "col-md-2 control-label"})
+                <div class="col-md-10">
+                    @Html.CheckBoxFor(m => m.CheckboxInput, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.PasswordInput, "", new {@class = "text-danger"})
+                </div>
+            </div>
+        }
+    </div>
+</div>

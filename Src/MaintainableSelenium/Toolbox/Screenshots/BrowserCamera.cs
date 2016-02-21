@@ -16,15 +16,24 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     {
         private readonly RemoteWebDriver driver;
         private readonly string imageNamePrefix;
-        private readonly string outputPath;
+        private string outputPath;
         private readonly List<BlindRegion> blindRegions;
         private int counter;
         public BrowserCamera(RemoteWebDriver driver, string imageNamePrefix, string outputPath, List<BlindRegion> blindRegions = null)
         {
             this.driver = driver;
             this.imageNamePrefix = imageNamePrefix;
-            this.outputPath = outputPath;
+            SetOutputPath(outputPath);
             this.blindRegions = blindRegions ?? new List<BlindRegion>();
+        }
+
+        private void SetOutputPath(string path)
+        {
+            if (Directory.Exists(path) == false)
+            {
+                Directory.CreateDirectory(path);
+            }
+            this.outputPath = path;
         }
 
         public void TakeScreenshot(string name)

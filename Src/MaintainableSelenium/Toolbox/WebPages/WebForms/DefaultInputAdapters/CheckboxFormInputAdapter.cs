@@ -17,7 +17,7 @@ namespace MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters
         {
             if (webElement.Selected != Boolean.Parse(value))
             {
-                webElement.GetParent().Click();
+                webElement.Click();
             }
         }
     }
