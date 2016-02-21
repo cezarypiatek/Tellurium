@@ -11,6 +11,7 @@
         @using (Html.BeginForm<TestFormsController>(c => c.SaveSampleForm(null), FormMethod.Post, new { id = FormsIds.TestForm, @class = "form-horizontal" }))
         {
             <h4>Sample form</h4>
+            <h1>@DateTime.Now</h1>
             <hr />
             <div class="form-group">
                 @Html.LabelFor(m => m.TextInput, new {@class = "col-md-2 control-label"})
@@ -41,6 +42,7 @@
                     @Html.ValidationMessageFor(m => m.PasswordInput, "", new {@class = "text-danger"})
                 </div>
             </div>
+            <h1>@DateTime.Now</h1>
         }
     </div>
 </div>
