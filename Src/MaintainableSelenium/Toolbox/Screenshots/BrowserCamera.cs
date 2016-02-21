@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Security.Cryptography;
+using AForge.Imaging.Filters;
+using AForge.Math.Geometry;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
@@ -49,6 +51,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 if (ComputeHash(errorPath) == ComputeHash(patternPath))
                 {
                     File.Delete(errorPath);
+                }
+                else
+                {
+                    var diff = ImageHelpers.CreateImageDiff(patternPath, errorPath);
+                    var diffFilePath = string.Format("{0}\\{4}_{1}_{2:D5}_{3}_DIFF.png", outputPath, imageNamePrefix, counter, name, driver.Capabilities.BrowserName);
+                    diff.Save(diffFilePath);
                 }
             }
             else
