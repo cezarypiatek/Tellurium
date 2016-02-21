@@ -101,6 +101,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WebPages\UrlHelper.cs" />
+    <Compile Include="WebPages\WebForms\DefaultInputAdapters\CheckboxFormInputAdapter.cs" />
+    <Compile Include="WebPages\WebForms\DefaultInputAdapters\HiddenFormInputAdapter.cs" />
+    <Compile Include="WebPages\WebForms\DefaultInputAdapters\RadioFormInputAdapter.cs" />
+    <Compile Include="WebPages\WebForms\DefaultInputAdapters\SelectFormInputAdapter.cs" />
+    <Compile Include="WebPages\WebForms\DefaultInputAdapters\TextFormInputAdapter.cs" />
     <Compile Include="WebPages\WebForms\IFormInputAdapter.cs">
       <SubType>Code</SubType>
     </Compile>

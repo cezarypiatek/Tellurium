@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using MaintainableSelenium.Toolbox.WebPages;
 using MaintainableSelenium.Toolbox.WebPages.WebForms;
+using MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
@@ -14,6 +15,18 @@ namespace MaintainableSelenium.Toolbox
     public static class WebTestHelpers
     {
         private static List<IFormInputAdapter> supportedInputsAdapters;
+
+        static WebTestHelpers()
+        {
+            supportedInputsAdapters = new List<IFormInputAdapter>
+            {
+                new TextFormInputAdapter(),
+                new SelectFormInputAdapter(),
+                new CheckboxFormInputAdapter(),
+                new RadioFormInputAdapter(),
+                new HiddenFormInputAdapter()
+            };
+        }
 
         public static void SetSupportedInputs(List<IFormInputAdapter> inputsAdapters)
         {
@@ -76,6 +89,12 @@ namespace MaintainableSelenium.Toolbox
         public static IWebElement GetParent(this IWebElement node)
         {
             return node.FindElement(By.XPath(".."));
+        }
+
+        internal static string GetInputType(this IWebElement inputElement)
+        {
+            var inputType = inputElement.GetAttribute("type") ?? string.Empty;
+            return inputType.ToLower();
         }
     }
 }
