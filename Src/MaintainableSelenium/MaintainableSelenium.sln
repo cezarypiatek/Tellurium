@@ -14,11 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{349171
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{046C5855-1636-44CF-B409-AA66E038BD9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.UITests", "Sample.UITests\Sample.UITests.csproj", "{9F6C1CA3-730E-46B9-A12A-0607507D6FBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.UITest", "Sample.UITests\Sample.UITest.csproj", "{9F6C1CA3-730E-46B9-A12A-0607507D6FBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Website", "Sample.Website\Sample.Website.csproj", "{5F8390D3-916D-425C-85EB-4229D3D25F3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintainableSelenium.Tests", "MaintainableSelenium.Test\MaintainableSelenium.Tests.csproj", "{3D97AC27-D7F2-423B-BBB7-1A41878F46C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintainableSelenium.Test", "MaintainableSelenium.Test\MaintainableSelenium.Test.csproj", "{3D97AC27-D7F2-423B-BBB7-1A41878F46C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintainableSelenium.Web", "MaintainableSelenium.Web\MaintainableSelenium.Web.csproj", "{5D6ADD63-FDF2-4AFB-9282-7A6E02A35268}"
 EndProject
