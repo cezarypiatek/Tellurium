@@ -41,8 +41,8 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             driver.Blur();
             var screenshot = driver.GetScreenshot();
             counter++;
-            var patternPath =  string.Format("{0}\\{1}_{2:D5}_{3}_PATTERN.png", outputPath, imageNamePrefix, counter, name);
-            var errorPath = string.Format("{0}\\{1}_{2:D5}_{3}_ERROR.png", outputPath, imageNamePrefix, counter, name);
+            var patternPath =  string.Format("{0}\\{4}_{1}_{2:D5}_{3}_PATTERN.png", outputPath, imageNamePrefix, counter, name, driver.Capabilities.BrowserName);
+            var errorPath = string.Format("{0}\\{4}_{1}_{2:D5}_{3}_ERROR.png", outputPath, imageNamePrefix, counter, name, driver.Capabilities.BrowserName);
             if (File.Exists(patternPath))
             {
                 SaveScreenshot(screenshot, errorPath);
