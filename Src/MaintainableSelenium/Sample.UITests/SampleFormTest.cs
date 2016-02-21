@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using MaintainableSelenium.Sample.Website.Mvc;
 using MaintainableSelenium.Toolbox;
 using MaintainableSelenium.Toolbox.Drivers;
@@ -21,7 +22,7 @@ namespace MaintainableSelenium.Sample.UITests
         public void should_be_able_to_fill_sample_form(SeleniumDriverType driverType)
         {
             //Prepare infrastructure for test
-            var driver = SeleniumDriverFactory.CreateLocalDriver(driverType, "Drivers");
+            var driver = SeleniumDriverFactory.CreateLocalDriver(driverType, Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"));
             driver.Manage().Window.Maximize();
             var camera = new BrowserCamera(driver, "SampleForm", "C:\\MaintainableSelenium\\screenshots", new List<BlindRegion>());
             var navigator = new Navigator(driver, "http://localhost:51767");
