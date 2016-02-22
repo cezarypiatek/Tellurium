@@ -55,8 +55,10 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 else
                 {
                     var diff = ImageHelpers.CreateImageDiff(patternPath, errorPath);
-                    var diffFilePath = string.Format("{0}\\{4}_{1}_{2:D5}_{3}_DIFF.png", outputPath, imageNamePrefix, counter, name, driver.Capabilities.BrowserName);
-                    diff.Save(diffFilePath);
+                    var diffBoundsFilePath = string.Format("{0}\\{4}_{1}_{2:D5}_{3}_DIFF_BOUNDs.png", outputPath, imageNamePrefix, counter, name, driver.Capabilities.BrowserName);
+                    var diffXORFilePath = string.Format("{0}\\{4}_{1}_{2:D5}_{3}_DIFF_XOR.png", outputPath, imageNamePrefix, counter, name, driver.Capabilities.BrowserName);
+                    diff.WithBounds.Save(diffBoundsFilePath);
+                    diff.WithXOR.Save(diffXORFilePath);
                 }
             }
             else

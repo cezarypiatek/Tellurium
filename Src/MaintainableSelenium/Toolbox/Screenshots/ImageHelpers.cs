@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
@@ -9,17 +11,27 @@ using Image = System.Drawing.Image;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
+    public class ImageDiff
+    {
+        public Bitmap WithBounds { get; set; }
+        public Bitmap WithXOR { get; set; }
+    }
+
     public static class ImageHelpers
     {
         private static readonly BinaryDilatation3x3 DilatationFilter = new BinaryDilatation3x3();
         private static readonly Pen DiffPen = new Pen(Color.FromArgb(128, Color.Red));
 
-        public static Bitmap CreateImageDiff(string patternPath, string errorPath)
+        public static ImageDiff CreateImageDiff(string patternPath, string errorPath)
         {
             var pattern = new Bitmap(Image.FromFile(patternPath));
             var error = new Bitmap(Image.FromFile(errorPath));
             var diff = CreateImageDiff(pattern, error);
-            return diff;
+            return new ImageDiff()
+            {
+                WithBounds = diff,
+                WithXOR = CreateImagesXor(pattern, error)
+            };
         }
 
         public static Bitmap CreateImageDiff(Bitmap source, Bitmap overlay)
@@ -59,7 +71,64 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 }
             }
         }
-        
+
+        public static Bitmap CreateImagesXor(this Bitmap bitmapA, Bitmap bitmapB)
+        {
+            var pixelBufferA = GetPixelBuffer(bitmapA);
+            var pixelBufferB = GetPixelBuffer(bitmapB);
+            var resultBuffer = new byte[pixelBufferB.Length];
+            Array.Copy(pixelBufferB, resultBuffer, pixelBufferA.Length);
+            int blue = 0, green = 0, red = 0;
+
+
+            for (int k = 0; k + 4 < pixelBufferA.Length; k += 4)
+            {
+                blue = pixelBufferA[k] ^ pixelBufferB[k];
+                green = pixelBufferA[k + 1] ^ pixelBufferB[k + 1];
+                red = pixelBufferA[k + 2] ^ pixelBufferB[k + 2];
+
+                if (blue < 0)
+                { blue = 0; }
+                else if (blue > 255)
+                { blue = 255; }
+
+                if (green < 0)
+                { green = 0; }
+                else if (green > 255)
+                { green = 255; }
+
+
+                if (red < 0)
+                { red = 0; }
+                else if (red > 255)
+                { red = 255; }
+
+                resultBuffer[k] = (byte)blue;
+                resultBuffer[k + 1] = (byte)green;
+                resultBuffer[k + 2] = (byte)red;
+            }
+
+
+            Bitmap resultBitmap = new Bitmap(bitmapA.Width, bitmapA.Height);
+            var lockBoundRectangle = new Rectangle(0, 0,resultBitmap.Width, resultBitmap.Height);
+            BitmapData resultData = resultBitmap.LockBits(lockBoundRectangle, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+            Marshal.Copy(resultBuffer, 0, resultData.Scan0, resultBuffer.Length);
+            resultBitmap.UnlockBits(resultData);
+
+
+            return resultBitmap;
+        }
+
+        private static byte[] GetPixelBuffer(Bitmap sourceBitmap)
+        {
+            var lockBoundRectangle = new Rectangle(0, 0, sourceBitmap.Width, sourceBitmap.Height);
+            BitmapData sourceData = sourceBitmap.LockBits(lockBoundRectangle, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            byte[] pixelBuffer = new byte[sourceData.Stride*sourceData.Height];
+            Marshal.Copy(sourceData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
+            sourceBitmap.UnlockBits(sourceData);
+            return pixelBuffer;
+        }
+
         /// <summary>
         /// Get rectangles surrounding point clumps
         /// </summary>
