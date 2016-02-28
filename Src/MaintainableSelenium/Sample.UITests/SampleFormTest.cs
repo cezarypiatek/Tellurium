@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using MaintainableSelenium.Sample.Website.Mvc;
 using MaintainableSelenium.Toolbox;
 using MaintainableSelenium.Toolbox.Drivers;
@@ -24,7 +23,9 @@ namespace MaintainableSelenium.Sample.UITests
             //Prepare infrastructure for test
             var driver = SeleniumDriverFactory.CreateLocalDriver(driverType, Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"));
             driver.Manage().Window.Maximize();
-            var camera = new BrowserCamera(driver, "SampleForm", "C:\\MaintainableSelenium\\screenshots", new List<BlindRegion>());
+            var testStorage = new FileTestStorage(@"c:\MaintainableSelenium\screenshots");
+            var screenshotRepository = new ScreenshotService(new NUnitTestAdapter(), testStorage);
+            var camera = new BrowserCamera(driver, "SampleForm", screenshotRepository);
             var navigator = new Navigator(driver, "http://localhost:51767");
 
             //Test
@@ -38,6 +39,7 @@ namespace MaintainableSelenium.Sample.UITests
             camera.TakeScreenshot("Sample2");
 
             //Clean up
+            testStorage.Dispose();
             driver.Close();
             driver.Quit();
         }

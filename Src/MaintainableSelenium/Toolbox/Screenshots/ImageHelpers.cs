@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 using AForge;
 using AForge.Imaging;
@@ -182,6 +183,35 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                     yield return new Rectangle(minX, minY, maxX - minX, maxY - minY);
                 }
             }
+        }
+
+        public static Image ConvertBytesToImage(byte[] screenshot)
+        {
+            using (MemoryStream memoryStream = new MemoryStream(screenshot))
+            {
+                return Image.FromStream(memoryStream);
+            }
+        }
+
+        public static byte[] ConvertimageToBytes(Image imageIn)
+        {
+            using (var ms = new MemoryStream())
+            {
+                imageIn.Save(ms, ImageFormat.Gif);
+                return ms.ToArray();
+            }
+        }
+
+
+        public static void MarkBlindRegions(Image image, List<BlindRegion> blindRegions)
+        {
+            var graphic = Graphics.FromImage(image);
+            foreach (var blindRegion in blindRegions)
+            {
+                graphic.FillRectangle(Brushes.Black, blindRegion.X, blindRegion.Y, blindRegion.Width, blindRegion.Height);
+            }
+
+            graphic.Save();
         }
     }
 }

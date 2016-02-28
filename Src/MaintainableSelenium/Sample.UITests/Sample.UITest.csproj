@@ -79,6 +79,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NUnitTestAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleFormTest.cs" />
   </ItemGroup>
