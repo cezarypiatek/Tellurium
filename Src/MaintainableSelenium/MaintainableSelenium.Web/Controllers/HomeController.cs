@@ -1,0 +1,87 @@
+﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using MaintainableSelenium.Toolbox.Screenshots;
+
+namespace MaintainableSelenium.Web.Controllers
+{
+    public class HomeController : Controller
+    {
+        private ActionResult ImageResult(byte[] bytes)
+        {
+            using (var streak = new MemoryStream())
+            {
+                var srcImage = ImageHelpers.ConvertBytesToImage(bytes);
+                srcImage.Save(streak, ImageFormat.Png);
+                return File(streak.ToArray(), "image/png");
+            }     
+        }
+
+        private readonly ITestRepository TestRepository;
+
+        public HomeController()
+        {
+            this.TestRepository = new FileTestStorage(@"c:\MaintainableSelenium\screenshots");
+        }
+
+        // GET: Home
+        public ActionResult Index()
+        {
+            var testSessions = TestRepository.GetTestSessions();
+            return View(testSessions);
+        }
+
+        public ActionResult GetTestsFromSessionSession(string sessionId, string browserName)
+        {
+            var tests = this.TestRepository.GetTestsFromSession(sessionId, browserName);
+            return View(tests);
+        }
+
+        public ActionResult GetScreenshot(string testId, ScreenshotType screenshotType)
+        {
+            var testResult = this.TestRepository.GetTestResult(testId);
+            var testCase = this.TestRepository.GetTestCase(testResult.TestCaseId);
+            var bitmap1 = ImageHelpers.ConvertBytesToBitmap(testCase.PatternScreenshot);
+
+            switch (screenshotType)
+            {
+                case ScreenshotType.Pattern:
+                    return ImageResult(testCase.PatternScreenshot);
+                case ScreenshotType.Error:
+                {
+                    var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
+                    var diff = ImageHelpers.CreateImageDiff(bitmap1, bitmap2);
+                    return ImageResult(diff);
+                }
+                case ScreenshotType.Diff:
+                {
+                    var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
+                    var xor = ImageHelpers.CreateImagesXor(bitmap1, bitmap2);
+                    return ImageResult(xor);
+                }
+            default:
+                    throw new ArgumentOutOfRangeException("screenshotType", screenshotType, null);
+            }
+        }
+
+        private ActionResult ImageResult(Bitmap diff)
+        {
+            using (var ms = new MemoryStream())
+            {
+                diff.Save(ms, ImageFormat.Png);
+                return File(ms.ToArray(), "imgage/png");
+            }
+        }
+    }
+
+    public enum ScreenshotType
+    {
+        Pattern = 1,
+        Error,
+        Diff
+    }
+}

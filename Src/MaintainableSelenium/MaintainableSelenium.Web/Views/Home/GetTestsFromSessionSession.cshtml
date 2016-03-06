@@ -1,0 +1,53 @@
+﻿@using MaintainableSelenium.Web.Controllers
+@using MaintainableSelenium.Web.Mvc
+@model List<MaintainableSelenium.Toolbox.Screenshots.TestResultInfo>
+
+@{
+    ViewBag.Title = "Tests";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<style>
+    .screenshot {
+        width: 100%;
+    }
+</style>
+@foreach (var testResultInfo in Model)
+{
+    var rowClass = testResultInfo.TestPassed ? "panel-success" : "panel-danger";
+    <div class="panel @rowClass test-row" data-test-id="@testResultInfo.">
+        <div class="panel-heading" data-toggle="collapse" data-target="#Row@(testResultInfo.Id)" aria-expanded="false" aria-controls="collapseExample">
+            <span class="glyphicon glyphicon-menu-right"></span>
+            @testResultInfo.TestName (@testResultInfo.ScreenshotName)
+        </div>
+
+        <div id="Row@(testResultInfo.Id)" class="panel-body collapse">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#pattern@(testResultInfo.Id)" aria-controls="pattern@(testResultInfo.Id)" role="tab" data-toggle="tab">Pattern</a></li>
+                @if (testResultInfo.TestPassed == false)
+                {
+                    <li role="presentation"><a href="#error@(testResultInfo.Id)" aria-controls="error@(testResultInfo.Id)" role="tab" data-toggle="tab">Error</a></li>
+                    <li role="presentation"><a href="#diff@(testResultInfo.Id)" aria-controls="diff@(testResultInfo.Id)" role="tab" data-toggle="tab">Diff</a></li>
+                }
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="pattern@(testResultInfo.Id)">
+                    <img class="screenshot screenshot-pattern" src="@(Url.ActionFor<HomeController>(c=>c.GetScreenshot(testResultInfo.Id, ScreenshotType.Pattern)))" />
+                </div>
+                @if (testResultInfo.TestPassed == false)
+                {
+                    <div role="tabpanel" class="tab-pane" id="error@(testResultInfo.Id)">
+                        <img class="screenshot screenshot-error" src="@(Url.ActionFor<HomeController>(c => c.GetScreenshot(testResultInfo.Id, ScreenshotType.Error)))"/>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="diff@(testResultInfo.Id)">
+                        <img class="screenshot screenshot-diff" src="@(Url.ActionFor<HomeController>(c => c.GetScreenshot(testResultInfo.Id, ScreenshotType.Diff)))"/>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+

@@ -8,11 +8,13 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     {
         private readonly ITestRunnerAdapter testRunnerAdapter;
         private readonly ITestRepository testRepository;
+        private readonly TestSessionInfo TestSessionData;
 
         public ScreenshotService(ITestRunnerAdapter testRunnerAdapter, ITestRepository testRepository)
         {
             this.testRunnerAdapter = testRunnerAdapter;
             this.testRepository = testRepository;
+            this.TestSessionData = testRunnerAdapter.GetTestSessionInfo();
         }
 
         public void Persist(string screenshotName, string browserName, byte[] screenshot)
@@ -23,6 +25,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             {
                 var newTestCase = new TestCaseInfo
                 {
+                    Id = IdGenerator.GetNewId(),
                     TestName = testName,
                     BrowserName = browserName,
                     PatternScreenshotName = screenshotName,
@@ -35,7 +38,9 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             {
                 var testResult = new TestResultInfo
                 {
-                    TestSessionId = testRunnerAdapter.GetTestSessionId(),
+                    Id = IdGenerator.GetNewId(),
+                    TestCaseId = testCaseInfo.Id,
+                    TestSession = TestSessionData ,
                     TestName = testName,
                     ScreenshotName = screenshotName,
                     BrowserName = browserName
@@ -67,7 +72,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 ImageHelpers.MarkBlindRegions(image, blindRegions);
             }
             
-            var imageBytes = ImageHelpers.ConvertimageToBytes(image);
+            var imageBytes = ImageHelpers.ConvertImageToBytes(image);
             using (var md5 = MD5.Create())
             {
                 return BitConverter.ToString(md5.ComputeHash(imageBytes)).Replace("-","");

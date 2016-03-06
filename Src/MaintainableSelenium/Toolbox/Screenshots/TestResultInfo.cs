@@ -1,10 +1,25 @@
+using System;
 using System.Collections.Generic;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
+    public class TestSessionInfo
+    {
+        public string SessionId { get; set; }
+        public DateTime StartDate { get; set; }
+    }
+
+    public class ExtendedTestSessionInfo
+    {
+        public TestSessionInfo TestSession { get; set; }
+        public List<string> Browsers { get; set; }
+    }
+
     public class TestResultInfo
     {
-        public string TestSessionId { get; set; }
+        public string Id { get; set; }
+        public string TestCaseId { get; set; }
+        public TestSessionInfo TestSession { get; set; }
         public string TestName { get; set; }
         public string ScreenshotName { get; set; }
         public string BrowserName { get; set; }
@@ -14,6 +29,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
     public class TestCaseInfo
     {
+        public string Id { get; set; }
         public string TestName { get; set; }
         public string PatternScreenshotName { get; set; }
         public string BrowserName { get; set; }

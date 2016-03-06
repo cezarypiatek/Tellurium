@@ -50,6 +50,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Mvc, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.Futures.5.0.0\lib\net40\Microsoft.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -91,19 +95,82 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\sb-admin\css\bootstrap-rtl.css" />
+    <Content Include="Content\sb-admin\css\bootstrap-rtl.min.css" />
+    <Content Include="Content\sb-admin\css\bootstrap.css" />
+    <Content Include="Content\sb-admin\css\bootstrap.min.css" />
+    <Content Include="Content\sb-admin\css\plugins\morris.css" />
+    <Content Include="Content\sb-admin\css\sb-admin-rtl.css" />
+    <Content Include="Content\sb-admin\css\sb-admin.css" />
+    <Content Include="Content\sb-admin\font-awesome\css\font-awesome.css" />
+    <Content Include="Content\sb-admin\font-awesome\css\font-awesome.min.css" />
+    <Content Include="Content\sb-admin\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\sb-admin\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\sb-admin\js\bootstrap.js" />
+    <Content Include="Content\sb-admin\js\bootstrap.min.js" />
+    <Content Include="Content\sb-admin\js\jquery.js" />
+    <Content Include="Content\sb-admin\js\plugins\flot\excanvas.min.js" />
+    <Content Include="Content\sb-admin\js\plugins\flot\flot-data.js" />
+    <Content Include="Content\sb-admin\js\plugins\flot\jquery.flot.js" />
+    <Content Include="Content\sb-admin\js\plugins\flot\jquery.flot.pie.js" />
+    <Content Include="Content\sb-admin\js\plugins\flot\jquery.flot.resize.js" />
+    <Content Include="Content\sb-admin\js\plugins\flot\jquery.flot.tooltip.min.js" />
+    <Content Include="Content\sb-admin\js\plugins\morris\morris-data.js" />
+    <Content Include="Content\sb-admin\js\plugins\morris\morris.js" />
+    <Content Include="Content\sb-admin\js\plugins\morris\morris.min.js" />
+    <Content Include="Content\sb-admin\js\plugins\morris\raphael.min.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Mvc\HtmlExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
+    <Content Include="Views\_Layout.cshtml" />
+    <Content Include="Content\sb-admin\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\sb-admin\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\sb-admin\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\sb-admin\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="Content\sb-admin\font-awesome\less\bordered-pulled.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\core.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\fixed-width.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\font-awesome.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\icons.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\larger.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\list.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\mixins.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\path.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\rotated-flipped.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\spinning.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\stacked.less" />
+    <Content Include="Content\sb-admin\font-awesome\less\variables.less" />
+    <Content Include="Content\sb-admin\font-awesome\scss\font-awesome.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_bordered-pulled.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_core.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_fixed-width.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_icons.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_larger.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_list.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_mixins.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_path.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_rotated-flipped.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_spinning.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_stacked.scss" />
+    <Content Include="Content\sb-admin\font-awesome\scss\_variables.scss" />
+    <Content Include="Content\sb-admin\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\sb-admin\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\sb-admin\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\sb-admin\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\GetTestsFromSessionSession.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -113,8 +180,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\" />
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Toolbox\Toolbox.csproj">
+      <Project>{3eebcffd-1814-4bfc-857c-6081d528e011}</Project>
+      <Name>Toolbox</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -7,8 +7,6 @@ using Newtonsoft.Json;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
-   
-
     public class FileTestStorage:ITestRepository, IDisposable
     {
         public class TestStorageModel
@@ -84,6 +82,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         public void SaveTestResult(TestResultInfo testResultInfo)
         {
             StorageModel.TestResults.Add(testResultInfo);
+            Persist();
             if (testResultInfo.TestPassed == false)
             {
                 var screenshotPath = string.Format("{0}\\{1}.png", outputPath, testResultInfo.ErrorScreenshot.Hash);
@@ -103,6 +102,50 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         {
             return StorageModel.TestCases.FirstOrDefault(
                     x => x.TestName == testName && x.PatternScreenshotName == screenshotName && x.BrowserName == browserName);
+        }
+
+        public List<ExtendedTestSessionInfo> GetTestSessions()
+        {
+            return this.StorageModel.TestResults
+                .Select(x => x.TestSession)
+                .GroupBy(x => x.SessionId)
+                .Select(x =>
+                {
+                    var session = x.First();
+                    return new ExtendedTestSessionInfo()
+                    {
+                        TestSession = session,
+                        Browsers = GetBrowsersForSession(session.SessionId)
+                    };
+                })
+                .OrderByDescending(x => x.TestSession.StartDate)
+                .ToList();
+        }
+
+        public List<TestResultInfo> GetTestsFromSession(string sessionId, string browserName)
+        {
+            return
+                this.StorageModel.TestResults.Where(
+                    x => x.TestSession.SessionId == sessionId && x.BrowserName == browserName)
+                    .ToList();
+        }
+
+        public TestCaseInfo GetTestCase(string testCaseId)
+        {
+            return this.StorageModel.TestCases.First(x => x.Id == testCaseId);
+        }
+
+        public TestResultInfo GetTestResult(string testResultId)
+        {
+            return this.StorageModel.TestResults.First(x => x.Id == testResultId);
+        }
+
+        private List<string> GetBrowsersForSession(string sessionId)
+        {
+            return this.StorageModel.TestResults.Where(x => x.TestSession.SessionId == sessionId)
+                .GroupBy(x => x.BrowserName)
+                .Select(x => x.First().BrowserName)
+                .ToList();
         }
 
         public void Dispose()

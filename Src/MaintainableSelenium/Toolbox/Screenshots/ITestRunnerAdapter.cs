@@ -2,7 +2,7 @@
 {
     public interface ITestRunnerAdapter
     {
-        string GetTestSessionId();
+        TestSessionInfo GetTestSessionInfo();
         string GetCurrentTestName();
     }
 }

@@ -193,11 +193,17 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        public static byte[] ConvertimageToBytes(Image imageIn)
+        public static Bitmap ConvertBytesToBitmap(byte[] screenshot)
+        {
+            var image = ConvertBytesToImage(screenshot);
+            return new Bitmap(image);
+        }
+
+        public static byte[] ConvertImageToBytes(Image imageIn)
         {
             using (var ms = new MemoryStream())
             {
-                imageIn.Save(ms, ImageFormat.Gif);
+                imageIn.Save(ms, ImageFormat.Png);
                 return ms.ToArray();
             }
         }

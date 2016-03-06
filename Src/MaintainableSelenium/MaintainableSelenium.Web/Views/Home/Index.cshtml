@@ -1,0 +1,33 @@
+﻿@using MaintainableSelenium.Web.Controllers
+@using Microsoft.Web.Mvc
+@model List<MaintainableSelenium.Toolbox.Screenshots.ExtendedTestSessionInfo>
+@{
+    ViewBag.Title = "Maintable Selenium"; 
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Session</th>
+        <th>Browsers</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var sessionInfo in Model)
+        {
+            <tr>
+                <td>
+                    @sessionInfo.TestSession.StartDate
+                </td>
+                <td>
+                    @foreach (var browser in sessionInfo.Browsers)
+                    {
+                        @(Html.ActionLink<HomeController>(c => c.GetTestsFromSessionSession(sessionInfo.TestSession.SessionId, browser), browser, htmlAttributes: new { @class = "btn btn-default" }))
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
