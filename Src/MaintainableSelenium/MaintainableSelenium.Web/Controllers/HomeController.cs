@@ -2,8 +2,6 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using MaintainableSelenium.Toolbox.Screenshots;
 
@@ -54,13 +52,13 @@ namespace MaintainableSelenium.Web.Controllers
                 case ScreenshotType.Error:
                 {
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
-                    var diff = ImageHelpers.CreateImageDiff(bitmap1, bitmap2);
+                    var diff = ImageHelpers.CreateImageDiff(bitmap1, bitmap2, testCase.BlindRegions);
                     return ImageResult(diff);
                 }
                 case ScreenshotType.Diff:
                 {
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
-                    var xor = ImageHelpers.CreateImagesXor(bitmap1, bitmap2);
+                    var xor = ImageHelpers.CreateImagesXor(bitmap1, bitmap2, testCase.BlindRegions);
                     return ImageResult(xor);
                 }
             default:
@@ -75,6 +73,13 @@ namespace MaintainableSelenium.Web.Controllers
                 diff.Save(ms, ImageFormat.Png);
                 return File(ms.ToArray(), "imgage/png");
             }
+        }
+
+        [HttpPost]
+        public ActionResult AddBlindRegion(string testCaseId, BlindRegion blindRegion)
+        {
+            this.TestRepository.AddBlindRegion(testCaseId, blindRegion);
+            return Json(new {success = true});
         }
     }
 

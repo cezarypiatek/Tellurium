@@ -23,24 +23,25 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         private static readonly BinaryDilatation3x3 DilatationFilter = new BinaryDilatation3x3();
         private static readonly Pen DiffPen = new Pen(Color.FromArgb(128, Color.Red));
 
-        public static ImageDiff CreateImageDiff(string patternPath, string errorPath)
-        {
-            var pattern = new Bitmap(Image.FromFile(patternPath));
-            var error = new Bitmap(Image.FromFile(errorPath));
-            var diff = CreateImageDiff(pattern, error);
-            return new ImageDiff()
-            {
-                WithBounds = diff,
-                WithXOR = CreateImagesXor(pattern, error)
-            };
-        }
+        //public static ImageDiff CreateImageDiff(string patternPath, string errorPath)
+        //{
+        //    var pattern = new Bitmap(Image.FromFile(patternPath));
+        //    var error = new Bitmap(Image.FromFile(errorPath));
+        //    var diff = CreateImageDiff(pattern, error);
+        //    return new ImageDiff()
+        //    {
+        //        WithBounds = diff,
+        //        WithXOR = CreateImagesXor(pattern, error)
+        //    };
+        //}
 
-        public static Bitmap CreateImageDiff(Bitmap source, Bitmap overlay)
+        public static Bitmap CreateImageDiff(Bitmap source, Bitmap overlay, List<BlindRegion> blindRegions=null)
         {
             var filter = new ThresholdedDifference(0) {OverlayImage = source};
             var imageDiff = filter.Apply(overlay);
             DilatationFilter.ApplyInPlace(imageDiff);
             var fixedBitmap = CloneBitmapFormat(imageDiff);
+            MarkBlindRegions(imageDiff, blindRegions);
             var result = CloneBitmapFormat(overlay);
             DrawBounds(fixedBitmap, result);
             return result;
@@ -73,7 +74,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        public static Bitmap CreateImagesXor(this Bitmap bitmapA, Bitmap bitmapB)
+        public static Bitmap CreateImagesXor(Bitmap bitmapA, Bitmap bitmapB, List<BlindRegion> blindRegions=null)
         {
             var pixelBufferA = GetPixelBuffer(bitmapA);
             var pixelBufferB = GetPixelBuffer(bitmapB);
@@ -115,7 +116,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             BitmapData resultData = resultBitmap.LockBits(lockBoundRectangle, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
             Marshal.Copy(resultBuffer, 0, resultData.Scan0, resultBuffer.Length);
             resultBitmap.UnlockBits(resultData);
-
+            MarkBlindRegions(resultBitmap, blindRegions);
 
             return resultBitmap;
         }
@@ -211,6 +212,9 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         public static void MarkBlindRegions(Image image, List<BlindRegion> blindRegions)
         {
+            if (blindRegions == null)
+                return;
+            
             var graphic = Graphics.FromImage(image);
             foreach (var blindRegion in blindRegions)
             {

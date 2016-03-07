@@ -159,5 +159,16 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             var fileContent = JsonConvert.SerializeObject(StorageModel);
             File.WriteAllText(storagePath, fileContent);
         }
+
+        public void AddBlindRegion(string testCaseId, BlindRegion blindRegion)
+        {
+            var testCase = this.StorageModel.TestCases.First(x => x.Id == testCaseId);
+            if (testCase.BlindRegions == null)
+            {
+                testCase.BlindRegions = new List<BlindRegion>();
+            }
+            testCase.BlindRegions.Add(blindRegion);
+            Persist();
+        }
     }
 }
