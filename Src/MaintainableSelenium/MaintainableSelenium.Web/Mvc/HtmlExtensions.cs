@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.Mvc.Ajax;
 using System.Web.Routing;
 
 namespace MaintainableSelenium.Web.Mvc
@@ -11,6 +13,18 @@ namespace MaintainableSelenium.Web.Mvc
         {
             RouteValueDictionary valuesFromExpression = Microsoft.Web.Mvc.Internal.ExpressionHelper.GetRouteValuesFromExpression(action);
             return urlHelper.RouteUrl(valuesFromExpression);
+        }  
+        
+        public static IHtmlString ActionLink<TController>(this  AjaxHelper ajaxHelper, Expression<Action<TController>> action, string text, string updateTargetId, object htmlAttributes=null) where TController:Controller
+        {
+            RouteValueDictionary valuesFromExpression = Microsoft.Web.Mvc.Internal.ExpressionHelper.GetRouteValuesFromExpression(action);
+
+            return ajaxHelper.ActionLink(text, action.Name, valuesFromExpression, new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = updateTargetId }, new RouteValueDictionary(htmlAttributes));
+        }
+
+        public static string GetCurrentActionName()
+        {
+            return HttpContext.Current.Request.RequestContext.RouteData.Values["action"] as string;
         }
     }
 }

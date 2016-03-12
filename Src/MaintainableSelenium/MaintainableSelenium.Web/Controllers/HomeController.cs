@@ -33,6 +33,18 @@ namespace MaintainableSelenium.Web.Controllers
             return View(testSessions);
         }
 
+        public ActionResult GetTestCases()
+        {
+            var testCases = TestRepository.GetTestCases();
+            return View(testCases);
+        }
+
+        public ActionResult GetTestCaseDetails(string testCaseId)
+        {
+            var testCase = TestRepository.GetTestCase(testCaseId);
+            return View(testCase);
+        }
+
         public ActionResult GetTestsFromSessionSession(string sessionId, string browserName)
         {
             var tests = this.TestRepository.GetTestsFromSession(sessionId, browserName);
@@ -43,6 +55,12 @@ namespace MaintainableSelenium.Web.Controllers
         {
             var test = this.TestRepository.GetTestResult(testId);
             return View(test);
+        }
+
+        public ActionResult GetTestCasePatternImage(string testCaseId)
+        {
+            var testCase = this.TestRepository.GetTestCase(testCaseId);
+            return ImageResult(testCase.PatternScreenshot);
         }
 
         public ActionResult GetScreenshot(string testId, ScreenshotType screenshotType)

@@ -15,5 +15,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         TestResultInfo GetTestResult(string testResultId);
         void AddBlindRegion(string testCaseId, BlindRegion blindRegion);
         void MarkAsPattern(string testCaseId, string testResultId);
+        List<ExtendedTestCaseInfo> GetTestCases();
+        
     }
 }

@@ -3,43 +3,11 @@
 @model List<MaintainableSelenium.Toolbox.Screenshots.TestResultInfo>
 
 @{
-    ViewBag.Title = "Tests";
+    ViewBag.Title = "Tests Results";
     Layout = "~/Views/_Layout.cshtml";
 }
 
-<style>
-    .screenshot {
-        width: 100%;
-    }
-    .screenshot-container {
-        position: relative;
-    }
-    .screenshot-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        Height: 100%;
-    }
-    .test-row-expander {
-        cursor: pointer;
-    }
 
-    .glyphicon-refresh-animate {
-        -animation: spin .7s infinite linear;
-        -webkit-animation: spin2 .7s infinite linear;
-    }
-
-    @@-webkit-keyframes spin2 {
-        from { -webkit-transform: rotate(0deg);}
-        to { -webkit-transform: rotate(360deg);}
-    }
-
-    @@keyframes spin {
-        from { transform: scale(1) rotate(0deg);}
-        to { transform: scale(1) rotate(360deg);}
-    }
-    </style>
 @foreach (var testResultInfo in Model)
 {
     var rowClass = testResultInfo.TestPassed ? "panel-success" : "panel-danger";

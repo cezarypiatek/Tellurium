@@ -1,0 +1,27 @@
+﻿@using MaintainableSelenium.Web.Controllers
+@using MaintainableSelenium.Web.Mvc;
+@model List<MaintainableSelenium.Toolbox.Screenshots.ExtendedTestCaseInfo>
+@{
+    ViewBag.Title = "Test Cases";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+@foreach (var testCaseInfo in Model)
+{
+    var detailsId = "TestCaseDetails" + testCaseInfo.TestCaseName;
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-6">@testCaseInfo.TestCaseName</div>
+                <div class="col-md-6">
+                    @foreach (var browser in testCaseInfo.Browsers)
+                    {
+                        @(Ajax.ActionLink<HomeController>(c => c.GetTestCaseDetails(browser.TestCaseId), browser.BrowserName, detailsId, new { @class = "btn btn-default" }))
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="panel-body" id="@detailsId">
+        </div>
+    </div>
+}

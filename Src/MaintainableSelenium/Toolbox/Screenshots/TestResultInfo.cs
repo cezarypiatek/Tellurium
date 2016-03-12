@@ -43,6 +43,18 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         }
     }
 
+    public class ExtendedTestCaseInfo
+    {
+        public string TestCaseName { get; set; }
+        public List<TestCaseShortcut> Browsers { get; set; }
+    }
+
+    public class TestCaseShortcut
+    {
+        public string BrowserName { get; set; }
+        public string TestCaseId { get; set; }
+    }
+
     public class ScreenshotData
     {
         public string Hash { get; set; }

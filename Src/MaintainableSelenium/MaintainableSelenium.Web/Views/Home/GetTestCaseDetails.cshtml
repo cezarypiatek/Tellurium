@@ -1,0 +1,5 @@
+﻿@using MaintainableSelenium.Web.Controllers
+@using MaintainableSelenium.Web.Mvc
+@model MaintainableSelenium.Toolbox.Screenshots.TestCaseInfo
+
+<img class="screenshot" src="@(Url.ActionFor<HomeController>(c=>c.GetTestCasePatternImage(Model.Id)))" />

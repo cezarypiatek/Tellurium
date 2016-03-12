@@ -122,6 +122,22 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 .ToList();
         }
 
+        public List<ExtendedTestCaseInfo> GetTestCases()
+        {
+            return this.StorageModel.TestCases.GroupBy(x=>x.PatternScreenshotName).Select(x =>
+            {
+                return new ExtendedTestCaseInfo
+                {
+                    Browsers = x.Select(y => new TestCaseShortcut()
+                    {
+                        BrowserName = y.BrowserName,
+                        TestCaseId = y.Id
+                    }).ToList(),
+                    TestCaseName = x.Key
+                };
+            }).ToList();
+        }
+
         public List<TestResultInfo> GetTestsFromSession(string sessionId, string browserName)
         {
             return
