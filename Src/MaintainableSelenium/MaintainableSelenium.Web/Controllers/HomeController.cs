@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Web.Mvc;
 using MaintainableSelenium.Toolbox.Screenshots;
+using Microsoft.Web.Mvc;
 
 namespace MaintainableSelenium.Web.Controllers
 {
@@ -107,10 +108,16 @@ namespace MaintainableSelenium.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult MarkAsPattern(string testCaseId, string testResultId)
+        public ActionResult MarkAsPattern(string testResultId)
         {
-            this.TestRepository.MarkAsPattern(testCaseId, testResultId);
-            return Json(new { success = true });
+            this.TestRepository.MarkAsPattern(testResultId);
+            return this.RedirectToAction(c => c.GetTestResult(testResultId));
+        }
+
+        public ActionResult GetTestResult(string testId)
+        {
+            var test = this.TestRepository.GetTestResult(testId);
+            return View("TestResultInfo", test);
         }
     }
 

@@ -10,19 +10,7 @@
 
 @foreach (var testResultInfo in Model)
 {
-    var rowClass = testResultInfo.TestPassed ? "panel-success" : "panel-danger";
-    var detailsId = "Row" + testResultInfo.Id;
-    var widget = RemoteExpanderWidget.Create<HomeController>(c => c.GetTestResultDetails(testResultInfo.Id), detailsId, Url);
-    <div class="panel @rowClass test-row" data-test-id="@testResultInfo.Id" >
-        <div class="panel-heading test-row-expander" @widget.GetAttributeString()>
-            <span class="glyphicon glyphicon-menu-right"></span>
-            @testResultInfo.TestName (@testResultInfo.ScreenshotName)
-        </div>
-
-        <div id="@detailsId" class="panel-body collapse">
-           
-        </div>
-    </div>
+    Html.RenderPartial("TestResultInfo", testResultInfo);
 }
 
 

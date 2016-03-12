@@ -99,6 +99,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\jquery-proxy.js" />
     <Content Include="Content\jquery-ui.modern-unobtrusive.js" />
     <Content Include="Content\sb-admin\css\bootstrap-rtl.css" />
     <Content Include="Content\sb-admin\css\bootstrap-rtl.min.css" />
@@ -223,6 +224,7 @@
     <Content Include="Views\Home\GetTestResultDetails.cshtml" />
     <Content Include="Views\Home\GetTestCases.cshtml" />
     <Content Include="Views\Home\GetTestCaseDetails.cshtml" />
+    <Content Include="Views\Home\TestResultInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

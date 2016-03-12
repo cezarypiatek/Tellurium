@@ -187,10 +187,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             Persist();
         }
 
-        public void MarkAsPattern(string testCaseId, string testResultId)
+        public void MarkAsPattern(string testResultId)
         {
-            var testCase = this.StorageModel.TestCases.First(x => x.Id == testCaseId);
             var testResult = this.StorageModel.TestResults.First(x => x.Id == testResultId);
+            var testCase = this.StorageModel.TestCases.First(x => x.Id == testResult.TestCaseId);
+            testResult.TestPassed = true;
             testCase.PatternScreenshot = testResult.ErrorScreenshot.Image;
             testCase.PatternScreenhotHash = testResult.ErrorScreenshot.Hash;
             Persist();

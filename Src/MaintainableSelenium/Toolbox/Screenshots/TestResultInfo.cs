@@ -26,7 +26,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         public bool TestPassed { get; set; }
         public ScreenshotData ErrorScreenshot { get; set; }
     }
-
+    
     public class TestCaseInfo
     {
         public string Id { get; set; }
