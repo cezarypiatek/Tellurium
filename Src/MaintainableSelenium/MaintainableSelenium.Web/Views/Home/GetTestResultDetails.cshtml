@@ -1,0 +1,31 @@
+﻿@using MaintainableSelenium.Web.Controllers
+@using MaintainableSelenium.Web.Mvc
+@model MaintainableSelenium.Toolbox.Screenshots.TestResultInfo
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#pattern@(Model.Id)" aria-controls="pattern@(Model.Id)" role="tab" data-toggle="tab">Pattern</a></li>
+    @if (Model.TestPassed == false)
+    {
+        <li role="presentation"><a href="#error@(Model.Id)" aria-controls="error@(Model.Id)" role="tab" data-toggle="tab">Error</a></li>
+        <li role="presentation"><a href="#diff@(Model.Id)" aria-controls="diff@(Model.Id)" role="tab" data-toggle="tab">Diff</a></li>
+    }
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="pattern@(Model.Id)">
+        <img class="screenshot screenshot-pattern" src="@(Url.ActionFor<HomeController>(c=>c.GetScreenshot(Model.Id, ScreenshotType.Pattern)))" />
+    </div>
+    @if (Model.TestPassed == false)
+    {
+        <div role="tabpanel" class="tab-pane" id="error@(Model.Id)">
+            <div class="screenshot-container">
+                <img class="screenshot screenshot-error" src="@(Url.ActionFor<HomeController>(c => c.GetScreenshot(Model.Id, ScreenshotType.Error)))" />
+                <div class="screenshot-overlay"></div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="diff@(Model.Id)">
+            <img class="screenshot screenshot-diff" src="@(Url.ActionFor<HomeController>(c => c.GetScreenshot(Model.Id, ScreenshotType.Diff)))" />
+        </div>
+    }
+</div>
+

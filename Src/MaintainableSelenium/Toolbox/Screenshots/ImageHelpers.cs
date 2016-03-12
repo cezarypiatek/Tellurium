@@ -41,7 +41,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             var imageDiff = filter.Apply(overlay);
             DilatationFilter.ApplyInPlace(imageDiff);
             var fixedBitmap = CloneBitmapFormat(imageDiff);
-            MarkBlindRegions(imageDiff, blindRegions);
+            MarkBlindRegions(fixedBitmap, blindRegions);
             var result = CloneBitmapFormat(overlay);
             DrawBounds(fixedBitmap, result);
             return result;

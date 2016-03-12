@@ -39,6 +39,12 @@ namespace MaintainableSelenium.Web.Controllers
             return View(tests);
         }
 
+        public ActionResult GetTestResultDetails(string testId)
+        {
+            var test = this.TestRepository.GetTestResult(testId);
+            return View(test);
+        }
+
         public ActionResult GetScreenshot(string testId, ScreenshotType screenshotType)
         {
             var testResult = this.TestRepository.GetTestResult(testId);
@@ -80,6 +86,13 @@ namespace MaintainableSelenium.Web.Controllers
         {
             this.TestRepository.AddBlindRegion(testCaseId, blindRegion);
             return Json(new {success = true});
+        }
+
+        [HttpPost]
+        public ActionResult MarkAsPattern(string testCaseId, string testResultId)
+        {
+            this.TestRepository.MarkAsPattern(testCaseId, testResultId);
+            return Json(new { success = true });
         }
     }
 

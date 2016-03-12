@@ -170,5 +170,14 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             testCase.BlindRegions.Add(blindRegion);
             Persist();
         }
+
+        public void MarkAsPattern(string testCaseId, string testResultId)
+        {
+            var testCase = this.StorageModel.TestCases.First(x => x.Id == testCaseId);
+            var testResult = this.StorageModel.TestResults.First(x => x.Id == testResultId);
+            testCase.PatternScreenshot = testResult.ErrorScreenshot.Image;
+            testCase.PatternScreenhotHash = testResult.ErrorScreenshot.Hash;
+            Persist();
+        }
     }
 }
