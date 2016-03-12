@@ -195,10 +195,10 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav side-nav">
                 <li class="@(HtmlExtensions.GetCurrentActionName() == "Index" ? "active" : "")">
-                    <a href="@(Url.ActionFor<HomeController>(c => c.Index()))"><i class="fa fa-fw fa-dashboard"></i> Test results</a>
+                    <a href="@(Url.ActionFor<HomeController>(c => c.Index()))"><i class="fa fa-fw fa-bug"></i> Test results</a>
                 </li>
                 <li class="@(HtmlExtensions.GetCurrentActionName() == "GetTestCases" ? "active" : "")">
-                    <a href="@(Url.ActionFor<HomeController>(c => c.GetTestCases()))"><i class="fa fa-fw fa-dashboard"></i> Test cases</a>
+                    <a href="@(Url.ActionFor<HomeController>(c => c.GetTestCases()))"><i class="fa fa-fw fa-folder-open"></i> Test cases</a>
                 </li>
                 @*<li>
                         <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>

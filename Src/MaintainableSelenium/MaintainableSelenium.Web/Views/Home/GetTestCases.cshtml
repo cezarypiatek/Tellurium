@@ -13,7 +13,7 @@
         <div class="panel-heading">
             <div class="row">
                 <div class="col-md-6">@testCaseInfo.TestCaseName</div>
-                <div class="col-md-6">
+                <div class="col-md-6 btn-toolbar">
                     @foreach (var browser in testCaseInfo.Browsers)
                     {
                         @(Ajax.ActionLink<HomeController>(c => c.GetTestCaseDetails(browser.TestCaseId), browser.BrowserName, detailsId, new { @class = "btn btn-default" }))

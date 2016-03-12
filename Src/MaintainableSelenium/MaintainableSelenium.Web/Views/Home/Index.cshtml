@@ -22,10 +22,12 @@
                     @sessionInfo.TestSession.StartDate
                 </td>
                 <td>
-                    @foreach (var browser in sessionInfo.Browsers)
-                    {
-                        @(Html.ActionLink<HomeController>(c => c.GetTestsFromSessionSession(sessionInfo.TestSession.SessionId, browser), browser, htmlAttributes: new { @class = "btn btn-default" }))
-                    }
+                    <div class="btn-toolbar">
+                        @foreach (var browser in sessionInfo.Browsers)
+                        {
+                            @(Html.ActionLink<HomeController>(c => c.GetTestsFromSessionSession(sessionInfo.TestSession.SessionId, browser), browser, htmlAttributes: new { @class = "btn btn-default" }))
+                        }
+                    </div>
                 </td>
             </tr>
         }
