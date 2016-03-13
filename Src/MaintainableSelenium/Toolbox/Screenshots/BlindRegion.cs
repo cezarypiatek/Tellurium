@@ -5,16 +5,16 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     /// </summary>
     public class BlindRegion
     {
-        public int Left { get; set; }
-        public int Top { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public float Left { get; set; }
+        public float Top { get; set; }
+        public float Width { get; set; }
+        public float Height { get; set; }
 
         public BlindRegion()
         {
         }
 
-        public BlindRegion(int left, int top, int width, int height)
+        public BlindRegion(float left, float top, float width, float height)
         {
             Left = left;
             Top = top;

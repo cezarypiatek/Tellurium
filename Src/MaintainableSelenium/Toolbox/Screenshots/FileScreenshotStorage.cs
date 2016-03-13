@@ -11,6 +11,8 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     {
         public class TestStorageModel
         {
+            public List<BlindRegion> GlobalBlindRegions { get; set; }
+            public Dictionary<string, List<BlindRegion>> CommonBlindRegions { get; set; }
             public List<TestCaseInfo> TestCases { get; set; }
             public List<TestResultInfo> TestResults { get; set; }
 
@@ -197,12 +199,32 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             Persist();
         }
 
-        public void SaveBlindregions(string testCaseId, List<BlindRegion> blindRegions)
+        public void SaveBlindregions(string testCaseId, List<BlindRegion> localBlindRegions)
         {
             var testCase = this.StorageModel.TestCases.First(x => x.Id == testCaseId);
             testCase.BlindRegions.Clear();
-            testCase.BlindRegions.AddRange(blindRegions);
+            testCase.BlindRegions.AddRange(localBlindRegions);
             Persist();
+        }
+
+        public void SaveGlobalBlindregions(string browserName, List<BlindRegion> globalBlindRegions)
+        {
+            if (this.StorageModel.CommonBlindRegions == null)
+            {
+                this.StorageModel.CommonBlindRegions  = new Dictionary<string, List<BlindRegion>>();
+            }
+            this.StorageModel.CommonBlindRegions[browserName] = globalBlindRegions.ToList();
+            Persist();
+        }
+
+        public List<BlindRegion> GetGlobalBlindRegions(string browserName)
+        {
+            if (this.StorageModel.CommonBlindRegions== null || this.StorageModel.CommonBlindRegions.ContainsKey(browserName) == false)
+            {
+                return new List<BlindRegion>();
+            }
+
+            return this.StorageModel.CommonBlindRegions[browserName].ToList();
         }
     }
 }

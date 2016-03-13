@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
 using MaintainableSelenium.Toolbox.Screenshots;
 using Microsoft.Web.Mvc;
@@ -44,7 +45,12 @@ namespace MaintainableSelenium.Web.Controllers
         public ActionResult GetTestCaseDetails(string testCaseId)
         {
             var testCase = TestRepository.GetTestCase(testCaseId);
-            return View(testCase);
+            var globalBlindRegions = TestRepository.GetGlobalBlindRegions(testCase.BrowserName);
+            return View(new TestCaseDetailsDTO()
+            {
+                GlobalBlindRegions = globalBlindRegions,
+                TestCase = testCase
+            });
         }
 
         public ActionResult GetTestsFromSessionSession(string sessionId, string browserName)
@@ -70,21 +76,39 @@ namespace MaintainableSelenium.Web.Controllers
             var testResult = this.TestRepository.GetTestResult(testId);
             var testCase = this.TestRepository.GetTestCase(testResult.TestCaseId);
             var bitmap1 = ImageHelpers.ConvertBytesToBitmap(testCase.PatternScreenshot);
-
+           
             switch (screenshotType)
             {
                 case ScreenshotType.Pattern:
                     return ImageResult(testCase.PatternScreenshot);
                 case ScreenshotType.Error:
                 {
+                    var globalBlindRegions = this.TestRepository.GetGlobalBlindRegions(testCase.BrowserName);
+                    var blindRegions = testCase.BlindRegions.ToList();
+                    blindRegions.AddRange(globalBlindRegions);
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
-                    var diff = ImageHelpers.CreateImageDiff(bitmap1, bitmap2, testCase.BlindRegions);
+                    blindRegions = blindRegions.Select(x =>
+                    {
+                        var xCoef = bitmap2.Width/100.0f;
+                        var yCoef = bitmap2.Height/100.0f;
+                        return new BlindRegion(x.Left*xCoef, x.Top*yCoef, x.Width*xCoef, x.Height*yCoef);
+                    }).ToList();
+                    var diff = ImageHelpers.CreateImageDiff(bitmap1, bitmap2, blindRegions);
                     return ImageResult(diff);
                 }
                 case ScreenshotType.Diff:
                 {
+                    var globalBlindRegions = this.TestRepository.GetGlobalBlindRegions(testCase.BrowserName);
+                    var blindRegions = testCase.BlindRegions.ToList();
+                    blindRegions.AddRange(globalBlindRegions);
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
-                    var xor = ImageHelpers.CreateImagesXor(bitmap1, bitmap2, testCase.BlindRegions);
+                    blindRegions = blindRegions.Select(x =>
+                    {
+                        var xCoef = bitmap2.Width / 100.0f;
+                        var yCoef = bitmap2.Height / 100.0f;
+                        return new BlindRegion(x.Left * xCoef, x.Top * yCoef, x.Width * xCoef, x.Height * yCoef);
+                    }).ToList();
+                    var xor = ImageHelpers.CreateImagesXor(bitmap1, bitmap2, blindRegions);
                     return ImageResult(xor);
                 }
             default:
@@ -122,9 +146,16 @@ namespace MaintainableSelenium.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveBlindspots(SaveBlindRegionsDTO dto)
+        public ActionResult SaveLocalBlindspots(SaveLocalBlindRegionsDTO dto)
         {
-            this.TestRepository.SaveBlindregions(dto.TestCaseId, dto.BlindRegions);
+            this.TestRepository.SaveBlindregions(dto.TestCaseId, dto.LocalBlindRegions);
+            return Json(new { success = true });
+        }
+        
+        [HttpPost]
+        public ActionResult SaveGlobalBlindspots(SaveGlobalBlindRegionsDTO dto)
+        {
+            this.TestRepository.SaveGlobalBlindregions(dto.BrowserName, dto.BlindRegions);
             return Json(new { success = true });
         }
     }
@@ -136,9 +167,31 @@ namespace MaintainableSelenium.Web.Controllers
         Diff
     }
 
-    public class SaveBlindRegionsDTO
+    public class SaveLocalBlindRegionsDTO
     {
         public string TestCaseId { get; set; }
+        public List<BlindRegion> LocalBlindRegions { get; set; }
+
+        public SaveLocalBlindRegionsDTO()
+        {
+            LocalBlindRegions = new List<BlindRegion>();
+        }
+    }
+    
+    public class SaveGlobalBlindRegionsDTO
+    {
+        public string BrowserName { get; set; }
         public List<BlindRegion> BlindRegions { get; set; }
+
+        public SaveGlobalBlindRegionsDTO()
+        {
+            BlindRegions = new List<BlindRegion>();
+        }
+    }
+
+    public class TestCaseDetailsDTO
+    {
+        public TestCaseInfo TestCase { get; set; }
+        public List<BlindRegion> GlobalBlindRegions { get; set; }
     }
 }

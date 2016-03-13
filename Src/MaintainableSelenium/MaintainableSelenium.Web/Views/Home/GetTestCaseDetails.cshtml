@@ -1,10 +1,33 @@
 ﻿@using MaintainableSelenium.Web.Controllers
 @using MaintainableSelenium.Web.Mvc
-@model MaintainableSelenium.Toolbox.Screenshots.TestCaseInfo
-<div data-ui-fn="testcase" data-ui-testcase-actionsave="@(Url.ActionFor<HomeController>(c=>c.SaveBlindspots(null)))" data-ui-testcase-id="@Model.Id" data-ui-testcase-regions="@Model.BlindRegions.ToJson()">
-    <img class="screenshot" src="@(Url.ActionFor<HomeController>(c => c.GetTestCasePatternImage(Model.Id)))" />
-    <div class="testcase-overlay">
-        <span class="label" style="color: black"></span>
-        <span data-testcase-element="save" class="btn btn-primary">Save blindspots</span>
+@model TestCaseDetailsDTO
+<div data-ui-fn="testcase" data-ui-testcase-browser="@Model.TestCase.BrowserName" data-ui-testcase-actionsave="@(Url.ActionFor<HomeController>(c=>c.SaveLocalBlindspots(null)))" data-ui-testcase-actionsaveglobal="@(Url.ActionFor<HomeController>(c=>c.SaveGlobalBlindspots(null)))" data-ui-testcase-id="@Model.TestCase.Id" data-ui-testcase-regions="@Model.TestCase.BlindRegions.ToJson()" data-ui-testcase-globalregions="@Model.GlobalBlindRegions.ToJson()">
+    <div class="testcase-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group" data-testcase-element="scope">
+                    <span class="btn btn-default active" data-testcase-element="local">Draw local blindspot</span>
+                    <span class="btn btn-default" data-testcase-element="global">Draw global blindspot</span>
+                </div>
+            </div>
+            <div class="col-md-2 pull-right">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary local" data-testcase-element="save">Save local blindspots</button>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" data-testcase-element="save">Save global blindspots</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="testcase-board" data-testcase-element="board">
+        <img class="screenshot" src="@(Url.ActionFor<HomeController>(c => c.GetTestCasePatternImage(Model.TestCase.Id)))" />
+        <div class="testcase-overlay">
+            <span class="label" style="color: black"></span>
+        </div>
     </div>
 </div>

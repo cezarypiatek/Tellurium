@@ -7,71 +7,107 @@
         var that = this;
         var currSquare;
         var locked = false;
+        var scope = "local";
+        this.element.find("[data-testcase-element='scope']").on("click", ".btn", function() {
+            $(this).siblings().removeClass("active");
+            $(this).addClass("active");
+            scope = $(this).data("testcase-element");
+        });
 
+        var $board = this.element.find("[data-testcase-element='board']");
         function getNumber(percentageText) {
             return parseFloat(percentageText.replace("%", ""));
         }
-        this.element.on("click", "[data-testcase-element='save']", function () {
+        this.element.on("click", "[data-testcase-element='save']", function (e) {
+            e.preventDefault();
             if (locked) {
                 return;
             }
-            var maxWidth = that.element.width();
-            var maxHeight = that.element.height();
-            var dataToPost = [];
-            that.element.find(".blind").each(function() {
+            var maxWidth = $board.width();
+            var maxHeight = $board.height();
+            var localSpots = [];
+            var globalSpots = [];
+            $board.find(".blind").each(function () {
                 var $this = $(this);
-                dataToPost.push({
+                var spot ={
                     left: getNumber($this.css("left"))/maxWidth*100.0,
                     top: getNumber($this.css("top"))/maxHeight*100,
                     width: getNumber($this.css("width")) / maxWidth * 100.0,
                     height: getNumber($this.css("height")) / maxHeight * 100
-                });
+                }
+                if ($this.is(".local")) {
+                    localSpots.push(spot);
+                } else {
+                    globalSpots.push(spot);
+                }
+                
             });
             locked = true;
-            $.postJSON(that.options.actionsave, {
-                TestCaseId: that.options.id,
-                BlindRegions: dataToPost
-            }).done(function () {
-                locked = false;
-            });
+            if ($(this).is(".local")) {
+                $.postJSON(that.options.actionsave, {
+                    TestCaseId: that.options.id,
+                    LocalBlindRegions: localSpots
+                }).done(function() {
+                    locked = false;
+                });
+            } else {
+                $.postJSON(that.options.actionsaveglobal, {
+                    BlindRegions: globalSpots,
+                    BrowserName: that.options.browser
+                }).done(function () {
+                    locked = false;
+                });
+            }
+            
         });
-        this.element.on("keyup", ".blind", function (e) {
+        $board.on("keyup", ".blind", function (e) {
             if (e.keyCode == 46) {
-                that.element.find(".blind.active").remove();
+                $board.find(".blind.active").remove();
             }
         });
 
-        this.element.on("focus", ".blind", function (e) {
+        $board.on("focus", ".blind", function (e) {
             $(this).addClass("active");
         });
 
-        this.element.on("blur", ".blind.active", function (e) {
+        $board.on("blur", ".blind.active", function (e) {
             $(this).removeClass("active");
         });
 
-        this.element.on("mousedown", ".blind", function(e) {
+        $board.on("mousedown", ".blind", function (e) {
             e.stopPropagation();
         });
         var index = 1;
 
         this.options.regions.forEach(function(data) {
-            var square = $("<div></div>", { "class": "blind", tabindex: index++ });
+            var square = $("<div></div>", { "class": "blind local", tabindex: index++ });
+            $board.append(square);
             square.css({
                 left: data.Left + "%",
                 top: data.Top + "%",
                 width: data.Width + "%",
-                height: data.Height+ "%"
+                height: data.Height + "%"
             });
-            that.element.append(square);
         });
 
-        this.element.on("mousedown", function (e) {
+        this.options.globalregions.forEach(function (data) {
+            var square = $("<div></div>", { "class": "blind global", tabindex: index++ });
+            $board.append(square);
+            square.css({
+                left: data.Left + "%",
+                top: data.Top + "%",
+                width: data.Width + "%",
+                height: data.Height + "%"
+            });
+        });
+
+        $board.on("mousedown", function (e) {
             drawing = true;
             startPoint = getOffset(e);
-            currSquare = $("<div></div>",{"class":"blind", tabindex:index++});
-            that.element.append(currSquare);
+            currSquare = $("<div></div>",{"class":"blind "+scope, tabindex:index++});
+            $board.append(currSquare);
         });
-        this.element.on("mouseup", function() {
+        $board.on("mouseup", function () {
             if (drawing) {
                 drawing = false;
                 if (currSquare.width() < 5 || currSquare.height() < 5) {
@@ -83,21 +119,21 @@
         });
 
         function getOffset(e) {
-            var parentOffset = that.element.offset();
+            var parentOffset = $board.offset();
             return {
                 x: e.pageX - parentOffset.left,
                 y: e.pageY - parentOffset.top
             };
         }
 
-        this.element.on("mousemove", function(e) {
+        $board.on("mousemove", function (e) {
             var offset = getOffset(e);
 
             $label.text("X:" + offset.x + " Y:" + offset.y);
 
             if (drawing) {
-                var maxWidth = that.element.width();
-                var maxHeight = that.element.height();
+                var maxWidth = $board.width();
+                var maxHeight = $board.height();
                 currSquare.css({
                     left: Math.min(startPoint.x, offset.x) / maxWidth *100 + "%",
                     top: Math.min(startPoint.y, offset.y) / maxHeight * 100 + "%",

@@ -70,28 +70,36 @@
                 transform: scale(1) rotate(360deg);
             }
         }
-        [data-ui-fn="testcase"] {
+       .testcase-board {
             position: relative;
-                    }
-        [data-testcase-element="save"] {
-            position: absolute;
-            bottom: 0;
-            right: 0;
+           border: 1px solid gray;
+           margin-top: 10px;
         }
+        
         .blind {
-            border: 1px dotted blue;
             position: absolute;
+            border-style: dotted;
+            border-width: 1px;
         }
+        .blind.local {
+            border-color:  orange;
+        }
+        .blind.global{
+            border-color:  blue;
+        }
+
         .blind.active {
-            border-color: yellow;
+            border-color: crimson!important;
+            border-width: 2px;
         }
         .testcase-overlay {
             position: absolute;
             width: 100%;
             height: 100%;
-            top: 0px;
-            left: 0px;
+            top: 0;
+            left: 0;
         }
+
     </style>
 <div id="wrapper">
     <!-- Navigation -->
