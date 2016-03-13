@@ -1,5 +1,10 @@
 ﻿@using MaintainableSelenium.Web.Controllers
 @using MaintainableSelenium.Web.Mvc
 @model MaintainableSelenium.Toolbox.Screenshots.TestCaseInfo
-
-<img class="screenshot" src="@(Url.ActionFor<HomeController>(c=>c.GetTestCasePatternImage(Model.Id)))" />
+<div data-ui-fn="testcase" data-ui-testcase-actionsave="@(Url.ActionFor<HomeController>(c=>c.SaveBlindspots(null)))" data-ui-testcase-id="@Model.Id" data-ui-testcase-regions="@Model.BlindRegions.ToJson()">
+    <img class="screenshot" src="@(Url.ActionFor<HomeController>(c => c.GetTestCasePatternImage(Model.Id)))" />
+    <div class="testcase-overlay">
+        <span class="label" style="color: black"></span>
+        <span data-testcase-element="save" class="btn btn-primary">Save blindspots</span>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -119,6 +120,13 @@ namespace MaintainableSelenium.Web.Controllers
             var test = this.TestRepository.GetTestResult(testId);
             return View("TestResultInfo", test);
         }
+
+        [HttpPost]
+        public ActionResult SaveBlindspots(SaveBlindRegionsDTO dto)
+        {
+            this.TestRepository.SaveBlindregions(dto.TestCaseId, dto.BlindRegions);
+            return Json(new { success = true });
+        }
     }
 
     public enum ScreenshotType
@@ -126,5 +134,11 @@ namespace MaintainableSelenium.Web.Controllers
         Pattern = 1,
         Error,
         Diff
+    }
+
+    public class SaveBlindRegionsDTO
+    {
+        public string TestCaseId { get; set; }
+        public List<BlindRegion> BlindRegions { get; set; }
     }
 }

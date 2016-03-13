@@ -25,6 +25,9 @@
             $("[data-ui-fn]", context).each(function () {
                 $.ui.modernUnobtrusive.parseElement(this);
             });
+            if ($(context).is("[data-ui-fn]")) {
+                $.ui.modernUnobtrusive.parseElement($(context));
+            }
         },
         /// <summary>
         /// Wires up jQuery UI unobtrusively on a single element.

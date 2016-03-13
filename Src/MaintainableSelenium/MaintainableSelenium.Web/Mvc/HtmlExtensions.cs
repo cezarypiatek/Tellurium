@@ -4,6 +4,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Ajax;
 using System.Web.Routing;
+using Newtonsoft.Json;
 
 namespace MaintainableSelenium.Web.Mvc
 {
@@ -39,5 +40,11 @@ namespace MaintainableSelenium.Web.Mvc
         {
             return HttpContext.Current.Request.RequestContext.RouteData.Values["action"] as string;
         }
+
+        public static string ToJson(this object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
     }
 }

@@ -196,5 +196,13 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             testCase.PatternScreenhotHash = testResult.ErrorScreenshot.Hash;
             Persist();
         }
+
+        public void SaveBlindregions(string testCaseId, List<BlindRegion> blindRegions)
+        {
+            var testCase = this.StorageModel.TestCases.First(x => x.Id == testCaseId);
+            testCase.BlindRegions.Clear();
+            testCase.BlindRegions.AddRange(blindRegions);
+            Persist();
+        }
     }
 }

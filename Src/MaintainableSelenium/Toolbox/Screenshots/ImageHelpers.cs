@@ -218,7 +218,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             var graphic = Graphics.FromImage(image);
             foreach (var blindRegion in blindRegions)
             {
-                graphic.FillRectangle(Brushes.Black, blindRegion.X, blindRegion.Y, blindRegion.Width, blindRegion.Height);
+                graphic.FillRectangle(Brushes.Black, blindRegion.Left, blindRegion.Top, blindRegion.Width, blindRegion.Height);
             }
 
             graphic.Save();

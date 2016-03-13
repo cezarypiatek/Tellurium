@@ -5,8 +5,8 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     /// </summary>
     public class BlindRegion
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int Left { get; set; }
+        public int Top { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
 
@@ -14,10 +14,10 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         {
         }
 
-        public BlindRegion(int x, int y, int width, int height)
+        public BlindRegion(int left, int top, int width, int height)
         {
-            X = x;
-            Y = y;
+            Left = left;
+            Top = top;
             Width = width;
             Height = height;
         }
