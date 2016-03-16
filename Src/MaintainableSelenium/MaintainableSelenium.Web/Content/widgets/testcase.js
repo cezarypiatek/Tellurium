@@ -44,14 +44,14 @@
             });
             locked = true;
             if ($(this).is(".local")) {
-                $.postJSON(that.options.actionsave, {
+                $.postJSON(that.options.actionSaveLocal, {
                     TestCaseId: that.options.id,
                     LocalBlindRegions: localSpots
                 }).done(function() {
                     locked = false;
                 });
             } else {
-                $.postJSON(that.options.actionsaveglobal, {
+                $.postJSON(that.options.actionSaveGlobal, {
                     BlindRegions: globalSpots,
                     BrowserName: that.options.browser
                 }).done(function () {
@@ -79,7 +79,7 @@
         });
         var index = 1;
 
-        this.options.regions.forEach(function(data) {
+        this.options.localRegions.forEach(function(data) {
             var square = $("<div></div>", { "class": "blind local", tabindex: index++ });
             $board.append(square);
             square.css({
@@ -90,7 +90,7 @@
             });
         });
 
-        this.options.globalregions.forEach(function (data) {
+        this.options.globalRegions.forEach(function (data) {
             var square = $("<div></div>", { "class": "blind global", tabindex: index++ });
             $board.append(square);
             square.css({

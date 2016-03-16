@@ -179,6 +179,7 @@
     <Compile Include="Mvc\HtmlExtensions.cs" />
     <Compile Include="Mvc\JqueryUIWidget.cs" />
     <Compile Include="Mvc\RemoteExpanderWidget.cs" />
+    <Compile Include="Mvc\TestCaseWidget.cs" />
     <Compile Include="Mvc\TestResultWidget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

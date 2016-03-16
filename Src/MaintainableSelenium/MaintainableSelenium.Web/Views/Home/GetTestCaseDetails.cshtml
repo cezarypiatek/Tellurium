@@ -1,7 +1,10 @@
 ﻿@using MaintainableSelenium.Web.Controllers
 @using MaintainableSelenium.Web.Mvc
 @model TestCaseDetailsDTO
-<div data-ui-fn="testcase" data-ui-testcase-browser="@Model.TestCase.BrowserName" data-ui-testcase-actionsave="@(Url.ActionFor<HomeController>(c=>c.SaveLocalBlindspots(null)))" data-ui-testcase-actionsaveglobal="@(Url.ActionFor<HomeController>(c=>c.SaveGlobalBlindspots(null)))" data-ui-testcase-id="@Model.TestCase.Id" data-ui-testcase-regions="@Model.TestCase.BlindRegions.ToJson()" data-ui-testcase-globalregions="@Model.GlobalBlindRegions.ToJson()">
+@{
+    var testCaseWidget = TestCaseWidget.Create<HomeController>(c => c.SaveLocalBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
+}
+<div @testCaseWidget.GetAttributeString()>
     <div class="testcase-toolbar">
         <div class="row">
             <div class="col-md-6">
