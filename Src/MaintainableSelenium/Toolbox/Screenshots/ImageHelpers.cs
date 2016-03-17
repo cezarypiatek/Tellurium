@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using AForge;
@@ -36,16 +37,39 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         //    };
         //}
 
-        public static Bitmap CreateImageDiff(Bitmap source, Bitmap overlay, List<BlindRegion> blindRegions=null)
+        public static Bitmap CreateImageDiff(Bitmap a, Bitmap b, List<BlindRegion> blindRegions=null)
         {
-            var filter = new ThresholdedDifference(0) {OverlayImage = source};
-            var imageDiff = filter.Apply(overlay);
+            var unified = UnifiImagesDimensions(a, b);
+            var filter = new ThresholdedDifference(0) {OverlayImage = unified.Item1};
+            var imageDiff = filter.Apply(unified.Item2);
             DilatationFilter.ApplyInPlace(imageDiff);
             var fixedBitmap = CloneBitmapFormat(imageDiff);
             MarkBlindRegions(fixedBitmap, blindRegions);
-            var result = CloneBitmapFormat(overlay);
+            var result = CloneBitmapFormat(unified.Item2);
             DrawBounds(fixedBitmap, result);
             return result;
+        }
+
+        private static Tuple<Bitmap, Bitmap> UnifiImagesDimensions(Bitmap a, Bitmap b)
+        {
+            if (a.Width == b.Width && a.Height == b.Height)
+            {
+                return new Tuple<Bitmap, Bitmap>(a,b);
+            }
+
+            if (a.Height >= b.Height && a.Width >= b.Width)
+            {
+                return new Tuple<Bitmap, Bitmap>(a, RedrawOnCanvas(b, a.Width, a.Height));
+            }
+
+            if (b.Height >= a.Height && b.Width >= a.Width)
+            {
+                return new Tuple<Bitmap, Bitmap>(RedrawOnCanvas(a, b.Width, b.Height), b);
+            }
+
+            var maxWidth = Math.Max(a.Width, b.Width);
+            var maxHeight = Math.Max(a.Height, b.Height);
+            return new Tuple<Bitmap, Bitmap>(RedrawOnCanvas(a, maxWidth, maxHeight), RedrawOnCanvas(b, maxWidth, maxHeight));
         }
 
         /// <summary>
@@ -53,10 +77,15 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         /// </summary>
         private static Bitmap CloneBitmapFormat(Bitmap originalBmp)
         {
-            var resultBitmap = new Bitmap(originalBmp.Width, originalBmp.Height);
-            using(var g = Graphics.FromImage(resultBitmap))
+            return RedrawOnCanvas(originalBmp, originalBmp.Width, originalBmp.Height);
+        }
+
+        private static Bitmap RedrawOnCanvas(Bitmap bitmapToRedraw, int canvasWidth, int canvasHeight)
+        {
+            var resultBitmap = new Bitmap(canvasWidth, canvasHeight);
+            using (var g = Graphics.FromImage(resultBitmap))
             {
-                g.DrawImage(originalBmp, 0, 0);
+                g.DrawImage(bitmapToRedraw, 0, 0);
             }
             return resultBitmap;
         }
@@ -75,10 +104,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        public static Bitmap CreateImagesXor(Bitmap bitmapA, Bitmap bitmapB, List<BlindRegion> blindRegions=null)
+        public static Bitmap CreateImagesXor(Bitmap a, Bitmap b, List<BlindRegion> blindRegions=null)
         {
-            var pixelBufferA = GetPixelBuffer(bitmapA);
-            var pixelBufferB = GetPixelBuffer(bitmapB);
+            var unified = UnifiImagesDimensions(a, b);
+            var pixelBufferA = GetPixelBuffer(unified.Item1);
+            var pixelBufferB = GetPixelBuffer(unified.Item2);
             var resultBuffer = new byte[pixelBufferB.Length];
             Array.Copy(pixelBufferB, resultBuffer, pixelBufferA.Length);
             int blue = 0, green = 0, red = 0;
@@ -112,7 +142,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
 
 
-            Bitmap resultBitmap = new Bitmap(bitmapA.Width, bitmapA.Height);
+            Bitmap resultBitmap = new Bitmap(unified.Item1.Width, unified.Item1.Height);
             var lockBoundRectangle = new Rectangle(0, 0,resultBitmap.Width, resultBitmap.Height);
             BitmapData resultData = resultBitmap.LockBits(lockBoundRectangle, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
             Marshal.Copy(resultBuffer, 0, resultData.Scan0, resultBuffer.Length);
@@ -135,7 +165,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         /// <summary>
         /// Get rectangles surrounding point clumps
         /// </summary>
-        private static IEnumerable<Rectangle> GetBoundingRecangles(Bitmap bitmapWithPoints)
+        private static List<Rectangle> GetBoundingRecangles(Bitmap bitmapWithPoints)
         {
             var bitmapData = bitmapWithPoints.LockBits(
                 new Rectangle(0, 0, bitmapWithPoints.Width, bitmapWithPoints.Height),
@@ -153,6 +183,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             blobCounter.ProcessImage(bitmapData);
             var blobs = blobCounter.GetObjectsInformation();
             bitmapWithPoints.UnlockBits(bitmapData);
+            var result = new List<Rectangle>();
             for (int i = 0; i < blobs.Length; i++)
             {
                 List<IntPoint> edgePoints = blobCounter.GetBlobsEdgePoints(blobs[i]);
@@ -182,9 +213,22 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                             maxY = p.Y;
                         }
                     }
-                    yield return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+                    result.Add(new Rectangle(minX, minY, maxX - minX, maxY - minY));
                 }
             }
+            var  toRemove = result.Where(rectangle => result.Any(r => r!= rectangle && IsSquareInside(rectangle, r))).ToList();
+
+            foreach (var rectangle in toRemove)
+            {
+                result.Remove(rectangle);
+            }
+
+            return result;
+        }
+
+        private static bool IsSquareInside(Rectangle rectangle, Rectangle r)
+        {
+            return rectangle.Left >= r.Left && rectangle.Right <= r.Right && rectangle.Top >= r.Top && rectangle.Bottom <= r.Bottom;
         }
 
         public static Image ConvertBytesToImage(byte[] screenshot)
