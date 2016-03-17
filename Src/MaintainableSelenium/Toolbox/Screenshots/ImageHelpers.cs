@@ -14,29 +14,11 @@ using Image = System.Drawing.Image;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
-    public class ImageDiff
-    {
-        public Bitmap WithBounds { get; set; }
-        public Bitmap WithXOR { get; set; }
-    }
-
     public static class ImageHelpers
     {
         private static readonly BinaryDilatation3x3 DilatationFilter = new BinaryDilatation3x3();
         private static readonly Pen DiffPen = new Pen(Color.FromArgb(128, Color.Red));
-
-        //public static ImageDiff CreateImageDiff(string patternPath, string errorPath)
-        //{
-        //    var pattern = new Bitmap(Image.FromFile(patternPath));
-        //    var error = new Bitmap(Image.FromFile(errorPath));
-        //    var diff = CreateImageDiff(pattern, error);
-        //    return new ImageDiff()
-        //    {
-        //        WithBounds = diff,
-        //        WithXOR = CreateImagesXor(pattern, error)
-        //    };
-        //}
-
+        
         public static Bitmap CreateImageDiff(Bitmap a, Bitmap b, List<BlindRegion> blindRegions=null)
         {
             var unified = UnifiImagesDimensions(a, b);
@@ -80,6 +62,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             return RedrawOnCanvas(originalBmp, originalBmp.Width, originalBmp.Height);
         }
 
+        /// <summary>
+        /// Create copy of bitmap with given dimensions
+        /// </summary>
+        /// <param name="bitmapToRedraw">Bitmap to copt</param>
+        /// <param name="canvasWidth">Max width</param>
+        /// <param name="canvasHeight">Max Height</param>
         private static Bitmap RedrawOnCanvas(Bitmap bitmapToRedraw, int canvasWidth, int canvasHeight)
         {
             var resultBitmap = new Bitmap(canvasWidth, canvasHeight);
@@ -104,6 +92,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
+        /// <summary>
+        /// Create a bitmap which represents XOR of two other bitmaps
+        /// </summary>
+        /// <param name="a">Bitmap a</param>
+        /// <param name="b">Bitmap b</param>
+        /// <param name="blindRegions">List of squares to ignore</param>
         public static Bitmap CreateImagesXor(Bitmap a, Bitmap b, List<BlindRegion> blindRegions=null)
         {
             var unified = UnifiImagesDimensions(a, b);
@@ -111,14 +105,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             var pixelBufferB = GetPixelBuffer(unified.Item2);
             var resultBuffer = new byte[pixelBufferB.Length];
             Array.Copy(pixelBufferB, resultBuffer, pixelBufferA.Length);
-            int blue = 0, green = 0, red = 0;
-
 
             for (int k = 0; k + 4 < pixelBufferA.Length; k += 4)
             {
-                blue = pixelBufferA[k] ^ pixelBufferB[k];
-                green = pixelBufferA[k + 1] ^ pixelBufferB[k + 1];
-                red = pixelBufferA[k + 2] ^ pixelBufferB[k + 2];
+                var blue = pixelBufferA[k] ^ pixelBufferB[k];
+                var green = pixelBufferA[k + 1] ^ pixelBufferB[k + 1];
+                var red = pixelBufferA[k + 2] ^ pixelBufferB[k + 2];
 
                 if (blue < 0)
                 { blue = 0; }
@@ -142,9 +134,9 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
 
 
-            Bitmap resultBitmap = new Bitmap(unified.Item1.Width, unified.Item1.Height);
+            var resultBitmap = new Bitmap(unified.Item1.Width, unified.Item1.Height);
             var lockBoundRectangle = new Rectangle(0, 0,resultBitmap.Width, resultBitmap.Height);
-            BitmapData resultData = resultBitmap.LockBits(lockBoundRectangle, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+            var resultData = resultBitmap.LockBits(lockBoundRectangle, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
             Marshal.Copy(resultBuffer, 0, resultData.Scan0, resultBuffer.Length);
             resultBitmap.UnlockBits(resultData);
             MarkBlindRegions(resultBitmap, blindRegions);
@@ -155,8 +147,8 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         private static byte[] GetPixelBuffer(Bitmap sourceBitmap)
         {
             var lockBoundRectangle = new Rectangle(0, 0, sourceBitmap.Width, sourceBitmap.Height);
-            BitmapData sourceData = sourceBitmap.LockBits(lockBoundRectangle, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            byte[] pixelBuffer = new byte[sourceData.Stride*sourceData.Height];
+            var sourceData = sourceBitmap.LockBits(lockBoundRectangle, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            var pixelBuffer = new byte[sourceData.Stride*sourceData.Height];
             Marshal.Copy(sourceData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
             sourceBitmap.UnlockBits(sourceData);
             return pixelBuffer;
@@ -186,37 +178,48 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             var result = new List<Rectangle>();
             for (int i = 0; i < blobs.Length; i++)
             {
-                List<IntPoint> edgePoints = blobCounter.GetBlobsEdgePoints(blobs[i]);
-
+                var edgePoints = blobCounter.GetBlobsEdgePoints(blobs[i]);
                 if (edgePoints.Count > 0)
                 {
-                    int minX = edgePoints[0].X, minY = edgePoints[0].Y, maxX = edgePoints[0].X, maxY = edgePoints[0].Y;
-
-                    for (int j = 0; j < edgePoints.Count; j++)
-                    {
-                        var p = edgePoints[j];
-                        if (p.X < minX)
-                        {
-                            minX = p.X;
-                        }
-                        else if (p.X > maxX)
-                        {
-                            maxX = p.X;
-                        }
-
-                        if (p.Y < minY)
-                        {
-                            minY = p.Y;
-                        }
-                        else if (p.Y > maxY)
-                        {
-                            maxY = p.Y;
-                        }
-                    }
-                    result.Add(new Rectangle(minX, minY, maxX - minX, maxY - minY));
+                    var surroundingSquare = GetSurroundingSquare(edgePoints);
+                    result.Add(surroundingSquare);
                 }
             }
-            var  toRemove = result.Where(rectangle => result.Any(r => r!= rectangle && IsSquareInside(rectangle, r))).ToList();
+            return RemoveNestedRectangles(result);
+        }
+
+        private static Rectangle GetSurroundingSquare(List<IntPoint> edgePoints)
+        {
+            int minX = edgePoints[0].X, minY = edgePoints[0].Y, maxX = edgePoints[0].X, maxY = edgePoints[0].Y;
+
+            for (int j = 0; j < edgePoints.Count; j++)
+            {
+                var p = edgePoints[j];
+                if (p.X < minX)
+                {
+                    minX = p.X;
+                }
+                else if (p.X > maxX)
+                {
+                    maxX = p.X;
+                }
+
+                if (p.Y < minY)
+                {
+                    minY = p.Y;
+                }
+                else if (p.Y > maxY)
+                {
+                    maxY = p.Y;
+                }
+            }
+            var surroundingSquare = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+            return surroundingSquare;
+        }
+
+        private static List<Rectangle> RemoveNestedRectangles(List<Rectangle> result)
+        {
+            var toRemove = result.Where(rectangle => result.Any(r => r != rectangle && IsRectangleInside(rectangle, r))).ToList();
 
             foreach (var rectangle in toRemove)
             {
@@ -226,9 +229,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             return result;
         }
 
-        private static bool IsSquareInside(Rectangle rectangle, Rectangle r)
+        private static bool IsRectangleInside(Rectangle rectangle, Rectangle container)
         {
-            return rectangle.Left >= r.Left && rectangle.Right <= r.Right && rectangle.Top >= r.Top && rectangle.Bottom <= r.Bottom;
+            return rectangle.Left >= container.Left 
+                &&  rectangle.Right <= container.Right 
+                && rectangle.Top >= container.Top 
+                && rectangle.Bottom <= container.Bottom;
         }
 
         public static Image ConvertBytesToImage(byte[] screenshot)
@@ -245,7 +251,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             return new Bitmap(image);
         }
 
-        public static byte[] ConvertImageToBytes(Image imageIn)
+        private static byte[] ConvertImageToBytes(Image imageIn)
         {
             using (var ms = new MemoryStream())
             {
@@ -254,8 +260,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-
-        public static void MarkBlindRegions(Image image, List<BlindRegion> blindRegions)
+        private static void MarkBlindRegions(Image image, List<BlindRegion> blindRegions)
         {
             if (blindRegions == null)
                 return;
@@ -269,15 +274,20 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             graphic.Save();
         }
 
+        /// <summary>
+        /// Calculate image hash ignoring given regions
+        /// </summary>
+        /// <param name="screenshot">Source image for hash</param>
+        /// <param name="blindRegions">Regions to ignore</param>
         public static string ComputeHash(byte[] screenshot, List<BlindRegion> blindRegions = null)
         {
-            var image = ImageHelpers.ConvertBytesToImage(screenshot);
+            var image = ConvertBytesToImage(screenshot);
             if (blindRegions != null)
             {
-                ImageHelpers.MarkBlindRegions(image, blindRegions);
+                MarkBlindRegions(image, blindRegions);
             }
 
-            var imageBytes = ImageHelpers.ConvertImageToBytes(image);
+            var imageBytes = ConvertImageToBytes(image);
             using (var md5 = MD5.Create())
             {
                 return BitConverter.ToString(md5.ComputeHash(imageBytes)).Replace("-", "");
