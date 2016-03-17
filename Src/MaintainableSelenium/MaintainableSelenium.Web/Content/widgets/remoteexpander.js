@@ -4,9 +4,13 @@
         var that = this;
         var isLoaded = false;
         var $target = $("#" + this.options.targetid);
-
-        this.element.on("click", function() {
+        var isLoading = false;
+        this.element.on("click", function () {
+            if (isLoading) {
+                return;
+            }
             if (isLoaded == false) {
+                isLoading = true;
                 var $loader = $("<span></span>", { "class": "glyphicon glyphicon-refresh glyphicon-refresh-animate" });
                 that.element.append($loader);
                 $target.load(that.options.source, function () {
@@ -16,6 +20,7 @@
                             isLoaded = true;
                             $target.removeClass("collapse");
                             $loader.remove();
+                            isLoading = false;
                     };
 
                     function tryToFinishLoad() {
