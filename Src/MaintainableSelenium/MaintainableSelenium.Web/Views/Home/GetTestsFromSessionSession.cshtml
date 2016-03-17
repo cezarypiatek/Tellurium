@@ -5,9 +5,17 @@
 @{
     ViewBag.Title = "Tests Results";
     Layout = "~/Views/_Layout.cshtml";
+    var testSession = Model.FirstOrDefault();
 }
 
-
+<div class="row">
+    <div class="col-md-12">
+        @if (testSession != null)
+        {
+            @(Ajax.ChangeActionLink<HomeController>(c => c.MarkAllAsPattern(testSession.TestSession.SessionId, testSession.BrowserName), "Mark all as pattern", "Do you really want to replace patter for all cases?", htmlAttributes: new { @class = "btn btn-primary pull-right" }))
+        }
+    </div>
+</div>
 @foreach (var testResultInfo in Model)
 {
     Html.RenderPartial("TestResultInfo", testResultInfo);

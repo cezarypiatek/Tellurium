@@ -67,10 +67,27 @@ namespace MaintainableSelenium.Toolbox
         {
             return driver.GetElementBy(By.Id(formId));
         }
-        
-        public static PageFragment GetPageFragmentById(this RemoteWebDriver driver, string formId)
+
+        /// <summary>
+        /// Stop execution until element with given id appear
+        /// </summary>
+        /// <param name="driver">Selenium driver</param>
+        /// <param name="elementId">Id of expected element</param>
+        /// <param name="timeOut">Max time in seconds to wait</param>
+        public static void WaitForElementWithId(this RemoteWebDriver driver, string elementId, int timeOut = 30)
         {
-            var pageFragment = driver.GetElementBy(By.Id(formId));
+            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeOut));
+            waiter.Until(ExpectedConditions.ElementIsVisible(By.Id(elementId)));
+        }
+        
+        /// <summary>
+        /// Return page fragment with given id
+        /// </summary>
+        /// <param name="driver">Selenium driver</param>
+        /// <param name="elementId">Id of expected element</param>
+        public static PageFragment GetPageFragmentById(this RemoteWebDriver driver, string elementId)
+        {
+            var pageFragment = driver.GetElementBy(By.Id(elementId));
             return new PageFragment(driver, pageFragment);
         }
 

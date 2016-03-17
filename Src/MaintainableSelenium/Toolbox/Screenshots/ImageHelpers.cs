@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
@@ -222,6 +223,21 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
 
             graphic.Save();
+        }
+
+        public static string ComputeHash(byte[] screenshot, List<BlindRegion> blindRegions = null)
+        {
+            var image = ImageHelpers.ConvertBytesToImage(screenshot);
+            if (blindRegions != null)
+            {
+                ImageHelpers.MarkBlindRegions(image, blindRegions);
+            }
+
+            var imageBytes = ImageHelpers.ConvertImageToBytes(image);
+            using (var md5 = MD5.Create())
+            {
+                return BitConverter.ToString(md5.ComputeHash(imageBytes)).Replace("-", "");
+            }
         }
     }
 }

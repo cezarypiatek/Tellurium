@@ -27,14 +27,15 @@
             var maxHeight = $board.height();
             var localSpots = [];
             var globalSpots = [];
+            var screenshotDimensions = that._getScreenshotDimensions();
             $board.find(".blind").each(function () {
                 var $this = $(this);
                 var spot ={
-                    left: getNumber($this.css("left"))/maxWidth*100.0,
-                    top: getNumber($this.css("top"))/maxHeight*100,
-                    width: getNumber($this.css("width")) / maxWidth * 100.0,
-                    height: getNumber($this.css("height")) / maxHeight * 100
-                }
+                    left: getNumber($this.css("left")) / maxWidth * screenshotDimensions.width,
+                    top: getNumber($this.css("top")) / maxHeight * screenshotDimensions.height,
+                    width: getNumber($this.css("width")) / maxWidth * screenshotDimensions.width,
+                    height: getNumber($this.css("height")) / maxHeight * screenshotDimensions.height
+                };
                 if ($this.is(".local")) {
                     localSpots.push(spot);
                 } else {
@@ -78,28 +79,31 @@
             e.stopPropagation();
         });
         var index = 1;
+        this.element.find(".screenshot").on("load", function() {
+            var screenshotDimensions = that._getScreenshotDimensions();
+            that.options.localRegions.forEach(function (data) {
+                var square = $("<div></div>", { "class": "blind local", tabindex: index++ });
+                $board.append(square);
+                square.css({
+                    left: data.Left / screenshotDimensions.width * 100.0 + "%",
+                    top: data.Top / screenshotDimensions.height * 100 + "%",
+                    width: data.Width / screenshotDimensions.width * 100.0 + "%",
+                    height: data.Height / screenshotDimensions.height*100.0 + "%"
+                });
+            });
 
-        this.options.localRegions.forEach(function(data) {
-            var square = $("<div></div>", { "class": "blind local", tabindex: index++ });
-            $board.append(square);
-            square.css({
-                left: data.Left + "%",
-                top: data.Top + "%",
-                width: data.Width + "%",
-                height: data.Height + "%"
+            that.options.globalRegions.forEach(function (data) {
+                var square = $("<div></div>", { "class": "blind global", tabindex: index++ });
+                $board.append(square);
+                square.css({
+                    left: data.Left / screenshotDimensions.width * 100.0 + "%",
+                    top: data.Top / screenshotDimensions.height * 100 + "%",
+                    width: data.Width / screenshotDimensions.width * 100.0 + "%",
+                    height: data.Height / screenshotDimensions.height * 100 + "%"
+                });
             });
         });
-
-        this.options.globalRegions.forEach(function (data) {
-            var square = $("<div></div>", { "class": "blind global", tabindex: index++ });
-            $board.append(square);
-            square.css({
-                left: data.Left + "%",
-                top: data.Top + "%",
-                width: data.Width + "%",
-                height: data.Height + "%"
-            });
-        });
+        
 
         $board.on("mousedown", function (e) {
             drawing = true;
@@ -142,5 +146,12 @@
                 });
             }
         });
+    },
+    _getScreenshotDimensions: function() {
+        var screenshot = this.element.find(".screenshot").get(0);
+        return {
+            width: screenshot.naturalWidth,
+            height: screenshot.naturalHeight
+        };
     }
 });

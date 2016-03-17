@@ -199,12 +199,22 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             Persist();
         }
 
-        public void SaveBlindregions(string testCaseId, List<BlindRegion> localBlindRegions)
+        public void SaveLocalBlindregions(string testCaseId, List<BlindRegion> localBlindRegions)
         {
             var testCase = this.StorageModel.TestCases.First(x => x.Id == testCaseId);
             testCase.BlindRegions.Clear();
             testCase.BlindRegions.AddRange(localBlindRegions);
+            UpdateTestCaseHash(testCase);
             Persist();
+        }
+
+        private void UpdateTestCaseHash(TestCaseInfo testCase)
+        {
+            var global = this.GetGlobalBlindRegions(testCase.BrowserName);
+            var blindRegions = testCase.BlindRegions.ToList();
+            blindRegions.AddRange(global);
+            testCase.PatternScreenhotHash = ImageHelpers.ComputeHash(testCase.PatternScreenshot, blindRegions);
+
         }
 
         public void SaveGlobalBlindregions(string browserName, List<BlindRegion> globalBlindRegions)
@@ -214,6 +224,10 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 this.StorageModel.CommonBlindRegions  = new Dictionary<string, List<BlindRegion>>();
             }
             this.StorageModel.CommonBlindRegions[browserName] = globalBlindRegions.ToList();
+            this.StorageModel.TestCases
+                .Where(x => x.BrowserName == browserName)
+                .AsParallel()
+                .ForAll(UpdateTestCaseHash);
             Persist();
         }
 
@@ -225,6 +239,18 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
 
             return this.StorageModel.CommonBlindRegions[browserName].ToList();
+        }
+
+        public void MarkAllAsPattern(string testSessionId, string browserName)
+        {
+            var testResults = this.GetTestsFromSession(testSessionId, browserName);
+            foreach (var testResult in testResults.Where(x=>x.TestPassed == false))
+            {
+                var testCase = this.StorageModel.TestCases.First(x => x.Id == testResult.TestCaseId);
+                testCase.PatternScreenshot = testResult.ErrorScreenshot.Image;
+                testCase.PatternScreenhotHash = testResult.ErrorScreenshot.Hash;
+            }
+            Persist();
         }
     }
 }

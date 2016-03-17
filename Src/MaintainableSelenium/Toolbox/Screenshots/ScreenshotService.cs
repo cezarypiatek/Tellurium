@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
@@ -9,6 +10,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         private readonly ITestRunnerAdapter testRunnerAdapter;
         private readonly ITestRepository testRepository;
         private readonly TestSessionInfo TestSessionData;
+        
 
         public ScreenshotService(ITestRunnerAdapter testRunnerAdapter, ITestRepository testRepository)
         {
@@ -19,6 +21,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         public void Persist(string screenshotName, string browserName, byte[] screenshot)
         {
+            var globalBlindRegions = testRepository.GetGlobalBlindRegions(browserName);
             var testName = testRunnerAdapter.GetCurrentTestName();
             var testCaseInfo = testRepository.GetTestCaseInfo(testName, screenshotName, browserName);
             if (testCaseInfo == null)
@@ -30,7 +33,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                     BrowserName = browserName,
                     PatternScreenshotName = screenshotName,
                     PatternScreenshot = screenshot,
-                    PatternScreenhotHash = ComputeHash(screenshot)
+                    PatternScreenhotHash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions)
                 };
                 this.testRepository.SaveTestCaseInfo(newTestCase);
             }
@@ -45,8 +48,9 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                     ScreenshotName = screenshotName,
                     BrowserName = browserName
                 };
-
-                var screenshotHash = ComputeHash(screenshot, testCaseInfo.BlindRegions);
+                var blindRegions = testCaseInfo.BlindRegions.ToList();
+                blindRegions.AddRange(globalBlindRegions);
+                var screenshotHash = ImageHelpers.ComputeHash(screenshot, blindRegions);
                 if (screenshotHash != testCaseInfo.PatternScreenhotHash)
                 {
                     testResult.TestPassed = false;
@@ -64,19 +68,6 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        private string ComputeHash(byte[] screenshot, List<BlindRegion> blindRegions=null)
-        {
-            var image = ImageHelpers.ConvertBytesToImage(screenshot);
-            if (blindRegions != null)
-            {
-                ImageHelpers.MarkBlindRegions(image, blindRegions);
-            }
-            
-            var imageBytes = ImageHelpers.ConvertImageToBytes(image);
-            using (var md5 = MD5.Create())
-            {
-                return BitConverter.ToString(md5.ComputeHash(imageBytes)).Replace("-","");
-            }
-        }
+      
     }
 }

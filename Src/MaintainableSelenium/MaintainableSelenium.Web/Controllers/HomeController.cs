@@ -87,12 +87,12 @@ namespace MaintainableSelenium.Web.Controllers
                     var blindRegions = testCase.BlindRegions.ToList();
                     blindRegions.AddRange(globalBlindRegions);
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
-                    blindRegions = blindRegions.Select(x =>
-                    {
-                        var xCoef = bitmap2.Width/100.0f;
-                        var yCoef = bitmap2.Height/100.0f;
-                        return new BlindRegion(x.Left*xCoef, x.Top*yCoef, x.Width*xCoef, x.Height*yCoef);
-                    }).ToList();
+                    //blindRegions = blindRegions.Select(x =>
+                    //{
+                    //    var xCoef = bitmap2.Width/100.0f;
+                    //    var yCoef = bitmap2.Height/100.0f;
+                    //    return new BlindRegion(x.Left*xCoef, x.Top*yCoef, x.Width*xCoef, x.Height*yCoef);
+                    //}).ToList();
                     var diff = ImageHelpers.CreateImageDiff(bitmap1, bitmap2, blindRegions);
                     return ImageResult(diff);
                 }
@@ -102,12 +102,12 @@ namespace MaintainableSelenium.Web.Controllers
                     var blindRegions = testCase.BlindRegions.ToList();
                     blindRegions.AddRange(globalBlindRegions);
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
-                    blindRegions = blindRegions.Select(x =>
-                    {
-                        var xCoef = bitmap2.Width / 100.0f;
-                        var yCoef = bitmap2.Height / 100.0f;
-                        return new BlindRegion(x.Left * xCoef, x.Top * yCoef, x.Width * xCoef, x.Height * yCoef);
-                    }).ToList();
+                    //blindRegions = blindRegions.Select(x =>
+                    //{
+                    //    var xCoef = bitmap2.Width / 100.0f;
+                    //    var yCoef = bitmap2.Height / 100.0f;
+                    //    return new BlindRegion(x.Left * xCoef, x.Top * yCoef, x.Width * xCoef, x.Height * yCoef);
+                    //}).ToList();
                     var xor = ImageHelpers.CreateImagesXor(bitmap1, bitmap2, blindRegions);
                     return ImageResult(xor);
                 }
@@ -148,7 +148,7 @@ namespace MaintainableSelenium.Web.Controllers
         [HttpPost]
         public ActionResult SaveLocalBlindspots(SaveLocalBlindRegionsDTO dto)
         {
-            this.TestRepository.SaveBlindregions(dto.TestCaseId, dto.LocalBlindRegions);
+            this.TestRepository.SaveLocalBlindregions(dto.TestCaseId, dto.LocalBlindRegions);
             return Json(new { success = true });
         }
         
@@ -156,6 +156,13 @@ namespace MaintainableSelenium.Web.Controllers
         public ActionResult SaveGlobalBlindspots(SaveGlobalBlindRegionsDTO dto)
         {
             this.TestRepository.SaveGlobalBlindregions(dto.BrowserName, dto.BlindRegions);
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public ActionResult MarkAllAsPattern(string testSessionId, string browserName)
+        {
+            TestRepository.MarkAllAsPattern(testSessionId, browserName);
             return Json(new { success = true });
         }
     }
