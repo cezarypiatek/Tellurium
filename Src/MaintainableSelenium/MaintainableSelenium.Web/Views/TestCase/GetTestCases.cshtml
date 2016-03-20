@@ -16,7 +16,7 @@
                 <div class="col-md-6 btn-toolbar">
                     @foreach (var browser in testCaseInfo.Browsers)
                     {
-                        @(Ajax.ActionLink<HomeController>(c => c.GetTestCaseDetails(browser.TestCaseId), browser.BrowserName, detailsId, new { @class = "btn btn-default" }))
+                        @(Ajax.ActionLink<TestCaseController>(c => c.GetTestCaseDetails(browser.TestCaseId), browser.BrowserName, detailsId, new { @class = "btn btn-default" }))
                     }
                 </div>
             </div>

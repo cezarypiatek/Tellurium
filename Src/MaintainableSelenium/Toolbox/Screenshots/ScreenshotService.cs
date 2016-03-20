@@ -26,7 +26,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             var testCaseInfo = testRepository.GetTestCaseInfo(testName, screenshotName, browserName);
             if (testCaseInfo == null)
             {
-                var newTestCase = new TestCaseInfo
+                var newTestCase = new TestCase
                 {
                     Id = IdGenerator.GetNewId(),
                     TestName = testName,

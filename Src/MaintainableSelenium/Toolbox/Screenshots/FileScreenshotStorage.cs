@@ -13,12 +13,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         {
             public List<BlindRegion> GlobalBlindRegions { get; set; }
             public Dictionary<string, List<BlindRegion>> CommonBlindRegions { get; set; }
-            public List<TestCaseInfo> TestCases { get; set; }
+            public List<TestCase> TestCases { get; set; }
             public List<TestResultInfo> TestResults { get; set; }
 
             public TestStorageModel()
             {
-                TestCases = new List<TestCaseInfo>();
+                TestCases = new List<TestCase>();
                 TestResults = new List<TestResultInfo>();
             }
         }
@@ -92,15 +92,15 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        public void SaveTestCaseInfo(TestCaseInfo testCaseInfo)
+        public void SaveTestCaseInfo(TestCase testCase)
         {
-            StorageModel.TestCases.Add(testCaseInfo);
+            StorageModel.TestCases.Add(testCase);
             Persist();
-            var screenshotPath = string.Format("{0}\\{1}.png", outputPath, testCaseInfo.PatternScreenhotHash);
-            SaveScreenshot(testCaseInfo.PatternScreenshot, screenshotPath);
+            var screenshotPath = string.Format("{0}\\{1}.png", outputPath, testCase.PatternScreenhotHash);
+            SaveScreenshot(testCase.PatternScreenshot, screenshotPath);
         }
 
-        public TestCaseInfo GetTestCaseInfo(string testName, string screenshotName, string browserName)
+        public TestCase GetTestCaseInfo(string testName, string screenshotName, string browserName)
         {
             return StorageModel.TestCases.FirstOrDefault(
                     x => x.TestName == testName && x.PatternScreenshotName == screenshotName && x.BrowserName == browserName);
@@ -148,7 +148,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                     .ToList();
         }
 
-        public TestCaseInfo GetTestCase(string testCaseId)
+        public TestCase GetTestCase(string testCaseId)
         {
             return this.StorageModel.TestCases.First(x => x.Id == testCaseId);
         }
@@ -208,7 +208,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             Persist();
         }
 
-        private void UpdateTestCaseHash(TestCaseInfo testCase)
+        private void UpdateTestCaseHash(TestCase testCase)
         {
             var global = this.GetGlobalBlindRegions(testCase.BrowserName);
             var blindRegions = testCase.BlindRegions.ToList();

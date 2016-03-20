@@ -228,7 +228,7 @@
                     <a href="@(Url.ActionFor<HomeController>(c => c.Index()))"><i class="fa fa-fw fa-bug"></i> Test results</a>
                 </li>
                 <li class="@(HtmlExtensions.GetCurrentActionName() == "GetTestCases" ? "active" : "")">
-                    <a href="@(Url.ActionFor<HomeController>(c => c.GetTestCases()))"><i class="fa fa-fw fa-folder-open"></i> Test cases</a>
+                    <a href="@(Url.ActionFor<TestCaseController>(c => c.GetTestCases()))"><i class="fa fa-fw fa-folder-open"></i> Test cases</a>
                 </li>
                 @*<li>
                         <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>

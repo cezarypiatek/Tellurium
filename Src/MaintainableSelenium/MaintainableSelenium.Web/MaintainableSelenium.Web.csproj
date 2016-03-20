@@ -173,13 +173,16 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TestCaseController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Mvc\ActionResultFactory.cs" />
     <Compile Include="Mvc\HtmlExtensions.cs" />
     <Compile Include="Mvc\JqueryUIWidget.cs" />
     <Compile Include="Mvc\RemoteExpanderWidget.cs" />
     <Compile Include="Mvc\TestCaseWidget.cs" />
+    <Compile Include="Mvc\TestRepositoryFactory.cs" />
     <Compile Include="Mvc\TestResultWidget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -224,8 +227,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\GetTestsFromSessionSession.cshtml" />
     <Content Include="Views\Home\GetTestResultDetails.cshtml" />
-    <Content Include="Views\Home\GetTestCases.cshtml" />
-    <Content Include="Views\Home\GetTestCaseDetails.cshtml" />
+    <Content Include="Views\TestCase\GetTestCases.cshtml" />
+    <Content Include="Views\TestCase\GetTestCaseDetails.cshtml" />
     <Content Include="Views\Home\TestResultInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

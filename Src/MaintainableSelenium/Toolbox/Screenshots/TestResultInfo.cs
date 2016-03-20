@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
@@ -7,6 +8,9 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     {
         public string SessionId { get; set; }
         public DateTime StartDate { get; set; }
+        public List<TestResultInfo> TestResults { get; set; }
+
+        //TODO: Add redundant field with browser list from test results collection
     }
 
     public class ExtendedTestSessionInfo
@@ -27,7 +31,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         public ScreenshotData ErrorScreenshot { get; set; }
     }
     
-    public class TestCaseInfo
+    public class TestCase
     {
         public string Id { get; set; }
         public string TestName { get; set; }
@@ -37,7 +41,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         public List<BlindRegion> BlindRegions { get; set; }
         public byte[] PatternScreenshot { get; set; }
 
-        public TestCaseInfo()
+        public TestCase()
         {
             BlindRegions = new List<BlindRegion>();
         }

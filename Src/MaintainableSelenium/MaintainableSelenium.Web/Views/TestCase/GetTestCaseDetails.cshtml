@@ -2,7 +2,7 @@
 @using MaintainableSelenium.Web.Mvc
 @model TestCaseDetailsDTO
 @{
-    var testCaseWidget = TestCaseWidget.Create<HomeController>(c => c.SaveLocalBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
+    var testCaseWidget = TestCaseWidget.Create<TestCaseController>(c => c.SaveLocalBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
 }
 <div @testCaseWidget.GetAttributeString()>
     <div class="testcase-toolbar">
@@ -28,7 +28,7 @@
         </div>
     </div>
     <div class="testcase-board" data-testcase-element="board">
-        <img class="screenshot" src="@(Url.ActionFor<HomeController>(c => c.GetTestCasePatternImage(Model.TestCase.Id)))" />
+        <img class="screenshot" src="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePatternImage(Model.TestCase.Id)))" />
         <div class="testcase-overlay">
             <span class="label" style="color: black"></span>
         </div>
