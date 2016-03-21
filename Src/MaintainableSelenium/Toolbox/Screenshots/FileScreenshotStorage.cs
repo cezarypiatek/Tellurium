@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
-    public class FileTestStorage:ITestRepository, IDisposable
+    public class FileTestStorage : ITestRepository, ITestCaseRepository, IDisposable, ITestSessionRepository
     {
         public class TestStorageModel
         {
@@ -15,7 +15,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             public Dictionary<string, List<BlindRegion>> CommonBlindRegions { get; set; }
             public List<TestCase> TestCases { get; set; }
             public List<TestResultInfo> TestResults { get; set; }
-
+            public List<TestSessionInfo> TestSessions { get; set; }
             public TestStorageModel()
             {
                 TestCases = new List<TestCase>();
@@ -92,18 +92,35 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        public void SaveTestCaseInfo(TestCase testCase)
+        public void Save(TestCase testCase)
         {
             StorageModel.TestCases.Add(testCase);
             Persist();
-            var screenshotPath = string.Format("{0}\\{1}.png", outputPath, testCase.PatternScreenhotHash);
-            SaveScreenshot(testCase.PatternScreenshot, screenshotPath);
+            var screenshotPath = string.Format("{0}\\{1}.png", outputPath, testCase.PatternScreenshot.Hash);
+            SaveScreenshot(testCase.PatternScreenshot.Image, screenshotPath);
         }
 
-        public TestCase GetTestCaseInfo(string testName, string screenshotName, string browserName)
+        public TestCase Find(string testName, string screenshotName, string browserName)
         {
             return StorageModel.TestCases.FirstOrDefault(
                     x => x.TestName == testName && x.PatternScreenshotName == screenshotName && x.BrowserName == browserName);
+        }
+
+        public void Save(TestSessionInfo testSession)
+        {
+            if (string.IsNullOrWhiteSpace(testSession.SessionId))
+            {
+                testSession.SessionId = IdGenerator.GetNewId();
+            }
+            if (StorageModel.TestSessions == null)
+            {
+                StorageModel.TestSessions = new List<TestSessionInfo>();
+            }
+
+            if (StorageModel.TestSessions.Any(x => x.SessionId == testSession.SessionId) == false)
+            {
+                StorageModel.TestSessions.Add(testSession);
+            }
         }
 
         public List<ExtendedTestSessionInfo> GetTestSessions()
@@ -148,7 +165,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                     .ToList();
         }
 
-        public TestCase GetTestCase(string testCaseId)
+        public TestCase Get(string testCaseId)
         {
             return this.StorageModel.TestCases.First(x => x.Id == testCaseId);
         }
@@ -178,24 +195,14 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             File.WriteAllText(storagePath, fileContent);
         }
 
-        public void AddBlindRegion(string testCaseId, BlindRegion blindRegion)
-        {
-            var testCase = this.StorageModel.TestCases.First(x => x.Id == testCaseId);
-            if (testCase.BlindRegions == null)
-            {
-                testCase.BlindRegions = new List<BlindRegion>();
-            }
-            testCase.BlindRegions.Add(blindRegion);
-            Persist();
-        }
 
         public void MarkAsPattern(string testResultId)
         {
             var testResult = this.StorageModel.TestResults.First(x => x.Id == testResultId);
             var testCase = this.StorageModel.TestCases.First(x => x.Id == testResult.TestCaseId);
             testResult.TestPassed = true;
-            testCase.PatternScreenshot = testResult.ErrorScreenshot.Image;
-            testCase.PatternScreenhotHash = testResult.ErrorScreenshot.Hash;
+            testCase.PatternScreenshot.Image = testResult.ErrorScreenshot.Image;
+            testCase.PatternScreenshot.Hash= testResult.ErrorScreenshot.Hash;
             Persist();
         }
 
@@ -211,9 +218,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         private void UpdateTestCaseHash(TestCase testCase)
         {
             var global = this.GetGlobalBlindRegions(testCase.BrowserName);
-            var blindRegions = testCase.BlindRegions.ToList();
-            blindRegions.AddRange(global);
-            testCase.PatternScreenhotHash = ImageHelpers.ComputeHash(testCase.PatternScreenshot, blindRegions);
+            testCase.PatternScreenshot.Hash = ImageHelpers.ComputeHash(testCase.PatternScreenshot.Image, global, testCase.BlindRegions);
 
         }
 
@@ -247,8 +252,8 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             foreach (var testResult in testResults.Where(x=>x.TestPassed == false))
             {
                 var testCase = this.StorageModel.TestCases.First(x => x.Id == testResult.TestCaseId);
-                testCase.PatternScreenshot = testResult.ErrorScreenshot.Image;
-                testCase.PatternScreenhotHash = testResult.ErrorScreenshot.Hash;
+                testCase.PatternScreenshot.Image = testResult.ErrorScreenshot.Image;
+                testCase.PatternScreenshot.Hash = testResult.ErrorScreenshot.Hash;
             }
             Persist();
         }

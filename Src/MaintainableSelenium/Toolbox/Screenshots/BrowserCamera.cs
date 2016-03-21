@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using OpenQA.Selenium.Remote;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
@@ -12,13 +11,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         private readonly string imageNamePrefix;
         private readonly ScreenshotService screenshotService;
         
-        private readonly List<BlindRegion> blindRegions;
-        public BrowserCamera(RemoteWebDriver driver, string imageNamePrefix, ScreenshotService screenshotService, List<BlindRegion> blindRegions = null)
+        public BrowserCamera(RemoteWebDriver driver, string imageNamePrefix, ScreenshotService screenshotService)
         {
             this.driver = driver;
             this.imageNamePrefix = imageNamePrefix;
             this.screenshotService = screenshotService;
-            this.blindRegions = blindRegions ?? new List<BlindRegion>();
         }
 
         public void TakeScreenshot(string name)

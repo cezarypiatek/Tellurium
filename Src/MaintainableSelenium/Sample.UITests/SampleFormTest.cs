@@ -24,7 +24,7 @@ namespace MaintainableSelenium.Sample.UITests
             var driver = SeleniumDriverFactory.CreateLocalDriver(driverType, Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"));
             driver.Manage().Window.Maximize();
             var testStorage = new FileTestStorage(@"c:\MaintainableSelenium\screenshots");
-            var screenshotRepository = new ScreenshotService(new NUnitTestAdapter(), testStorage);
+            var screenshotRepository = new ScreenshotService(new NUnitTestAdapter(), testStorage, testStorage, testStorage);
             var camera = new BrowserCamera(driver, "SampleForm", screenshotRepository);
             var navigator = new Navigator(driver, "http://localhost:51767");
 

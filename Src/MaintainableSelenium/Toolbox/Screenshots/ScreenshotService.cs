@@ -1,29 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-
+﻿
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
     public class ScreenshotService
     {
         private readonly ITestRunnerAdapter testRunnerAdapter;
         private readonly ITestRepository testRepository;
-        private readonly TestSessionInfo TestSessionData;
+        private readonly ITestCaseRepository testCaseRepository;
+        private readonly ITestSessionRepository testSessionRepository;
+        private TestSessionInfo testSessionData;
         
 
-        public ScreenshotService(ITestRunnerAdapter testRunnerAdapter, ITestRepository testRepository)
+        public ScreenshotService(
+            ITestRunnerAdapter testRunnerAdapter, 
+            ITestRepository testRepository, 
+            ITestCaseRepository testCaseRepository,
+            ITestSessionRepository testSessionRepository)
         {
             this.testRunnerAdapter = testRunnerAdapter;
             this.testRepository = testRepository;
-            this.TestSessionData = testRunnerAdapter.GetTestSessionInfo();
+            this.testCaseRepository = testCaseRepository;
+            this.testSessionRepository = testSessionRepository;
+        }
+
+        private TestSessionInfo GetCurrentTestSession()
+        {
+            if (testSessionData == null)
+            {
+                testSessionData = testRunnerAdapter.GetTestSessionInfo();
+                testSessionRepository.Save(testSessionData);
+            }
+            return testSessionData;
         }
 
         public void Persist(string screenshotName, string browserName, byte[] screenshot)
         {
-            var globalBlindRegions = testRepository.GetGlobalBlindRegions(browserName);
+            var globalBlindRegions = testCaseRepository.GetGlobalBlindRegions(browserName);
             var testName = testRunnerAdapter.GetCurrentTestName();
-            var testCaseInfo = testRepository.GetTestCaseInfo(testName, screenshotName, browserName);
+            var testCaseInfo = testCaseRepository.Find(testName, screenshotName, browserName);
             if (testCaseInfo == null)
             {
                 var newTestCase = new TestCase
@@ -32,26 +45,28 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                     TestName = testName,
                     BrowserName = browserName,
                     PatternScreenshotName = screenshotName,
-                    PatternScreenshot = screenshot,
-                    PatternScreenhotHash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions)
+                    PatternScreenshot = new ScreenshotData()
+                    {
+                        Image = screenshot,
+                        Hash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions)
+                    }
                 };
-                this.testRepository.SaveTestCaseInfo(newTestCase);
+                this.testCaseRepository.Save(newTestCase);
             }
             else
             {
+                var testSession = GetCurrentTestSession();
                 var testResult = new TestResultInfo
                 {
                     Id = IdGenerator.GetNewId(),
                     TestCaseId = testCaseInfo.Id,
-                    TestSession = TestSessionData ,
                     TestName = testName,
                     ScreenshotName = screenshotName,
                     BrowserName = browserName
                 };
-                var blindRegions = testCaseInfo.BlindRegions.ToList();
-                blindRegions.AddRange(globalBlindRegions);
-                var screenshotHash = ImageHelpers.ComputeHash(screenshot, blindRegions);
-                if (screenshotHash != testCaseInfo.PatternScreenhotHash)
+
+                var screenshotHash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions, testCaseInfo.BlindRegions);
+                if (screenshotHash != testCaseInfo.PatternScreenshot.Hash)
                 {
                     testResult.TestPassed = false;
                     testResult.ErrorScreenshot = new ScreenshotData
@@ -64,10 +79,9 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 {
                     testResult.TestPassed = true;
                 }
+                testSession.AddTestResult(testResult);
                 testRepository.SaveTestResult(testResult);
             }
         }
-
-      
     }
 }

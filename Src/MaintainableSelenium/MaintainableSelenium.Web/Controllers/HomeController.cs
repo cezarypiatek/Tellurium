@@ -11,16 +11,21 @@ namespace MaintainableSelenium.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ITestRepository testRepository;
+        private readonly ITestCaseRepository testCaseRepository;
+        private readonly ITestSessionRepository testSessionRepository;
 
         public HomeController()
         {
-            this.testRepository = TestRepositoryFactory.Create();
+            var repo = TestRepositoryFactory.Create();
+            this.testRepository = repo;
+            this.testCaseRepository = repo as ITestCaseRepository;
+            this.testSessionRepository = repo as ITestSessionRepository;
         }
 
         // GET: Home
         public ActionResult Index()
         {
-            var testSessions = testRepository.GetTestSessions();
+            var testSessions = testSessionRepository.GetTestSessions();
             return View(testSessions);
         }
 
@@ -45,16 +50,16 @@ namespace MaintainableSelenium.Web.Controllers
         public ActionResult GetScreenshot(string testId, ScreenshotType screenshotType)
         {
             var testResult = this.testRepository.GetTestResult(testId);
-            var testCase = this.testRepository.GetTestCase(testResult.TestCaseId);
-            var bitmap1 = ImageHelpers.ConvertBytesToBitmap(testCase.PatternScreenshot);
+            var testCase = this.testCaseRepository.Get(testResult.TestCaseId);
+            var bitmap1 = ImageHelpers.ConvertBytesToBitmap(testCase.PatternScreenshot.Image);
            
             switch (screenshotType)
             {
                 case ScreenshotType.Pattern:
-                    return ActionResultFactory.ImageResult(testCase.PatternScreenshot);
+                    return ActionResultFactory.ImageResult(bitmap1);
                 case ScreenshotType.Error:
                 {
-                    var globalBlindRegions = this.testRepository.GetGlobalBlindRegions(testCase.BrowserName);
+                    var globalBlindRegions = this.testCaseRepository.GetGlobalBlindRegions(testCase.BrowserName);
                     var blindRegions = testCase.BlindRegions.ToList();
                     blindRegions.AddRange(globalBlindRegions);
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
@@ -63,7 +68,7 @@ namespace MaintainableSelenium.Web.Controllers
                 }
                 case ScreenshotType.Diff:
                 {
-                    var globalBlindRegions = this.testRepository.GetGlobalBlindRegions(testCase.BrowserName);
+                    var globalBlindRegions = this.testCaseRepository.GetGlobalBlindRegions(testCase.BrowserName);
                     var blindRegions = testCase.BlindRegions.ToList();
                     blindRegions.AddRange(globalBlindRegions);
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);

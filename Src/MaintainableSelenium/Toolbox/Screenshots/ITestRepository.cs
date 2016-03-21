@@ -5,22 +5,27 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     public interface ITestRepository
     {
         void SaveTestResult(TestResultInfo testResultInfo);
-        void SaveTestCaseInfo(TestCase testCase);
-        TestCase GetTestCaseInfo(string testName, string screenshotName, string browserName);
-        List<ExtendedTestSessionInfo> GetTestSessions();
-
-        List<TestResultInfo> GetTestsFromSession(string sessionId, string browserName);
-
-        TestCase GetTestCase(string testCaseId);
         TestResultInfo GetTestResult(string testResultId);
-        void AddBlindRegion(string testCaseId, BlindRegion blindRegion);
+        List<TestResultInfo> GetTestsFromSession(string sessionId, string browserName);
         void MarkAsPattern(string testResultId);
-        List<ExtendedTestCaseInfo> GetTestCases();
+        void MarkAllAsPattern(string testSessionId, string browserName);
+    }
 
+    public interface ITestCaseRepository
+    {
+        void Save(TestCase testCase);
+        TestCase Find(string testName, string screenshotName, string browserName);
+        TestCase Get(string testCaseId);
+        List<ExtendedTestCaseInfo> GetTestCases();
         void SaveLocalBlindregions(string testCaseId, List<BlindRegion> localBlindRegions);
         void SaveGlobalBlindregions(string browserName, List<BlindRegion> globalBlindRegions);
         List<BlindRegion> GetGlobalBlindRegions(string browserName);
-        void MarkAllAsPattern(string testSessionId, string browserName);
+    }
+
+    public interface ITestSessionRepository
+    {
+        void Save(TestSessionInfo testSession);
+        List<ExtendedTestSessionInfo> GetTestSessions();
     }
 
     public class TestCaseSet

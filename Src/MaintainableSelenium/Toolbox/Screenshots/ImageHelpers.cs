@@ -278,13 +278,19 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         /// Calculate image hash ignoring given regions
         /// </summary>
         /// <param name="screenshot">Source image for hash</param>
-        /// <param name="blindRegions">Regions to ignore</param>
-        public static string ComputeHash(byte[] screenshot, List<BlindRegion> blindRegions = null)
+        /// <param name="localBlindRegions">Regions to ignore</param>
+        public static string ComputeHash(byte[] screenshot, List<BlindRegion> globalBlindRegions, List<BlindRegion> localBlindRegions=null)
         {
             var image = ConvertBytesToImage(screenshot);
-            if (blindRegions != null)
+            
+            if (globalBlindRegions != null)
             {
-                MarkBlindRegions(image, blindRegions);
+                MarkBlindRegions(image, localBlindRegions);
+            }
+
+            if (localBlindRegions != null)
+            {
+                MarkBlindRegions(image, localBlindRegions);
             }
 
             var imageBytes = ConvertImageToBytes(image);
