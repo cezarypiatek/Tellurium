@@ -18,15 +18,16 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     {
         private static readonly BinaryDilatation3x3 DilatationFilter = new BinaryDilatation3x3();
         private static readonly Pen DiffPen = new Pen(Color.FromArgb(128, Color.Red));
-        
-        public static Bitmap CreateImageDiff(Bitmap a, Bitmap b, List<BlindRegion> blindRegions=null)
+
+        public static Bitmap CreateImageDiff(Bitmap a, Bitmap b, List<BlindRegion> globalBlindRegions, List<BlindRegion> localBlindRegions)
         {
             var unified = UnifiImagesDimensions(a, b);
             var filter = new ThresholdedDifference(0) {OverlayImage = unified.Item1};
             var imageDiff = filter.Apply(unified.Item2);
             DilatationFilter.ApplyInPlace(imageDiff);
             var fixedBitmap = CloneBitmapFormat(imageDiff);
-            MarkBlindRegions(fixedBitmap, blindRegions);
+            MarkBlindRegions(fixedBitmap, globalBlindRegions);
+            MarkBlindRegions(fixedBitmap, localBlindRegions);
             var result = CloneBitmapFormat(unified.Item2);
             DrawBounds(fixedBitmap, result);
             return result;
@@ -97,8 +98,8 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         /// </summary>
         /// <param name="a">Bitmap a</param>
         /// <param name="b">Bitmap b</param>
-        /// <param name="blindRegions">List of squares to ignore</param>
-        public static Bitmap CreateImagesXor(Bitmap a, Bitmap b, List<BlindRegion> blindRegions=null)
+        /// <param name="globalBlindRegions">List of squares to ignore</param>
+        public static Bitmap CreateImagesXor(Bitmap a, Bitmap b, List<BlindRegion> globalBlindRegions, List<BlindRegion> localBlindRegions)
         {
             var unified = UnifiImagesDimensions(a, b);
             var pixelBufferA = GetPixelBuffer(unified.Item1);
@@ -139,7 +140,8 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             var resultData = resultBitmap.LockBits(lockBoundRectangle, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
             Marshal.Copy(resultBuffer, 0, resultData.Scan0, resultBuffer.Length);
             resultBitmap.UnlockBits(resultData);
-            MarkBlindRegions(resultBitmap, blindRegions);
+            MarkBlindRegions(resultBitmap, globalBlindRegions);
+            MarkBlindRegions(resultBitmap, localBlindRegions);
 
             return resultBitmap;
         }

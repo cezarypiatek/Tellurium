@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Web.Mvc;
 using MaintainableSelenium.Toolbox.Screenshots;
 using MaintainableSelenium.Web.Controllers;
+using MaintainableSelenium.Web.Models.Home;
 
 namespace MaintainableSelenium.Web.Mvc
 {
@@ -21,7 +22,7 @@ namespace MaintainableSelenium.Web.Mvc
             this.SetOption("browser", browserName);
         }
 
-        public void SetTestCaseId(string testCaseId)
+        public void SetTestCaseId(long testCaseId)
         {
             this.SetOption("id", testCaseId);
         }

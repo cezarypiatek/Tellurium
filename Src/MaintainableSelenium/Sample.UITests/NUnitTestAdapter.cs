@@ -6,14 +6,12 @@ namespace MaintainableSelenium.Sample.UITests
 {
     public class NUnitTestAdapter:ITestRunnerAdapter
     {
-        private static readonly string TestSessionId = Guid.NewGuid().ToString();
         private static readonly DateTime StartDate = DateTime.Now;
         
-        public TestSessionInfo GetTestSessionInfo()
+        public TestSession GetTestSessionInfo()
         {
-            return new TestSessionInfo
+            return new TestSession
             {
-                SessionId = TestSessionId,
                 StartDate = StartDate
             };
         }

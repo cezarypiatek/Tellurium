@@ -1,52 +1,42 @@
 ﻿using System.Web.Mvc;
-using MaintainableSelenium.Toolbox.Screenshots;
+using MaintainableSelenium.Web.Models.Home;
 using MaintainableSelenium.Web.Mvc;
 
 namespace MaintainableSelenium.Web.Controllers
 {
     public class TestCaseController : Controller
     {
-        private readonly ITestCaseRepository testCaseRepository;
-
-        public TestCaseController()
-        {
-            this.testCaseRepository = TestRepositoryFactory.Create() as ITestCaseRepository;
-        }
+        private readonly ITestCaseService testCaseService;
 
         public ActionResult GetTestCases()
         {
-            var testCases = testCaseRepository.GetTestCases();
+            var testCases = testCaseService.GetAll();
             return View(testCases);
         }
 
-        public ActionResult GetTestCaseDetails(string testCaseId)
+        public ActionResult GetTestCaseDetails(long testCaseId)
         {
-            var testCase = testCaseRepository.Get(testCaseId);
-            var globalBlindRegions = testCaseRepository.GetGlobalBlindRegions(testCase.BrowserName);
-            return View(new TestCaseDetailsDTO
-            {
-                GlobalBlindRegions = globalBlindRegions,
-                TestCase = testCase
-            });
+            var result = this.testCaseService.GetDetails(testCaseId);
+            return View(result);
         }
 
-        public ActionResult GetTestCasePatternImage(string testCaseId)
+        public ActionResult GetTestCasePatternImage(long testCaseId)
         {
-            var testCase = this.testCaseRepository.Get(testCaseId);
-            return ActionResultFactory.ImageResult(testCase.PatternScreenshot.Image);
+            var result = this.testCaseService.GetPatternScreenshot(testCaseId);
+            return ActionResultFactory.ImageResult(result);
         }
 
         [HttpPost]
         public ActionResult SaveLocalBlindspots(SaveLocalBlindRegionsDTO dto)
         {
-            this.testCaseRepository.SaveLocalBlindregions(dto.TestCaseId, dto.LocalBlindRegions);
+            this.testCaseService.SaveLocalBlindregions(dto);
             return ActionResultFactory.AjaxSuccess();
         }
 
         [HttpPost]
         public ActionResult SaveGlobalBlindspots(SaveGlobalBlindRegionsDTO dto)
         {
-            this.testCaseRepository.SaveGlobalBlindregions(dto.BrowserName, dto.BlindRegions);
+            this.testCaseService.SaveGlobalBlindregions(dto);
             return ActionResultFactory.AjaxSuccess();
         }
     }

@@ -4,25 +4,24 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     public class ScreenshotService
     {
         private readonly ITestRunnerAdapter testRunnerAdapter;
-        private readonly ITestRepository testRepository;
-        private readonly ITestCaseRepository testCaseRepository;
-        private readonly ITestSessionRepository testSessionRepository;
-        private TestSessionInfo testSessionData;
-        
+        private readonly IRepository<TestCase> testCaseRepository;
+        private readonly IRepository<TestSession> testSessionRepository;
+        private readonly IGlobalRegionsSource globalRegionsSource;
+        private TestSession testSessionData;
 
         public ScreenshotService(
-            ITestRunnerAdapter testRunnerAdapter, 
-            ITestRepository testRepository, 
-            ITestCaseRepository testCaseRepository,
-            ITestSessionRepository testSessionRepository)
+            ITestRunnerAdapter testRunnerAdapter,
+            IRepository<TestCase> testCaseRepository,
+            IRepository<TestSession> testSessionRepository,
+            IGlobalRegionsSource globalRegionsSource)
         {
             this.testRunnerAdapter = testRunnerAdapter;
-            this.testRepository = testRepository;
             this.testCaseRepository = testCaseRepository;
             this.testSessionRepository = testSessionRepository;
+            this.globalRegionsSource = globalRegionsSource;
         }
 
-        private TestSessionInfo GetCurrentTestSession()
+        private TestSession GetCurrentTestSession()
         {
             if (testSessionData == null)
             {
@@ -34,18 +33,17 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         public void Persist(string screenshotName, string browserName, byte[] screenshot)
         {
-            var globalBlindRegions = testCaseRepository.GetGlobalBlindRegions(browserName);
+            var globalBlindRegions = globalRegionsSource.GetGlobalBlindRegions(browserName);
             var testName = testRunnerAdapter.GetCurrentTestName();
-            var testCaseInfo = testCaseRepository.Find(testName, screenshotName, browserName);
+            var testCaseInfo = FindTestCase(screenshotName, browserName, testName);
             if (testCaseInfo == null)
             {
                 var newTestCase = new TestCase
                 {
-                    Id = IdGenerator.GetNewId(),
                     TestName = testName,
                     BrowserName = browserName,
                     PatternScreenshotName = screenshotName,
-                    PatternScreenshot = new ScreenshotData()
+                    PatternScreenshot = new ScreenshotData
                     {
                         Image = screenshot,
                         Hash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions)
@@ -56,10 +54,9 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             else
             {
                 var testSession = GetCurrentTestSession();
-                var testResult = new TestResultInfo
+                var testResult = new TestResult
                 {
-                    Id = IdGenerator.GetNewId(),
-                    TestCaseId = testCaseInfo.Id,
+                    TestCase = testCaseInfo,
                     TestName = testName,
                     ScreenshotName = screenshotName,
                     BrowserName = browserName
@@ -80,8 +77,14 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                     testResult.TestPassed = true;
                 }
                 testSession.AddTestResult(testResult);
-                testRepository.SaveTestResult(testResult);
             }
+        }
+
+        private TestCase FindTestCase(string screenshotName, string browserName, string testName)
+        {
+            var query = FindTestCaseForBrowser.Create(testName, screenshotName, browserName);
+            var testCaseInfo = testCaseRepository.FindOne(query);
+            return testCaseInfo;
         }
     }
 }

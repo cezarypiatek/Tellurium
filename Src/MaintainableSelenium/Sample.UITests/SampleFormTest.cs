@@ -23,8 +23,7 @@ namespace MaintainableSelenium.Sample.UITests
             //Prepare infrastructure for test
             var driver = SeleniumDriverFactory.CreateLocalDriver(driverType, Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"));
             driver.Manage().Window.Maximize();
-            var testStorage = new FileTestStorage(@"c:\MaintainableSelenium\screenshots");
-            var screenshotRepository = new ScreenshotService(new NUnitTestAdapter(), testStorage, testStorage, testStorage);
+            var screenshotRepository = new ScreenshotService(new NUnitTestAdapter(), new Repository<TestCase>(), new Repository<TestSession>(), new FileTestStorage());
             var camera = new BrowserCamera(driver, "SampleForm", screenshotRepository);
             var navigator = new Navigator(driver, "http://localhost:51767");
 
@@ -39,7 +38,6 @@ namespace MaintainableSelenium.Sample.UITests
             camera.TakeScreenshot("Sample2");
 
             //Clean up
-            testStorage.Dispose();
             driver.Close();
             driver.Quit();
         }

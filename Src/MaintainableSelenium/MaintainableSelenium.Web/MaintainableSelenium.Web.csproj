@@ -173,16 +173,22 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Models\Home\SaveGlobalBlindRegionsDTO.cs" />
+    <Compile Include="Models\Home\SaveLocalBlindRegionsDTO.cs" />
     <Compile Include="Controllers\TestCaseController.cs" />
+    <Compile Include="Models\Home\TestCaseDetailsDTO.cs" />
+    <Compile Include="Controllers\TestCaseService.cs" />
+    <Compile Include="Controllers\TestResultService.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Home\TestCaseShortcut.cs" />
+    <Compile Include="Models\TestCase\ExtendedTestCaseInfo.cs" />
     <Compile Include="Mvc\ActionResultFactory.cs" />
     <Compile Include="Mvc\HtmlExtensions.cs" />
     <Compile Include="Mvc\JqueryUIWidget.cs" />
     <Compile Include="Mvc\RemoteExpanderWidget.cs" />
     <Compile Include="Mvc\TestCaseWidget.cs" />
-    <Compile Include="Mvc\TestRepositoryFactory.cs" />
     <Compile Include="Mvc\TestResultWidget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -239,7 +245,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Toolbox\Toolbox.csproj">
