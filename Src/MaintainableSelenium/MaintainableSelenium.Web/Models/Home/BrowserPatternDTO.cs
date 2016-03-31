@@ -3,16 +3,12 @@ using MaintainableSelenium.Toolbox.Screenshots;
 
 namespace MaintainableSelenium.Web.Models.Home
 {
-    public class SaveLocalBlindRegionsDTO
+    public class BrowserPatternDTO
     {
+        public long PatternId { get; set; }
         public long TestCaseId { get; set; }
-        public long BrowserPatternId { get; set; }
-
+        public List<BlindRegion> GlobalBlindRegions { get; set; }
         public List<BlindRegion> LocalBlindRegions { get; set; }
-
-        public SaveLocalBlindRegionsDTO()
-        {
-            LocalBlindRegions = new List<BlindRegion>();
-        }
+        public string BrowserName { get; set; }
     }
 }

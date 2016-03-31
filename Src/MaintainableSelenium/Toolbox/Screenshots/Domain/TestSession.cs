@@ -8,6 +8,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         public DateTime StartDate { get; set; }
         public List<TestResult> TestResults { get; set; }
         public ISet<string> Browsers { get; set; }
+        public Project Project { get; set; }
 
         public void AddTestResult(TestResult testResult)
         {

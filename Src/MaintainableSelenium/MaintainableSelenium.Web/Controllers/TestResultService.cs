@@ -9,33 +9,36 @@ namespace MaintainableSelenium.Web.Controllers
     public class TestResultService : ITestResultService
     {
         private readonly IRepository<TestResult> testRepository;
-        private readonly IGlobalRegionsSource globalRegionsSource;
-        private readonly IRepository<TestCase> testCaseRepository;
         private readonly IRepository<TestSession> testSessionRepository;
+        private readonly IRepository<Project> projectRepository;
 
         public TestResultService(IRepository<TestResult> testRepository, 
-            IGlobalRegionsSource globalRegionsSource, 
-            IRepository<TestCase> testCaseRepository,
-            IRepository<TestSession>  testSessionRepository
+            IRepository<TestSession>  testSessionRepository,
+            IRepository<Project>  projectRepository
         )
         {
             this.testRepository = testRepository;
-            this.globalRegionsSource = globalRegionsSource;
-            this.testCaseRepository = testCaseRepository;
             this.testSessionRepository = testSessionRepository;
+            this.projectRepository = projectRepository;
         }
 
-        public TestResult GetTestResult(long testResultId)
+        public TestResultListItemDTO GetTestResult(long testResultId)
         {
-            return this.testRepository.Get(testResultId);
+            var testResult = this.testRepository.Get(testResultId);
+            return MapToTestResultListItemDTO(testResult);
         }
 
         public void MarkAsPattern(long testResultId)
         {
-            var testResult = this.testRepository.Get(testResultId);
+            TestResult testResult = this.testRepository.Get(testResultId);
             testResult.TestPassed = true;
-            testResult.TestCase.PatternScreenshot.Image = testResult.ErrorScreenshot.Image;
-            testResult.TestCase.PatternScreenshot.Hash = testResult.ErrorScreenshot.Hash;
+            ReplacePattern(testResult);
+        }
+
+        private static void ReplacePattern(TestResult testResult)
+        {
+            testResult.Pattern.PatternScreenshot.Image = testResult.ErrorScreenshot.Image;
+            testResult.Pattern.PatternScreenshot.Hash = testResult.ErrorScreenshot.Hash;
         }
 
         public void MarkAllAsPattern(long testSessionId, string browserName)
@@ -43,16 +46,15 @@ namespace MaintainableSelenium.Web.Controllers
             var testResults = this.testSessionRepository.Get(testSessionId).TestResults.Where(x=>x.BrowserName == browserName);
             foreach (var testResult in testResults.Where(x => x.TestPassed == false))
             {
-                testResult.TestCase.PatternScreenshot.Image = testResult.ErrorScreenshot.Image;
-                testResult.TestCase.PatternScreenshot.Hash = testResult.ErrorScreenshot.Hash;
+                ReplacePattern(testResult);
             }
         }
 
         public Bitmap GetScreenshot(long testId, ScreenshotType screenshotType)
         {
             var testResult = this.testRepository.Get(testId);
-            var testCase = this.testCaseRepository.Get(testResult.TestCase.Id);
-            var bitmap1 = ImageHelpers.ConvertBytesToBitmap(testCase.PatternScreenshot.Image);
+            var blindRegionForBrowser = testResult.TestSession.Project.TestCaseSet.GlobalBlindRegions.First(x => x.BrowserName == testResult.BrowserName);
+            var bitmap1 = ImageHelpers.ConvertBytesToBitmap(testResult.Pattern.PatternScreenshot.Image);
 
             switch (screenshotType)
             {
@@ -60,43 +62,90 @@ namespace MaintainableSelenium.Web.Controllers
                     return bitmap1;
                 case ScreenshotType.Error:
                 {
-                    var globalBlindRegions = this.globalRegionsSource.GetGlobalBlindRegions(testCase.BrowserName);
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
-                    return ImageHelpers.CreateImageDiff(bitmap1, bitmap2, globalBlindRegions, testCase.BlindRegions);
+                    return ImageHelpers.CreateImageDiff(bitmap1, bitmap2, blindRegionForBrowser.BlindRegions, testResult.Pattern.BlindRegions);
                 }
                 case ScreenshotType.Diff:
                 {
-                    var globalBlindRegions = this.globalRegionsSource.GetGlobalBlindRegions(testCase.BrowserName);
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
-                    return ImageHelpers.CreateImagesXor(bitmap1, bitmap2, globalBlindRegions, testCase.BlindRegions);
+                    return ImageHelpers.CreateImagesXor(bitmap1, bitmap2, blindRegionForBrowser.BlindRegions, testResult.Pattern.BlindRegions);
                 }
                 default:
                     throw new ArgumentOutOfRangeException("screenshotType", screenshotType, null);
             }
         }
 
-        public List<TestResult> GetTestsFromSession(long sessionId, string browserName)
+        public TestResultListViewModel GetTestsFromSession(long sessionId, string browserName)
         {
-            return this.testSessionRepository.Get(sessionId).TestResults.Where(x => x.BrowserName == browserName).ToList();
+            var testSession = this.testSessionRepository.Get(sessionId);
+            var testResults = testSession.TestResults.Where(x => x.BrowserName == browserName).ToList();
+            return new TestResultListViewModel()
+            {
+                TestSessionId = testSession.Id,
+                BrowserName = browserName,
+                TestResults = testResults.ConvertAll(x=> MapToTestResultListItemDTO(x))
+            };
+        }
+
+        private static TestResultListItemDTO MapToTestResultListItemDTO(TestResult x)
+        {
+            return new TestResultListItemDTO()
+            {
+                TestResultId = x.Id,
+                TestPassed = x.TestPassed,
+                TestName = x.TestName,
+                ScreenshotName = x.ScreenshotName
+            };
         }
 
 
-        public List<TestSession> GetTestSessions()
+        public TestSessionListViewModel GetTestSessionsFromProject(long projectId)
         {
-            return this.testSessionRepository.FindAll()
-                .OrderByDescending(x => x.StartDate)
-                .ToList();
+            var testSessions = this.projectRepository.Get(projectId).Sessions;
+            return new TestSessionListViewModel
+            {
+                TestSessions = testSessions.ConvertAll(x=> new TestSessionListItemDTO
+                {
+                    SessionId = x.Id,
+                    StartDate = x.StartDate.ToShortTimeString(),
+                    Browsers = x.Browsers.ToList()
+                })
+            };
+        }
+
+        public ProjectListViewModel GetProjectsList()
+        {
+            var projects = projectRepository.GetAll();
+            return new ProjectListViewModel()
+            {
+                Projects = projects.ConvertAll(x=> new ProjectListItemDTO()
+                {
+                    ProjectName = x.Name,
+                    ProjectId = x.Id
+                })
+            };
+        }
+
+        public TestResultDetailsViewModel GetTestResultDetails(long testResultId)
+        {
+            var testResult = this.testRepository.Get(testResultId);
+            return new TestResultDetailsViewModel()
+            {
+                TestResultId = testResult.Id
+            };
         }
     }
 
     public interface ITestResultService
     {
         Bitmap GetScreenshot(long testId, ScreenshotType screenshotType);
-        TestResult GetTestResult(long testResultId);
+        TestResultListItemDTO GetTestResult(long testResultId);
         void MarkAsPattern(long testResultId);
         void MarkAllAsPattern(long testSessionId, string browserName);
-        List<TestResult> GetTestsFromSession(long sessionId, string browserName);
-        List<TestSession> GetTestSessions();
+        TestResultListViewModel GetTestsFromSession(long sessionId, string browserName);
+        TestSessionListViewModel GetTestSessionsFromProject(long projectId);
+        ProjectListViewModel GetProjectsList();
+        TestResultDetailsViewModel GetTestResultDetails(long testResultId);
     }
 
     public enum ScreenshotType
@@ -104,5 +153,50 @@ namespace MaintainableSelenium.Web.Controllers
         Pattern = 1,
         Error,
         Diff
+    }
+
+    public class TestResultDetailsViewModel
+    {
+        public long TestResultId { get; set; }
+        public bool TestPassed { get; set; }
+    }
+
+    public class TestResultListViewModel
+    {
+        public List<TestResultListItemDTO> TestResults { get; set; }
+        public long TestSessionId { get; set; }
+        public string BrowserName { get; set; }
+    }
+
+    public class TestResultListItemDTO
+    {
+        public long TestResultId { get; set; }
+        public bool TestPassed { get; set; }
+        public string TestName { get; set; }
+        public string ScreenshotName { get; set; }
+    }
+
+    public class ProjectListViewModel
+    {
+        public List<ProjectListItemDTO> Projects { get; set; }
+    }
+
+    public class ProjectListItemDTO
+    {
+        public string ProjectName { get; set; }
+        public long ProjectId { get; set; }
+    }
+
+
+    public class TestSessionListViewModel
+    {
+        public List<TestSessionListItemDTO> TestSessions { get; set; }
+    }
+
+    public class TestSessionListItemDTO
+    {
+        public string StartDate { get; set; }
+        public long  SessionId { get; set; }
+        public List<string> Browsers { get; set; }
     }
 }

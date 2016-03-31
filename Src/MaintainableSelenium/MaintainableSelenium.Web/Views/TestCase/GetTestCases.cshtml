@@ -1,6 +1,6 @@
 ﻿@using MaintainableSelenium.Web.Controllers
 @using MaintainableSelenium.Web.Mvc;
-@model List<MaintainableSelenium.Web.Models.TestCase.ExtendedTestCaseInfo>
+@model List<MaintainableSelenium.Web.Models.TestCase.TestCaseListItem>
 @{
     ViewBag.Title = "Test Cases";
     Layout = "~/Views/_Layout.cshtml";
@@ -16,7 +16,7 @@
                 <div class="col-md-6 btn-toolbar">
                     @foreach (var browser in testCaseInfo.Browsers)
                     {
-                        @(Ajax.ActionLink<TestCaseController>(c => c.GetTestCaseDetails(browser.TestCaseId), browser.BrowserName, detailsId, new { @class = "btn btn-default" }))
+                        @(Ajax.ActionLink<TestCaseController>(c => c.GetTestCasePattern(testCaseInfo.TestCaseId, browser.PatternId), browser.BrowserName, detailsId, new { @class = "btn btn-default" }))
                     }
                 </div>
             </div>

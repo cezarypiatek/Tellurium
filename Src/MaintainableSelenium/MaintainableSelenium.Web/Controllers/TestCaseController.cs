@@ -14,15 +14,15 @@ namespace MaintainableSelenium.Web.Controllers
             return View(testCases);
         }
 
-        public ActionResult GetTestCaseDetails(long testCaseId)
+        public ActionResult GetTestCasePattern(long testCaseId, long patternId)
         {
-            var result = this.testCaseService.GetDetails(testCaseId);
+            var result = this.testCaseService.GetTestCasePattern(testCaseId, patternId);
             return View(result);
         }
 
-        public ActionResult GetTestCasePatternImage(long testCaseId)
+        public ActionResult GetTestCasePatternImage(long patternId)
         {
-            var result = this.testCaseService.GetPatternScreenshot(testCaseId);
+            var result = this.testCaseService.GetPatternScreenshot(patternId);
             return ActionResultFactory.ImageResult(result);
         }
 

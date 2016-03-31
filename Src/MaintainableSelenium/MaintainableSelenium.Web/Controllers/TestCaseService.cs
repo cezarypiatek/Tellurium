@@ -9,65 +9,82 @@ namespace MaintainableSelenium.Web.Controllers
     public class TestCaseService : ITestCaseService
     {
         private readonly IRepository<TestCase> testCaseRepository;
-        private readonly IGlobalRegionsSource globalRegionsSource;
+        private readonly IRepository<BrowserPattern> browserPatternRepository;
+        private readonly IRepository<Project> projectRepository;
 
-        public TestCaseService(IRepository<TestCase> testCaseRepository, IGlobalRegionsSource globalRegionsSource)
+        public TestCaseService(IRepository<TestCase> testCaseRepository, 
+            IRepository<BrowserPattern> browserPatternRepository,
+            IRepository<Project> projectRepository )
         {
             this.testCaseRepository = testCaseRepository;
-            this.globalRegionsSource = globalRegionsSource;
+            this.browserPatternRepository = browserPatternRepository;
+            this.projectRepository = projectRepository;
         }
 
         public void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto)
         {
             var testCase = this.testCaseRepository.Get(dto.TestCaseId);
-            testCase.BlindRegions.Clear();
-            testCase.BlindRegions.AddRange(dto.LocalBlindRegions);
-            UpdateTestCaseHash(testCase);
+            var browserPattern = testCase.Patterns.First(x => x.Id == dto.BrowserPatternId);
+            browserPattern.BlindRegions.Clear();
+            browserPattern.BlindRegions.AddRange(dto.LocalBlindRegions);
+            UpdateTestCaseHash(browserPattern, testCase);
         }
 
         public void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto)
         {
-           this.globalRegionsSource.SaveGlobalBlindRegions(dto.BrowserName, dto.BlindRegions);
+            var testCase = this.testCaseRepository.Get(dto.TestCaseId);
+            var globalRegionsForBrowser = testCase.TestCaseSet.GlobalBlindRegions.First(x => x.BrowserName == dto.BrowserName);
+            globalRegionsForBrowser.BlindRegions = dto.BlindRegions;
             this.testCaseRepository.FindAll()
-                .Where(x => x.BrowserName == dto.BrowserName)
                 .AsParallel()
-                .ForAll(UpdateTestCaseHash);
+                .ForAll(tc =>
+                {
+                    var bp = tc.Patterns.FirstOrDefault(x => x.BrowserName == dto.BrowserName);
+                    if (bp != null)
+                    {
+                        UpdateTestCaseHash(bp, tc);
+                    }
+                });
         }
 
-        private void UpdateTestCaseHash(TestCase testCase)
+        private void UpdateTestCaseHash(BrowserPattern browserPattern, TestCase testCase)
         {
-            var global = this.globalRegionsSource.GetGlobalBlindRegions(testCase.BrowserName);
-            testCase.PatternScreenshot.Hash = ImageHelpers.ComputeHash(testCase.PatternScreenshot.Image, global, testCase.BlindRegions);
+            var blindRegionForBrowser = testCase.TestCaseSet.GlobalBlindRegions.First(x => x.BrowserName == browserPattern.BrowserName);
+            browserPattern.PatternScreenshot.Hash = ImageHelpers.ComputeHash(browserPattern.PatternScreenshot.Image, blindRegionForBrowser.BlindRegions, browserPattern.BlindRegions);
         }
 
-        public List<ExtendedTestCaseInfo> GetAll()
+        public List<TestCaseListItem> GetAll()
         {
             var testCases = this.testCaseRepository.FindAll();
-            return testCases.GroupBy(x => x.PatternScreenshotName).Select(x => new ExtendedTestCaseInfo
+            return testCases.Select(x => new TestCaseListItem
             {
-                TestCaseName = x.Key,
-                Browsers = x.Select(y => new TestCaseShortcut
+                TestCaseName = string.Format("{0}\\{1}", x.TestName, x.PatternScreenshotName),
+                Browsers = x.Patterns.Select(y => new BrowserPatternShortcut
                 {
                     BrowserName = y.BrowserName,
-                    TestCaseId = y.Id
+                    PatternId= y.Id
                 }).ToList()
             }).ToList();
         }
 
-        public TestCaseDetailsDTO GetDetails(long testCaseId)
+        public BrowserPatternDTO GetTestCasePattern(long testCaseId, long patternId)
         {
-            var testCase = testCaseRepository.Get(testCaseId);
-            var globalBlindRegions = globalRegionsSource.GetGlobalBlindRegions(testCase.BrowserName);
-            return new TestCaseDetailsDTO
+            var testCase = this.testCaseRepository.Get(testCaseId);
+            var browserPattern = browserPatternRepository.Get(patternId);
+            var blindRegionForBrowser = testCase.TestCaseSet.GlobalBlindRegions.First(x=>x.BrowserName == browserPattern.BrowserName);
+            return new BrowserPatternDTO
             {
-                GlobalBlindRegions = globalBlindRegions,
-                TestCase = testCase
+                GlobalBlindRegions = blindRegionForBrowser.BlindRegions,
+                LocalBlindRegions = browserPattern.BlindRegions,
+                BrowserName = browserPattern.BrowserName,
+                PatternId = browserPattern.Id,
+                TestCaseId = testCase.Id
             };
         }
 
-        public byte[] GetPatternScreenshot(long testCaseId)
+        public byte[] GetPatternScreenshot(long patternId)
         {
-            var testCase = this.testCaseRepository.Get(testCaseId);
+            var testCase = this.browserPatternRepository.Get(patternId);
             return testCase.PatternScreenshot.Image;
         }
     }
@@ -76,8 +93,8 @@ namespace MaintainableSelenium.Web.Controllers
     {
         void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto);
         void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto);
-        List<ExtendedTestCaseInfo> GetAll();
-        TestCaseDetailsDTO GetDetails(long testCaseId);
-        byte[] GetPatternScreenshot(long testCaseId);
+        List<TestCaseListItem> GetAll();
+        BrowserPatternDTO GetTestCasePattern(long testCaseId, long patternId);
+        byte[] GetPatternScreenshot(long patternId);
     }
 }

@@ -176,17 +176,18 @@
     <Compile Include="Models\Home\SaveGlobalBlindRegionsDTO.cs" />
     <Compile Include="Models\Home\SaveLocalBlindRegionsDTO.cs" />
     <Compile Include="Controllers\TestCaseController.cs" />
-    <Compile Include="Models\Home\TestCaseDetailsDTO.cs" />
+    <Compile Include="Models\Home\BrowserPatternDTO.cs" />
     <Compile Include="Controllers\TestCaseService.cs" />
     <Compile Include="Controllers\TestResultService.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Home\TestCaseShortcut.cs" />
-    <Compile Include="Models\TestCase\ExtendedTestCaseInfo.cs" />
+    <Compile Include="Models\Home\BrowserPatternShortcut.cs" />
+    <Compile Include="Models\TestCase\TestCaseListItem.cs" />
     <Compile Include="Mvc\ActionResultFactory.cs" />
     <Compile Include="Mvc\HtmlExtensions.cs" />
     <Compile Include="Mvc\JqueryUIWidget.cs" />
+    <Compile Include="Mvc\PageElementsIds.cs" />
     <Compile Include="Mvc\RemoteExpanderWidget.cs" />
     <Compile Include="Mvc\TestCaseWidget.cs" />
     <Compile Include="Mvc\TestResultWidget.cs" />
@@ -230,12 +231,13 @@
     <Content Include="Content\sb-admin\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\sb-admin\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\sb-admin\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\GetTestsFromSessionSession.cshtml" />
-    <Content Include="Views\Home\GetTestResultDetails.cshtml" />
+    <Content Include="Views\Home\TestSessionList.cshtml" />
+    <Content Include="Views\Home\TestResultList.cshtml" />
+    <Content Include="Views\Home\TestResultDetails.cshtml" />
     <Content Include="Views\TestCase\GetTestCases.cshtml" />
-    <Content Include="Views\TestCase\GetTestCaseDetails.cshtml" />
+    <Content Include="Views\TestCase\GetTestCasePattern.cshtml" />
     <Content Include="Views\Home\TestResultInfo.cshtml" />
+    <Content Include="Views\Home\ProjectList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

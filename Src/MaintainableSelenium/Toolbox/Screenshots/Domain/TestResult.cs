@@ -2,7 +2,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 {
     public class TestResult: Entity
     {
-        public TestCase TestCase { get; set; }
+        public BrowserPattern Pattern { get; set; }
         public TestSession TestSession { get; set; }
         public string TestName { get; set; }
         public string ScreenshotName { get; set; }

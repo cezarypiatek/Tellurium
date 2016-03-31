@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using MaintainableSelenium.Toolbox.Screenshots;
-using MaintainableSelenium.Web.Controllers;
 using MaintainableSelenium.Web.Models.Home;
 
 namespace MaintainableSelenium.Web.Mvc
@@ -22,9 +21,14 @@ namespace MaintainableSelenium.Web.Mvc
             this.SetOption("browser", browserName);
         }
 
-        public void SetTestCaseId(long testCaseId)
+        public void SetPatternId(long testCaseId)
         {
             this.SetOption("id", testCaseId);
+        } 
+        
+        public void SetTestCaseId(long testCaseId)
+        {
+            this.SetOption("caseId", testCaseId);
         }
 
         public void SetSaveLocalBlindspotsAction<TController>(Expression<Action<TController>> action)
@@ -50,14 +54,15 @@ namespace MaintainableSelenium.Web.Mvc
         }
 
         public static TestCaseWidget Create<TController>(Expression<Action<TController>> actionSaveLocal,
-            Expression<Action<TController>> actionSaveGlobal, TestCaseDetailsDTO testCase, UrlHelper urlHelper)
+            Expression<Action<TController>> actionSaveGlobal, BrowserPatternDTO browserPattern, UrlHelper urlHelper)
             where TController : Controller
         {
             var widget = new TestCaseWidget(urlHelper);
-            widget.SetBrowserName(testCase.TestCase.BrowserName);
-            widget.SetTestCaseId(testCase.TestCase.Id);
-            widget.SetLocalBlindspots(testCase.TestCase.BlindRegions);
-            widget.SetGlobalBlindspots(testCase.GlobalBlindRegions);
+            widget.SetBrowserName(browserPattern.BrowserName);
+            widget.SetPatternId(browserPattern.PatternId);
+            widget.SetTestCaseId(browserPattern.TestCaseId);
+            widget.SetLocalBlindspots(browserPattern.LocalBlindRegions);
+            widget.SetGlobalBlindspots(browserPattern.GlobalBlindRegions);
             widget.SetSaveLocalBlindspotsAction(actionSaveLocal);
             widget.SetSaveGlobalBlindspotsAction(actionSaveGlobal);
             return widget;

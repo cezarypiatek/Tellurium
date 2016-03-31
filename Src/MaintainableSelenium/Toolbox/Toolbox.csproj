@@ -116,6 +116,7 @@
     <Compile Include="Screenshots\Domain\TestSession.cs" />
     <Compile Include="Infrastructure\Entity.cs" />
     <Compile Include="Screenshots\FileScreenshotStorage.cs" />
+    <Compile Include="Screenshots\FindProjectByName.cs" />
     <Compile Include="Screenshots\FindTestCaseForBrowser.cs" />
     <Compile Include="Screenshots\IBrowserCamera.cs">
       <SubType>Code</SubType>

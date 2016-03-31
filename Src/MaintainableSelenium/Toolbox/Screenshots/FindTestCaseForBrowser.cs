@@ -21,10 +21,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         public TestCase GetQuery(IQueryable<TestCase> query)
         {
-            return query
-                .First(x => x.TestName == testName && x.PatternScreenshotName == screenshotName &&
-                            x.BrowserName == browserName);
-
+            return query.First(x => x.TestName == testName && x.PatternScreenshotName == screenshotName);
         }
     }
 }

@@ -8,21 +8,23 @@ namespace MaintainableSelenium.Web.Controllers
     {
         private readonly ITestResultService testResultService;
 
-        public HomeController()
-        {
-        }
-
         // GET: Home
         public ActionResult Index()
         {
-            var testSessions = this.testResultService.GetTestSessions();
-            return View(testSessions);
+            var testSessions = this.testResultService.GetProjectsList();
+            return View("ProjectList", testSessions);
+        }
+
+        public ActionResult GetTestSessionFromProject(long projectId)
+        {
+            var testSessions = this.testResultService.GetTestSessionsFromProject(projectId);
+            return PartialView("TestSessionList", testSessions);
         }
 
         public ActionResult GetTestsFromSessionSession(long sessionId, string browserName)
         {
             var tests = this.testResultService.GetTestsFromSession(sessionId, browserName);
-            return View(tests);
+            return View("TestResultList", tests);
         }
 
         public ActionResult GetTestResult(long testId)
@@ -33,8 +35,8 @@ namespace MaintainableSelenium.Web.Controllers
 
         public ActionResult GetTestResultDetails(long testId)
         {
-            var test = this.testResultService.GetTestResult(testId);
-            return View(test);
+            var test = this.testResultService.GetTestResultDetails(testId);
+            return View("TestResultDetails", test);
         }
 
         public ActionResult GetScreenshot(long testId, ScreenshotType screenshotType)

@@ -1,76 +1,54 @@
-﻿
+﻿using System.Linq;
+
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
     public class ScreenshotService
     {
         private readonly ITestRunnerAdapter testRunnerAdapter;
-        private readonly IRepository<TestCase> testCaseRepository;
-        private readonly IRepository<TestSession> testSessionRepository;
-        private readonly IGlobalRegionsSource globalRegionsSource;
+        private readonly IRepository<Project> projectRepository;
         private TestSession testSessionData;
 
-        public ScreenshotService(
-            ITestRunnerAdapter testRunnerAdapter,
-            IRepository<TestCase> testCaseRepository,
-            IRepository<TestSession> testSessionRepository,
-            IGlobalRegionsSource globalRegionsSource)
+        public ScreenshotService(ITestRunnerAdapter testRunnerAdapter, IRepository<Project> projectRepository )
         {
             this.testRunnerAdapter = testRunnerAdapter;
-            this.testCaseRepository = testCaseRepository;
-            this.testSessionRepository = testSessionRepository;
-            this.globalRegionsSource = globalRegionsSource;
+            this.projectRepository = projectRepository;
         }
 
-        private TestSession GetCurrentTestSession()
+        private TestSession GetCurrentTestSession(Project project)
         {
             if (testSessionData == null)
             {
                 testSessionData = testRunnerAdapter.GetTestSessionInfo();
-                testSessionRepository.Save(testSessionData);
+                project.AddSession(testSessionData);
             }
             return testSessionData;
         }
 
-        public void Persist(string screenshotName, string browserName, byte[] screenshot)
+        public void Persist(string screenshotName, string browserName, byte[] screenshot, string projectName)
         {
-            var globalBlindRegions = globalRegionsSource.GetGlobalBlindRegions(browserName);
+            var project = this.GetProject(projectName);
             var testName = testRunnerAdapter.GetCurrentTestName();
-            var testCaseInfo = FindTestCase(screenshotName, browserName, testName);
-            if (testCaseInfo == null)
+            var testCase = GetTestCase(project, screenshotName, testName);
+            var browserPattern = testCase.Patterns.FirstOrDefault(x => x.BrowserName == browserName);
+            if (browserPattern == null)
             {
-                var newTestCase = new TestCase
-                {
-                    TestName = testName,
-                    BrowserName = browserName,
-                    PatternScreenshotName = screenshotName,
-                    PatternScreenshot = new ScreenshotData
-                    {
-                        Image = screenshot,
-                        Hash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions)
-                    }
-                };
-                this.testCaseRepository.Save(newTestCase);
+                testCase.AddNewPattern(screenshot, browserName);
             }
             else
             {
-                var testSession = GetCurrentTestSession();
+                var testSession = GetCurrentTestSession(project);
                 var testResult = new TestResult
                 {
-                    TestCase = testCaseInfo,
+                    Pattern = browserPattern,
                     TestName = testName,
                     ScreenshotName = screenshotName,
                     BrowserName = browserName
                 };
 
-                var screenshotHash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions, testCaseInfo.BlindRegions);
-                if (screenshotHash != testCaseInfo.PatternScreenshot.Hash)
+                if (browserPattern.MatchTo(screenshot) == false)
                 {
                     testResult.TestPassed = false;
-                    testResult.ErrorScreenshot = new ScreenshotData
-                    {
-                        Image = screenshot,
-                        Hash = screenshotHash
-                    };
+                    testResult.ErrorScreenshot = CreateErrorScreenshotData(browserName, screenshot, project, browserPattern);
                 }
                 else
                 {
@@ -80,11 +58,45 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        private TestCase FindTestCase(string screenshotName, string browserName, string testName)
+        private static ScreenshotData CreateErrorScreenshotData(string browserName, byte[] screenshot, Project project, BrowserPattern browserPattern)
         {
-            var query = FindTestCaseForBrowser.Create(testName, screenshotName, browserName);
-            var testCaseInfo = testCaseRepository.FindOne(query);
-            return testCaseInfo;
+            var globalBlindRegions = project.TestCaseSet.GetBlindRegionsForBrowser(browserName);
+            var errorScreenshot = new ScreenshotData
+            {
+                Image = screenshot,
+                Hash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions, browserPattern.BlindRegions)
+            };
+            return errorScreenshot;
+        }
+
+        private static TestCase GetTestCase(Project project, string screenshotName, string testName)
+        {
+            var testCase = project.TestCaseSet.TestCases.FirstOrDefault(x => x.PatternScreenshotName == screenshotName && x.TestName == testName);
+            if (testCase == null)
+            {
+                testCase = new TestCase
+                {
+                    TestName = testName,
+                    PatternScreenshotName = screenshotName
+                };
+
+                project.TestCaseSet.AddTestCase(testCase);
+            }
+            return testCase;
+        }
+
+        private Project GetProject(string projectName)
+        {
+            var project = projectRepository.FindOne(new FindProjectByName(projectName));
+            if (project == null)
+            {
+                project = new Project
+                {
+                    Name = projectName
+                };
+                projectRepository.Save(project);
+            }
+            return project;
         }
     }
 }

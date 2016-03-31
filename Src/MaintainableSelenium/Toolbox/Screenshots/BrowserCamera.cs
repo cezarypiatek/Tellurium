@@ -1,3 +1,4 @@
+using System.Linq;
 using OpenQA.Selenium.Remote;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
@@ -8,13 +9,15 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     public class BrowserCamera : IBrowserCamera
     {
         private readonly RemoteWebDriver driver;
-        private readonly string imageNamePrefix;
         private readonly ScreenshotService screenshotService;
-        
-        public BrowserCamera(RemoteWebDriver driver, string imageNamePrefix, ScreenshotService screenshotService)
+
+
+        public string ProjectName { get; set; }
+        public string ImageNamePrefix { get; set; }
+
+        public BrowserCamera(RemoteWebDriver driver,  ScreenshotService screenshotService)
         {
             this.driver = driver;
-            this.imageNamePrefix = imageNamePrefix;
             this.screenshotService = screenshotService;
         }
 
@@ -22,8 +25,20 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         {
             driver.Blur();
             var screenshot = driver.GetScreenshot();
-            var fullName = string.Format("{0}_{1}", imageNamePrefix, name);
-            screenshotService.Persist(fullName, driver.Capabilities.BrowserName, screenshot.AsByteArray);
+            var fullName = string.Format("{0}_{1}", ImageNamePrefix, name);
+          
+            screenshotService.Persist(fullName, driver.Capabilities.BrowserName, screenshot.AsByteArray, ProjectName);
+        }
+
+        public static IBrowserCamera CreateNew(RemoteWebDriver driver, ITestRunnerAdapter testRunnerAdapter,  string projectName, string imageNamePrefix)
+        {
+            var screenshotService = new ScreenshotService(testRunnerAdapter, new Repository<Project>());
+            return new BrowserCamera(driver, screenshotService)
+            {
+                ProjectName = projectName,
+                ImageNamePrefix = imageNamePrefix
+            };
         }
     }
+
 }

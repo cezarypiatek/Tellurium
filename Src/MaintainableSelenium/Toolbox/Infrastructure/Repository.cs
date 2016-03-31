@@ -9,6 +9,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             throw new System.NotImplementedException();
         }
 
+        public List<TEntity> GetAll()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void Save(TEntity entity)
         {
             throw new System.NotImplementedException();

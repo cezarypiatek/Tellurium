@@ -1,6 +1,6 @@
 ﻿@using MaintainableSelenium.Web.Controllers
 @using MaintainableSelenium.Web.Mvc
-@model MaintainableSelenium.Web.Models.Home.TestCaseDetailsDTO
+@model MaintainableSelenium.Web.Models.Home.BrowserPatternDTO
 @{
     var testCaseWidget = TestCaseWidget.Create<TestCaseController>(c => c.SaveLocalBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
 }
@@ -28,7 +28,7 @@
         </div>
     </div>
     <div class="testcase-board" data-testcase-element="board">
-        <img class="screenshot" src="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePatternImage(Model.TestCase.Id)))" />
+        <img class="screenshot" src="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePatternImage(Model.PatternId)))" />
         <div class="testcase-overlay">
             <span class="label" style="color: black"></span>
         </div>

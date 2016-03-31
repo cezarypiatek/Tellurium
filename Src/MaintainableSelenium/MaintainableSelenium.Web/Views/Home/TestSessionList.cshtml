@@ -1,11 +1,6 @@
 ﻿@using MaintainableSelenium.Web.Controllers
 @using Microsoft.Web.Mvc
-@model List<MaintainableSelenium.Toolbox.Screenshots.TestSession>
-@{
-    ViewBag.Title = "Test Sessions"; 
-    Layout = "~/Views/_Layout.cshtml";
-}
-
+@model TestSessionListViewModel
 
 <table class="table table-striped">
     <thead>
@@ -15,7 +10,7 @@
     </tr>
     </thead>
     <tbody>
-        @foreach (var sessionInfo in Model)
+        @foreach (var sessionInfo in Model.TestSessions)
         {
             <tr>
                 <td>
@@ -25,7 +20,7 @@
                     <div class="btn-toolbar">
                         @foreach (var browser in sessionInfo.Browsers)
                         {
-                            @(Html.ActionLink<HomeController>(c => c.GetTestsFromSessionSession(sessionInfo.Id, browser), browser, htmlAttributes: new { @class = "btn btn-default" }))
+                            @(Html.ActionLink<HomeController>(c => c.GetTestsFromSessionSession(sessionInfo.SessionId, browser), browser, htmlAttributes: new { @class = "btn btn-default" }))
                         }
                     </div>
                 </td>

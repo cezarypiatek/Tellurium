@@ -1,11 +1,11 @@
 ﻿@using MaintainableSelenium.Web.Controllers
 @using MaintainableSelenium.Web.Mvc
-@model MaintainableSelenium.Toolbox.Screenshots.TestResult
+@model TestResultListItemDTO
 @{
     var rowClass = Model.TestPassed ? "panel-success" : "panel-danger";
-    var detailsId = "RowDetails" + Model.Id;
-    var rowId = "Row" + Model.Id;
-    var widget = RemoteExpanderWidget.Create<HomeController>(c => c.GetTestResultDetails(Model.Id), detailsId, Url);
+    var detailsId = "RowDetails" + Model.TestResultId;
+    var rowId = "Row" + Model.TestResultId;
+    var widget = RemoteExpanderWidget.Create<HomeController>(c => c.GetTestResultDetails(Model.TestResultId), detailsId, Url);
 }
 <div class="panel @rowClass test-row" id="@rowId">
     <div class="panel-heading ">
@@ -17,7 +17,7 @@
             <div class="col-md-2">
                 @if (Model.TestPassed == false)
                 {
-                    @(Ajax.ChangeActionLink<HomeController>(c => c.MarkAsPattern(Model.Id), "Mark as pattern", "Do you really wan to change test case pattern screenshot?", rowId, new { @class = "btn btn-primary" }))
+                    @(Ajax.ChangeActionLink<HomeController>(c => c.MarkAsPattern(Model.TestResultId), "Mark as pattern", "Do you really wan to change test case pattern screenshot?", rowId, new { @class = "btn btn-primary" }))
                 }
             </div>
         </div>
