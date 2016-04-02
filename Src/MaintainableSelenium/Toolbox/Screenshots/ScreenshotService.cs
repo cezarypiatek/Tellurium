@@ -1,27 +1,26 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
     public class ScreenshotService
     {
-        private readonly ITestRunnerAdapter testRunnerAdapter;
         private readonly IRepository<Project> projectRepository;
+        private static readonly DateTime SessionStartDate = DateTime.Now;
 
-        public ScreenshotService(ITestRunnerAdapter testRunnerAdapter, IRepository<Project> projectRepository )
+        public ScreenshotService(IRepository<Project> projectRepository )
         {
-            this.testRunnerAdapter = testRunnerAdapter;
             this.projectRepository = projectRepository;
         }
 
         private TestSession GetCurrentTestSession(Project project)
         {
-            var sessionData = testRunnerAdapter.GetTestSessionInfo();
-            var testSession = project.Sessions.FirstOrDefault(x => x.StartDate == sessionData.StartDate);
+            var testSession = project.Sessions.FirstOrDefault(x => x.StartDate == SessionStartDate);
             if (testSession == null)
             {
-                testSession = new TestSession()
+                testSession = new TestSession
                 {
-                    StartDate = sessionData.StartDate
+                    StartDate = SessionStartDate
                 };
                 project.AddSession(testSession);
             }

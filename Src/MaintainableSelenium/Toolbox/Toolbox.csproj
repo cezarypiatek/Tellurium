@@ -148,7 +148,6 @@
     <Compile Include="Infrastructure\IQueryAll.cs" />
     <Compile Include="Infrastructure\IQueryOne.cs" />
     <Compile Include="Infrastructure\IRepository.cs" />
-    <Compile Include="Screenshots\ITestRunnerAdapter.cs" />
     <Compile Include="Screenshots\Domain\Project.cs" />
     <Compile Include="Infrastructure\Repository.cs" />
     <Compile Include="Screenshots\ScreenshotService.cs" />

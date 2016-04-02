@@ -30,9 +30,9 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             screenshotService.Persist(fullName, driver.Capabilities.BrowserName, screenshot.AsByteArray, ProjectName);
         }
 
-        public static IBrowserCamera CreateNew(RemoteWebDriver driver, ITestRunnerAdapter testRunnerAdapter,  string projectName, string imageNamePrefix)
+        public static IBrowserCamera CreateNew(RemoteWebDriver driver,  string projectName, string imageNamePrefix)
         {
-            var screenshotService = new ScreenshotService(testRunnerAdapter, new Repository<Project>());
+            var screenshotService = new ScreenshotService(new Repository<Project>());
             return new BrowserCamera(driver, screenshotService)
             {
                 ProjectName = projectName,
