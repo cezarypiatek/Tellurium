@@ -5,12 +5,18 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 {
     public class TestSession:Entity
     {
-        public DateTime StartDate { get; set; }
-        public List<TestResult> TestResults { get; set; }
-        public ISet<string> Browsers { get; set; }
-        public Project Project { get; set; }
+        public virtual DateTime StartDate { get; set; }
+        public virtual IList<TestResult> TestResults { get; set; }
+        public virtual ISet<string> Browsers { get; set; }
+        public virtual Project Project { get; set; }
 
-        public void AddTestResult(TestResult testResult)
+        public TestSession()
+        {
+            Browsers = new HashSet<string>();
+            TestResults = new List<TestResult>();
+        }
+
+        public virtual void AddTestResult(TestResult testResult)
         {
             Browsers.Add(testResult.BrowserName);
             TestResults.Add(testResult);

@@ -1,8 +1,8 @@
 namespace MaintainableSelenium.Toolbox.Screenshots
 {
-    public class ScreenshotData
+    public class ScreenshotData: Entity
     {
-        public string Hash { get; set; }
-        public byte[] Image { get; set; }
+        public virtual string Hash { get; set; }
+        public virtual byte[] Image { get; set; }
     }
 }

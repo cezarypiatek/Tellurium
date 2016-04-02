@@ -53,7 +53,7 @@ namespace MaintainableSelenium.Web.Controllers
         public Bitmap GetScreenshot(long testId, ScreenshotType screenshotType)
         {
             var testResult = this.testRepository.Get(testId);
-            var blindRegionForBrowser = testResult.TestSession.Project.TestCaseSet.GlobalBlindRegions.First(x => x.BrowserName == testResult.BrowserName);
+            var blindRegionForBrowser = testResult.TestSession.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == testResult.BrowserName) ?? new BlindRegionForBrowser();
             var bitmap1 = ImageHelpers.ConvertBytesToBitmap(testResult.Pattern.PatternScreenshot.Image);
 
             switch (screenshotType)
@@ -83,7 +83,7 @@ namespace MaintainableSelenium.Web.Controllers
             {
                 TestSessionId = testSession.Id,
                 BrowserName = browserName,
-                TestResults = testResults.ConvertAll(x=> MapToTestResultListItemDTO(x))
+                TestResults = testResults.ConvertAll(MapToTestResultListItemDTO)
             };
         }
 
@@ -93,7 +93,6 @@ namespace MaintainableSelenium.Web.Controllers
             {
                 TestResultId = x.Id,
                 TestPassed = x.TestPassed,
-                TestName = x.TestName,
                 ScreenshotName = x.ScreenshotName
             };
         }
@@ -101,15 +100,16 @@ namespace MaintainableSelenium.Web.Controllers
 
         public TestSessionListViewModel GetTestSessionsFromProject(long projectId)
         {
-            var testSessions = this.projectRepository.Get(projectId).Sessions;
+            var query = new FindAllSessionFromProject(projectId);
+            var testSessions = this.testSessionRepository.FindAll(query);
             return new TestSessionListViewModel
             {
-                TestSessions = testSessions.ConvertAll(x=> new TestSessionListItemDTO
+                TestSessions = testSessions.Select(x=> new TestSessionListItemDTO
                 {
                     SessionId = x.Id,
-                    StartDate = x.StartDate.ToShortTimeString(),
+                    StartDate = x.StartDate.ToString("g"),
                     Browsers = x.Browsers.ToList()
-                })
+                }).ToList()
             };
         }
 
@@ -131,6 +131,7 @@ namespace MaintainableSelenium.Web.Controllers
             var testResult = this.testRepository.Get(testResultId);
             return new TestResultDetailsViewModel()
             {
+                TestPassed = testResult.TestPassed,
                 TestResultId = testResult.Id
             };
         }
@@ -172,7 +173,6 @@ namespace MaintainableSelenium.Web.Controllers
     {
         public long TestResultId { get; set; }
         public bool TestPassed { get; set; }
-        public string TestName { get; set; }
         public string ScreenshotName { get; set; }
     }
 

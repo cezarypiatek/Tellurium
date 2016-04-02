@@ -6,7 +6,6 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     {
         private readonly ITestRunnerAdapter testRunnerAdapter;
         private readonly IRepository<Project> projectRepository;
-        private TestSession testSessionData;
 
         public ScreenshotService(ITestRunnerAdapter testRunnerAdapter, IRepository<Project> projectRepository )
         {
@@ -16,51 +15,63 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         private TestSession GetCurrentTestSession(Project project)
         {
-            if (testSessionData == null)
+            var sessionData = testRunnerAdapter.GetTestSessionInfo();
+            var testSession = project.Sessions.FirstOrDefault(x => x.StartDate == sessionData.StartDate);
+            if (testSession == null)
             {
-                testSessionData = testRunnerAdapter.GetTestSessionInfo();
-                project.AddSession(testSessionData);
+                testSession = new TestSession()
+                {
+                    StartDate = sessionData.StartDate
+                };
+                project.AddSession(testSession);
             }
-            return testSessionData;
+            return testSession;
         }
 
         public void Persist(string screenshotName, string browserName, byte[] screenshot, string projectName)
         {
-            var project = this.GetProject(projectName);
-            var testName = testRunnerAdapter.GetCurrentTestName();
-            var testCase = GetTestCase(project, screenshotName, testName);
-            var browserPattern = testCase.Patterns.FirstOrDefault(x => x.BrowserName == browserName);
-            if (browserPattern == null)
+            var session = PersistanceEngine.GetSession();
             {
-                testCase.AddNewPattern(screenshot, browserName);
-            }
-            else
-            {
-                var testSession = GetCurrentTestSession(project);
-                var testResult = new TestResult
+                using (var tx = session.BeginTransaction())
                 {
-                    Pattern = browserPattern,
-                    TestName = testName,
-                    ScreenshotName = screenshotName,
-                    BrowserName = browserName
-                };
+                    var project = this.GetProject(projectName);
+                    var testCase = GetTestCase(project, screenshotName);
+                    var browserPattern = testCase.Patterns.FirstOrDefault(x => x.BrowserName == browserName);
+                    if (browserPattern == null)
+                    {
+                        testCase.AddNewPattern(screenshot, browserName);
+                    }
+                    else
+                    {
+                        var testSession = GetCurrentTestSession(project);
+                        var testResult = new TestResult
+                        {
+                            Pattern = browserPattern,
+                            ScreenshotName = screenshotName,
+                            BrowserName = browserName
+                        };
 
-                if (browserPattern.MatchTo(screenshot) == false)
-                {
-                    testResult.TestPassed = false;
-                    testResult.ErrorScreenshot = CreateErrorScreenshotData(browserName, screenshot, project, browserPattern);
+                        if (browserPattern.MatchTo(screenshot) == false)
+                        {
+                            testResult.TestPassed = false;
+                            testResult.ErrorScreenshot = CreateErrorScreenshotData(browserName, screenshot, project,
+                                browserPattern);
+                        }
+                        else
+                        {
+                            testResult.TestPassed = true;
+                        }
+                        testSession.AddTestResult(testResult);
+                    }
+                    session.Flush();
+                    tx.Commit();
                 }
-                else
-                {
-                    testResult.TestPassed = true;
-                }
-                testSession.AddTestResult(testResult);
             }
         }
 
         private static ScreenshotData CreateErrorScreenshotData(string browserName, byte[] screenshot, Project project, BrowserPattern browserPattern)
         {
-            var globalBlindRegions = project.TestCaseSet.GetBlindRegionsForBrowser(browserName);
+            var globalBlindRegions = project.GetBlindRegionsForBrowser(browserName);
             var errorScreenshot = new ScreenshotData
             {
                 Image = screenshot,
@@ -69,18 +80,17 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             return errorScreenshot;
         }
 
-        private static TestCase GetTestCase(Project project, string screenshotName, string testName)
+        private static TestCase GetTestCase(Project project, string screenshotName)
         {
-            var testCase = project.TestCaseSet.TestCases.FirstOrDefault(x => x.PatternScreenshotName == screenshotName && x.TestName == testName);
+            var testCase = project.TestCases.FirstOrDefault(x => x.PatternScreenshotName == screenshotName);
             if (testCase == null)
             {
                 testCase = new TestCase
                 {
-                    TestName = testName,
                     PatternScreenshotName = screenshotName
                 };
 
-                project.TestCaseSet.AddTestCase(testCase);
+                project.AddTestCase(testCase);
             }
             return testCase;
         }

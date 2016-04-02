@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using MaintainableSelenium.Toolbox.Screenshots;
 using MaintainableSelenium.Web.Models.Home;
 using MaintainableSelenium.Web.Mvc;
 
@@ -7,6 +8,11 @@ namespace MaintainableSelenium.Web.Controllers
     public class TestCaseController : Controller
     {
         private readonly ITestCaseService testCaseService;
+
+        public TestCaseController()
+        {
+            testCaseService = new TestCaseService(new Repository<TestCase>(), new Repository<BrowserPattern>());
+        }
 
         public ActionResult GetTestCases()
         {

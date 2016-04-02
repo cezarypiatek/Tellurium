@@ -10,47 +10,62 @@ namespace MaintainableSelenium.Web.Controllers
     {
         private readonly IRepository<TestCase> testCaseRepository;
         private readonly IRepository<BrowserPattern> browserPatternRepository;
-        private readonly IRepository<Project> projectRepository;
 
         public TestCaseService(IRepository<TestCase> testCaseRepository, 
-            IRepository<BrowserPattern> browserPatternRepository,
-            IRepository<Project> projectRepository )
+            IRepository<BrowserPattern> browserPatternRepository)
         {
             this.testCaseRepository = testCaseRepository;
             this.browserPatternRepository = browserPatternRepository;
-            this.projectRepository = projectRepository;
         }
 
         public void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto)
         {
-            var testCase = this.testCaseRepository.Get(dto.TestCaseId);
-            var browserPattern = testCase.Patterns.First(x => x.Id == dto.BrowserPatternId);
-            browserPattern.BlindRegions.Clear();
-            browserPattern.BlindRegions.AddRange(dto.LocalBlindRegions);
-            UpdateTestCaseHash(browserPattern, testCase);
+            using (var tx = PersistanceEngine.GetSession().BeginTransaction())
+            {
+                var testCase = this.testCaseRepository.Get(dto.TestCaseId);
+                var browserPattern = testCase.Patterns.First(x => x.Id == dto.BrowserPatternId);
+                browserPattern.ReplaceBlindregionsSet(dto.LocalBlindRegions);
+                var blindRegionForBrowser = testCase.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == browserPattern.BrowserName)?? new BlindRegionForBrowser();
+                UpdateTestCaseHash(browserPattern, blindRegionForBrowser.BlindRegions);
+                tx.Commit();
+            }
         }
 
         public void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto)
         {
-            var testCase = this.testCaseRepository.Get(dto.TestCaseId);
-            var globalRegionsForBrowser = testCase.TestCaseSet.GlobalBlindRegions.First(x => x.BrowserName == dto.BrowserName);
-            globalRegionsForBrowser.BlindRegions = dto.BlindRegions;
-            this.testCaseRepository.FindAll()
-                .AsParallel()
-                .ForAll(tc =>
+            using (var tx = PersistanceEngine.GetSession().BeginTransaction())
+            {
+                var testCase = this.testCaseRepository.Get(dto.TestCaseId);
+                var globalRegionsForBrowser = GetGlobalRegionsForBrowser(dto, testCase);
+                globalRegionsForBrowser.ReplaceBlindRegionsSet(dto.BlindRegions);
+                var browserPatterns = this.browserPatternRepository.FindAll(new FindPatternsForBrowserInProject(testCase.Project.Id,dto.BrowserName));
+                browserPatterns.AsParallel().ForAll(bp =>
                 {
-                    var bp = tc.Patterns.FirstOrDefault(x => x.BrowserName == dto.BrowserName);
-                    if (bp != null)
-                    {
-                        UpdateTestCaseHash(bp, tc);
-                    }
-                });
+                    UpdateTestCaseHash(bp, globalRegionsForBrowser.BlindRegions);
+                }); 
+                tx.Commit();
+            }
         }
 
-        private void UpdateTestCaseHash(BrowserPattern browserPattern, TestCase testCase)
+        private static BlindRegionForBrowser GetGlobalRegionsForBrowser(SaveGlobalBlindRegionsDTO dto, TestCase testCase)
         {
-            var blindRegionForBrowser = testCase.TestCaseSet.GlobalBlindRegions.First(x => x.BrowserName == browserPattern.BrowserName);
-            browserPattern.PatternScreenshot.Hash = ImageHelpers.ComputeHash(browserPattern.PatternScreenshot.Image, blindRegionForBrowser.BlindRegions, browserPattern.BlindRegions);
+            var globalRegionsForBrowser = testCase.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == dto.BrowserName);
+            if (globalRegionsForBrowser == null)
+            {
+                globalRegionsForBrowser = new BlindRegionForBrowser
+                {
+                    BrowserName = dto.BrowserName
+                };
+                testCase.Project.AddGlobalBlindRegions(globalRegionsForBrowser);
+            }
+            return globalRegionsForBrowser;
+        }
+
+        private void UpdateTestCaseHash(BrowserPattern browserPattern, IList<BlindRegion> globalBlindRegions)
+        {
+            //var blindRegionForBrowser = testCase.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == browserPattern.BrowserName) ?? new BlindRegionForBrowser();
+            //browserPattern.PatternScreenshot.Hash = ImageHelpers.ComputeHash(browserPattern.PatternScreenshot.Image, blindRegionForBrowser.BlindRegions, browserPattern.BlindRegions);
+            browserPattern.PatternScreenshot.Hash = ImageHelpers.ComputeHash(browserPattern.PatternScreenshot.Image, globalBlindRegions, browserPattern.BlindRegions);
         }
 
         public List<TestCaseListItem> GetAll()
@@ -58,11 +73,12 @@ namespace MaintainableSelenium.Web.Controllers
             var testCases = this.testCaseRepository.FindAll();
             return testCases.Select(x => new TestCaseListItem
             {
-                TestCaseName = string.Format("{0}\\{1}", x.TestName, x.PatternScreenshotName),
+                TestCaseId = x.Id,
+                TestCaseName = x.PatternScreenshotName,
                 Browsers = x.Patterns.Select(y => new BrowserPatternShortcut
                 {
                     BrowserName = y.BrowserName,
-                    PatternId= y.Id
+                    PatternId= y.Id,
                 }).ToList()
             }).ToList();
         }
@@ -71,11 +87,11 @@ namespace MaintainableSelenium.Web.Controllers
         {
             var testCase = this.testCaseRepository.Get(testCaseId);
             var browserPattern = browserPatternRepository.Get(patternId);
-            var blindRegionForBrowser = testCase.TestCaseSet.GlobalBlindRegions.First(x=>x.BrowserName == browserPattern.BrowserName);
+            var blindRegionForBrowser = testCase.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x=>x.BrowserName == browserPattern.BrowserName) ?? new BlindRegionForBrowser();
             return new BrowserPatternDTO
             {
-                GlobalBlindRegions = blindRegionForBrowser.BlindRegions,
-                LocalBlindRegions = browserPattern.BlindRegions,
+                GlobalBlindRegions = blindRegionForBrowser.BlindRegions.ToList(),
+                LocalBlindRegions = browserPattern.BlindRegions.ToList(),
                 BrowserName = browserPattern.BrowserName,
                 PatternId = browserPattern.Id,
                 TestCaseId = testCase.Id

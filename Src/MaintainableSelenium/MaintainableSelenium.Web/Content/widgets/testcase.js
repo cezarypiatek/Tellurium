@@ -46,7 +46,7 @@
             locked = true;
             if ($(this).is(".local")) {
                 $.postJSON(that.options.actionSaveLocal, {
-                    PatternId: that.options.id,
+                    BrowserPatternId: that.options.id,
                     TestCaseId: that.options.caseId,
                     LocalBlindRegions: localSpots
                 }).done(function() {
@@ -56,7 +56,7 @@
                 $.postJSON(that.options.actionSaveGlobal, {
                     BlindRegions: globalSpots,
                     BrowserName: that.options.browser,
-                    TestCaseId: that.options.caseId,
+                    TestCaseId: that.options.caseId
                 }).done(function () {
                     locked = false;
                 });

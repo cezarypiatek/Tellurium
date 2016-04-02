@@ -3,12 +3,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     /// <summary>
     /// Represents regions ignored by <see cref="BrowserCamera"/> when comparing images
     /// </summary>
-    public class BlindRegion
+    public class BlindRegion:Entity
     {
-        public float Left { get; set; }
-        public float Top { get; set; }
-        public float Width { get; set; }
-        public float Height { get; set; }
+        public virtual float Left { get; set; }
+        public virtual float Top { get; set; }
+        public virtual float Width { get; set; }
+        public virtual float Height { get; set; }
 
         public BlindRegion()
         {

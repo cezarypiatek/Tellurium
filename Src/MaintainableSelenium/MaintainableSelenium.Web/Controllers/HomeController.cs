@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using MaintainableSelenium.Toolbox.Screenshots;
 using MaintainableSelenium.Web.Mvc;
 using Microsoft.Web.Mvc;
 
@@ -7,6 +8,11 @@ namespace MaintainableSelenium.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ITestResultService testResultService;
+
+        public HomeController()
+        {
+            testResultService = new TestResultService(new Repository<TestResult>(), new Repository<TestSession>(), new Repository<Project>());
+        }
 
         // GET: Home
         public ActionResult Index()
