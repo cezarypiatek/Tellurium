@@ -80,12 +80,29 @@
             position: absolute;
             border-style: dotted;
             border-width: 1px;
+            background: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.5) 35px, rgba(255,255,255,.5) 70px);
         }
-        .blind.local {
+        .blind.local, .legend-square.local {
             border-color:  orange;
+            background-color: rgba(255, 165, 0,0.3);
         }
-        .blind.global{
+        .blind.global, .legend-square.global{
             border-color:  blue;
+            background-color: rgba(0, 0, 255, 0.3);
+        }
+
+        .legend-square {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            vertical-align: middle;
+            background: repeating-linear-gradient(45deg, transparent, transparent 12px, rgba(255,255,255,.5) 12px, rgba(255,255,255,.5) 25px);
+        }
+
+        .legend-label {
+            line-height: 25px;
+            vertical-align: middle;
+            display: inline-block;
         }
 
         .blind.active {
