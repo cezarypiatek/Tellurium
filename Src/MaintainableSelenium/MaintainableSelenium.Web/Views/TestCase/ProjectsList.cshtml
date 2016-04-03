@@ -1,0 +1,15 @@
+﻿@using MaintainableSelenium.Web.Controllers
+@model ProjectListViewModel
+@{
+    ViewBag.Title = "Test Cases";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<ul class="list-group">
+    @foreach (var project in Model.Projects)
+    {
+        <li class="list-group-item">
+            @(Ajax.ActionLink<TestCaseController>(c => c.GetTestCasesFromProject(project.ProjectId), project.ProjectName, PageElementsIds.PageBody))
+        </li>
+    }
+</ul>

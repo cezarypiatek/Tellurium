@@ -3,6 +3,7 @@ using System.Linq;
 using MaintainableSelenium.Toolbox.Screenshots;
 using MaintainableSelenium.Web.Models.Home;
 using MaintainableSelenium.Web.Models.TestCase;
+using MaintainableSelenium.Web.Services.TestCase.Queries;
 
 namespace MaintainableSelenium.Web.Controllers
 {
@@ -10,12 +11,15 @@ namespace MaintainableSelenium.Web.Controllers
     {
         private readonly IRepository<TestCase> testCaseRepository;
         private readonly IRepository<BrowserPattern> browserPatternRepository;
+        private readonly IRepository<Project> projectRepository;
 
         public TestCaseService(IRepository<TestCase> testCaseRepository, 
-            IRepository<BrowserPattern> browserPatternRepository)
+            IRepository<BrowserPattern> browserPatternRepository,
+            IRepository<Project> projectRepository)
         {
             this.testCaseRepository = testCaseRepository;
             this.browserPatternRepository = browserPatternRepository;
+            this.projectRepository = projectRepository;
         }
 
         public void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto)
@@ -68,9 +72,9 @@ namespace MaintainableSelenium.Web.Controllers
             browserPattern.PatternScreenshot.Hash = ImageHelpers.ComputeHash(browserPattern.PatternScreenshot.Image, globalBlindRegions, browserPattern.BlindRegions);
         }
 
-        public List<TestCaseListItem> GetAll()
+        public List<TestCaseListItem> GetTestCasesFromProject(long projectId)
         {
-            var testCases = this.testCaseRepository.FindAll();
+            var testCases = this.testCaseRepository.FindAll(new FindTestCasesFromProject(projectId));
             return testCases.Select(x => new TestCaseListItem
             {
                 TestCaseId = x.Id,
@@ -103,14 +107,28 @@ namespace MaintainableSelenium.Web.Controllers
             var testCase = this.browserPatternRepository.Get(patternId);
             return testCase.PatternScreenshot.Image;
         }
+
+        public ProjectListViewModel GetProjectsList()
+        {
+            var projects = projectRepository.GetAll();
+            return new ProjectListViewModel()
+            {
+                Projects = projects.ConvertAll(x => new ProjectListItemDTO
+                {
+                    ProjectName = x.Name,
+                    ProjectId = x.Id
+                })
+            };
+        }
     }
 
     public interface ITestCaseService
     {
         void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto);
         void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto);
-        List<TestCaseListItem> GetAll();
+        List<TestCaseListItem> GetTestCasesFromProject(long projectId);
         BrowserPatternDTO GetTestCasePattern(long testCaseId, long patternId);
         byte[] GetPatternScreenshot(long patternId);
+        ProjectListViewModel GetProjectsList();
     }
 }

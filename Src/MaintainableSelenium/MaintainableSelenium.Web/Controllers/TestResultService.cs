@@ -118,7 +118,7 @@ namespace MaintainableSelenium.Web.Controllers
             var projects = projectRepository.GetAll();
             return new ProjectListViewModel()
             {
-                Projects = projects.ConvertAll(x=> new ProjectListItemDTO()
+                Projects = projects.ConvertAll(x=> new ProjectListItemDTO
                 {
                     ProjectName = x.Name,
                     ProjectId = x.Id

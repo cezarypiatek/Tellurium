@@ -201,6 +201,7 @@
     <Compile Include="Mvc\TestCaseWidget.cs" />
     <Compile Include="Mvc\TestResultWidget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\TestCase\Queries\FindTestCasesFromProject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -243,10 +244,11 @@
     <Content Include="Views\Home\TestSessionList.cshtml" />
     <Content Include="Views\Home\TestResultList.cshtml" />
     <Content Include="Views\Home\TestResultDetails.cshtml" />
-    <Content Include="Views\TestCase\GetTestCases.cshtml" />
+    <Content Include="Views\TestCase\GetTestCasesFromProject.cshtml" />
     <Content Include="Views\TestCase\GetTestCasePattern.cshtml" />
     <Content Include="Views\Home\TestResultInfo.cshtml" />
     <Content Include="Views\Home\ProjectList.cshtml" />
+    <Content Include="Views\TestCase\ProjectsList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

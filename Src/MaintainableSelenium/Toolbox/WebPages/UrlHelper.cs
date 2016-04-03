@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Web.Mvc;
 using Microsoft.Web.Mvc;
 
 namespace MaintainableSelenium.Toolbox.WebPages
 {
     public static class UrlHelper
     {
-        public static string BuildActionAddressFromExpression<TController>(Expression<Action<TController>> action)
+        public static string BuildActionAddressFromExpression<TController>(Expression<Action<TController>> action) where TController : Controller
         {
-            var controllerName = GetControllerName<TController>();
-            var actionName = GetMethodName(action);
+            var controllerName = action.GetControllerName();
+            var actionName = action.GetActionName();
             var areaName = GetAreaName<TController>();
             var actionLink = string.Format("{0}/{1}/{2}", areaName, controllerName, actionName).Trim('/');
             return actionLink;
@@ -27,13 +28,13 @@ namespace MaintainableSelenium.Toolbox.WebPages
             return areaNameAttribute.Area;
         }
 
-        private static string GetControllerName<TController>()
+        public static string GetControllerName<TController>(this Expression<Action<TController>> action) where TController : Controller
         {
             var controllerType = typeof(TController);
             return controllerType.Name.Replace("Controller", "");
         }
 
-        private static string GetMethodName<T>(Expression<Action<T>> action)
+        public static string GetActionName<TController>(this Expression<Action<TController>> action) where TController : Controller
         {
             var methodCall = action.Body as MethodCallExpression;
             if (methodCall == null)

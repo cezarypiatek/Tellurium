@@ -11,19 +11,25 @@ namespace MaintainableSelenium.Web.Controllers
 
         public TestCaseController()
         {
-            testCaseService = new TestCaseService(new Repository<TestCase>(), new Repository<BrowserPattern>());
+            testCaseService = new TestCaseService(new Repository<TestCase>(), new Repository<BrowserPattern>(), new Repository<Project>());
         }
 
-        public ActionResult GetTestCases()
+        public ActionResult Index()
         {
-            var testCases = testCaseService.GetAll();
-            return View(testCases);
+            var projectsList = testCaseService.GetProjectsList();
+            return View("ProjectsList", projectsList);
+        }
+
+        public ActionResult GetTestCasesFromProject(long projectId)
+        {
+            var testCases = testCaseService.GetTestCasesFromProject(projectId);
+            return PartialView(testCases);
         }
 
         public ActionResult GetTestCasePattern(long testCaseId, long patternId)
         {
             var result = this.testCaseService.GetTestCasePattern(testCaseId, patternId);
-            return View(result);
+            return PartialView(result);
         }
 
         public ActionResult GetTestCasePatternImage(long patternId)

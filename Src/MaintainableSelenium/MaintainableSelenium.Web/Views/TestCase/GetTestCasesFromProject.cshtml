@@ -1,10 +1,6 @@
 ﻿@using MaintainableSelenium.Web.Controllers
 @using MaintainableSelenium.Web.Mvc;
 @model List<MaintainableSelenium.Web.Models.TestCase.TestCaseListItem>
-@{
-    ViewBag.Title = "Test Cases";
-    Layout = "~/Views/_Layout.cshtml";
-}
 
 @foreach (var testCaseInfo in Model)
 {

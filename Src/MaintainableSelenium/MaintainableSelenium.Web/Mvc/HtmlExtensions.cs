@@ -40,6 +40,27 @@ namespace MaintainableSelenium.Web.Mvc
         {
             return HttpContext.Current.Request.RequestContext.RouteData.Values["action"] as string;
         }
+        
+        public static string GetCurrentControllerName()
+        {
+            return HttpContext.Current.Request.RequestContext.RouteData.Values["controller"] as string;
+        }
+
+        public static bool IsCurrentAction<TController>(Expression<Action<TController>> action)
+            where TController : Controller
+        {
+            if (GetCurrentControllerName() != Toolbox.WebPages.UrlHelper.GetControllerName(action))
+            {
+                return false;
+            } 
+            
+            if (GetCurrentActionName() != Toolbox.WebPages.UrlHelper.GetActionName(action))
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         public static string ToJson(this object obj)
         {

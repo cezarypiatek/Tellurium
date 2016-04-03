@@ -1,13 +1,14 @@
 using System;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Web.Mvc;
 using OpenQA.Selenium.Remote;
 
 namespace MaintainableSelenium.Toolbox.WebPages
 {
     public interface INavigator
     {
-        void NavigateTo<TController>(Expression<Action<TController>> action);
+        void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
     }
 
     public class Navigator : INavigator
@@ -25,7 +26,7 @@ namespace MaintainableSelenium.Toolbox.WebPages
             this.rootUrl = rootUrl;
         }
 
-        public void NavigateTo<TController>(Expression<Action<TController>> action)
+        public void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller
         {
             var actionAddress = UrlHelper.BuildActionAddressFromExpression(action);
             var url = string.Format("{0}/{1}", rootUrl, actionAddress);
