@@ -2,8 +2,6 @@
 using MaintainableSelenium.Sample.Website.Mvc;
 using MaintainableSelenium.Toolbox;
 using MaintainableSelenium.Toolbox.Drivers;
-using MaintainableSelenium.Toolbox.Screenshots;
-using MaintainableSelenium.Toolbox.WebPages;
 using MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters;
 using NUnit.Framework;
 using Sample.Website.Controllers;
@@ -15,30 +13,36 @@ namespace MaintainableSelenium.Sample.UITests
     [TestFixture, Explicit]
     public class SampleFormTest
     {
-        [TestCase(SeleniumDriverType.Firefox)]
-        [TestCase(SeleniumDriverType.Chrome)]
-        [TestCase(SeleniumDriverType.InternetExplorer)]
-        public void should_be_able_to_fill_sample_form(SeleniumDriverType driverType)
+        [TestCase(BrowserType.Firefox)]
+        [TestCase(BrowserType.Chrome)]
+        [TestCase(BrowserType.InternetExplorer)]
+        public void should_be_able_to_fill_sample_form(BrowserType driverType)
         {
             //Prepare infrastructure for test
-            var driver = SeleniumDriverFactory.CreateLocalDriver(driverType, Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"));
-            driver.Manage().Window.Maximize();
-            var camera = BrowserCamera.CreateNew(driver, "Sample Project", "Sample Form");
-            var navigator = new Navigator(driver, "http://localhost:51767");
+            var browserAdapterConfig = new BrowserAdapterConfig()
+            {
+                BrowserType = driverType,
+                PageUrl = "http://localhost:51767",
+                ProjectName = "Sample Project",
+                ScreenshotPrefix = "Sample Form",
+                SeleniumDriversPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers")
+            };
 
-            //Test
-            navigator.NavigateTo<TestFormsController>(c=>c.Index());
-            camera.TakeScreenshot("Sample1");
-            var form = driver.GetForm<SampleFormViewModel>(FormsIds.TestForm);
-            form.SetFieldValue(x=>x.TextInput, "Hello world!!!");
-            form.SetFieldValue(x=>x.TextAreaInput, "Long test message");
-            form.SetFieldValue(x=>x.PasswordInput, "Secret_Password");
-            form.SetFieldValue(x=>x.CheckboxInput, CheckboxFormInputAdapter.Checked);
-            camera.TakeScreenshot("Sample2");
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
 
-            //Clean up
-            driver.Close();
-            driver.Quit();
+                //Test
+                browserAdapter.NavigateTo<TestFormsController>(c => c.Index());
+                browserAdapter.TakeScreenshot("Sample1");
+                
+                var form = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestForm);
+                form.SetFieldValue(x => x.TextInput, "Hello world!!!");
+                form.SetFieldValue(x => x.TextAreaInput, "Long test message");
+                form.SetFieldValue(x => x.PasswordInput, "Secret_Password");
+                form.SetFieldValue(x => x.CheckboxInput, CheckboxFormInputAdapter.Checked);
+                
+                browserAdapter.TakeScreenshot("Sample2");
+            }
         }
     }
 }

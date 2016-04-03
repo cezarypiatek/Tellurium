@@ -13,52 +13,52 @@ namespace MaintainableSelenium.Toolbox.Drivers
 {
     public static class SeleniumDriverFactory
     {
-        public static RemoteWebDriver CreateLocalDriver(SeleniumDriverType driverType, string driversPath)
+        public static RemoteWebDriver CreateLocalDriver(BrowserType driverType, string driversPath)
         {
             switch (driverType)
             {
-                case SeleniumDriverType.Firefox:
+                case BrowserType.Firefox:
                     return new FirefoxDriver();
-                case SeleniumDriverType.Chrome:
+                case BrowserType.Chrome:
                     return new ChromeDriver(driversPath);
-                case SeleniumDriverType.InternetExplorer:
+                case BrowserType.InternetExplorer:
                     return new InternetExplorerDriver(driversPath);
-                case SeleniumDriverType.Opera:
+                case BrowserType.Opera:
                     return new OperaDriver(driversPath);
-                case SeleniumDriverType.Safari:
+                case BrowserType.Safari:
                     return new SafariDriver(new SafariOptions() { SafariLocation = driversPath });
-                case SeleniumDriverType.Phantom:
+                case BrowserType.Phantom:
                     return new PhantomJSDriver(driversPath);
-                case SeleniumDriverType.Edge:
+                case BrowserType.Edge:
                     return new EdgeDriver(driversPath);
                 default:
                     throw new ArgumentOutOfRangeException("driverType", driverType, null);
             }
         }
 
-        public static RemoteWebDriver CreateRemoteDriver(SeleniumDriverType driverType, string seleniumServerUrl)
+        public static RemoteWebDriver CreateRemoteDriver(BrowserType driverType, string seleniumServerUrl)
         {
             var browserCapabilities = GetBrowserCapabilities(driverType);
             return new RemoteWebDriver(new Uri(seleniumServerUrl), browserCapabilities);
         }
 
-        private static ICapabilities GetBrowserCapabilities(SeleniumDriverType driverType)
+        private static ICapabilities GetBrowserCapabilities(BrowserType driverType)
         {
             switch (driverType)
             {
-                case SeleniumDriverType.Firefox:
+                case BrowserType.Firefox:
                     return DesiredCapabilities.Firefox();
-                case SeleniumDriverType.Chrome:
+                case BrowserType.Chrome:
                     return DesiredCapabilities.Chrome();
-                case SeleniumDriverType.InternetExplorer:
+                case BrowserType.InternetExplorer:
                     return DesiredCapabilities.InternetExplorer();
-                case SeleniumDriverType.Opera:
+                case BrowserType.Opera:
                     return DesiredCapabilities.Opera();
-                case SeleniumDriverType.Safari:
+                case BrowserType.Safari:
                     return DesiredCapabilities.Safari();
-                case SeleniumDriverType.Phantom:
+                case BrowserType.Phantom:
                     return DesiredCapabilities.PhantomJS();
-                case SeleniumDriverType.Edge:
+                case BrowserType.Edge:
                     return DesiredCapabilities.Edge();
                 default:
                     throw new ArgumentOutOfRangeException("driverType", driverType, null);
@@ -66,7 +66,7 @@ namespace MaintainableSelenium.Toolbox.Drivers
         }
     }
 
-    public enum SeleniumDriverType
+    public enum BrowserType
     {
         Firefox = 1,
         Chrome,
