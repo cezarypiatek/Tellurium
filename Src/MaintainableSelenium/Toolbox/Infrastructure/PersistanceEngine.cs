@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
@@ -8,7 +7,7 @@ using FluentNHibernate.Conventions.Instances;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;
 
-namespace MaintainableSelenium.Toolbox.Screenshots
+namespace MaintainableSelenium.Toolbox.Infrastructure
 {
     public class PersistanceEngine
     {

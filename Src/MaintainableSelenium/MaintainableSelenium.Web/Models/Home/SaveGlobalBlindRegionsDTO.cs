@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using MaintainableSelenium.Toolbox.Screenshots;
+using MaintainableSelenium.Toolbox.Screenshots.Domain;
 
 namespace MaintainableSelenium.Web.Models.Home
 {

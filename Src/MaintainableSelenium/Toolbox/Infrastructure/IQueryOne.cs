@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace MaintainableSelenium.Toolbox.Screenshots
+namespace MaintainableSelenium.Toolbox.Infrastructure
 {
     public interface IQueryOne<TEntity> where TEntity : Entity
     {

@@ -33,6 +33,10 @@ namespace MaintainableSelenium.Toolbox
             supportedInputsAdapters = inputsAdapters.ToList();
         }
 
+        /// <summary>
+        /// Get rid of focus from currently focused element
+        /// </summary>
+        /// <param name="driver">Selenium webdriver</param>
         public static void Blur(this RemoteWebDriver driver)
         {
             if(IsThereElementWithFocus(driver))
@@ -43,6 +47,10 @@ namespace MaintainableSelenium.Toolbox
             }
         }
 
+        /// <summary>
+        /// Check if any element has currently focus
+        /// </summary>
+        /// <param name="driver">Selenium webdriver</param>
         [Pure]
         private static bool IsThereElementWithFocus(RemoteWebDriver driver)
         {
@@ -57,6 +65,12 @@ namespace MaintainableSelenium.Toolbox
             return true;
         }
 
+        /// <summary>
+        /// Return strongly typed adapter for web form with given id
+        /// </summary>
+        /// <typeparam name="TModel">Model connected with form</typeparam>
+        /// <param name="driver">Selenium driver</param>
+        /// <param name="formId">Id of expected form</param>
         public static WebForm<TModel> GetForm<TModel>(this RemoteWebDriver driver, string formId)
         {
             var formElement = GetElementById(driver, formId);
@@ -98,16 +112,29 @@ namespace MaintainableSelenium.Toolbox
             return formElement;
         }
 
+        /// <summary>
+        /// Simulate click event on element with given id
+        /// </summary>
+        /// <param name="driver">Selenium driver</param>
+        /// <param name="elementId">Id of expected element</param>
         public static void ClickOn(this RemoteWebDriver driver, string elementId)
         {
             driver.GetElementById(elementId).Click();
         }
 
+        /// <summary>
+        /// Return parent of given web element
+        /// </summary>
+        /// <param name="node">Child element</param>
         public static IWebElement GetParent(this IWebElement node)
         {
             return node.FindElement(By.XPath(".."));
         }
 
+        /// <summary>
+        /// Return type of input represented by the given web element
+        /// </summary>
+        /// <param name="inputElement">Web element</param>
         internal static string GetInputType(this IWebElement inputElement)
         {
             var inputType = inputElement.GetAttribute("type") ?? string.Empty;

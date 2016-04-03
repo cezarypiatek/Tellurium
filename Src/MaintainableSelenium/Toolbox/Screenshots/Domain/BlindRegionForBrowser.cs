@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using MaintainableSelenium.Toolbox.Infrastructure;
 
-namespace MaintainableSelenium.Toolbox.Screenshots
+namespace MaintainableSelenium.Toolbox.Screenshots.Domain
 {
     public class BlindRegionForBrowser:Entity
     {

@@ -15,7 +15,7 @@ namespace MaintainableSelenium.Toolbox.WebPages
             this.Driver = driver;
             this.WebElement = webElement;
         }
-
+        
         public void ClickOnLinkWithLabel(string linkText)
         {
             var by = By.PartialLinkText(linkText);

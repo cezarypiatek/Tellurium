@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using MaintainableSelenium.Toolbox.Infrastructure;
 
-namespace MaintainableSelenium.Toolbox.Screenshots
+namespace MaintainableSelenium.Toolbox.Screenshots.Domain
 {
     public class Project:Entity
     {

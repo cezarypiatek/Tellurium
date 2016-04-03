@@ -9,6 +9,10 @@ using OpenQA.Selenium.Support.UI;
 
 namespace MaintainableSelenium.Toolbox.WebPages.WebForms
 {
+    /// <summary>
+    /// Strongly typed adapter for web form
+    /// </summary>
+    /// <typeparam name="TModel">Type of model connected with given web form</typeparam>
     public class WebForm<TModel>: PageFragment
     {
         private static TimeSpan InputSearchTimeout = TimeSpan.FromSeconds(30);
@@ -31,10 +35,15 @@ namespace MaintainableSelenium.Toolbox.WebPages.WebForms
             }
             catch (TimeoutException)
             {
-                throw new ArgumentException("Cannot find element with name '{0}'", fieldName);
+                throw new NoWebForFieldException(fieldName);
             }
         }
 
+        /// <summary>
+        /// Set value for field indicated by expression
+        /// </summary>
+        /// <param name="field">Expression indicating given form field</param>
+        /// <param name="value">Value to set for fields</param>
         public void SetFieldValue<TFieldValue>(Expression<Func<TModel, TFieldValue>> field, string value)
         {
             var fieldElement = GetField(field);

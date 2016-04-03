@@ -180,14 +180,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\FindAllSessionFromProject.cs" />
+    <Compile Include="Services\TestResult\Queries\FindAllSessionFromProject.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Models\Home\SaveGlobalBlindRegionsDTO.cs" />
     <Compile Include="Models\Home\SaveLocalBlindRegionsDTO.cs" />
     <Compile Include="Controllers\TestCaseController.cs" />
     <Compile Include="Models\Home\BrowserPatternDTO.cs" />
-    <Compile Include="Controllers\TestCaseService.cs" />
-    <Compile Include="Controllers\TestResultService.cs" />
+    <Compile Include="Services\TestCase\TestCaseService.cs" />
+    <Compile Include="Services\TestResult\TestResultService.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -202,6 +202,7 @@
     <Compile Include="Mvc\TestResultWidget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\TestCase\Queries\FindTestCasesFromProject.cs" />
+    <Compile Include="Services\TestResult\Queries\FindFailedTestFromSessionForBrowser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />

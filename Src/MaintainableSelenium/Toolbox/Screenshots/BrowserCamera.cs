@@ -1,4 +1,7 @@
-using System.Linq;
+using System;
+using System.Collections.Generic;
+using MaintainableSelenium.Toolbox.Infrastructure;
+using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using OpenQA.Selenium.Remote;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
@@ -10,6 +13,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     {
         private readonly RemoteWebDriver driver;
         private readonly ScreenshotService screenshotService;
+        private readonly ISet<string> takenScreenshots = new HashSet<string>();
 
 
         public string ProjectName { get; set; }
@@ -26,7 +30,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             driver.Blur();
             var screenshot = driver.GetScreenshot();
             var fullName = string.Format("{0}_{1}", ImageNamePrefix, name);
-          
+            var screenshotUniqueName = string.Format("{0}_{1}", ProjectName, fullName);
+            if (takenScreenshots.Contains(screenshotUniqueName))
+            {
+                throw new DuplicatedScreenshotInSession(fullName);
+            }
+            takenScreenshots.Add(screenshotUniqueName);
             screenshotService.Persist(fullName, driver.Capabilities.BrowserName, screenshot.AsByteArray, ProjectName);
         }
 
@@ -41,4 +50,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         }
     }
 
+    public class DuplicatedScreenshotInSession: ApplicationException
+    {
+
+        public DuplicatedScreenshotInSession(string screenshotName)
+            :base(string.Format("Cannot take twice the same screenshot. Duplicated screenshot name {0}", screenshotName))
+        {
+        }
+    }
 }

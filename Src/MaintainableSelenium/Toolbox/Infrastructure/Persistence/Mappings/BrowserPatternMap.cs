@@ -1,5 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
-using MaintainableSelenium.Toolbox.Screenshots;
+using MaintainableSelenium.Toolbox.Screenshots.Domain;
 
 namespace MaintainableSelenium.Toolbox.Infrastructure.Persistence.Mappings
 {

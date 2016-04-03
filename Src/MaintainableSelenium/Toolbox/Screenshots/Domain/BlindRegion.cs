@@ -1,4 +1,6 @@
-namespace MaintainableSelenium.Toolbox.Screenshots
+using MaintainableSelenium.Toolbox.Infrastructure;
+
+namespace MaintainableSelenium.Toolbox.Screenshots.Domain
 {
     /// <summary>
     /// Represents regions ignored by <see cref="BrowserCamera"/> when comparing images

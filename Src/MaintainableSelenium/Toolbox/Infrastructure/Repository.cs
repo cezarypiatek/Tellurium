@@ -3,7 +3,7 @@ using System.Linq;
 using NHibernate;
 using NHibernate.Linq;
 
-namespace MaintainableSelenium.Toolbox.Screenshots
+namespace MaintainableSelenium.Toolbox.Infrastructure
 {
     public class Repository<TEntity>: IRepository<TEntity> where TEntity : Entity
     {

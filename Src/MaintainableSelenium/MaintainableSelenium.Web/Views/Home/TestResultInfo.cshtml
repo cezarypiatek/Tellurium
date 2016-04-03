@@ -1,6 +1,6 @@
 ﻿@using MaintainableSelenium.Web.Controllers
 @using MaintainableSelenium.Web.Mvc
-@model TestResultListItemDTO
+@model MaintainableSelenium.Web.Services.TestResult.TestResultListItemDTO
 @{
     var rowClass = Model.TestPassed ? "panel-success" : "panel-danger";
     var detailsId = "RowDetails" + Model.TestResultId;

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.Toolbox.Screenshots;
+using MaintainableSelenium.Toolbox.Infrastructure;
 
 namespace MaintainableSelenium.Web.Services.TestCase.Queries
 {
-    public class FindTestCasesFromProject:IQueryAll<Toolbox.Screenshots.TestCase>
+    public class FindTestCasesFromProject:IQueryAll<Toolbox.Screenshots.Domain.TestCase>
     {
         private readonly long projectId;
 
@@ -13,7 +13,7 @@ namespace MaintainableSelenium.Web.Services.TestCase.Queries
             this.projectId = projectId;
         }
 
-        public List<Toolbox.Screenshots.TestCase> GetQuery(IQueryable<Toolbox.Screenshots.TestCase> query)
+        public List<Toolbox.Screenshots.Domain.TestCase> GetQuery(IQueryable<Toolbox.Screenshots.Domain.TestCase> query)
         {
             return query.Where(x => x.Project.Id == projectId).ToList();
         }

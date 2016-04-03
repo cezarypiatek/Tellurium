@@ -1,4 +1,4 @@
-namespace MaintainableSelenium.Toolbox.Screenshots
+namespace MaintainableSelenium.Toolbox.Infrastructure
 {
     public abstract class Entity
     {

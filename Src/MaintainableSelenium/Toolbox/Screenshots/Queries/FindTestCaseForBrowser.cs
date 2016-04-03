@@ -1,6 +1,8 @@
 using System.Linq;
+using MaintainableSelenium.Toolbox.Infrastructure;
+using MaintainableSelenium.Toolbox.Screenshots.Domain;
 
-namespace MaintainableSelenium.Toolbox.Screenshots
+namespace MaintainableSelenium.Toolbox.Screenshots.Queries
 {
     public class FindTestCaseForBrowser:IQueryOne<TestCase>
     {

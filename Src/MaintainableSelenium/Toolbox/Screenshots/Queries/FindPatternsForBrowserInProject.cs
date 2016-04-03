@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MaintainableSelenium.Toolbox.Infrastructure;
+using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using NHibernate.Linq;
 
-namespace MaintainableSelenium.Toolbox.Screenshots
+namespace MaintainableSelenium.Toolbox.Screenshots.Queries
 {
     public class FindPatternsForBrowserInProject:IQueryAll<BrowserPattern>
     {

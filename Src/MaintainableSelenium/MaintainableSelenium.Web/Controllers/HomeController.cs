@@ -1,6 +1,8 @@
 ﻿using System.Web.Mvc;
-using MaintainableSelenium.Toolbox.Screenshots;
+using MaintainableSelenium.Toolbox.Infrastructure;
+using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using MaintainableSelenium.Web.Mvc;
+using MaintainableSelenium.Web.Services.TestResult;
 using Microsoft.Web.Mvc;
 
 namespace MaintainableSelenium.Web.Controllers

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using MaintainableSelenium.Toolbox.Screenshots;
+using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using MaintainableSelenium.Web.Models.Home;
 
 namespace MaintainableSelenium.Web.Mvc

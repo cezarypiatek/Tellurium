@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
+using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using Image = System.Drawing.Image;
 
 
@@ -280,6 +281,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         /// Calculate image hash ignoring given regions
         /// </summary>
         /// <param name="screenshot">Source image for hash</param>
+        /// <param name="globalBlindRegions">Global Regions to ignore</param>
         /// <param name="localBlindRegions">Regions to ignore</param>
         public static string ComputeHash(byte[] screenshot, IList<BlindRegion> globalBlindRegions, IList<BlindRegion> localBlindRegions=null)
         {

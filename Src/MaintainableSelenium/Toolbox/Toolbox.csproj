@@ -69,10 +69,6 @@
       <HintPath>..\packages\NHibernate.4.0.4.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.0.5813.39031, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.0.1\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -138,9 +134,9 @@
     <Compile Include="Screenshots\Domain\TestCase.cs" />
     <Compile Include="Screenshots\Domain\TestSession.cs" />
     <Compile Include="Infrastructure\Entity.cs" />
-    <Compile Include="Screenshots\FindPatternsForBrowserInProject.cs" />
-    <Compile Include="Screenshots\FindProjectByName.cs" />
-    <Compile Include="Screenshots\FindTestCaseForBrowser.cs" />
+    <Compile Include="Screenshots\Queries\FindPatternsForBrowserInProject.cs" />
+    <Compile Include="Screenshots\Queries\FindProjectByName.cs" />
+    <Compile Include="Screenshots\Queries\FindTestCaseForBrowser.cs" />
     <Compile Include="Screenshots\IBrowserCamera.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -167,6 +163,7 @@
     <Compile Include="WebPages\WebForms\IFormInputAdapter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WebPages\WebForms\NoWebForFieldException.cs" />
     <Compile Include="WebPages\WebForms\WebForm.cs">
       <SubType>Code</SubType>
     </Compile>

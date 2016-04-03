@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MaintainableSelenium.Toolbox.Screenshots
+namespace MaintainableSelenium.Toolbox.Infrastructure
 {
     public interface IQueryAll<TEntity> where TEntity:Entity
     {

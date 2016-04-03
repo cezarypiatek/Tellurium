@@ -1,4 +1,6 @@
-namespace MaintainableSelenium.Toolbox.Screenshots
+using MaintainableSelenium.Toolbox.Infrastructure;
+
+namespace MaintainableSelenium.Toolbox.Screenshots.Domain
 {
     public class ScreenshotData: Entity
     {
