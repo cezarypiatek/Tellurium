@@ -32,42 +32,38 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         public void Persist(string screenshotName, string browserName, byte[] screenshot, string projectName)
         {
-            var session = PersistanceEngine.GetSession();
+            using (var tx = PersistanceEngine.GetSession().BeginTransaction())
             {
-                using (var tx = session.BeginTransaction())
+                var project = this.GetProject(projectName);
+                var testCase = GetTestCase(project, screenshotName);
+                var browserPattern = testCase.Patterns.FirstOrDefault(x => x.BrowserName == browserName);
+                if (browserPattern == null)
                 {
-                    var project = this.GetProject(projectName);
-                    var testCase = GetTestCase(project, screenshotName);
-                    var browserPattern = testCase.Patterns.FirstOrDefault(x => x.BrowserName == browserName);
-                    if (browserPattern == null)
+                    testCase.AddNewPattern(screenshot, browserName);
+                }
+                else
+                {
+                    var testSession = GetCurrentTestSession(project);
+                    var testResult = new TestResult
                     {
-                        testCase.AddNewPattern(screenshot, browserName);
+                        Pattern = browserPattern,
+                        ScreenshotName = screenshotName,
+                        BrowserName = browserName
+                    };
+
+                    if (browserPattern.MatchTo(screenshot) == false)
+                    {
+                        testResult.TestPassed = false;
+                        testResult.ErrorScreenshot = CreateErrorScreenshotData(browserName, screenshot, project,
+                            browserPattern);
                     }
                     else
                     {
-                        var testSession = GetCurrentTestSession(project);
-                        var testResult = new TestResult
-                        {
-                            Pattern = browserPattern,
-                            ScreenshotName = screenshotName,
-                            BrowserName = browserName
-                        };
-
-                        if (browserPattern.MatchTo(screenshot) == false)
-                        {
-                            testResult.TestPassed = false;
-                            testResult.ErrorScreenshot = CreateErrorScreenshotData(browserName, screenshot, project,
-                                browserPattern);
-                        }
-                        else
-                        {
-                            testResult.TestPassed = true;
-                        }
-                        testSession.AddTestResult(testResult);
+                        testResult.TestPassed = true;
                     }
-                    session.Flush();
-                    tx.Commit();
+                    testSession.AddTestResult(testResult);
                 }
+                tx.Commit();
             }
         }
 

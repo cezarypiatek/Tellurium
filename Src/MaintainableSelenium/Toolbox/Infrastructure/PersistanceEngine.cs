@@ -5,18 +5,16 @@ using FluentNHibernate.Cfg.Db;
 using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
 using NHibernate;
+using NHibernate.Context;
 using NHibernate.Tool.hbm2ddl;
 
 namespace MaintainableSelenium.Toolbox.Infrastructure
 {
     public class PersistanceEngine
     {
-        [ThreadStatic]
         private static ISessionFactory sessionFactory;
 
-        [ThreadStatic] private static ISession session;
-
-        public static ISessionFactory CreateSessionFactory()
+        static ISessionFactory CreateSessionFactory<TSessionContext>() where TSessionContext : CurrentSessionContext
         {
             return Fluently.Configure()
                 //.Database(SQLiteConfiguration.Standard.UsingFile("MaintainableSelenium.db"))
@@ -31,18 +29,40 @@ namespace MaintainableSelenium.Toolbox.Infrastructure
                     SchemaMetadataUpdater.QuoteTableAndColumns(c);
                    // new SchemaExport(c).Execute((s) => Debug.WriteLine(s), true, false);
                 })
+                .CurrentSessionContext<TSessionContext>()
                 .BuildConfiguration()
                 .BuildSessionFactory();
+        }
+
+        public static void InitForWebApplication()
+        {
+            sessionFactory = CreateSessionFactory<WebSessionContext>();
+        }
+
+        public static void InitForUtApplication()
+        {
+            sessionFactory = CreateSessionFactory<ThreadStaticSessionContext>();
         }
 
         public static ISession GetSession()
         {
             if (sessionFactory == null)
             {
-                sessionFactory = CreateSessionFactory();
-                session = sessionFactory.OpenSession();
+                InitForUtApplication();
             }
+
+            if (CurrentSessionContext.HasBind(sessionFactory))
+            {
+                return sessionFactory.GetCurrentSession();
+            }
+            var session = sessionFactory.OpenSession();
+            CurrentSessionContext.Bind(session);
             return session;
+        }
+
+        public static void Unbind()
+        {
+            CurrentSessionContext.Unbind(sessionFactory);
         }
     }
 

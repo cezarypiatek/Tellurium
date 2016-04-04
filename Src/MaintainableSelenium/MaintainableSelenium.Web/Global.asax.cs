@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
+using MaintainableSelenium.Toolbox.Infrastructure;
 
 namespace MaintainableSelenium.Web
 {
@@ -9,6 +10,7 @@ namespace MaintainableSelenium.Web
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            PersistanceEngine.InitForWebApplication();
         }
     }
 }
