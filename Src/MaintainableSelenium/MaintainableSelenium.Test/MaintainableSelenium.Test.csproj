@@ -75,12 +75,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MaintainableSelenium.API\MaintainableSelenium.API.csproj">
-      <Project>{D7DB1533-503B-40C3-9100-1DE000503318}</Project>
-      <Name>MaintainableSelenium.API</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

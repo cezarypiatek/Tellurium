@@ -99,13 +99,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MaintainableSelenium.Toolbox\MaintainableSelenium.Toolbox.csproj">
+      <Project>{3eebcffd-1814-4bfc-857c-6081d528e011}</Project>
+      <Name>MaintainableSelenium.Toolbox</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sample.Website\Sample.Website.csproj">
       <Project>{5f8390d3-916d-425c-85eb-4229d3d25f3b}</Project>
       <Name>Sample.Website</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Toolbox\Toolbox.csproj">
-      <Project>{3eebcffd-1814-4bfc-857c-6081d528e011}</Project>
-      <Name>Toolbox</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

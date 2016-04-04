@@ -261,9 +261,9 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Toolbox\Toolbox.csproj">
+    <ProjectReference Include="..\MaintainableSelenium.Toolbox\MaintainableSelenium.Toolbox.csproj">
       <Project>{3eebcffd-1814-4bfc-857c-6081d528e011}</Project>
-      <Name>Toolbox</Name>
+      <Name>MaintainableSelenium.Toolbox</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
