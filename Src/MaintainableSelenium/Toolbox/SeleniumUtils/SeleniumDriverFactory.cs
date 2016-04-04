@@ -9,7 +9,7 @@ using OpenQA.Selenium.PhantomJS;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Safari;
 
-namespace MaintainableSelenium.Toolbox.Drivers
+namespace MaintainableSelenium.Toolbox.SeleniumUtils
 {
     public static class SeleniumDriverFactory
     {

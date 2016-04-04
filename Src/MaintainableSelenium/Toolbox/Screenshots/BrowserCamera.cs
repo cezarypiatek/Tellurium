@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MaintainableSelenium.Toolbox.Infrastructure;
 using MaintainableSelenium.Toolbox.Screenshots.Domain;
+using MaintainableSelenium.Toolbox.SeleniumUtils;
 using OpenQA.Selenium.Remote;
 
 namespace MaintainableSelenium.Toolbox.Screenshots

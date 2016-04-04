@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using MaintainableSelenium.Sample.Website.Mvc;
 using MaintainableSelenium.Toolbox;
-using MaintainableSelenium.Toolbox.Drivers;
+using MaintainableSelenium.Toolbox.SeleniumUtils;
 using MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters;
 using NUnit.Framework;
 using Sample.Website.Controllers;

@@ -112,7 +112,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrowserAdapter.cs" />
-    <Compile Include="Drivers\SeleniumDriverFactory.cs" />
+    <Compile Include="BrowserAdapterConfig.cs" />
+    <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
     <Compile Include="Infrastructure\PersistanceEngine.cs" />
     <Compile Include="Infrastructure\Persistence\Mappings\BlindRegionForBrowserMap.cs" />
     <Compile Include="Infrastructure\Persistence\Mappings\BlindRegionMap.cs" />
@@ -168,7 +169,7 @@
     <Compile Include="WebPages\WebForms\WebForm.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="WebTestHelpers.cs">
+    <Compile Include="SeleniumUtils\SeleniumExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

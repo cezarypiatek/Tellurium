@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using MaintainableSelenium.Toolbox.Drivers;
 using MaintainableSelenium.Toolbox.Screenshots;
+using MaintainableSelenium.Toolbox.SeleniumUtils;
 using MaintainableSelenium.Toolbox.WebPages;
 using MaintainableSelenium.Toolbox.WebPages.WebForms;
 using MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters;
@@ -69,7 +69,7 @@ namespace MaintainableSelenium.Toolbox
             this.Driver.GetElementById(elementId).Click();
         }
 
-        public PageFragment GetPageFragmentById(string elementId)
+        public IPageFragment GetPageFragmentById(string elementId)
         {
             var pageFragment = Driver.GetElementBy(By.Id(elementId));
             return new PageFragment(Driver, pageFragment);
@@ -91,21 +91,6 @@ namespace MaintainableSelenium.Toolbox
             Driver.Close();
             Driver.Quit();
         }
-    }
-
-    public class BrowserAdapterConfig
-    {
-        public BrowserType BrowserType { get; set; }
-
-        public string SeleniumDriversPath { get; set; }
-
-        public string ProjectName { get; set; }
-
-        public string ScreenshotPrefix { get; set; }
-
-        public string PageUrl { get; set; }
-
-        public  List<IFormInputAdapter> InputAdapters { get; set; }
     }
 
     public interface IBrowserAdapter : IDisposable
@@ -132,7 +117,7 @@ namespace MaintainableSelenium.Toolbox
         /// Return page fragment with given id
         /// </summary>
         /// <param name="elementId">Id of expected element</param>
-        PageFragment GetPageFragmentById(string elementId);
+        IPageFragment GetPageFragmentById(string elementId);
 
         /// <summary>
         /// Stop execution until element with given id appear

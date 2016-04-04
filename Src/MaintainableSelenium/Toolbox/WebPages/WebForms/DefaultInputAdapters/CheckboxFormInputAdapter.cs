@@ -1,4 +1,5 @@
 using System;
+using MaintainableSelenium.Toolbox.SeleniumUtils;
 using OpenQA.Selenium;
 
 namespace MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters
