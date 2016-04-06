@@ -113,6 +113,7 @@
   <ItemGroup>
     <Compile Include="BrowserAdapter.cs" />
     <Compile Include="BrowserAdapterConfig.cs" />
+    <Compile Include="Infrastructure\SessionContext.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
     <Compile Include="Infrastructure\PersistanceEngine.cs" />
     <Compile Include="Infrastructure\Persistence\Mappings\BlindRegionForBrowserMap.cs" />

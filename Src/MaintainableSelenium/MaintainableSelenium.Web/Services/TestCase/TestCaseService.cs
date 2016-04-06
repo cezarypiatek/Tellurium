@@ -16,19 +16,21 @@ namespace MaintainableSelenium.Web.Services.TestCase
         private readonly IRepository<Toolbox.Screenshots.Domain.TestCase> testCaseRepository;
         private readonly IRepository<BrowserPattern> browserPatternRepository;
         private readonly IRepository<Project> projectRepository;
+        private readonly ISessionContext sessionContext;
 
         public TestCaseService(IRepository<Toolbox.Screenshots.Domain.TestCase> testCaseRepository, 
             IRepository<BrowserPattern> browserPatternRepository,
-            IRepository<Project> projectRepository)
+            IRepository<Project> projectRepository, ISessionContext sessionContext)
         {
             this.testCaseRepository = testCaseRepository;
             this.browserPatternRepository = browserPatternRepository;
             this.projectRepository = projectRepository;
+            this.sessionContext = sessionContext;
         }
 
         public void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto)
         {
-            using (var tx = PersistanceEngine.GetSession().BeginTransaction())
+            using (var tx = sessionContext.Session.BeginTransaction())
             {
                 var testCase = this.testCaseRepository.Get(dto.TestCaseId);
                 var browserPattern = testCase.Patterns.First(x => x.Id == dto.BrowserPatternId);
@@ -41,7 +43,7 @@ namespace MaintainableSelenium.Web.Services.TestCase
 
         public void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto)
         {
-            using (var tx = PersistanceEngine.GetSession().BeginTransaction())
+            using (var tx = sessionContext.Session.BeginTransaction())
             {
                 var testCase = this.testCaseRepository.Get(dto.TestCaseId);
                 var globalRegionsForBrowser = GetGlobalRegionsForBrowser(dto, testCase);

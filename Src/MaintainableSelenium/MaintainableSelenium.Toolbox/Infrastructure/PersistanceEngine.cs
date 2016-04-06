@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using FluentNHibernate.Conventions;
@@ -13,8 +12,9 @@ namespace MaintainableSelenium.Toolbox.Infrastructure
     public class PersistanceEngine
     {
         private static ISessionFactory sessionFactory;
-
-        static ISessionFactory CreateSessionFactory<TSessionContext>() where TSessionContext : CurrentSessionContext
+        private static ISessionContext sessionContext;
+        
+        public static ISessionFactory CreateSessionFactory<TSessionContext>() where TSessionContext : CurrentSessionContext
         {
             return Fluently.Configure()
                 //.Database(SQLiteConfiguration.Standard.UsingFile("MaintainableSelenium.db"))
@@ -34,14 +34,10 @@ namespace MaintainableSelenium.Toolbox.Infrastructure
                 .BuildSessionFactory();
         }
 
-        public static void InitForWebApplication()
-        {
-            sessionFactory = CreateSessionFactory<WebSessionContext>();
-        }
-
         public static void InitForUtApplication()
         {
             sessionFactory = CreateSessionFactory<ThreadStaticSessionContext>();
+            sessionContext = new SessionContext(sessionFactory);
         }
 
         public static ISession GetSession()
@@ -50,19 +46,7 @@ namespace MaintainableSelenium.Toolbox.Infrastructure
             {
                 InitForUtApplication();
             }
-
-            if (CurrentSessionContext.HasBind(sessionFactory))
-            {
-                return sessionFactory.GetCurrentSession();
-            }
-            var session = sessionFactory.OpenSession();
-            CurrentSessionContext.Bind(session);
-            return session;
-        }
-
-        public static void Unbind()
-        {
-            CurrentSessionContext.Unbind(sessionFactory);
+            return sessionContext.Session;
         }
     }
 
