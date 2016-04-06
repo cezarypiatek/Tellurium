@@ -11,9 +11,9 @@ namespace MaintainableSelenium.Web.Controllers
     {
         private readonly ITestResultService testResultService;
 
-        public HomeController()
+        public HomeController(ITestResultService testResultService)
         {
-            testResultService = new TestResultService(new Repository<TestResult>(), new Repository<TestSession>(), new Repository<Project>());
+            this.testResultService = testResultService;
         }
 
         // GET: Home

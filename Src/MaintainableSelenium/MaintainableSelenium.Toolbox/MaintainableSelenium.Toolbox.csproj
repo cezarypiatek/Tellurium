@@ -150,6 +150,7 @@
     <Compile Include="Infrastructure\Repository.cs" />
     <Compile Include="Screenshots\ScreenshotService.cs" />
     <Compile Include="Screenshots\Domain\TestResult.cs" />
+    <Compile Include="ToolboxAssemblyIdentity.cs" />
     <Compile Include="WebPages\Navigator.cs">
       <SubType>Code</SubType>
     </Compile>

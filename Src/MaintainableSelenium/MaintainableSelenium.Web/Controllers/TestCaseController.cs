@@ -1,6 +1,4 @@
 ﻿using System.Web.Mvc;
-using MaintainableSelenium.Toolbox.Infrastructure;
-using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using MaintainableSelenium.Web.Models.Home;
 using MaintainableSelenium.Web.Mvc;
 using MaintainableSelenium.Web.Services.TestCase;
@@ -11,9 +9,9 @@ namespace MaintainableSelenium.Web.Controllers
     {
         private readonly ITestCaseService testCaseService;
 
-        public TestCaseController()
+        public TestCaseController(ITestCaseService testCaseService)
         {
-            testCaseService = new TestCaseService(new Repository<TestCase>(), new Repository<BrowserPattern>(), new Repository<Project>());
+            this.testCaseService = testCaseService;
         }
 
         public ActionResult Index()
