@@ -91,9 +91,14 @@ namespace MaintainableSelenium.Toolbox
             Driver.Close();
             Driver.Quit();
         }
+
+        public void ClickOnElementWithText(string linkText)
+        {
+            Driver.ClickOnElementWithText(Driver.FindElementByTagName("body"), linkText);
+        }
     }
 
-    public interface IBrowserAdapter : IDisposable
+    public interface IBrowserAdapter : IPageFragment,  IDisposable
     {
         /// <summary>
         /// Return strongly typed adapter for web form with given id

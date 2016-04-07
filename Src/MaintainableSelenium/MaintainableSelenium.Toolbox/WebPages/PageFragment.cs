@@ -15,20 +15,14 @@ namespace MaintainableSelenium.Toolbox.WebPages
             this.WebElement = webElement;
         }
         
-        public void ClickOnLinkWithLabel(string linkText)
+        public void ClickOnElementWithText(string linkText)
         {
-            Driver.ClickOnLinkWithLabel(WebElement, linkText);
-        }
-        
-        public void ClickOnElementWithLabel(string linkText)
-        {
-            Driver.ClickOnElementWithLabel(WebElement, linkText);
+            Driver.ClickOnElementWithText(WebElement, linkText);
         }
     }
 
     public interface IPageFragment
     {
-        void ClickOnLinkWithLabel(string linkText);
-        void ClickOnElementWithLabel(string linkText);
+        void ClickOnElementWithText(string linkText);
     }
 }

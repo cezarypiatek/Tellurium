@@ -87,43 +87,31 @@ namespace MaintainableSelenium.Toolbox.SeleniumUtils
         }
 
         /// <summary>
-        /// Click on link with given text
-        /// </summary>
-        /// <param name="driver">Selenium driver</param>
-        /// <param name="scope">Scope element to narrow link search</param>
-        /// <param name="linkText">Link tekst</param>
-        public static  void ClickOnLinkWithLabel(this RemoteWebDriver driver, IWebElement scope, string linkText)
-        {
-            var by = By.PartialLinkText(linkText);
-            ClickOn(driver, scope, @by);
-        }
-
-        /// <summary>
         /// Click on any element with given text
         /// </summary>
         /// <param name="driver">Selenium driver</param>
         /// <param name="scope">Scope element to narrow link search</param>
         /// <param name="linkText">Element tekst</param>
-        public static  void ClickOnElementWithLabel(this RemoteWebDriver driver, IWebElement scope, string linkText)
+        public static  void ClickOnElementWithText(this RemoteWebDriver driver, IWebElement scope, string linkText)
         {
-            var by = By.XPath(string.Format("//*[contains(text(), '{0}')]", linkText));
+            var by = By.XPath(string.Format(".//*[contains(text(), '{0}') or (@type='submit' and @value='{0}')]", linkText));
             ClickOn(driver, scope, @by);
         }
 
         private static void ClickOn(this RemoteWebDriver driver, IWebElement scope,  By @by)
         {
             var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(SearchElementDefaultTimeout));
-            var linkElement = waiter.Until(
+            var expectedElement = waiter.Until(
                 (a) =>
                 {
-                    var link = scope.FindElement(@by);
-                    if (link != null && link.Displayed && link.Enabled)
+                    var element = scope.FindElement(@by);
+                    if (element != null && element.Displayed && element.Enabled)
                     {
-                        return link;
+                        return element;
                     }
                     return null;
                 });
-            linkElement.Click();
+            expectedElement.Click();
         }
     }
 }
