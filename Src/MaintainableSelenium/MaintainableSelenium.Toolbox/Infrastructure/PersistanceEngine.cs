@@ -48,6 +48,15 @@ namespace MaintainableSelenium.Toolbox.Infrastructure
             }
             return sessionContext.Session;
         }
+
+        internal static ISessionContext GetSessionContext()
+        {
+            if (sessionContext == null)
+            {
+                InitForUtApplication();
+            }
+            return sessionContext;
+        }
     }
 
     public class HiLowIdConvention:IIdConvention

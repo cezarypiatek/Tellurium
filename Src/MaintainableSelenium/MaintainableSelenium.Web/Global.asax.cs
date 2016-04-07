@@ -1,11 +1,19 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Castle.Core;
+using Castle.DynamicProxy;
+using Castle.MicroKernel.Proxy;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using MaintainableSelenium.Toolbox;
 using MaintainableSelenium.Toolbox.Infrastructure;
 using MaintainableSelenium.Web.Mvc;
+using NHibernate;
+using NHibernate.Context;
+using IInterceptor = Castle.DynamicProxy.IInterceptor;
 
 namespace MaintainableSelenium.Web
 {
@@ -17,7 +25,6 @@ namespace MaintainableSelenium.Web
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            PersistanceEngine.InitForWebApplication();
 
             container = new WindsorContainer();
             container.Register(
@@ -31,7 +38,11 @@ namespace MaintainableSelenium.Web
                 Classes.FromAssemblyContaining<ToolboxAssemblyIdentity>()
                     .Where(type => type.GetInterfaces().Any())
                     .WithServiceAllInterfaces()
-                    .LifestyleSingleton());
+                    .LifestyleSingleton(),
+                Component.For<ISessionFactory>()
+                    .UsingFactoryMethod(kernel=> PersistanceEngine.CreateSessionFactory<WebSessionContext>())
+                    .LifestyleSingleton()
+                    );
 
             ControllerBuilder.Current.SetControllerFactory(new WindsorControllerFactory(container));
         }
