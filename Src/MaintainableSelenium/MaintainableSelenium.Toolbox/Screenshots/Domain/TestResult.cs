@@ -9,6 +9,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
         public virtual bool TestPassed { get; set; }
         public virtual BrowserPattern Pattern { get; set; }
         public virtual TestSession TestSession { get; set; }
-        public virtual ScreenshotData ErrorScreenshot { get; set; }
+        public virtual byte[] ErrorScreenshot { get; set; }
+
+        public virtual void MarkAsPattern()
+        {
+            this.Pattern.TestCase.UpdatePatternScreenshot(this.Pattern, this.ErrorScreenshot);
+        }
     }
 }

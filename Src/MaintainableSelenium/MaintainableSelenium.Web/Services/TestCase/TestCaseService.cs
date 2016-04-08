@@ -33,7 +33,7 @@ namespace MaintainableSelenium.Web.Services.TestCase
             using (var tx = sessionContext.Session.BeginTransaction())
             {
                 var testCase = this.testCaseRepository.Get(dto.TestCaseId);
-                var browserPattern = testCase.Patterns.First(x => x.Id == dto.BrowserPatternId);
+                var browserPattern = this.browserPatternRepository.Get(dto.BrowserPatternId);
                 browserPattern.ReplaceBlindregionsSet(dto.LocalBlindRegions);
                 var blindRegionForBrowser = testCase.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == browserPattern.BrowserName)?? new BlindRegionForBrowser();
                 UpdateTestCaseHash(browserPattern, blindRegionForBrowser.BlindRegions);
@@ -83,7 +83,9 @@ namespace MaintainableSelenium.Web.Services.TestCase
             {
                 TestCaseId = x.Id,
                 TestCaseName = x.PatternScreenshotName,
-                Browsers = x.Patterns.Select(y => new BrowserPatternShortcut
+                Browsers = x.GetActivePatterns()
+                .OrderBy(p=> p.BrowserName)
+                .Select(y => new BrowserPatternShortcut
                 {
                     BrowserName = y.BrowserName,
                     PatternId= y.Id,

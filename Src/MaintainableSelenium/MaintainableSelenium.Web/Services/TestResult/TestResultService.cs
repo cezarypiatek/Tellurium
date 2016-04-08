@@ -39,16 +39,9 @@ namespace MaintainableSelenium.Web.Services.TestResult
             using (var tx = sessionContext.Session.BeginTransaction())
             {
                 var testResult = this.testRepository.Get(testResultId);
-                testResult.TestPassed = true;
-                ReplacePattern(testResult);
+                testResult.MarkAsPattern();
                 tx.Commit();
             }
-        }
-
-        private static void ReplacePattern(Toolbox.Screenshots.Domain.TestResult testResult)
-        {
-            testResult.Pattern.PatternScreenshot.Image = testResult.ErrorScreenshot.Image;
-            testResult.Pattern.PatternScreenshot.Hash = testResult.ErrorScreenshot.Hash;
         }
 
         public void MarkAllAsPattern(long testSessionId, string browserName)
@@ -58,7 +51,7 @@ namespace MaintainableSelenium.Web.Services.TestResult
                 var failedTestResults = this.testRepository.FindAll(new FindFailedTestFromSessionForBrowser(testSessionId, browserName));
                 foreach (var testResult in failedTestResults)
                 {
-                    ReplacePattern(testResult);
+                    testResult.MarkAsPattern();
                 }
                 tx.Commit();
             }
@@ -76,12 +69,12 @@ namespace MaintainableSelenium.Web.Services.TestResult
                     return bitmap1;
                 case ScreenshotType.Error:
                 {
-                    var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
+                    var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot);
                     return ImageHelpers.CreateImageDiff(bitmap1, bitmap2, blindRegionForBrowser.BlindRegions, testResult.Pattern.BlindRegions);
                 }
                 case ScreenshotType.Diff:
                 {
-                    var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot.Image);
+                    var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot);
                     return ImageHelpers.CreateImagesXor(bitmap1, bitmap2, blindRegionForBrowser.BlindRegions, testResult.Pattern.BlindRegions);
                 }
                 default:
@@ -122,7 +115,7 @@ namespace MaintainableSelenium.Web.Services.TestResult
                 {
                     SessionId = x.Id,
                     StartDate = x.StartDate.ToString("g"),
-                    Browsers = x.Browsers.ToList()
+                    Browsers = x.Browsers.OrderBy(b=>b).ToList()
                 }).ToList()
             };
         }

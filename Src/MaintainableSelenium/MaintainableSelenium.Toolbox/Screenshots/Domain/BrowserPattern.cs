@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MaintainableSelenium.Toolbox.Infrastructure;
 
@@ -9,6 +10,8 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
         public virtual IList<BlindRegion> BlindRegions { get; set; }
         public virtual ScreenshotData PatternScreenshot { get; set; }
         public virtual TestCase TestCase { get; set; }
+        public virtual bool IsActive { get; set; }
+        public virtual DateTime CreatedOn { get; set; }
 
         public BrowserPattern()
         {

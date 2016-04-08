@@ -36,7 +36,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             {
                 var project = this.GetProject(projectName);
                 var testCase = GetTestCase(project, screenshotName);
-                var browserPattern = testCase.Patterns.FirstOrDefault(x => x.BrowserName == browserName);
+                var browserPattern = testCase.GetPatternForBrowser(browserName);
                 if (browserPattern == null)
                 {
                     testCase.AddNewPattern(screenshot, browserName);
@@ -54,8 +54,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                     if (browserPattern.MatchTo(screenshot) == false)
                     {
                         testResult.TestPassed = false;
-                        testResult.ErrorScreenshot = CreateErrorScreenshotData(browserName, screenshot, project,
-                            browserPattern);
+                        testResult.ErrorScreenshot = screenshot;
                     }
                     else
                     {
@@ -65,17 +64,6 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 }
                 tx.Commit();
             }
-        }
-
-        private static ScreenshotData CreateErrorScreenshotData(string browserName, byte[] screenshot, Project project, BrowserPattern browserPattern)
-        {
-            var globalBlindRegions = project.GetBlindRegionsForBrowser(browserName);
-            var errorScreenshot = new ScreenshotData
-            {
-                Image = screenshot,
-                Hash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions, browserPattern.BlindRegions)
-            };
-            return errorScreenshot;
         }
 
         private static TestCase GetTestCase(Project project, string screenshotName)

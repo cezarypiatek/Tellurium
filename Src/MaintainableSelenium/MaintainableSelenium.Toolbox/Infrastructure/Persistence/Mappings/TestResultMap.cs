@@ -11,7 +11,7 @@ namespace MaintainableSelenium.Toolbox.Infrastructure.Persistence.Mappings
             Map(x => x.ScreenshotName);
             Map(x => x.BrowserName);
             Map(x => x.TestPassed);
-            References(x => x.ErrorScreenshot).Cascade.All();
+            Map(x => x.ErrorScreenshot).Length(int.MaxValue).LazyLoad();
             References(x => x.Pattern);
             References(x => x.TestSession);
         }
