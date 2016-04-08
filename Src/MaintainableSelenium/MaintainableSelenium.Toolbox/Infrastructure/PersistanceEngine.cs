@@ -1,9 +1,12 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
 using NHibernate;
+using NHibernate.Cfg;
 using NHibernate.Context;
 using NHibernate.Tool.hbm2ddl;
 
@@ -27,7 +30,7 @@ namespace MaintainableSelenium.Toolbox.Infrastructure
                 })
                 .ExposeConfiguration(c => {
                     SchemaMetadataUpdater.QuoteTableAndColumns(c);
-                   // new SchemaExport(c).Execute((s) => Debug.WriteLine(s), true, false);
+                    new SchemaUpdate(c).Execute(false, true);
                 })
                 .CurrentSessionContext<TSessionContext>()
                 .BuildConfiguration()
