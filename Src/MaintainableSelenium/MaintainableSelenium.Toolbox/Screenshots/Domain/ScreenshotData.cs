@@ -6,5 +6,21 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
     {
         public virtual string Hash { get; set; }
         public virtual byte[] Image { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Hash.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var screenshotDataObj = obj as ScreenshotData;
+            if (screenshotDataObj == null)
+            {
+                return false;
+            }
+            
+            return this.Hash == screenshotDataObj.Hash;
+        }
     }
 }
