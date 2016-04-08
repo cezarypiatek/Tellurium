@@ -113,9 +113,10 @@
   <ItemGroup>
     <Compile Include="BrowserAdapter.cs" />
     <Compile Include="BrowserAdapterConfig.cs" />
+    <Compile Include="Infrastructure\Persistence\Conventions\HiLowIdConvention.cs" />
     <Compile Include="Infrastructure\SessionContext.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
-    <Compile Include="Infrastructure\PersistanceEngine.cs" />
+    <Compile Include="Infrastructure\Persistence\PersistanceEngine.cs" />
     <Compile Include="Infrastructure\Persistence\Mappings\BlindRegionForBrowserMap.cs" />
     <Compile Include="Infrastructure\Persistence\Mappings\BlindRegionMap.cs" />
     <Compile Include="Infrastructure\Persistence\Mappings\BrowserPatternMap.cs" />
@@ -148,7 +149,7 @@
     <Compile Include="Infrastructure\IQueryOne.cs" />
     <Compile Include="Infrastructure\IRepository.cs" />
     <Compile Include="Screenshots\Domain\Project.cs" />
-    <Compile Include="Infrastructure\Repository.cs" />
+    <Compile Include="Infrastructure\Persistence\Repository.cs" />
     <Compile Include="Screenshots\ScreenshotService.cs" />
     <Compile Include="Screenshots\Domain\TestResult.cs" />
     <Compile Include="ToolboxAssemblyIdentity.cs" />

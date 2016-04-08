@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using MaintainableSelenium.Toolbox.Infrastructure;
+using MaintainableSelenium.Toolbox.Infrastructure.Persistence;
 using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using MaintainableSelenium.Toolbox.Screenshots.Queries;
 

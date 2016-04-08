@@ -1,18 +1,14 @@
-﻿using System;
-using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
-using FluentNHibernate.Conventions;
-using FluentNHibernate.Conventions.Instances;
+using MaintainableSelenium.Toolbox.Infrastructure.Persistence.Conventions;
 using NHibernate;
-using NHibernate.Cfg;
 using NHibernate.Context;
 using NHibernate.Tool.hbm2ddl;
 
-namespace MaintainableSelenium.Toolbox.Infrastructure
+namespace MaintainableSelenium.Toolbox.Infrastructure.Persistence
 {
-    public class PersistanceEngine
+    public static class PersistanceEngine
     {
         private static ISessionFactory sessionFactory;
         private static ISessionContext sessionContext;
@@ -20,7 +16,6 @@ namespace MaintainableSelenium.Toolbox.Infrastructure
         public static ISessionFactory CreateSessionFactory<TSessionContext>() where TSessionContext : CurrentSessionContext
         {
             return Fluently.Configure()
-                //.Database(SQLiteConfiguration.Standard.UsingFile("MaintainableSelenium.db"))
                 .Database(MsSqlConfiguration.MsSql2012.ConnectionString("Data Source=localhost\\SQLEXPRESS;Database=MaintainableSelenium;Integrated Security=true;").ShowSql())
                 .Mappings(x =>
                 {
@@ -37,7 +32,7 @@ namespace MaintainableSelenium.Toolbox.Infrastructure
                 .BuildSessionFactory();
         }
 
-        public static void InitForUtApplication()
+        private static void InitForUtApplication()
         {
             sessionFactory = CreateSessionFactory<ThreadStaticSessionContext>();
             sessionContext = new SessionContext(sessionFactory);
@@ -59,15 +54,6 @@ namespace MaintainableSelenium.Toolbox.Infrastructure
                 InitForUtApplication();
             }
             return sessionContext;
-        }
-    }
-
-    public class HiLowIdConvention:IIdConvention
-    {
-        public void Apply(IIdentityInstance instance)
-        {
-            instance.Column("Id");
-            instance.GeneratedBy.HiLo("1000");
         }
     }
 }

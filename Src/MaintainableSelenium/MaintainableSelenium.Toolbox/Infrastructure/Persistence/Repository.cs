@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Linq;
 
-namespace MaintainableSelenium.Toolbox.Infrastructure
+namespace MaintainableSelenium.Toolbox.Infrastructure.Persistence
 {
     public class Repository<TEntity>: IRepository<TEntity> where TEntity : Entity
     {
