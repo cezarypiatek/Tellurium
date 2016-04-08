@@ -1,2 +1,2 @@
 # Maintainable Selenium
-[![maintainableselenium MyGet Build Status](https://www.myget.org/BuildSource/Badge/maintainableselenium?identifier=9102bcad-e3db-41de-9e32-1ac3bbf43f90)](https://www.myget.org/)
+[![Build status](https://ci.appveyor.com/api/projects/status/t0jlwy833c7sqyte?svg=true)](https://ci.appveyor.com/project/cezarypiatek/maintainableselenium)
