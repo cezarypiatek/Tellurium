@@ -43,6 +43,7 @@ namespace MaintainableSelenium.Toolbox
             {
                 browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
             }
+            //TODO:Set min supported resolution
             browserAdapter.Driver.Manage().Window.Maximize();
             return browserAdapter;
         }
@@ -71,7 +72,7 @@ namespace MaintainableSelenium.Toolbox
 
         public IPageFragment GetPageFragmentById(string elementId)
         {
-            var pageFragment = Driver.GetElementBy(By.Id(elementId));
+            var pageFragment = Driver.GetElementById(elementId);
             return new PageFragment(Driver, pageFragment);
         }
 
