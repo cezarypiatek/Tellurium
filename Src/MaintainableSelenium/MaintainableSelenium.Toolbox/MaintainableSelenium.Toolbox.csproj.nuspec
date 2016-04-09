@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MaintainableSelenium</id>
+    <version>$version$</version>
+    <authors>Cezary Piatek</authors>
+    <owners>Cezary Piatek</owners>
+    <licenseUrl>https://github.com/cezarypiatek/MaintainableSelenium/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/cezarypiatek/MaintainableSelenium/</projectUrl>  
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A utility pack to create maintainanle UI test for ASP.NET MVC projects using Selenium</description>
+    <releaseNotes>Prerelase version</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>UITest Selenium ASP.NET MVC</tags>
+    <dependencies>
+      <dependency id="AForge" version="2.2.5" />
+	  <dependency id="AForge.Imaging" version="2.2.5"/>
+	  <dependency id="AForge.Math" version="2.2.5"/>
+	  <dependency id="FluentNHibernate" version="2.0.3.0"/>
+	  <dependency id="Iesi.Collections" version="4.0.0.4000" />
+	  <dependency id="Microsoft.AspNet.Mvc" version="5.2.3" />
+	  <dependency id="Microsoft.AspNet.Mvc.Futures" version="5.0.0"/>
+	  <dependency id="Microsoft.AspNet.Razor" version="3.2.3"/>
+	  <dependency id="Microsoft.AspNet.WebPages" version="3.2.3" />
+	  <dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />	 
+	  <dependency id="NHibernate" version="4.0.4.4000" />
+	  <dependency id="Selenium.Support" version="2.52.0" />
+	  <dependency id="Selenium.WebDriver" version="2.52.0" />
+    </dependencies>	
+  </metadata>
+  <files>
+		<file src="bin\$configuration$\MaintainableSelenium.Toolbox.dll" target="lib" />
+		<file src="bin\$configuration$\MaintainableSelenium.Toolbox.pdb" target="lib" />
+	</files>
+</package>
