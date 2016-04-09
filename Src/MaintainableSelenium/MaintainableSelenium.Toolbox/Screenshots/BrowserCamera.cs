@@ -4,6 +4,7 @@ using MaintainableSelenium.Toolbox.Infrastructure;
 using MaintainableSelenium.Toolbox.Infrastructure.Persistence;
 using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using MaintainableSelenium.Toolbox.SeleniumUtils;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
@@ -20,6 +21,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         public string ProjectName { get; set; }
         public string ImageNamePrefix { get; set; }
+        public string BrowserName { get; set; }
 
         public BrowserCamera(RemoteWebDriver driver,  ScreenshotService screenshotService)
         {
@@ -30,7 +32,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         public void TakeScreenshot(string name)
         {
             driver.Blur();
-            var screenshot = driver.GetScreenshot();
+            var screenshot = GetScreenshot();
             var fullName = string.Format("{0}_{1}", ImageNamePrefix, name);
             var screenshotUniqueName = string.Format("{0}_{1}", ProjectName, fullName);
             if (takenScreenshots.Contains(screenshotUniqueName))
@@ -38,16 +40,30 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 throw new DuplicatedScreenshotInSession(fullName);
             }
             takenScreenshots.Add(screenshotUniqueName);
-            screenshotService.Persist(fullName, driver.Capabilities.BrowserName, screenshot.AsByteArray, ProjectName);
+            screenshotService.Persist(fullName, BrowserName, screenshot.AsByteArray, ProjectName);
         }
 
-        public static IBrowserCamera CreateNew(RemoteWebDriver driver,  string projectName, string imageNamePrefix)
+        private Screenshot GetScreenshot()
+        {
+            try
+            {
+                return driver.GetScreenshot();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.GetFullExceptionMessage());
+                throw;
+            }
+        }
+
+        public static IBrowserCamera CreateNew(RemoteWebDriver driver, string browserName, string projectName, string imageNamePrefix)
         {
             var screenshotService = new ScreenshotService(new Repository<Project>(PersistanceEngine.GetSessionContext()));
             return new BrowserCamera(driver, screenshotService)
             {
                 ProjectName = projectName,
-                ImageNamePrefix = imageNamePrefix
+                ImageNamePrefix = imageNamePrefix,
+                BrowserName = browserName
             };
         }
     }
