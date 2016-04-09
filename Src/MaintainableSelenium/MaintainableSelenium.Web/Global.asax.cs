@@ -1,19 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Castle.Core;
-using Castle.DynamicProxy;
-using Castle.MicroKernel.Proxy;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using MaintainableSelenium.Toolbox;
-using MaintainableSelenium.Toolbox.Infrastructure;
+using MaintainableSelenium.Toolbox.Infrastructure.Persistence;
 using MaintainableSelenium.Web.Mvc;
 using NHibernate;
 using NHibernate.Context;
-using IInterceptor = Castle.DynamicProxy.IInterceptor;
 
 namespace MaintainableSelenium.Web
 {
