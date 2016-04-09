@@ -54,10 +54,5 @@ namespace MaintainableSelenium.Toolbox.WebPages.WebForms
             }
             input.SetValue(fieldElement, value);
         }
-
-        public void Submit()
-        {
-            this.WebElement.Submit();
-        }
     }
 }
