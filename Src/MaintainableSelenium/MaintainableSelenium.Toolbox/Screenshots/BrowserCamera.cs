@@ -16,11 +16,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     {
         private readonly RemoteWebDriver driver;
         private readonly ScreenshotService screenshotService;
-        private readonly ISet<string> takenScreenshots = new HashSet<string>();
+        private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
 
 
         public string ProjectName { get; set; }
-        public string ImageNamePrefix { get; set; }
+        public string ScreenshotCategory { get; set; }
         public string BrowserName { get; set; }
 
         public BrowserCamera(RemoteWebDriver driver,  ScreenshotService screenshotService)
@@ -31,22 +31,22 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         public void TakeScreenshot(string name)
         {
-            driver.Blur();
-            var screenshot = GetScreenshot();
-            var fullName = string.Format("{0}_{1}", ImageNamePrefix, name);
-            var screenshotUniqueName = string.Format("{0}_{1}", ProjectName, fullName);
-            if (takenScreenshots.Contains(screenshotUniqueName))
+            var screenshotIdentity = new ScreenshotIdentity(ProjectName,BrowserName,ScreenshotCategory, name);
+            if (takenScreenshots.Contains(screenshotIdentity))
             {
-                throw new DuplicatedScreenshotInSession(fullName);
+                throw new DuplicatedScreenshotInSession(screenshotIdentity);
             }
-            takenScreenshots.Add(screenshotUniqueName);
-            screenshotService.Persist(fullName, BrowserName, screenshot.AsByteArray, ProjectName);
+
+            var screenshot = GetScreenshot();
+            takenScreenshots.Add(screenshotIdentity);
+            screenshotService.Persist(screenshot.AsByteArray, screenshotIdentity);
         }
 
         private Screenshot GetScreenshot()
         {
             try
             {
+                driver.Blur();
                 return driver.GetScreenshot();
             }
             catch (Exception ex)
@@ -56,24 +56,15 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        public static IBrowserCamera CreateNew(RemoteWebDriver driver, string browserName, string projectName, string imageNamePrefix)
+        public static IBrowserCamera CreateNew(RemoteWebDriver driver, string browserName, string projectName, string screenshotCategory)
         {
             var screenshotService = new ScreenshotService(new Repository<Project>(PersistanceEngine.GetSessionContext()));
             return new BrowserCamera(driver, screenshotService)
             {
                 ProjectName = projectName,
-                ImageNamePrefix = imageNamePrefix,
+                ScreenshotCategory = screenshotCategory,
                 BrowserName = browserName
             };
-        }
-    }
-
-    public class DuplicatedScreenshotInSession: ApplicationException
-    {
-
-        public DuplicatedScreenshotInSession(string screenshotName)
-            :base(string.Format("Cannot take twice the same screenshot. Duplicated screenshot name {0}", screenshotName))
-        {
         }
     }
 }

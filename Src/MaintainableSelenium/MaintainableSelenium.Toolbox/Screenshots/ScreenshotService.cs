@@ -31,16 +31,16 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             return testSession;
         }
 
-        public void Persist(string screenshotName, string browserName, byte[] screenshot, string projectName)
+        public void Persist(byte[] image, ScreenshotIdentity screenshotIdentity)
         {
             using (var tx = PersistanceEngine.GetSession().BeginTransaction())
             {
-                var project = this.GetProject(projectName);
-                var testCase = GetTestCase(project, screenshotName);
-                var browserPattern = testCase.GetPatternForBrowser(browserName);
+                var project = this.GetProject(screenshotIdentity.ProjectName);
+                var testCase = GetTestCase(project, screenshotIdentity);
+                var browserPattern = testCase.GetPatternForBrowser(screenshotIdentity.BrowserName);
                 if (browserPattern == null)
                 {
-                    testCase.AddNewPattern(screenshot, browserName);
+                    testCase.AddNewPattern(image, screenshotIdentity.BrowserName);
                 }
                 else
                 {
@@ -48,14 +48,15 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                     var testResult = new TestResult
                     {
                         Pattern = browserPattern,
-                        ScreenshotName = screenshotName,
-                        BrowserName = browserName
+                        ScreenshotName = screenshotIdentity.ScreenshotName,
+                        Category = screenshotIdentity.Category,
+                        BrowserName = screenshotIdentity.BrowserName
                     };
 
-                    if (browserPattern.MatchTo(screenshot) == false)
+                    if (browserPattern.MatchTo(image) == false)
                     {
                         testResult.TestPassed = false;
-                        testResult.ErrorScreenshot = screenshot;
+                        testResult.ErrorScreenshot = image;
                     }
                     else
                     {
@@ -67,14 +68,15 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        private static TestCase GetTestCase(Project project, string screenshotName)
+        private static TestCase GetTestCase(Project project, ScreenshotIdentity screenshotIdentity)
         {
-            var testCase = project.TestCases.FirstOrDefault(x => x.PatternScreenshotName == screenshotName);
+            var testCase = project.TestCases.FirstOrDefault(x => x.PatternScreenshotName == screenshotIdentity.ScreenshotName && x.Category == screenshotIdentity.Category);
             if (testCase == null)
             {
                 testCase = new TestCase
                 {
-                    PatternScreenshotName = screenshotName
+                    PatternScreenshotName = screenshotIdentity.ScreenshotName,
+                    Category = screenshotIdentity.Category
                 };
 
                 project.AddTestCase(testCase);

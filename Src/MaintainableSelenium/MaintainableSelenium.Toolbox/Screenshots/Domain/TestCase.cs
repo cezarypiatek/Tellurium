@@ -8,6 +8,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
     public class TestCase:Entity
     {
         public virtual string PatternScreenshotName { get; set; }
+        public virtual string Category { get; set; }
         public virtual IList<BrowserPattern> Patterns { get; set; }
         public virtual Project Project { get; set; }
 

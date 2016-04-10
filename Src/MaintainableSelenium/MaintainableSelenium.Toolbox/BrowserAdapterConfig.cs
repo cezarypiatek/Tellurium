@@ -12,7 +12,7 @@ namespace MaintainableSelenium.Toolbox
 
         public string ProjectName { get; set; }
 
-        public string ScreenshotPrefix { get; set; }
+        public string ScreenshotCategory { get; set; }
 
         public string PageUrl { get; set; }
 

@@ -82,7 +82,7 @@ namespace MaintainableSelenium.Web.Services.TestCase
             return testCases.Select(x => new TestCaseListItem
             {
                 TestCaseId = x.Id,
-                TestCaseName = x.PatternScreenshotName,
+                TestCaseName = string.Format("{0} \\ {1}", x.Category, x.PatternScreenshotName),
                 Browsers = x.GetActivePatterns()
                 .OrderBy(p=> p.BrowserName)
                 .Select(y => new BrowserPatternShortcut

@@ -100,7 +100,7 @@ namespace MaintainableSelenium.Web.Services.TestResult
             {
                 TestResultId = x.Id,
                 TestPassed = x.TestPassed,
-                ScreenshotName = x.ScreenshotName
+                ScreenshotName = string.Format("{0} \\ {1}", x.Category, x.ScreenshotName)
             };
         }
 

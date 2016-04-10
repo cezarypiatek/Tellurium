@@ -25,7 +25,7 @@ namespace MaintainableSelenium.Toolbox
         {
             var browserAdapter = new BrowserAdapter();
             browserAdapter.Driver = SeleniumDriverFactory.CreateLocalDriver(config.BrowserType, config.SeleniumDriversPath);
-            browserAdapter.browserCamera = BrowserCamera.CreateNew(browserAdapter.Driver, config.BrowserType.ToString(), config.ProjectName, config.ScreenshotPrefix);
+            browserAdapter.browserCamera = BrowserCamera.CreateNew(browserAdapter.Driver, config.BrowserType.ToString(), config.ProjectName, config.ScreenshotCategory);
             browserAdapter.navigator = new Navigator(browserAdapter.Driver, config.PageUrl);
             
             if (config.InputAdapters == null)

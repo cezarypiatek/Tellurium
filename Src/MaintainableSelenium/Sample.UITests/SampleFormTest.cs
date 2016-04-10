@@ -24,7 +24,7 @@ namespace MaintainableSelenium.Sample.UITests
                 BrowserType = driverType,
                 PageUrl = "http://localhost:51767",
                 ProjectName = "Sample Project",
-                ScreenshotPrefix = "Sample Form",
+                ScreenshotCategory = "Sample Form",
                 SeleniumDriversPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers")
             };
 
