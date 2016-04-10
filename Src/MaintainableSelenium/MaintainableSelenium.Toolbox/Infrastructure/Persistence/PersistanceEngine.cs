@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
 using MaintainableSelenium.Toolbox.Infrastructure.Persistence.Conventions;
 using NHibernate;
+using NHibernate.Cfg;
 using NHibernate.Context;
 using NHibernate.Tool.hbm2ddl;
 
@@ -15,8 +15,8 @@ namespace MaintainableSelenium.Toolbox.Infrastructure.Persistence
         
         public static ISessionFactory CreateSessionFactory<TSessionContext>() where TSessionContext : CurrentSessionContext
         {
-            return Fluently.Configure()
-                .Database(MsSqlConfiguration.MsSql2012.ConnectionString("Data Source=localhost\\SQLEXPRESS;Database=MaintainableSelenium;Integrated Security=true;").ShowSql())
+            var nhDbConfig = ReadNhConfig();
+            return Fluently.Configure(nhDbConfig)
                 .Mappings(x =>
                 {
                     x.FluentMappings.AddFromAssembly(Assembly.GetExecutingAssembly())
@@ -30,6 +30,13 @@ namespace MaintainableSelenium.Toolbox.Infrastructure.Persistence
                 .CurrentSessionContext<TSessionContext>()
                 .BuildConfiguration()
                 .BuildSessionFactory();
+        }
+
+        private static Configuration ReadNhConfig()
+        {
+            var nhDbConfig = new Configuration();
+            nhDbConfig.Configure();
+            return nhDbConfig;
         }
 
         private static void InitForUtApplication()
