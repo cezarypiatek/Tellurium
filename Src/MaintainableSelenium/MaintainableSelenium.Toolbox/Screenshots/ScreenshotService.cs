@@ -70,16 +70,15 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         private static TestCase GetTestCase(Project project, ScreenshotIdentity screenshotIdentity)
         {
-            var testCase = project.TestCases.FirstOrDefault(x => x.PatternScreenshotName == screenshotIdentity.ScreenshotName && x.Category == screenshotIdentity.Category);
+            var testCaseCategory = project.TestCaseCategories.FirstOrDefault(x=> x.Name == screenshotIdentity.Category);
+            if (testCaseCategory == null)
+            {
+                testCaseCategory = project.AddTestCaseCategory(screenshotIdentity.Category);
+            }
+            var testCase = testCaseCategory.TestCases.FirstOrDefault(x => x.PatternScreenshotName == screenshotIdentity.ScreenshotName);
             if (testCase == null)
             {
-                testCase = new TestCase
-                {
-                    PatternScreenshotName = screenshotIdentity.ScreenshotName,
-                    Category = screenshotIdentity.Category
-                };
-
-                project.AddTestCase(testCase);
+                testCase = testCaseCategory.AddTestCase(screenshotIdentity.ScreenshotName);
             }
             return testCase;
         }

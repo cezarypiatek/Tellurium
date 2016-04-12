@@ -3,15 +3,14 @@ using MaintainableSelenium.Toolbox.Screenshots.Domain;
 
 namespace MaintainableSelenium.Toolbox.Infrastructure.Persistence.Mappings
 {
-    public class TestCaseMap : ClassMap<TestCase>
+    public class TestCaseCategoryMap : ClassMap<TestCaseCategory>
     {
-        public TestCaseMap()
+        public TestCaseCategoryMap()
         {
             Id(x => x.Id);
-            Map(x => x.PatternScreenshotName);
-            References(x => x.Category);
-            HasMany(x => x.Patterns).Cascade.Persist();
+            Map(x => x.Name);
             References(x => x.Project);
+            HasMany(x => x.TestCases).Cascade.AllDeleteOrphan();
         }
     }
 }

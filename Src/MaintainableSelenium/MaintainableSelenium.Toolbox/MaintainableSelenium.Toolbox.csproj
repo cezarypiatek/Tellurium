@@ -111,7 +111,9 @@
     <Compile Include="BrowserAdapterConfig.cs" />
     <Compile Include="Infrastructure\ExceptionHelper.cs" />
     <Compile Include="Infrastructure\Persistence\Conventions\HiLowIdConvention.cs" />
+    <Compile Include="Infrastructure\Persistence\Mappings\TestCaseCategoryMap.cs" />
     <Compile Include="Infrastructure\SessionContext.cs" />
+    <Compile Include="Screenshots\Domain\TestCaseCategory.cs" />
     <Compile Include="Screenshots\DuplicatedScreenshotInSession.cs" />
     <Compile Include="Screenshots\ScreenshotIdentity.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />

@@ -18,11 +18,18 @@ namespace MaintainableSelenium.Web.Controllers
         {
             var projectsList = testCaseService.GetProjectsList();
             return View("ProjectsList", projectsList);
+        }  
+        
+        
+        public ActionResult GetTestCaseCategories(long projectId)
+        {
+            var categoriesList = testCaseService.GetTestCaseCategories(projectId);
+            return PartialView("CategoriesList", categoriesList);
         }
 
-        public ActionResult GetTestCasesFromProject(long projectId)
+        public ActionResult GetTestCasesFromCategory(long categoryId)
         {
-            var testCases = testCaseService.GetTestCasesFromProject(projectId);
+            var testCases = testCaseService.GetTestCasesFromCategory(categoryId);
             return PartialView(testCases);
         }
 

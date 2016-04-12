@@ -17,15 +17,17 @@ namespace MaintainableSelenium.Web.Services.TestCase
         private readonly IRepository<BrowserPattern> browserPatternRepository;
         private readonly IRepository<Project> projectRepository;
         private readonly ISessionContext sessionContext;
+        private readonly IRepository<TestCaseCategory> testCaseCategoryRepository;
 
         public TestCaseService(IRepository<Toolbox.Screenshots.Domain.TestCase> testCaseRepository, 
             IRepository<BrowserPattern> browserPatternRepository,
-            IRepository<Project> projectRepository, ISessionContext sessionContext)
+            IRepository<Project> projectRepository, ISessionContext sessionContext, IRepository<TestCaseCategory> testCaseCategoryRepository )
         {
             this.testCaseRepository = testCaseRepository;
             this.browserPatternRepository = browserPatternRepository;
             this.projectRepository = projectRepository;
             this.sessionContext = sessionContext;
+            this.testCaseCategoryRepository = testCaseCategoryRepository;
         }
 
         public void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto)
@@ -76,13 +78,26 @@ namespace MaintainableSelenium.Web.Services.TestCase
             browserPattern.PatternScreenshot.Hash = ImageHelpers.ComputeHash(browserPattern.PatternScreenshot.Image, globalBlindRegions, browserPattern.BlindRegions);
         }
 
-        public List<TestCaseListItem> GetTestCasesFromProject(long projectId)
+        public TestCaseCategoriesListViewModel GetTestCaseCategories(long projectId)
         {
-            var testCases = this.testCaseRepository.FindAll(new FindTestCasesFromProject(projectId));
+            var testCaseCategories = this.testCaseCategoryRepository.FindAll(new FindTestCaseCategoriesFromProject(projectId));
+            return new TestCaseCategoriesListViewModel
+            {
+                Categories = testCaseCategories.ConvertAll(x => new TestCaseCategoryListItem()
+                {
+                    CategoryId = x.Id,
+                    CategoryName = x.Name
+                })
+            };
+        }
+
+        public List<TestCaseListItem> GetTestCasesFromCategory(long categoryId)
+        {
+            var testCases = this.testCaseRepository.FindAll(new FindTestCasesFromCategory(categoryId));
             return testCases.Select(x => new TestCaseListItem
             {
                 TestCaseId = x.Id,
-                TestCaseName = string.Format("{0} \\ {1}", x.Category, x.PatternScreenshotName),
+                TestCaseName = x.PatternScreenshotName,
                 Browsers = x.GetActivePatterns()
                 .OrderBy(p=> p.BrowserName)
                 .Select(y => new BrowserPatternShortcut
@@ -132,9 +147,10 @@ namespace MaintainableSelenium.Web.Services.TestCase
     {
         void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto);
         void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto);
-        List<TestCaseListItem> GetTestCasesFromProject(long projectId);
+        List<TestCaseListItem> GetTestCasesFromCategory(long categoryId);
         BrowserPatternDTO GetTestCasePattern(long testCaseId, long patternId);
         byte[] GetPatternScreenshot(long patternId);
         ProjectListViewModel GetProjectsList();
+        TestCaseCategoriesListViewModel GetTestCaseCategories(long projectId);
     }
 }

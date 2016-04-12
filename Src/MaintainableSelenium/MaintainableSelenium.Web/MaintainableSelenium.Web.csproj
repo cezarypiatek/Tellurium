@@ -188,7 +188,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Models\TestCase\TestCaseCategoryListItem.cs" />
     <Compile Include="Mvc\WindsorControllerFactory.cs" />
+    <Compile Include="Services\TestCase\Queries\FindTestCaseCategoriesFromProject.cs" />
     <Compile Include="Services\TestResult\Queries\FindAllSessionFromProject.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Models\Home\SaveGlobalBlindRegionsDTO.cs" />
@@ -196,6 +198,7 @@
     <Compile Include="Controllers\TestCaseController.cs" />
     <Compile Include="Models\Home\BrowserPatternDTO.cs" />
     <Compile Include="Services\TestCase\TestCaseService.cs" />
+    <Compile Include="Services\TestResult\TestCaseCategoriesListViewModel.cs" />
     <Compile Include="Services\TestResult\TestResultService.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -210,7 +213,7 @@
     <Compile Include="Mvc\TestCaseWidget.cs" />
     <Compile Include="Mvc\TestResultWidget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\TestCase\Queries\FindTestCasesFromProject.cs" />
+    <Compile Include="Services\TestCase\Queries\FindTestCasesFromCategory.cs" />
     <Compile Include="Services\TestResult\Queries\FindFailedTestFromSessionForBrowser.cs" />
     <Compile Include="WebAssemblyIdentity.cs" />
   </ItemGroup>
@@ -255,11 +258,12 @@
     <Content Include="Views\Home\TestSessionList.cshtml" />
     <Content Include="Views\Home\TestResultList.cshtml" />
     <Content Include="Views\Home\TestResultDetails.cshtml" />
-    <Content Include="Views\TestCase\GetTestCasesFromProject.cshtml" />
+    <Content Include="Views\TestCase\GetTestCasesFromCategory.cshtml" />
     <Content Include="Views\TestCase\GetTestCasePattern.cshtml" />
     <Content Include="Views\Home\TestResultInfo.cshtml" />
     <Content Include="Views\Home\ProjectList.cshtml" />
     <Content Include="Views\TestCase\ProjectsList.cshtml" />
+    <Content Include="Views\TestCase\CategoriesList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

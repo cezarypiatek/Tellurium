@@ -10,14 +10,14 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
         public virtual IList<TestSession> Sessions { get; set; }
 
         public virtual IList<BlindRegionForBrowser> GlobalBlindRegionsForBrowsers { get; set; }
-        public virtual IList<TestCase> TestCases { get; set; }
+        public virtual IList<TestCaseCategory> TestCaseCategories { get; set; }
 
 
         public Project()
         {
             Sessions = new List<TestSession>(); 
             GlobalBlindRegionsForBrowsers = new List<BlindRegionForBrowser>();
-            TestCases = new List<TestCase>();
+            TestCaseCategories = new List<TestCaseCategory>();
         }
 
         public virtual  void AddSession(TestSession session)
@@ -26,10 +26,15 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
             Sessions.Add(session);
         }
 
-        public virtual void AddTestCase(TestCase testCase)
+        public virtual TestCaseCategory AddTestCaseCategory(string categoryName)
         {
-            testCase.Project = this;
-            TestCases.Add(testCase);
+            var newCategory = new TestCaseCategory()
+            {
+                Name = categoryName,
+                Project = this
+            };
+            TestCaseCategories.Add(newCategory);
+            return newCategory;
         }
 
         public virtual void AddGlobalBlindRegions(BlindRegionForBrowser blindRegionForBrowser)

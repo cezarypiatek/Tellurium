@@ -4,18 +4,18 @@ using MaintainableSelenium.Toolbox.Infrastructure;
 
 namespace MaintainableSelenium.Web.Services.TestCase.Queries
 {
-    public class FindTestCasesFromProject:IQueryAll<Toolbox.Screenshots.Domain.TestCase>
+    public class FindTestCasesFromCategory:IQueryAll<Toolbox.Screenshots.Domain.TestCase>
     {
-        private readonly long projectId;
+        private readonly long categoryId;
 
-        public FindTestCasesFromProject(long projectId)
+        public FindTestCasesFromCategory(long categoryId)
         {
-            this.projectId = projectId;
+            this.categoryId = categoryId;
         }
 
         public List<Toolbox.Screenshots.Domain.TestCase> GetQuery(IQueryable<Toolbox.Screenshots.Domain.TestCase> query)
         {
-            return query.Where(x => x.Project.Id == projectId).ToList();
+            return query.Where(x => x.Category.Id == categoryId).ToList();
         }
     }
 }
