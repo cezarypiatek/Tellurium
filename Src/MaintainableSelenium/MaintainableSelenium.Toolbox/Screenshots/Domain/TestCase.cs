@@ -36,9 +36,9 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
             this.AddNewPattern(newScreenshot, pattern.BrowserName);
         }
 
-        public virtual BrowserPattern GetPatternForBrowser(string browserName)
+        public virtual BrowserPattern GetActivePatternForBrowser(string browserName)
         {
-            return Patterns.FirstOrDefault(x => x.BrowserName == browserName);
+            return Patterns.FirstOrDefault(x => x.BrowserName == browserName && x.IsActive);
         }
 
         public virtual List<BrowserPattern> GetActivePatterns()

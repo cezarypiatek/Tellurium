@@ -37,7 +37,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             {
                 var project = this.GetProject(screenshotIdentity.ProjectName);
                 var testCase = GetTestCase(project, screenshotIdentity);
-                var browserPattern = testCase.GetPatternForBrowser(screenshotIdentity.BrowserName);
+                var browserPattern = testCase.GetActivePatternForBrowser(screenshotIdentity.BrowserName);
                 if (browserPattern == null)
                 {
                     testCase.AddNewPattern(image, screenshotIdentity.BrowserName);
