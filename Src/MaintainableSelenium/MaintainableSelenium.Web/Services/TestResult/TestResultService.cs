@@ -60,7 +60,6 @@ namespace MaintainableSelenium.Web.Services.TestResult
         public Bitmap GetScreenshot(long testId, ScreenshotType screenshotType)
         {
             var testResult = this.testRepository.Get(testId);
-            var blindRegionForBrowser = testResult.TestSession.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == testResult.BrowserName) ?? new BlindRegionForBrowser();
             var bitmap1 = ImageHelpers.ConvertBytesToBitmap(testResult.Pattern.PatternScreenshot.Image);
 
             switch (screenshotType)
@@ -70,12 +69,12 @@ namespace MaintainableSelenium.Web.Services.TestResult
                 case ScreenshotType.Error:
                 {
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot);
-                    return ImageHelpers.CreateImageDiff(bitmap1, bitmap2, blindRegionForBrowser.BlindRegions, testResult.Pattern.BlindRegions);
+                    return ImageHelpers.CreateImageDiff(bitmap1, bitmap2, testResult.Pattern.GetAllBlindRegions());
                 }
                 case ScreenshotType.Diff:
                 {
                     var bitmap2 = ImageHelpers.ConvertBytesToBitmap(testResult.ErrorScreenshot);
-                    return ImageHelpers.CreateImagesXor(bitmap1, bitmap2, blindRegionForBrowser.BlindRegions, testResult.Pattern.BlindRegions);
+                    return ImageHelpers.CreateImagesXor(bitmap1, bitmap2, testResult.Pattern.GetAllBlindRegions());
                 }
                 default:
                     throw new ArgumentOutOfRangeException("screenshotType", screenshotType, null);

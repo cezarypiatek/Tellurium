@@ -34,11 +34,8 @@ namespace MaintainableSelenium.Web.Services.TestCase
         {
             using (var tx = sessionContext.Session.BeginTransaction())
             {
-                var testCase = this.testCaseRepository.Get(dto.TestCaseId);
                 var browserPattern = this.browserPatternRepository.Get(dto.BrowserPatternId);
-                browserPattern.ReplaceBlindregionsSet(dto.LocalBlindRegions);
-                var blindRegionForBrowser = testCase.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == browserPattern.BrowserName)?? new BlindRegionForBrowser();
-                UpdateTestCaseHash(browserPattern, blindRegionForBrowser.BlindRegions);
+                browserPattern.ReplaceLocalBlindRegionsSet(dto.LocalBlindRegions);
                 tx.Commit();
             }
         }
@@ -53,7 +50,7 @@ namespace MaintainableSelenium.Web.Services.TestCase
                 var browserPatterns = this.browserPatternRepository.FindAll(new FindPatternsForBrowserInProject(testCase.Project.Id,dto.BrowserName));
                 browserPatterns.AsParallel().ForAll(bp =>
                 {
-                    UpdateTestCaseHash(bp, globalRegionsForBrowser.BlindRegions);
+                    bp.UpdateTestCaseHash();
                 }); 
                 tx.Commit();
             }
@@ -71,11 +68,6 @@ namespace MaintainableSelenium.Web.Services.TestCase
                 testCase.Project.AddGlobalBlindRegions(globalRegionsForBrowser);
             }
             return globalRegionsForBrowser;
-        }
-
-        private void UpdateTestCaseHash(BrowserPattern browserPattern, IList<BlindRegion> globalBlindRegions)
-        {
-            browserPattern.PatternScreenshot.Hash = ImageHelpers.ComputeHash(browserPattern.PatternScreenshot.Image, globalBlindRegions, browserPattern.BlindRegions);
         }
 
         public TestCaseCategoriesListViewModel GetTestCaseCategories(long projectId)

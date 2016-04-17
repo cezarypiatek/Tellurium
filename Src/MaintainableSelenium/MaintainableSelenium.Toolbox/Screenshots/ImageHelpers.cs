@@ -20,7 +20,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         private static readonly BinaryDilatation3x3 DilatationFilter = new BinaryDilatation3x3();
         private static readonly Pen DiffPen = new Pen(Color.FromArgb(128, Color.Red));
 
-        public static Bitmap CreateImageDiff(Bitmap a, Bitmap b, IList<BlindRegion> globalBlindRegions, IList<BlindRegion> localBlindRegions)
+        public static Bitmap CreateImageDiff(Bitmap a, Bitmap b, IReadOnlyList<BlindRegion> globalBlindRegions)
         {
             var unified = UnifiImagesDimensions(a, b);
             var filter = new ThresholdedDifference(0) {OverlayImage = unified.Item1};
@@ -28,7 +28,6 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             DilatationFilter.ApplyInPlace(imageDiff);
             var fixedBitmap = CloneBitmapFormat(imageDiff);
             MarkBlindRegions(fixedBitmap, globalBlindRegions);
-            MarkBlindRegions(fixedBitmap, localBlindRegions);
             var result = CloneBitmapFormat(unified.Item2);
             DrawBounds(fixedBitmap, result);
             return result;
@@ -99,8 +98,8 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         /// </summary>
         /// <param name="a">Bitmap a</param>
         /// <param name="b">Bitmap b</param>
-        /// <param name="globalBlindRegions">List of squares to ignore</param>
-        public static Bitmap CreateImagesXor(Bitmap a, Bitmap b, IList<BlindRegion> globalBlindRegions, IList<BlindRegion> localBlindRegions)
+        /// <param name="blindRegions">List of squares to ignore</param>
+        public static Bitmap CreateImagesXor(Bitmap a, Bitmap b, IReadOnlyList<BlindRegion> blindRegions)
         {
             var unified = UnifiImagesDimensions(a, b);
             var pixelBufferA = GetPixelBuffer(unified.Item1);
@@ -141,9 +140,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             var resultData = resultBitmap.LockBits(lockBoundRectangle, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
             Marshal.Copy(resultBuffer, 0, resultData.Scan0, resultBuffer.Length);
             resultBitmap.UnlockBits(resultData);
-            MarkBlindRegions(resultBitmap, globalBlindRegions);
-            MarkBlindRegions(resultBitmap, localBlindRegions);
-
+            MarkBlindRegions(resultBitmap, blindRegions);
             return resultBitmap;
         }
 
@@ -263,7 +260,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        private static void MarkBlindRegions(Image image, IList<BlindRegion> blindRegions)
+        private static void MarkBlindRegions(Image image, IReadOnlyList<BlindRegion> blindRegions)
         {
             if (blindRegions == null || blindRegions.Count == 0)
                 return;
@@ -281,15 +278,12 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         /// Calculate image hash ignoring given regions
         /// </summary>
         /// <param name="screenshot">Source image for hash</param>
-        /// <param name="globalBlindRegions">Global Regions to ignore</param>
+        /// <param name="blindRegions">Global Regions to ignore</param>
         /// <param name="localBlindRegions">Regions to ignore</param>
-        public static string ComputeHash(byte[] screenshot, IList<BlindRegion> globalBlindRegions, IList<BlindRegion> localBlindRegions=null)
+        public static string ComputeHash(byte[] screenshot, IReadOnlyList<BlindRegion> blindRegions)
         {
             var image = ConvertBytesToImage(screenshot);
-
-            MarkBlindRegions(image, globalBlindRegions);
-            MarkBlindRegions(image, localBlindRegions);
-
+            MarkBlindRegions(image, blindRegions);
             var imageBytes = ConvertImageToBytes(image);
             using (var md5 = MD5.Create())
             {

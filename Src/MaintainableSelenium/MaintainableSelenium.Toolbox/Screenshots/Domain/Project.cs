@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using MaintainableSelenium.Toolbox.Infrastructure;
 
@@ -42,14 +43,14 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
             this.GlobalBlindRegionsForBrowsers.Add(blindRegionForBrowser);
         }
 
-        public virtual IList<BlindRegion> GetBlindRegionsForBrowser(string browserName)
+        public virtual IReadOnlyList<BlindRegion> GetBlindRegionsForBrowser(string browserName)
         {
             var blindRegionsForBrowser = this.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == browserName);
             if (blindRegionsForBrowser == null)
             {
                 return new List<BlindRegion>();
             }
-            return blindRegionsForBrowser.BlindRegions;
+            return new ReadOnlyCollection<BlindRegion>(blindRegionsForBrowser.BlindRegions);
         }
     }
 }
