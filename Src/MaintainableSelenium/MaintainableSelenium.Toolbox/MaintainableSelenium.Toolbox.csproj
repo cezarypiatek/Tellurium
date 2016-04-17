@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="BrowserAdapter.cs" />
     <Compile Include="BrowserAdapterConfig.cs" />
+    <Compile Include="BrowserDimensionsConfig.cs" />
     <Compile Include="Infrastructure\ExceptionHelper.cs" />
     <Compile Include="Infrastructure\Persistence\Conventions\HiLowIdConvention.cs" />
     <Compile Include="Infrastructure\Persistence\Mappings\TestCaseCategoryMap.cs" />

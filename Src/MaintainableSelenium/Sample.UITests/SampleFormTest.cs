@@ -25,7 +25,12 @@ namespace MaintainableSelenium.Sample.UITests
                 PageUrl = "http://localhost:51767",
                 ProjectName = "Sample Project",
                 ScreenshotCategory = "Sample Form",
-                SeleniumDriversPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers")
+                SeleniumDriversPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"),
+                BrowserDimensions = new BrowserDimensionsConfig
+                {
+                    Width = 1200,
+                    Height = 768
+                }
             };
 
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))

@@ -17,5 +17,7 @@ namespace MaintainableSelenium.Toolbox
         public string PageUrl { get; set; }
 
         public  List<IFormInputAdapter> InputAdapters { get; set; }
+
+        public BrowserDimensionsConfig BrowserDimensions { get; set; }
     }
 }

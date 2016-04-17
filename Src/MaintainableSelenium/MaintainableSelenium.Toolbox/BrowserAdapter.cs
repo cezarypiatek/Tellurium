@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
@@ -43,9 +44,27 @@ namespace MaintainableSelenium.Toolbox
             {
                 browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
             }
-            //TODO:Set min supported resolution
-            browserAdapter.Driver.Manage().Window.Maximize();
+
+            browserAdapter.SetupBrowserDimensions(config.BrowserDimensions);
+
             return browserAdapter;
+        }
+
+        public  void SetupBrowserDimensions(BrowserDimensionsConfig dimensionsConfig)
+        {
+            var browserOptions = this.Driver.Manage();
+            if (dimensionsConfig == null)
+            {
+                browserOptions.Window.Maximize();
+            }
+            else
+            {
+                browserOptions.Window.Size = new Size
+                {
+                    Width = dimensionsConfig.Width,
+                    Height = dimensionsConfig.Height
+                };
+            }
         }
 
 
