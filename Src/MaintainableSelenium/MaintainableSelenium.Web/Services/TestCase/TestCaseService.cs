@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MaintainableSelenium.Toolbox.Infrastructure;
-using MaintainableSelenium.Toolbox.Screenshots;
 using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using MaintainableSelenium.Toolbox.Screenshots.Queries;
 using MaintainableSelenium.Web.Models.Home;
@@ -40,36 +39,60 @@ namespace MaintainableSelenium.Web.Services.TestCase
             }
         }
 
+        public void SaveCategoryBlindregions(SaveCategoryBlindRegionsDTO dto)
+        {
+            using (var tx = sessionContext.Session.BeginTransaction())
+            {
+                var testCase = this.testCaseRepository.Get(dto.TestCaseId);
+                var categoryRegionsForBrowser = GetGlobalBlindRegionsForBrowser(testCase.Category, dto.BrowserName);
+                categoryRegionsForBrowser.ReplaceBlindRegionsSet(dto.BlindRegions);
+                var browserPatterQUery = new FindPatternsForBrowserInCategory(testCase.Category.Id, dto.BrowserName);
+                var browserPatterns = this.browserPatternRepository.FindAll(browserPatterQUery);
+                UpdateScreenshotHashes(browserPatterns);
+                tx.Commit();
+            }
+        }
+
         public void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto)
         {
             using (var tx = sessionContext.Session.BeginTransaction())
             {
                 var testCase = this.testCaseRepository.Get(dto.TestCaseId);
-                var globalRegionsForBrowser = GetGlobalRegionsForBrowser(dto, testCase);
+                var globalRegionsForBrowser = GetGlobalBlindRegionsForBrowser(testCase.Project, dto.BrowserName);
                 globalRegionsForBrowser.ReplaceBlindRegionsSet(dto.BlindRegions);
-                var browserPatterns = this.browserPatternRepository.FindAll(new FindPatternsForBrowserInProject(testCase.Project.Id,dto.BrowserName));
-                browserPatterns.AsParallel().ForAll(bp =>
-                {
-                    bp.UpdateTestCaseHash();
-                }); 
+                var browserPatternQuery = new FindPatternsForBrowserInProject(testCase.Project.Id,dto.BrowserName);
+                var browserPatterns = this.browserPatternRepository.FindAll(browserPatternQuery);
+                UpdateScreenshotHashes(browserPatterns);
                 tx.Commit();
             }
         }
 
-        private static BlindRegionForBrowser GetGlobalRegionsForBrowser(SaveGlobalBlindRegionsDTO dto, Toolbox.Screenshots.Domain.TestCase testCase)
+        private static void UpdateScreenshotHashes(List<BrowserPattern> browserPatterns)
         {
-            var globalRegionsForBrowser = testCase.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == dto.BrowserName);
+            browserPatterns.Select(bp => new
+            {
+                Screenshot = bp.PatternScreenshot,
+                BlindRegions = bp.GetAllBlindRegions()
+            }).AsParallel().ForAll(bp =>
+            {
+                bp.Screenshot.UpdateTestCaseHash(bp.BlindRegions);
+            });
+        }
+
+        private static BlindRegionForBrowser GetGlobalBlindRegionsForBrowser(IBlindRegionForBrowserOwner blindRegionForBrowserOwner, string browserName)
+        {
+            var globalRegionsForBrowser = blindRegionForBrowserOwner.GetOwnBlindRegionForBrowser(browserName);
             if (globalRegionsForBrowser == null)
             {
                 globalRegionsForBrowser = new BlindRegionForBrowser
                 {
-                    BrowserName = dto.BrowserName
+                    BrowserName = browserName
                 };
-                testCase.Project.AddGlobalBlindRegions(globalRegionsForBrowser);
+                blindRegionForBrowserOwner.AddBlindRegionForBrowser(globalRegionsForBrowser);
             }
             return globalRegionsForBrowser;
         }
-
+       
         public TestCaseCategoriesListViewModel GetTestCaseCategories(long projectId)
         {
             var testCaseCategories = this.testCaseCategoryRepository.FindAll(new FindTestCaseCategoriesFromProject(projectId));
@@ -104,10 +127,12 @@ namespace MaintainableSelenium.Web.Services.TestCase
         {
             var testCase = this.testCaseRepository.Get(testCaseId);
             var browserPattern = browserPatternRepository.Get(patternId);
-            var blindRegionForBrowser = testCase.Project.GlobalBlindRegionsForBrowsers.FirstOrDefault(x=>x.BrowserName == browserPattern.BrowserName) ?? new BlindRegionForBrowser();
+            var projectBlindRegionForBrowser = testCase.Project.GetOwnBlindRegionForBrowser(browserPattern.BrowserName) ?? new BlindRegionForBrowser();
+            var categoryBlindRegionForBrowser = testCase.Category.GetOwnBlindRegionForBrowser(browserPattern.BrowserName) ?? new BlindRegionForBrowser();
             return new BrowserPatternDTO
             {
-                GlobalBlindRegions = blindRegionForBrowser.BlindRegions.ToList(),
+                GlobalBlindRegions = projectBlindRegionForBrowser.BlindRegions.ToList(),
+                CategoryBlindRegions = categoryBlindRegionForBrowser.BlindRegions.ToList(),
                 LocalBlindRegions = browserPattern.BlindRegions.ToList(),
                 BrowserName = browserPattern.BrowserName,
                 PatternId = browserPattern.Id,
@@ -139,6 +164,7 @@ namespace MaintainableSelenium.Web.Services.TestCase
     {
         void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto);
         void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto);
+        void SaveCategoryBlindregions(SaveCategoryBlindRegionsDTO dto);
         List<TestCaseListItem> GetTestCasesFromCategory(long categoryId);
         BrowserPatternDTO GetTestCasePattern(long testCaseId, long patternId);
         byte[] GetPatternScreenshot(long patternId);

@@ -51,6 +51,13 @@ namespace MaintainableSelenium.Web.Controllers
             this.testCaseService.SaveLocalBlindregions(dto);
             return ActionResultFactory.AjaxSuccess();
         }
+        
+        [HttpPost]
+        public ActionResult SaveCategoryBlindspots(SaveCategoryBlindRegionsDTO dto)
+        {
+            this.testCaseService.SaveCategoryBlindregions(dto);
+            return ActionResultFactory.AjaxSuccess();
+        }
 
         [HttpPost]
         public ActionResult SaveGlobalBlindspots(SaveGlobalBlindRegionsDTO dto)

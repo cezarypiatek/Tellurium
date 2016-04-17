@@ -35,6 +35,12 @@ namespace MaintainableSelenium.Web.Mvc
             where TController : Controller
         {
             this.SetOption("actionSaveLocal", urlHelper.ActionFor(action));
+        }  
+        
+        public void SetSaveCategoryBlindspotsAction<TController>(Expression<Action<TController>> action)
+            where TController : Controller
+        {
+            this.SetOption("actionSaveCategory", urlHelper.ActionFor(action));
         }
 
         public void SetSaveGlobalBlindspotsAction<TController>(Expression<Action<TController>> action)
@@ -52,8 +58,14 @@ namespace MaintainableSelenium.Web.Mvc
         {
             this.SetComplexOption("globalRegions", blindRegions);
         }
+        
+        public void SetCategoryBlindspots(List<BlindRegion> blindRegions)
+        {
+            this.SetComplexOption("categoryRegions", blindRegions);
+        }
 
         public static TestCaseWidget Create<TController>(Expression<Action<TController>> actionSaveLocal,
+            Expression<Action<TController>> actionSaveCategory,
             Expression<Action<TController>> actionSaveGlobal, BrowserPatternDTO browserPattern, UrlHelper urlHelper)
             where TController : Controller
         {
@@ -62,8 +74,10 @@ namespace MaintainableSelenium.Web.Mvc
             widget.SetPatternId(browserPattern.PatternId);
             widget.SetTestCaseId(browserPattern.TestCaseId);
             widget.SetLocalBlindspots(browserPattern.LocalBlindRegions);
+            widget.SetCategoryBlindspots(browserPattern.CategoryBlindRegions);
             widget.SetGlobalBlindspots(browserPattern.GlobalBlindRegions);
             widget.SetSaveLocalBlindspotsAction(actionSaveLocal);
+            widget.SetSaveCategoryBlindspotsAction(actionSaveCategory);
             widget.SetSaveGlobalBlindspotsAction(actionSaveGlobal);
             return widget;
         }

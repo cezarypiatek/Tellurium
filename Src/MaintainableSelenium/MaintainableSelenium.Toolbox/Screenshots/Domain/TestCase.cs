@@ -14,7 +14,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
 
         public virtual void AddNewPattern(byte[] screenshot, string browserName )
         {
-            var globalBlindRegions = this.Project.GetBlindRegionsForBrowser(browserName);
+            var blindRegions = this.Category.GetAllBlindRegionsForBrowser(browserName);
             var browserPattern = new BrowserPattern
             {
                 TestCase = this,
@@ -22,7 +22,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
                 PatternScreenshot = new ScreenshotData
                 {
                     Image = screenshot,
-                    Hash = ImageHelpers.ComputeHash(screenshot, globalBlindRegions)
+                    Hash = ImageHelpers.ComputeHash(screenshot, blindRegions)
                 },
                 IsActive = true,
                 CreatedOn = DateTime.Now

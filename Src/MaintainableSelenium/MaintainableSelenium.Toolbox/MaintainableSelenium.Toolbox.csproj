@@ -113,8 +113,10 @@
     <Compile Include="Infrastructure\Persistence\Conventions\HiLowIdConvention.cs" />
     <Compile Include="Infrastructure\Persistence\Mappings\TestCaseCategoryMap.cs" />
     <Compile Include="Infrastructure\SessionContext.cs" />
+    <Compile Include="Screenshots\Domain\IBlindRegionForBrowserOwner.cs" />
     <Compile Include="Screenshots\Domain\TestCaseCategory.cs" />
     <Compile Include="Screenshots\DuplicatedScreenshotInSession.cs" />
+    <Compile Include="Screenshots\Queries\FindPatternsForBrowserInCategory.cs" />
     <Compile Include="Screenshots\ScreenshotIdentity.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
     <Compile Include="Infrastructure\Persistence\PersistanceEngine.cs" />

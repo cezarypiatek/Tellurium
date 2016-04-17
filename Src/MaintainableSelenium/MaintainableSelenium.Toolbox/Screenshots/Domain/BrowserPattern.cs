@@ -37,17 +37,18 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
             this.UpdateTestCaseHash();
         }
 
+        protected virtual void UpdateTestCaseHash()
+        {
+            var blindRegions = this.GetAllBlindRegions();
+            this.PatternScreenshot.UpdateTestCaseHash(blindRegions);
+        }
+
         public virtual IReadOnlyList<BlindRegion> GetAllBlindRegions()
         {
             var result = BlindRegions.ToList();
-            var fromProjectLevel = TestCase.Project.GetBlindRegionsForBrowser(BrowserName);
-            result.AddRange(fromProjectLevel);
+            var fromAboveLevels = TestCase.Category.GetAllBlindRegionsForBrowser(BrowserName);
+            result.AddRange(fromAboveLevels);
             return result.AsReadOnly();
-        }
-
-        public virtual void UpdateTestCaseHash()
-        {
-            this.PatternScreenshot.Hash = ImageHelpers.ComputeHash(this.PatternScreenshot.Image, this.GetAllBlindRegions());
         }
     }
 }

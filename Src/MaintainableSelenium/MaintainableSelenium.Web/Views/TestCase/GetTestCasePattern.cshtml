@@ -2,7 +2,7 @@
 @using MaintainableSelenium.Web.Mvc
 @model MaintainableSelenium.Web.Models.Home.BrowserPatternDTO
 @{
-    var testCaseWidget = TestCaseWidget.Create<TestCaseController>(c => c.SaveLocalBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
+    var testCaseWidget = TestCaseWidget.Create<TestCaseController>(c => c.SaveLocalBlindspots(null), c => c.SaveCategoryBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
 }
 <div @testCaseWidget.GetAttributeString()>
     <div class="testcase-toolbar">
@@ -10,7 +10,10 @@
             <div class="col-md-6">
                 <div class="btn-group" data-testcase-element="scope">
                     <span class="btn btn-default active" data-testcase-element="local">
-                        <span class="local legend-square"></span> <span class="legend-label" >Draw local blindspot</span>
+                        <span class="local legend-square"></span> <span class="legend-label">Draw local blindspot</span>
+                    </span>
+                    <span class="btn btn-default" data-testcase-element="category">
+                        <span class="category legend-square"></span> <span class="legend-label">Draw category blindspot</span>
                     </span>
                     <span class="btn btn-default" data-testcase-element="global">
                         <span class="global legend-square"></span><span class="legend-label">Draw global blindspot</span> 
@@ -25,6 +28,7 @@
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu">
+                        <li><a href="#" class="category" data-testcase-element="save">Save category blindspots</a></li>
                         <li><a href="#" data-testcase-element="save">Save global blindspots</a></li>
                     </ul>
                 </div>

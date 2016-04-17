@@ -26,6 +26,7 @@
             var maxWidth = $board.width();
             var maxHeight = $board.height();
             var localSpots = [];
+            var categorySpots = [];
             var globalSpots = [];
             var screenshotDimensions = that._getScreenshotDimensions();
             $board.find(".blind").each(function () {
@@ -38,7 +39,9 @@
                 };
                 if ($this.is(".local")) {
                     localSpots.push(spot);
-                } else {
+                }else if ($this.is(".category")) {
+                    categorySpots.push(spot);
+                }else {
                     globalSpots.push(spot);
                 }
                 
@@ -50,6 +53,14 @@
                     TestCaseId: that.options.caseId,
                     LocalBlindRegions: localSpots
                 }).done(function() {
+                    locked = false;
+                });
+            }else  if ($(this).is(".category")) {
+                $.postJSON(that.options.actionSaveCategory, {
+                    BlindRegions: categorySpots,
+                    BrowserName: that.options.browser,
+                    TestCaseId: that.options.caseId
+                }).done(function () {
                     locked = false;
                 });
             } else {
@@ -81,28 +92,30 @@
             e.stopPropagation();
         });
         var index = 1;
-        this.element.find(".screenshot").on("load", function() {
+
+        function addSquareToBoard(data, type) {
             var screenshotDimensions = that._getScreenshotDimensions();
+            var square = $("<div></div>", { "class": "blind "+type, tabindex: index++ });
+            $board.append(square);
+            square.css({
+                left: data.Left / screenshotDimensions.width * 100.0 + "%",
+                top: data.Top / screenshotDimensions.height * 100 + "%",
+                width: data.Width / screenshotDimensions.width * 100.0 + "%",
+                height: data.Height / screenshotDimensions.height * 100.0 + "%"
+            });
+        }
+
+        this.element.find(".screenshot").on("load", function() {
             that.options.localRegions.forEach(function (data) {
-                var square = $("<div></div>", { "class": "blind local", tabindex: index++ });
-                $board.append(square);
-                square.css({
-                    left: data.Left / screenshotDimensions.width * 100.0 + "%",
-                    top: data.Top / screenshotDimensions.height * 100 + "%",
-                    width: data.Width / screenshotDimensions.width * 100.0 + "%",
-                    height: data.Height / screenshotDimensions.height*100.0 + "%"
-                });
+                addSquareToBoard(data, "local");
+            });
+
+            that.options.categoryRegions.forEach(function (data) {
+                addSquareToBoard(data, "category");
             });
 
             that.options.globalRegions.forEach(function (data) {
-                var square = $("<div></div>", { "class": "blind global", tabindex: index++ });
-                $board.append(square);
-                square.css({
-                    left: data.Left / screenshotDimensions.width * 100.0 + "%",
-                    top: data.Top / screenshotDimensions.height * 100 + "%",
-                    width: data.Width / screenshotDimensions.width * 100.0 + "%",
-                    height: data.Height / screenshotDimensions.height * 100 + "%"
-                });
+                addSquareToBoard(data, "global");
             });
         });
         

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MaintainableSelenium.Toolbox.Infrastructure;
 
 namespace MaintainableSelenium.Toolbox.Screenshots.Domain
@@ -21,6 +22,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
             }
             
             return this.Hash == screenshotDataObj.Hash;
+        }
+
+        public virtual void UpdateTestCaseHash(IReadOnlyList<BlindRegion> blindRegions)
+        {
+            this.Hash = ImageHelpers.ComputeHash(this.Image, blindRegions);
         }
     }
 }

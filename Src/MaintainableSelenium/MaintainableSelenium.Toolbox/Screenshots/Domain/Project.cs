@@ -5,11 +5,10 @@ using MaintainableSelenium.Toolbox.Infrastructure;
 
 namespace MaintainableSelenium.Toolbox.Screenshots.Domain
 {
-    public class Project:Entity
+    public class Project:Entity, IBlindRegionForBrowserOwner
     {
         public virtual string Name { get; set; }
         public virtual IList<TestSession> Sessions { get; set; }
-
         public virtual IList<BlindRegionForBrowser> GlobalBlindRegionsForBrowsers { get; set; }
         public virtual IList<TestCaseCategory> TestCaseCategories { get; set; }
 
@@ -38,9 +37,14 @@ namespace MaintainableSelenium.Toolbox.Screenshots.Domain
             return newCategory;
         }
 
-        public virtual void AddGlobalBlindRegions(BlindRegionForBrowser blindRegionForBrowser)
+        public virtual void AddBlindRegionForBrowser(BlindRegionForBrowser blindRegionForBrowser)
         {
             this.GlobalBlindRegionsForBrowsers.Add(blindRegionForBrowser);
+        }
+
+        public virtual BlindRegionForBrowser GetOwnBlindRegionForBrowser(string browserName)
+        {
+            return this.GlobalBlindRegionsForBrowsers.FirstOrDefault(x => x.BrowserName == browserName);
         }
 
         public virtual IReadOnlyList<BlindRegion> GetBlindRegionsForBrowser(string browserName)
