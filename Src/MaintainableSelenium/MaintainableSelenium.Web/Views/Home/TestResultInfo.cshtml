@@ -17,7 +17,7 @@
             <div class="col-md-2">
                 @if (Model.TestPassed == false)
                 {
-                    @(Ajax.ChangeActionLink<HomeController>(c => c.MarkAsPattern(Model.TestResultId), "Mark as pattern", "Do you really wan to change test case pattern screenshot?", rowId, new { @class = "btn btn-primary" }))
+                    @(Ajax.ChangeActionLink<HomeController>(c => c.MarkAsPattern(Model.TestResultId), "Mark as pattern", "Do you really want to mark this as pattern?", rowId, new { @class = "btn btn-primary" }))
                 }
             </div>
         </div>

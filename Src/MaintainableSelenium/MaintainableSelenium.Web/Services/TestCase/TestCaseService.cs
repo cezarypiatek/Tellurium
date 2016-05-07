@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using MaintainableSelenium.Toolbox.Infrastructure;
 using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using MaintainableSelenium.Toolbox.Screenshots.Queries;
@@ -20,7 +21,9 @@ namespace MaintainableSelenium.Web.Services.TestCase
 
         public TestCaseService(IRepository<Toolbox.Screenshots.Domain.TestCase> testCaseRepository, 
             IRepository<BrowserPattern> browserPatternRepository,
-            IRepository<Project> projectRepository, ISessionContext sessionContext, IRepository<TestCaseCategory> testCaseCategoryRepository )
+            IRepository<Project> projectRepository, 
+            ISessionContext sessionContext, 
+            IRepository<TestCaseCategory> testCaseCategoryRepository)
         {
             this.testCaseRepository = testCaseRepository;
             this.browserPatternRepository = browserPatternRepository;

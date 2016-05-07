@@ -25,6 +25,31 @@ namespace MaintainableSelenium.Toolbox.SeleniumUtils
             }
         }
 
+
+        internal static int GetVerticalScrollWidth(this RemoteWebDriver driver)
+        {
+            //INFO: It's hard to get scrollbar width using JS. 17 its default size of scrollbar on Ms Windows platform
+            return 17;
+        }
+
+        internal static int GetWindowHeight(this RemoteWebDriver driver)
+        {
+            return (int)(long)driver.ExecuteScript("return window.innerHeight");
+        }
+
+        internal static int GetPageHeight(this RemoteWebDriver driver)
+        {
+            var scriptResult = driver.ExecuteScript("return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);");
+            return (int)(long)scriptResult;
+        }
+
+        internal static void ScrollTo(this RemoteWebDriver driver, int y)
+        {
+            driver.ExecuteScript(string.Format("window.scrollTo(0,{0})", y));
+            Thread.Sleep(100);
+        }
+
+
         /// <summary>
         /// Check if any element has currently focus
         /// </summary>

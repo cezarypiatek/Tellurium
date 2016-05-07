@@ -251,7 +251,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             return new Bitmap(image);
         }
 
-        private static byte[] ConvertImageToBytes(Image imageIn)
+        public static byte[] ConvertImageToBytes(Image imageIn)
         {
             using (var ms = new MemoryStream())
             {
@@ -290,5 +290,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots
                 return BitConverter.ToString(md5.ComputeHash(imageBytes)).Replace("-", "");
             }
         }
+
+        public static Bitmap Crop(this Bitmap bmp, int x, int y, int width, int height)
+        {
+            return  bmp.Clone(new Rectangle(x, y, width, height), bmp.PixelFormat);
+        }
+
     }
 }

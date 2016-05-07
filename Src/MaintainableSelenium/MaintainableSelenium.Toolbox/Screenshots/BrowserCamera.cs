@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using MaintainableSelenium.Toolbox.Infrastructure;
 using MaintainableSelenium.Toolbox.Infrastructure.Persistence;
 using MaintainableSelenium.Toolbox.Screenshots.Domain;
+using MaintainableSelenium.Toolbox.Screenshots.Lens;
 using MaintainableSelenium.Toolbox.SeleniumUtils;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
 namespace MaintainableSelenium.Toolbox.Screenshots
@@ -16,6 +16,7 @@ namespace MaintainableSelenium.Toolbox.Screenshots
     {
         private readonly RemoteWebDriver driver;
         private readonly ScreenshotService screenshotService;
+        private readonly IBrowserCameraLens lens;
         private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
 
 
@@ -23,10 +24,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots
         public string ScreenshotCategory { get; set; }
         public string BrowserName { get; set; }
 
-        public BrowserCamera(RemoteWebDriver driver,  ScreenshotService screenshotService)
+        public BrowserCamera(RemoteWebDriver driver, ScreenshotService screenshotService, IBrowserCameraLens lens)
         {
             this.driver = driver;
             this.screenshotService = screenshotService;
+            this.lens = lens;
         }
 
         public void TakeScreenshot(string name)
@@ -39,15 +41,15 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
             var screenshot = GetScreenshot();
             takenScreenshots.Add(screenshotIdentity);
-            screenshotService.Persist(screenshot.AsByteArray, screenshotIdentity);
+            screenshotService.Persist(screenshot, screenshotIdentity);
         }
 
-        private Screenshot GetScreenshot()
+        private byte[] GetScreenshot()
         {
             try
             {
                 driver.Blur();
-                return driver.GetScreenshot();
+                return this.lens.TakeScreenshot();
             }
             catch (Exception ex)
             {
@@ -56,10 +58,11 @@ namespace MaintainableSelenium.Toolbox.Screenshots
             }
         }
 
-        public static IBrowserCamera CreateNew(RemoteWebDriver driver, string browserName, string projectName, string screenshotCategory)
+        public static IBrowserCamera CreateNew(RemoteWebDriver driver, string browserName, string projectName, string screenshotCategory, LensType lensType = LensType.Regular)
         {
             var screenshotService = new ScreenshotService(new Repository<Project>(PersistanceEngine.GetSessionContext()));
-            return new BrowserCamera(driver, screenshotService)
+            var lens = BrowserCameraLensFactory.Create(driver, lensType);
+            return new BrowserCamera(driver, screenshotService, lens)
             {
                 ProjectName = projectName,
                 ScreenshotCategory = screenshotCategory,

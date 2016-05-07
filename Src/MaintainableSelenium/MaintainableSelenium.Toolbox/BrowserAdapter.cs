@@ -26,27 +26,10 @@ namespace MaintainableSelenium.Toolbox
         {
             var browserAdapter = new BrowserAdapter();
             browserAdapter.Driver = SeleniumDriverFactory.CreateLocalDriver(config.BrowserType, config.SeleniumDriversPath);
-            browserAdapter.browserCamera = BrowserCamera.CreateNew(browserAdapter.Driver, config.BrowserType.ToString(), config.ProjectName, config.ScreenshotCategory);
+            browserAdapter.browserCamera = BrowserCamera.CreateNew(browserAdapter.Driver, config.BrowserType.ToString(), config.ProjectName, config.ScreenshotCategory, config.Lens);
             browserAdapter.navigator = new Navigator(browserAdapter.Driver, config.PageUrl);
-            
-            if (config.InputAdapters == null)
-            {
-                browserAdapter.supportedInputsAdapters = new List<IFormInputAdapter>
-                {
-                    new TextFormInputAdapter(),
-                    new SelectFormInputAdapter(),
-                    new CheckboxFormInputAdapter(),
-                    new RadioFormInputAdapter(),
-                    new HiddenFormInputAdapter()
-                };
-            }
-            else
-            {
-                browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
-            }
-
+            browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
             browserAdapter.SetupBrowserDimensions(config.BrowserDimensions);
-
             return browserAdapter;
         }
 

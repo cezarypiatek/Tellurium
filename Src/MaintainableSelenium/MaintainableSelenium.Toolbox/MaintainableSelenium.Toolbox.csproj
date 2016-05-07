@@ -117,8 +117,13 @@
     <Compile Include="Screenshots\Domain\IBlindRegionForBrowserOwner.cs" />
     <Compile Include="Screenshots\Domain\TestCaseCategory.cs" />
     <Compile Include="Screenshots\DuplicatedScreenshotInSession.cs" />
+    <Compile Include="Screenshots\Lens\IBrowserCameraLens.cs" />
+    <Compile Include="Screenshots\Lens\BrowserCameraLensFactory.cs" />
+    <Compile Include="Screenshots\Lens\RegularLens.cs" />
     <Compile Include="Screenshots\Queries\FindPatternsForBrowserInCategory.cs" />
+    <Compile Include="Screenshots\Lens\ResizeableLens.cs" />
     <Compile Include="Screenshots\ScreenshotIdentity.cs" />
+    <Compile Include="Screenshots\Lens\ScrollableLens.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
     <Compile Include="Infrastructure\Persistence\PersistanceEngine.cs" />
     <Compile Include="Infrastructure\Persistence\Mappings\BlindRegionForBrowserMap.cs" />

@@ -19,6 +19,10 @@ namespace MaintainableSelenium.Toolbox.Screenshots
 
         private TestSession GetCurrentTestSession(Project project)
         {
+            if (project.Sessions == null)
+            {
+                throw new ApplicationException("Sessions cannot be null");
+            }
             var testSession = project.Sessions.FirstOrDefault(x => x.StartDate == SessionStartDate);
             if (testSession == null)
             {
