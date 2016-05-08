@@ -1,7 +1,10 @@
 ﻿using System.IO;
+using MaintainableSelenium.MvcPages;
+using MaintainableSelenium.MvcPages.BrowserCamera;
+using MaintainableSelenium.MvcPages.BrowserCamera.Lens;
+using MaintainableSelenium.MvcPages.SeleniumUtils;
 using MaintainableSelenium.Sample.Website.Mvc;
-using MaintainableSelenium.Toolbox;
-using MaintainableSelenium.Toolbox.SeleniumUtils;
+using MaintainableSelenium.VisualAssertions.Screenshots;
 using NUnit.Framework;
 using Sample.Website.Controllers;
 using Sample.Website.Models;
@@ -17,20 +20,25 @@ namespace MaintainableSelenium.Sample.UITests
         [TestCase(BrowserType.InternetExplorer)]
         public void should_be_able_to_fill_sample_form(BrowserType driverType)
         {
-            //Prepare infrastructure for test
             var browserAdapterConfig = new BrowserAdapterConfig()
             {
                 BrowserType = driverType,
-                PageUrl = "http://localhost:51767",
-                ProjectName = "Sample Project",
-                ScreenshotCategory = "Sample Form",
                 SeleniumDriversPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"),
+                PageUrl = "http://localhost:51767",
                 BrowserDimensions = new BrowserDimensionsConfig
                 {
                     Width = 1200,
                     Height = 768
+                },
+                BrowserCameraConfig = new BrowserCameraConfig()
+                {
+                    ProjectName = "Sample Project",
+                    ScreenshotCategory = "Sample Form",
+                    LensType = LensType.Regular,
+                    ScreenshotStorage = VisualAssertionScreenshotStorageFactory.Create()
                 }
             };
+            //Prepare infrastructure for test
 
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
             {
