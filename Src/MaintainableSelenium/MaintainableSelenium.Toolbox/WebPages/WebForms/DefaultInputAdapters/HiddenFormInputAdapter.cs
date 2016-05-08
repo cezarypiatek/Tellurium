@@ -15,5 +15,10 @@ namespace MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters
         {
             throw new NotSupportedException("Setting value of hidden fields is not supported");
         }
+
+        public string GetValue(IWebElement webElement)
+        {
+            throw new NotSupportedException("Getting value of hidden fields is not supported");
+        }
     }
 }

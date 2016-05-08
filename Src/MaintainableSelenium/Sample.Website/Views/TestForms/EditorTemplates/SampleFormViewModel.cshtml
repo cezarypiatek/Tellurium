@@ -1,0 +1,40 @@
+﻿@using Sample.Website.Models
+@model SampleFormViewModel
+<h1>@DateTime.Now</h1>
+<hr />
+<div class="form-group">
+    @Html.LabelFor(m => m.TextInput, new { @class = "col-md-3 control-label" })
+    <div class="col-md-9">
+        @Html.TextBoxFor(m => m.TextInput, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.TextInput, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.TextAreaInput, new { @class = "col-md-3 control-label" })
+    <div class="col-md-9">
+        @Html.TextAreaFor(m => m.TextAreaInput, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.TextAreaInput, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.PasswordInput, new { @class = "col-md-3 control-label" })
+    <div class="col-md-9">
+        @Html.PasswordFor(m => m.PasswordInput, new { @class = "form-control", value = Model.PasswordInput })
+        @Html.ValidationMessageFor(m => m.PasswordInput, "", new { @class = "text-danger"})
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.CheckboxInput, new {@class = "col-md-3 control-label"})
+    <div class="col-md-9">
+        @Html.CheckBoxFor(m => m.CheckboxInput, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.PasswordInput, "", new {@class = "text-danger"})
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.SelectListValue, new { @class = "col-md-3 control-label" })
+    <div class="col-md-9">
+        @Html.DropDownListFor(x => x.SelectListValue, SampleFormViewModel.SelectListOptions, htmlAttributes: new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.SelectListValue, "", new {@class = "text-danger"})
+    </div>
+</div>

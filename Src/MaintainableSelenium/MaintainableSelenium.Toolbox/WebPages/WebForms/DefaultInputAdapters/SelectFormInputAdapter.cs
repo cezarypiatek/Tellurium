@@ -15,5 +15,11 @@ namespace MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters
             var select = new SelectElement(webElement);
             select.SelectByText(value);
         }
+
+        public string GetValue(IWebElement webElement)
+        {
+            SelectElement selectedValue = new SelectElement(webElement);
+            return selectedValue.SelectedOption.Text;
+        }
     }
 }

@@ -15,5 +15,10 @@ namespace MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters
         {
             webElement.GetParent().GetParent().FindElements(By.TagName("label")).Single(x =>x.Text == value).Click();
         }
+
+        public string GetValue(IWebElement webElement)
+        {
+            return webElement.GetParent().GetParent().FindElements(By.TagName("label")).Single(x => x.Selected).Text;
+        }
     }
 }

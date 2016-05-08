@@ -21,5 +21,10 @@ namespace MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters
             webElement.Clear();
             webElement.SendKeys(value);
         }
+
+        public string GetValue(IWebElement webElement)
+        {
+            return webElement.GetAttribute("value");
+        }
     }
 }

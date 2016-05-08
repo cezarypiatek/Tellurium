@@ -8,7 +8,6 @@ using MaintainableSelenium.Toolbox.Screenshots;
 using MaintainableSelenium.Toolbox.SeleniumUtils;
 using MaintainableSelenium.Toolbox.WebPages;
 using MaintainableSelenium.Toolbox.WebPages.WebForms;
-using MaintainableSelenium.Toolbox.WebPages.WebForms.DefaultInputAdapters;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;

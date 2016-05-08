@@ -2,6 +2,7 @@
 {
     public static class FormsIds
     {
-        public const string TestForm = "TestForm"; 
+        public const string TestFormSrc = "TestFormSrc"; 
+        public const string TestFormDst = "TestFormDst"; 
     }
 }

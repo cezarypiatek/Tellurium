@@ -40,12 +40,25 @@ namespace MaintainableSelenium.Sample.UITests
                 browserAdapter.NavigateTo<TestFormsController>(c => c.Index());
                 browserAdapter.TakeScreenshot("Sample1");
                 
-                var form = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestForm);
-                form.SetFieldValue(x => x.TextInput, "Hello world!!!");
-                form.SetFieldValue(x => x.TextAreaInput, "Long test message");
-                form.SetFieldValue(x => x.PasswordInput, "Secret_Password");
-                form.SetFieldValue(x => x.CheckboxInput, CheckboxFormInputAdapter.Checked);
-                
+                var detinationForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormDst);
+                var sourcenForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormSrc);
+
+                var textInputValue = sourcenForm.GetFieldValue(x=>x.TextInput);
+                detinationForm.SetFieldValue(x => x.TextInput, textInputValue);
+
+                var textAreaValue = sourcenForm.GetFieldValue(x => x.TextAreaInput);
+                detinationForm.SetFieldValue(x => x.TextAreaInput, textAreaValue);
+
+                var passwordValue = sourcenForm.GetFieldValue(x => x.PasswordInput);
+                detinationForm.SetFieldValue(x => x.PasswordInput, passwordValue);
+
+
+                var checkboxValue = sourcenForm.GetFieldValue(x=>x.CheckboxInput);
+                detinationForm.SetFieldValue(x => x.CheckboxInput, checkboxValue);
+
+                var selectListValue = sourcenForm.GetFieldValue(x=>x.SelectListValue);
+                detinationForm.SetFieldValue(x=>x.SelectListValue, selectListValue);
+
                 browserAdapter.TakeScreenshot("Sample2");
             }
         }

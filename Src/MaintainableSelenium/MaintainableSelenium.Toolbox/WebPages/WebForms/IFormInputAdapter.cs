@@ -6,5 +6,6 @@ namespace MaintainableSelenium.Toolbox.WebPages.WebForms
     {
         bool CanHandle(IWebElement webElement);
         void SetValue(IWebElement webElement, string value);
+        string GetValue(IWebElement webElement);
     }
 }
