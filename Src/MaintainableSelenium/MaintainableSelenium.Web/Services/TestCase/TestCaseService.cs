@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using MaintainableSelenium.Toolbox.Infrastructure;
 using MaintainableSelenium.Toolbox.Screenshots.Domain;
 using MaintainableSelenium.Toolbox.Screenshots.Queries;
