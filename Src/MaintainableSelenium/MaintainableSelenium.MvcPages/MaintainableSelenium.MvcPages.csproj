@@ -88,11 +88,13 @@
     <Compile Include="BrowserCamera\BrowserCameraConfig.cs" />
     <Compile Include="BrowserCamera\BrowserCamera.cs" />
     <Compile Include="BrowserCamera\DuplicatedScreenshotInSession.cs" />
+    <Compile Include="BrowserCamera\FileSystemScreenshotStorage.cs" />
     <Compile Include="BrowserCamera\Lens\BrowserCameraLensFactory.cs" />
     <Compile Include="BrowserCamera\Lens\IBrowserCameraLens.cs" />
     <Compile Include="BrowserCamera\Lens\RegularLens.cs" />
     <Compile Include="BrowserCamera\Lens\ResizeableLens.cs" />
     <Compile Include="BrowserCamera\Lens\ScrollableLens.cs" />
+    <Compile Include="BrowserCamera\ScreenshotStorageFactory.cs" />
     <Compile Include="BrowserDimensionsConfig.cs" />
     <Compile Include="BrowserCamera\IBrowserCamera.cs" />
     <Compile Include="BrowserCamera\IScreenshotStorage.cs" />
