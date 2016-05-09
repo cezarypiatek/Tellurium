@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>MaintainableSelenium</id>
+    <id>MaintainableSelenium.MvcPages</id>
     <version>$version$</version>
     <authors>Cezary Piatek</authors>
     <owners>Cezary Piatek</owners>
@@ -13,15 +13,13 @@
     <copyright>Copyright 2016</copyright>
     <tags>UITest Selenium ASP.NET MVC</tags>
     <dependencies>
-	  <dependency id="AForge.Imaging" version="2.2.5"/>	
-	  <dependency id="FluentNHibernate" version="2.0.3.0"/>
 	  <dependency id="Microsoft.AspNet.Mvc" version="5.2.3" />
 	  <dependency id="Microsoft.AspNet.Mvc.Futures" version="5.0.0"/>	
 	  <dependency id="Selenium.Support" version="2.52.0" />	 
     </dependencies>	
   </metadata>
   <files>
-		<file src="bin\$configuration$\MaintainableSelenium.Toolbox.dll" target="lib" />
-		<file src="bin\$configuration$\MaintainableSelenium.Toolbox.pdb" target="lib" />
+		<file src="bin\$configuration$\MaintainableSelenium.MvcPages.dll" target="lib" />
+		<file src="bin\$configuration$\MaintainableSelenium.MvcPages.pdb" target="lib" />
 	</files>
 </package>
