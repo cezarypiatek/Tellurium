@@ -20,33 +20,41 @@ namespace MaintainableSelenium.Sample.UITests
         [TestCase(BrowserType.InternetExplorer)]
         public void should_be_able_to_fill_sample_form(BrowserType driverType)
         {
+            //Initialize MvcPages
             var browserAdapterConfig = new BrowserAdapterConfig()
             {
                 BrowserType = driverType,
                 SeleniumDriversPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"),
                 PageUrl = "http://localhost:51767",
+                ScreenshotsPath = @"c:\selenium\",
                 BrowserDimensions = new BrowserDimensionsConfig
                 {
                     Width = 1200,
                     Height = 768
                 },
-                BrowserCameraConfig = new BrowserCameraConfig()
+                BrowserCameraConfig = new BrowserCameraConfig
                 {
-                    ProjectName = "Sample Project",
-                    ScreenshotCategory = "Sample Form",
-                    LensType = LensType.Regular,
-                    ScreenshotStorage = VisualAssertionScreenshotStorageFactory.Create()
+                    LensType = LensType.Regular
                 }
             };
-            //Prepare infrastructure for test
 
+            //Initialize VisualAssertions
+            AssertView.Init(new VisualAssertionsConfig
+            {
+                BrowserName = driverType.ToString(),
+                ProjectName = "Sample Project",
+                ScreenshotCategory = "Sample Form",
+            });
+
+
+            //Prepare infrastructure for test
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
             {
-
                 //Test
                 browserAdapter.NavigateTo<TestFormsController>(c => c.Index());
-                browserAdapter.TakeScreenshot("Sample1");
+                AssertView.EqualsToPattern(browserAdapter, "Sample1");
                 
+                browserAdapter.SaveScreenshot("Test");
                 var detinationForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormDst);
                 var sourcenForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormSrc);
 
@@ -66,7 +74,7 @@ namespace MaintainableSelenium.Sample.UITests
                 var selectListValue = sourcenForm.GetFieldValue(x=>x.SelectListValue);
                 detinationForm.SetFieldValue(x=>x.SelectListValue, selectListValue);
 
-                browserAdapter.TakeScreenshot("Sample2");
+                AssertView.EqualsToPattern(browserAdapter, "Sample2");
             }
         }
     }

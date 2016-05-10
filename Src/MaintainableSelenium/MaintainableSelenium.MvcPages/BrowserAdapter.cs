@@ -20,15 +20,19 @@ namespace MaintainableSelenium.MvcPages
         private IBrowserCamera browserCamera;
         private INavigator navigator;
         private List<IFormInputAdapter> supportedInputsAdapters;
+        private IScreenshotStorage screenshotStorage;
+        public string browserName { get; set; }
 
         public static IBrowserAdapter Create(BrowserAdapterConfig config)
         {
             var browserAdapter = new BrowserAdapter();
             browserAdapter.Driver = SeleniumDriverFactory.CreateLocalDriver(config.BrowserType, config.SeleniumDriversPath);
-            browserAdapter.browserCamera = BrowserCamera.BrowserCamera.CreateNew(browserAdapter.Driver, config.BrowserType.ToString(), config.BrowserCameraConfig);
+            browserAdapter.browserCamera = BrowserCamera.BrowserCamera.CreateNew(browserAdapter.Driver, config.BrowserCameraConfig);
             browserAdapter.navigator = new Navigator(browserAdapter.Driver, config.PageUrl);
+            browserAdapter.screenshotStorage = new FileSystemScreenshotStorage(config.ScreenshotsPath);
             browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
             browserAdapter.SetupBrowserDimensions(config.BrowserDimensions);
+            browserAdapter.browserName = config.BrowserType.ToString();
             return browserAdapter;
         }
 
@@ -49,15 +53,21 @@ namespace MaintainableSelenium.MvcPages
             }
         }
 
-
-        public void TakeScreenshot(string name)
-        {
-            browserCamera.TakeScreenshot(name);
-        }
-
         public void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller
         {
             navigator.NavigateTo(action);
+        }
+
+        public byte [] TakeScreenshot()
+        {
+            return browserCamera.TakeScreenshot();
+        }
+
+        public void SaveScreenshot(string screenshotName)
+        {
+            var screenshotRawData = browserCamera.TakeScreenshot();
+            var fullScreenshotName = string.Format("{0}_{1}", browserName, screenshotName);
+            this.screenshotStorage.Persist(screenshotRawData, fullScreenshotName);
         }
 
         public  WebForm<TModel> GetForm<TModel>(string formId)
@@ -100,7 +110,7 @@ namespace MaintainableSelenium.MvcPages
         }
     }
 
-    public interface IBrowserAdapter : IPageFragment,  IDisposable
+    public interface IBrowserAdapter : IPageFragment, IBrowserCamera,  IDisposable
     {
         /// <summary>
         /// Return strongly typed adapter for web form with given id
@@ -133,8 +143,10 @@ namespace MaintainableSelenium.MvcPages
         /// <param name="timeOut">Max time in seconds to wait</param>
         void WaitForElementWithId(string elementId, int timeOut = 30);
 
-        void TakeScreenshot(string name);
+        byte [] TakeScreenshot();
 
         void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
+
+        void SaveScreenshot(string screenshotName);
     }
 }

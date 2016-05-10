@@ -2,6 +2,6 @@
 {
     public interface IScreenshotStorage
     {
-        void Persist(byte[] image, ScreenshotIdentity screenshotIdentity);
+        void Persist(byte[] image, string screenshotName);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using MaintainableSelenium.MvcPages;
 using MaintainableSelenium.MvcPages.BrowserCamera;
 using MaintainableSelenium.VisualAssertions.Infrastructure;
 using MaintainableSelenium.VisualAssertions.Infrastructure.Persistence;
@@ -8,12 +10,16 @@ using MaintainableSelenium.VisualAssertions.Screenshots.Queries;
 
 namespace MaintainableSelenium.VisualAssertions.Screenshots
 {
-    public class ScreenshotService : IScreenshotStorage
+    public class VisualAssertionsService 
     {
         private readonly IRepository<Project> projectRepository;
         private static readonly DateTime SessionStartDate = DateTime.Now;
+        private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
+        public string ProjectName { get; set; }
+        public string ScreenshotCategory { get; set; }
+        public string BrowserName { get; set; }
 
-        public ScreenshotService(IRepository<Project> projectRepository )
+        public VisualAssertionsService(IRepository<Project> projectRepository )
         {
             this.projectRepository = projectRepository;
         }
@@ -36,7 +42,19 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
             return testSession;
         }
 
-        public void Persist(byte[] image, ScreenshotIdentity screenshotIdentity)
+        public void CheckViewWithPattern(IBrowserCamera browserCamera, string viewName)
+        {
+            var screenshotIdentity = new ScreenshotIdentity(ProjectName, BrowserName, ScreenshotCategory, viewName);
+            if (takenScreenshots.Contains(screenshotIdentity))
+            {
+                throw new DuplicatedScreenshotInSession(screenshotIdentity);
+            }
+            var screenshot = browserCamera.TakeScreenshot();
+            takenScreenshots.Add(screenshotIdentity);
+            CheckScreenshotWithPattern(screenshot, screenshotIdentity);
+        }
+
+        private void CheckScreenshotWithPattern(byte[] image, ScreenshotIdentity screenshotIdentity)
         {
             using (var tx = PersistanceEngine.GetSession().BeginTransaction())
             {

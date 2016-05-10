@@ -13,16 +13,11 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera
             this.screenshotDirectoryPath = screenshotDirectoryPath;
         }
 
-        public void Persist(byte[] image, ScreenshotIdentity screenshotIdentity)
+        public void Persist(byte[] image, string screenshotName)
         {
-            var screenshotFileName = GetScreenshotFileName(screenshotIdentity);
-            var screenshotPath = Path.Combine(screenshotDirectoryPath, screenshotFileName);
+            var fileName = string.Format("{0}.jpg", screenshotName);
+            var screenshotPath = Path.Combine(screenshotDirectoryPath, fileName);
             image.ToBitmap().Save(screenshotPath, ImageFormat.Jpeg);
-        }
-
-        private static string GetScreenshotFileName(ScreenshotIdentity screenshotIdentity)
-        {
-            return string.Format("{0}_{1}_{2}_{3}.png", screenshotIdentity.ProjectName, screenshotIdentity.BrowserName, screenshotIdentity.Category, screenshotIdentity.ScreenshotName);
         }
     }
 }

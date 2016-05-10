@@ -14,6 +14,8 @@ namespace MaintainableSelenium.MvcPages
 
         public string PageUrl { get; set; }
 
+        public string ScreenshotsPath { get; set; }
+
         public  List<IFormInputAdapter> InputAdapters { get; set; }
 
         public BrowserDimensionsConfig BrowserDimensions { get; set; }
