@@ -15,9 +15,6 @@
     <dependencies>
 	  <dependency id="AForge.Imaging" version="2.2.5"/>	
 	  <dependency id="FluentNHibernate" version="2.0.3.0"/>
-	  <dependency id="Microsoft.AspNet.Mvc" version="5.2.3" />
-	  <dependency id="Microsoft.AspNet.Mvc.Futures" version="5.0.0"/>	
-	  <dependency id="Selenium.Support" version="2.52.0" />
 	  <dependency id="MaintainableSelenium.MvcPages" version="$version$" />	 	  
     </dependencies>	
   </metadata>

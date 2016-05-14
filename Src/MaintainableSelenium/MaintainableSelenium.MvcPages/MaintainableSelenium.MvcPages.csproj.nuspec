@@ -15,7 +15,7 @@
     <dependencies>
 	  <dependency id="Microsoft.AspNet.Mvc" version="5.2.3" />
 	  <dependency id="Microsoft.AspNet.Mvc.Futures" version="5.0.0"/>	
-	  <dependency id="Selenium.Support" version="2.52.0" />	 
+	  <dependency id="Selenium.Support" version="2.53.0" />	 
     </dependencies>	
   </metadata>
   <files>
