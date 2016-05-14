@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿using System;
+using System.Drawing.Imaging;
 using System.IO;
 using MaintainableSelenium.MvcPages.Utils;
 
@@ -15,6 +16,16 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera
 
         public void Persist(byte[] image, string screenshotName)
         {
+            if (string.IsNullOrWhiteSpace(screenshotDirectoryPath))
+            {
+                throw new ApplicationException("Screenshot directory path not defined");
+            }
+
+            if (string.IsNullOrWhiteSpace(screenshotName))
+            {
+                throw new ArgumentException("Screenshot name cannot be empty", "screenshotName");
+            }
+
             var fileName = string.Format("{0}.jpg", screenshotName);
             var screenshotPath = Path.Combine(screenshotDirectoryPath, fileName);
             image.ToBitmap().Save(screenshotPath, ImageFormat.Jpeg);

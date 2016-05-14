@@ -21,18 +21,19 @@ namespace MaintainableSelenium.MvcPages
         private INavigator navigator;
         private List<IFormInputAdapter> supportedInputsAdapters;
         private IScreenshotStorage screenshotStorage;
-        public string browserName { get; set; }
+        private string BrowserName { get; set; }
 
         public static IBrowserAdapter Create(BrowserAdapterConfig config)
         {
             var browserAdapter = new BrowserAdapter();
             browserAdapter.Driver = SeleniumDriverFactory.CreateLocalDriver(config.BrowserType, config.SeleniumDriversPath);
-            browserAdapter.browserCamera = BrowserCamera.BrowserCamera.CreateNew(browserAdapter.Driver, config.BrowserCameraConfig);
+            var browserCameraConfig = config.BrowserCameraConfig ?? BrowserCameraConfig.CreateDefault();
+            browserAdapter.browserCamera = BrowserCamera.BrowserCamera.CreateNew(browserAdapter.Driver, browserCameraConfig);
             browserAdapter.navigator = new Navigator(browserAdapter.Driver, config.PageUrl);
             browserAdapter.screenshotStorage = new FileSystemScreenshotStorage(config.ScreenshotsPath);
             browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
             browserAdapter.SetupBrowserDimensions(config.BrowserDimensions);
-            browserAdapter.browserName = config.BrowserType.ToString();
+            browserAdapter.BrowserName = config.BrowserType.ToString();
             return browserAdapter;
         }
 
@@ -66,7 +67,7 @@ namespace MaintainableSelenium.MvcPages
         public void SaveScreenshot(string screenshotName)
         {
             var screenshotRawData = browserCamera.TakeScreenshot();
-            var fullScreenshotName = string.Format("{0}_{1}", browserName, screenshotName);
+            var fullScreenshotName = string.Format("{0}_{1}", BrowserName, screenshotName);
             this.screenshotStorage.Persist(screenshotRawData, fullScreenshotName);
         }
 
