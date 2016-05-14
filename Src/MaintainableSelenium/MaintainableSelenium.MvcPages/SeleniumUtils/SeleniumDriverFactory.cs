@@ -18,7 +18,8 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             switch (driverType)
             {
                 case BrowserType.Firefox:
-                    return new FirefoxDriver();
+                    var profile = new FirefoxProfile {DeleteAfterUse = true};
+                    return new FirefoxDriver(profile);
                 case BrowserType.Chrome:
                     return new ChromeDriver(driversPath);
                 case BrowserType.InternetExplorer:
