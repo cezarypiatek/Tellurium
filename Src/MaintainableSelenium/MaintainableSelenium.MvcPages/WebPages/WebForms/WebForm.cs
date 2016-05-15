@@ -56,9 +56,9 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             {
                 return waiter.Until(d => WebElement.FindElement(By.Name(fieldName)));
             }
-            catch (TimeoutException)
+            catch (WebDriverTimeoutException)
             {
-                throw new NoWebForFieldException(fieldName);
+                throw new FieldNotFoundException(fieldName);
             }
         }
 

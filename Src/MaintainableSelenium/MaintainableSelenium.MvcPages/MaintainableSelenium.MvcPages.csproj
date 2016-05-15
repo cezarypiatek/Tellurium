@@ -99,6 +99,7 @@
     <Compile Include="BrowserCamera\IBrowserCamera.cs" />
     <Compile Include="BrowserCamera\IScreenshotStorage.cs" />
     <Compile Include="BrowserCamera\ScreenshotIdentity.cs" />
+    <Compile Include="SeleniumUtils\WebElementNotFoundException.cs" />
     <Compile Include="Utils\ExceptionHelper.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -119,7 +120,7 @@
     <Compile Include="WebPages\WebForms\IFormInputAdapter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="WebPages\WebForms\NoWebForFieldException.cs" />
+    <Compile Include="WebPages\WebForms\FieldNotFoundException.cs" />
     <Compile Include="WebPages\WebForms\WebForm.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -76,7 +76,19 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         /// <param name="timeout">Timout for element serch</param>
         public static IWebElement GetElementById(this RemoteWebDriver driver, string elementId, int timeout = SearchElementDefaultTimeout)
         {
-            return driver.GetElementBy(By.Id(elementId), timeout);
+            try
+            {
+                return driver.GetElementBy(By.Id(elementId), timeout);
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                if (ex.InnerException is NoSuchElementException)
+                {
+                    var message = string.Format("Cannot find element with id='{0}'", elementId);
+                    throw new WebElementNotFoundException(message, ex);
+                }
+                throw;
+            }
         }
 
         /// <summary>
@@ -85,11 +97,27 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         /// <param name="driver">Selenium driver</param>
         /// <param name="by"><see cref="By"/> criterion for given element</param>
         /// <param name="timeout">Timout for element serch</param>
-        public static IWebElement GetElementBy(this RemoteWebDriver driver, By by, int timeout = SearchElementDefaultTimeout)
+        private static IWebElement GetElementBy(this RemoteWebDriver driver, By by, int timeout = SearchElementDefaultTimeout)
         {
             var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
             var formElement = waiter.Until(ExpectedConditions.ElementIsVisible(by));
             return formElement;
+        }
+
+        private static IWebElement GetElementByInScope(RemoteWebDriver driver, By @by, IWebElement scope)
+        {
+            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(SearchElementDefaultTimeout));
+            var expectedElement = waiter.Until(
+                (a) =>
+                {
+                    var element = scope.FindElement(@by);
+                    if (element != null && element.Displayed && element.Enabled)
+                    {
+                        return element;
+                    }
+                    return null;
+                });
+            return expectedElement;
         }
 
         /// <summary>
@@ -119,24 +147,21 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         /// <param name="linkText">Element tekst</param>
         public static  void ClickOnElementWithText(this RemoteWebDriver driver, IWebElement scope, string linkText)
         {
-            var by = By.XPath(string.Format(".//*[contains(text(), '{0}') or (@type='submit' and @value='{0}')]", linkText));
-            ClickOn(driver, scope, @by);
-        }
-
-        private static void ClickOn(this RemoteWebDriver driver, IWebElement scope,  By @by)
-        {
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(SearchElementDefaultTimeout));
-            var expectedElement = waiter.Until(
-                (a) =>
+            try
+            {
+                var by = By.XPath(string.Format(".//*[contains(text(), '{0}') or (@type='submit' and @value='{0}')]", linkText));
+                var expectedElement = GetElementByInScope(driver, @by, scope);
+                expectedElement.Click();
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                if (ex.InnerException is NoSuchElementException)
                 {
-                    var element = scope.FindElement(@by);
-                    if (element != null && element.Displayed && element.Enabled)
-                    {
-                        return element;
-                    }
-                    return null;
-                });
-            expectedElement.Click();
+                    var message = string.Format("Cannot find element with text='{0}'", linkText);
+                    throw new WebElementNotFoundException(message, ex);
+                }
+                throw;
+            }
         }
     }
 }

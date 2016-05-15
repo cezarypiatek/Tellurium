@@ -95,8 +95,7 @@ namespace MaintainableSelenium.MvcPages
         
         public void WaitForElementWithId(string elementId, int timeOut = 30)
         {
-            var waiter = new WebDriverWait(Driver, TimeSpan.FromSeconds(timeOut));
-            waiter.Until(ExpectedConditions.ElementIsVisible(By.Id(elementId)));
+            Driver.GetElementById(elementId, timeOut);
         }
 
         public void Dispose()
@@ -107,7 +106,8 @@ namespace MaintainableSelenium.MvcPages
 
         public void ClickOnElementWithText(string linkText)
         {
-            Driver.ClickOnElementWithText(Driver.FindElementByTagName("body"), linkText);
+            var scope = Driver.FindElementByTagName("body");
+            Driver.ClickOnElementWithText(scope, linkText);
         }
     }
 
