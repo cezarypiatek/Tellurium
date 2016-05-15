@@ -19,7 +19,7 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots.Queries
 
         public List<BrowserPattern> GetQuery(IQueryable<BrowserPattern> query)
         {
-            return query.Where(x => x.BrowserName == browserName && x.TestCase.Category.Id == categoryId)
+            return query.Where(x => x.BrowserName == browserName && x.TestCase.Category.Id == categoryId && x.IsActive)
                 .Fetch(x=>x.BlindRegions)
                 .Fetch(x=>x.PatternScreenshot)
                 .ToList();
