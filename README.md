@@ -4,4 +4,5 @@
 A utility pack to create maintainanle UI tests for ASP.NET MVC projects using Selenium
 
 ##Nuget package
-https://www.nuget.org/packages/MaintainableSelenium/
+https://www.nuget.org/packages/MaintainableSelenium.MvcPages
+https://www.nuget.org/packages/MaintainableSelenium.VisualAssertions
