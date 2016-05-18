@@ -12,10 +12,10 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
         public virtual IList<BrowserPattern> Patterns { get; set; }
         public virtual Project Project { get; set; }
 
-        public virtual void AddNewPattern(byte[] screenshot, string browserName )
+        public virtual void AddNewPattern(byte[] screenshot, string browserName)
         {
             var blindRegions = this.Category.GetAllBlindRegionsForBrowser(browserName);
-            var browserPattern = new BrowserPattern
+            var newPattern = new BrowserPattern
             {
                 TestCase = this,
                 BrowserName = browserName,
@@ -27,18 +27,12 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
                 IsActive = true,
                 CreatedOn = DateTime.Now
             };
-            this.Patterns.Add(browserPattern);
-        }
-
-        public virtual void UpdatePatternScreenshot(BrowserPattern pattern, byte[] newScreenshot)
-        {
-            pattern.IsActive = false;
-            this.AddNewPattern(newScreenshot, pattern.BrowserName);
+            this.Patterns.Add(newPattern);
         }
 
         public virtual BrowserPattern GetActivePatternForBrowser(string browserName)
         {
-            return Patterns.FirstOrDefault(x => x.BrowserName == browserName && x.IsActive);
+            return Patterns.SingleOrDefault(x => x.BrowserName == browserName && x.IsActive);
         }
 
         public virtual List<BrowserPattern> GetActivePatterns()

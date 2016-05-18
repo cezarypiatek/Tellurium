@@ -50,5 +50,10 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
             result.AddRange(fromAboveLevels);
             return result.AsReadOnly();
         }
+
+        public virtual void Deactivate()
+        {
+            this.IsActive = false;
+        }
     }
 }

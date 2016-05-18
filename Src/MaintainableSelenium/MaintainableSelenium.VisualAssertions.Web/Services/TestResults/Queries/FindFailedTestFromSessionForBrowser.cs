@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MaintainableSelenium.VisualAssertions.Infrastructure;
+using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResult.Queries
+namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults.Queries
 {
-    public class FindFailedTestFromSessionForBrowser:IQueryAll<VisualAssertions.Screenshots.Domain.TestResult>
+    public class FindFailedTestFromSessionForBrowser:IQueryAll<TestResult>
     {
         private readonly long testSessionId;
         private readonly string browserName;
@@ -15,7 +16,7 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResult.Queries
             this.browserName = browserName;
         }
 
-        public List<VisualAssertions.Screenshots.Domain.TestResult> GetQuery(IQueryable<VisualAssertions.Screenshots.Domain.TestResult> query)
+        public List<TestResult> GetQuery(IQueryable<TestResult> query)
         {
             return query.Where(x => x.TestSession.Id == testSessionId && x.TestPassed == false && x.BrowserName == browserName)
                     .ToList();

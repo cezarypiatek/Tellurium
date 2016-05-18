@@ -14,7 +14,11 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
 
         public virtual void MarkAsPattern()
         {
-            this.Pattern.TestCase.UpdatePatternScreenshot(this.Pattern, this.ErrorScreenshot);
+            if (this.Pattern.IsActive)
+            {
+                this.Pattern.Deactivate();
+                this.Pattern.TestCase.AddNewPattern(this.ErrorScreenshot, this.Pattern.BrowserName);
+            }
         }
     }
 }

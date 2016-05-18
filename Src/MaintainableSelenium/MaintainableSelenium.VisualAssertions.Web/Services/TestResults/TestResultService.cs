@@ -6,18 +6,18 @@ using MaintainableSelenium.MvcPages.Utils;
 using MaintainableSelenium.VisualAssertions.Infrastructure;
 using MaintainableSelenium.VisualAssertions.Screenshots;
 using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
-using MaintainableSelenium.VisualAssertions.Web.Services.TestResult.Queries;
+using MaintainableSelenium.VisualAssertions.Web.Services.TestResults.Queries;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResult
+namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
 {
     public class TestResultService : ITestResultService
     {
-        private readonly IRepository<Screenshots.Domain.TestResult> testRepository;
+        private readonly IRepository<TestResult> testRepository;
         private readonly IRepository<TestSession> testSessionRepository;
         private readonly IRepository<Project> projectRepository;
         private readonly ISessionContext sessionContext;
 
-        public TestResultService(IRepository<Screenshots.Domain.TestResult> testRepository, 
+        public TestResultService(IRepository<TestResult> testRepository, 
             IRepository<TestSession>  testSessionRepository,
             IRepository<Project>  projectRepository,
             ISessionContext sessionContext
@@ -49,7 +49,8 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResult
         {
             using (var tx = sessionContext.Session.BeginTransaction())
             {
-                var failedTestResults = this.testRepository.FindAll(new FindFailedTestFromSessionForBrowser(testSessionId, browserName));
+                var failedTestResultsQuery = new FindFailedTestFromSessionForBrowser(testSessionId, browserName);
+                var failedTestResults = this.testRepository.FindAll(failedTestResultsQuery);
                 foreach (var testResult in failedTestResults)
                 {
                     testResult.MarkAsPattern();
@@ -61,21 +62,21 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResult
         public Bitmap GetScreenshot(long testId, ScreenshotType screenshotType)
         {
             var testResult = this.testRepository.Get(testId);
-            var bitmap1 = testResult.Pattern.PatternScreenshot.Image.ToBitmap();
+            var patternBitmap = testResult.Pattern.PatternScreenshot.Image.ToBitmap();
 
             switch (screenshotType)
             {
                 case ScreenshotType.Pattern:
-                    return bitmap1;
+                    return patternBitmap;
                 case ScreenshotType.Error:
                 {
-                    var bitmap2 = testResult.ErrorScreenshot.ToBitmap();
-                    return ImageHelpers.CreateImageDiff(bitmap1, bitmap2, testResult.Pattern.GetAllBlindRegions());
+                    var errorBitmap = testResult.ErrorScreenshot.ToBitmap();
+                    return ImageHelpers.CreateImageDiff(patternBitmap, errorBitmap, testResult.Pattern.GetAllBlindRegions());
                 }
                 case ScreenshotType.Diff:
                 {
-                    var bitmap2 = testResult.ErrorScreenshot.ToBitmap();
-                    return ImageHelpers.CreateImagesXor(bitmap1, bitmap2, testResult.Pattern.GetAllBlindRegions());
+                    var errorBitmap = testResult.ErrorScreenshot.ToBitmap();
+                    return ImageHelpers.CreateImagesXor(patternBitmap, errorBitmap, testResult.Pattern.GetAllBlindRegions());
                 }
                 default:
                     throw new ArgumentOutOfRangeException("screenshotType", screenshotType, null);
@@ -94,7 +95,7 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResult
             };
         }
 
-        private static TestResultListItemDTO MapToTestResultListItemDTO(Screenshots.Domain.TestResult x)
+        private static TestResultListItemDTO MapToTestResultListItemDTO(TestResult x)
         {
             return new TestResultListItemDTO()
             {

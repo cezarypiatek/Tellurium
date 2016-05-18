@@ -6,7 +6,7 @@ using MaintainableSelenium.VisualAssertions.Screenshots.Queries;
 using MaintainableSelenium.VisualAssertions.Web.Models.Home;
 using MaintainableSelenium.VisualAssertions.Web.Models.TestCase;
 using MaintainableSelenium.VisualAssertions.Web.Services.TestCase.Queries;
-using MaintainableSelenium.VisualAssertions.Web.Services.TestResult;
+using MaintainableSelenium.VisualAssertions.Web.Services.TestResults;
 
 namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase
 {

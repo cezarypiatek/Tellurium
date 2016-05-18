@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 using MaintainableSelenium.VisualAssertions.Web.Mvc;
-using MaintainableSelenium.VisualAssertions.Web.Services.TestResult;
+using MaintainableSelenium.VisualAssertions.Web.Services.TestResults;
 using Microsoft.Web.Mvc;
 
 namespace MaintainableSelenium.VisualAssertions.Web.Controllers

@@ -3,7 +3,7 @@ using System.Linq;
 using MaintainableSelenium.VisualAssertions.Infrastructure;
 using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResult.Queries
+namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults.Queries
 {
     public class FindAllSessionFromProject:IQueryAll<TestSession>
     {
