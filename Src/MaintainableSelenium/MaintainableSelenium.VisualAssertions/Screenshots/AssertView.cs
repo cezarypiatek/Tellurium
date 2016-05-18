@@ -1,6 +1,7 @@
 ﻿using MaintainableSelenium.MvcPages.BrowserCamera;
 using MaintainableSelenium.VisualAssertions.Infrastructure.Persistence;
 using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using MaintainableSelenium.VisualAssertions.TestRunersAdapters;
 
 namespace MaintainableSelenium.VisualAssertions.Screenshots
 {
@@ -10,7 +11,9 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
 
         public static void Init(VisualAssertionsConfig config)
         {
-            visualAssertionsService = new VisualAssertionsService(new Repository<Project>(PersistanceEngine.GetSessionContext()))
+            var testRunnerAdapter = TestRunnerAdapterFactory.CreateForCurrentEnvironment();
+            var projectRepository = new Repository<Project>(PersistanceEngine.GetSessionContext());
+            visualAssertionsService = new VisualAssertionsService(projectRepository,testRunnerAdapter)
             {
                 ProjectName = config.ProjectName,
                 ScreenshotCategory = config.ScreenshotCategory,

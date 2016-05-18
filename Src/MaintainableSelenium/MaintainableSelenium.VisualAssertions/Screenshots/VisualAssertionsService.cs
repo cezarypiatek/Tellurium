@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.MvcPages;
 using MaintainableSelenium.MvcPages.BrowserCamera;
 using MaintainableSelenium.VisualAssertions.Infrastructure;
 using MaintainableSelenium.VisualAssertions.Infrastructure.Persistence;
 using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
 using MaintainableSelenium.VisualAssertions.Screenshots.Queries;
+using MaintainableSelenium.VisualAssertions.TestRunersAdapters;
 
 namespace MaintainableSelenium.VisualAssertions.Screenshots
 {
     public class VisualAssertionsService 
     {
         private readonly IRepository<Project> projectRepository;
+        private readonly ITestRunnerAdapter testRunnerAdapter;
         private static readonly DateTime SessionStartDate = DateTime.Now;
         private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
         public string ProjectName { get; set; }
         public string ScreenshotCategory { get; set; }
         public string BrowserName { get; set; }
 
-        public VisualAssertionsService(IRepository<Project> projectRepository )
+        public VisualAssertionsService(IRepository<Project> projectRepository, ITestRunnerAdapter testRunnerAdapter)
         {
             this.projectRepository = projectRepository;
+            this.testRunnerAdapter = testRunnerAdapter;
         }
 
         private TestSession GetCurrentTestSession(Project project)
@@ -64,6 +66,7 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
                 if (browserPattern == null)
                 {
                     testCase.AddNewPattern(image, screenshotIdentity.BrowserName);
+                    testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName);
                 }
                 else
                 {
@@ -76,14 +79,16 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
                         BrowserName = screenshotIdentity.BrowserName
                     };
 
-                    if (browserPattern.MatchTo(image) == false)
+                    if (browserPattern.MatchTo(image))
                     {
-                        testResult.TestPassed = false;
-                        testResult.ErrorScreenshot = image;
+                        testResult.TestPassed = true;
+                        testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName);
                     }
                     else
                     {
-                        testResult.TestPassed = true;
+                        testResult.TestPassed = false;
+                        testResult.ErrorScreenshot = image;
+                        testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName);
                     }
                     testSession.AddTestResult(testResult);
                 }
