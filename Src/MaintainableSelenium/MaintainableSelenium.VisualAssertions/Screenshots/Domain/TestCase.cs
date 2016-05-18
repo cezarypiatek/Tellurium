@@ -12,20 +12,23 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
         public virtual IList<BrowserPattern> Patterns { get; set; }
         public virtual Project Project { get; set; }
 
-        public virtual void AddNewPattern(byte[] screenshot, string browserName)
+        public virtual void AddNewPattern(byte[] screenshot, string browserName, IList<BlindRegion> blindRegions =null)
         {
-            var blindRegions = this.Category.GetAllBlindRegionsForBrowser(browserName);
+            var ownBlindRegions = blindRegions ?? new List<BlindRegion>();
+            var inheritedBlindRegions = this.Category.GetAllBlindRegionsForBrowser(browserName);
+            var allBlindRegions = inheritedBlindRegions.Concat(ownBlindRegions).ToList();
             var newPattern = new BrowserPattern
             {
-                TestCase = this,
                 BrowserName = browserName,
                 PatternScreenshot = new ScreenshotData
                 {
                     Image = screenshot,
-                    Hash = ImageHelpers.ComputeHash(screenshot, blindRegions)
+                    Hash = ImageHelpers.ComputeHash(screenshot, allBlindRegions)
                 },
                 IsActive = true,
-                CreatedOn = DateTime.Now
+                CreatedOn = DateTime.Now,
+                BlindRegions = ownBlindRegions,
+                TestCase = this
             };
             this.Patterns.Add(newPattern);
         }
