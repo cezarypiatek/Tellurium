@@ -19,7 +19,7 @@ namespace MaintainableSelenium.MvcPages.Utils
         {
             using (var ms = new MemoryStream())
             {
-                imageIn.Save(ms, ImageFormat.Png);
+                imageIn.Save(ms, ImageFormat.Bmp);
                 return ms.ToArray();
             }
         }
