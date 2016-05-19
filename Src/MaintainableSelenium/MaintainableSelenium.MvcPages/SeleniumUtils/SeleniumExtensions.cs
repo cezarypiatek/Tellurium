@@ -99,14 +99,13 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         /// <param name="timeout">Timout for element serch</param>
         private static IWebElement GetElementBy(this RemoteWebDriver driver, By by, int timeout = SearchElementDefaultTimeout)
         {
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
-            var formElement = waiter.Until(ExpectedConditions.ElementIsVisible(by));
-            return formElement;
+            var scope = driver.FindElementByTagName("body");
+            return GetElementByInScope(driver, by, scope, timeout);
         }
 
-        private static IWebElement GetElementByInScope(RemoteWebDriver driver, By @by, IWebElement scope)
+        private static IWebElement GetElementByInScope(RemoteWebDriver driver, By @by, IWebElement scope, int timeout = SearchElementDefaultTimeout)
         {
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(SearchElementDefaultTimeout));
+            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
             var expectedElement = waiter.Until(
                 (a) =>
                 {
