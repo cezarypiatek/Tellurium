@@ -64,6 +64,27 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         public static int GetWindowHeight(this RemoteWebDriver driver)
         {
             return (int)(long)driver.ExecuteScript("return window.innerHeight");
+        } 
+        
+        internal static void WaitForContentChange(this RemoteWebDriver driver, string containerId, int  timeout = SearchElementDefaultTimeout)
+        {
+            driver.ExecuteScript(@"var $$expectedId = arguments[0];
+__selenium_observers__ =  window.__selenium_observers__ || {};
+(function(){		
+		var target = document.getElementById($$expectedId);
+		__selenium_observers__[$$expectedId] = {
+				observer: new MutationObserver(function(mutations) {
+					__selenium_observers__[$$expectedId].occured = true;
+					__selenium_observers__[$$expectedId].observer.disconnect();
+				}),
+				occured:false
+		};
+		var config = { attributes: true, childList: true, characterData: true, subtree: true };
+
+		__selenium_observers__[$$expectedId].observer.observe(target, config);
+})();", containerId);
+            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+            waiter.Until(d => (bool)driver.ExecuteScript("return __selenium_observers__[arguments[0]].occured;",containerId));
         }
 
         public static int GetPageHeight(this RemoteWebDriver driver)

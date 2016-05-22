@@ -101,6 +101,12 @@ namespace MaintainableSelenium.MvcPages
             Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(seconds));
         }
 
+        public void WaitForContentChange(string containerId, int timeOut = 30)
+        {
+            Driver.WaitForContentChange(containerId, timeOut);
+        }
+
+
         public void Dispose()
         {
             Driver.Close();
@@ -153,5 +159,6 @@ namespace MaintainableSelenium.MvcPages
 
         void SaveScreenshot(string screenshotName);
         void Wait(int seconds);
+        void WaitForContentChange(string containerId, int timeOut = 30);
     }
 }
