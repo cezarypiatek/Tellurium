@@ -19,7 +19,7 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms.DefaultInputAdapters
         public void SetValue(IWebElement webElement, string value)
         {
             webElement.Clear();
-            webElement.SendKeys(value);
+            webElement.Type(value);
         }
 
         public string GetValue(IWebElement webElement)
