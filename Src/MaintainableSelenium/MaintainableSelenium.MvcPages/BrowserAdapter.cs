@@ -8,9 +8,7 @@ using MaintainableSelenium.MvcPages.BrowserCamera;
 using MaintainableSelenium.MvcPages.SeleniumUtils;
 using MaintainableSelenium.MvcPages.WebPages;
 using MaintainableSelenium.MvcPages.WebPages.WebForms;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Support.UI;
 
 namespace MaintainableSelenium.MvcPages
 {
@@ -98,6 +96,11 @@ namespace MaintainableSelenium.MvcPages
             Driver.GetElementById(elementId, timeOut);
         }
 
+        public void Wait(int seconds)
+        {
+            Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(seconds));
+        }
+
         public void Dispose()
         {
             Driver.Close();
@@ -149,5 +152,6 @@ namespace MaintainableSelenium.MvcPages
         void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
 
         void SaveScreenshot(string screenshotName);
+        void Wait(int seconds);
     }
 }
