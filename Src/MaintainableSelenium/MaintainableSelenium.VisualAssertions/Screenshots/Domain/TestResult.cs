@@ -17,7 +17,8 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
             if (this.Pattern.IsActive)
             {
                 this.Pattern.Deactivate();
-                this.Pattern.TestCase.AddNewPattern(this.ErrorScreenshot, this.Pattern.BrowserName, this.Pattern.BlindRegions);
+                var blindRegionsCopy = this.Pattern.GetCopyOfBlindRegions();
+                this.Pattern.TestCase.AddNewPattern(this.ErrorScreenshot, this.Pattern.BrowserName, blindRegionsCopy);
             }
         }
     }
