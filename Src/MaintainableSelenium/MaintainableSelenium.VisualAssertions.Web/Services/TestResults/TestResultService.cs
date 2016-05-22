@@ -101,7 +101,8 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
             {
                 TestResultId = x.Id,
                 TestPassed = x.TestPassed,
-                ScreenshotName = string.Format("{0} \\ {1}", x.Category, x.ScreenshotName)
+                ScreenshotName = string.Format("{0} \\ {1}", x.Category, x.ScreenshotName),
+                CanShowMarkAsPattern = x.TestPassed == false && x.Pattern.IsActive,
             };
         }
 
@@ -182,6 +183,7 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
         public long TestResultId { get; set; }
         public bool TestPassed { get; set; }
         public string ScreenshotName { get; set; }
+        public bool CanShowMarkAsPattern { get; set; }
     }
 
     public class ProjectListViewModel
