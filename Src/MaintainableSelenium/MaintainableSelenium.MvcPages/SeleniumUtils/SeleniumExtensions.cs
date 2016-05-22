@@ -99,8 +99,25 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         /// <param name="timeout">Timout for element serch</param>
         private static IWebElement GetElementBy(this RemoteWebDriver driver, By by, int timeout = SearchElementDefaultTimeout)
         {
-            var scope = driver.FindElementByTagName("body");
-            return GetElementByInScope(driver, by, scope, timeout);
+            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+            var expectedElement = waiter.Until(
+                (a) =>
+                {
+                    try
+                    {
+                        var element = driver.FindElement(by);
+                        if (element != null && element.Displayed && element.Enabled)
+                        {
+                            return element;
+                        }
+                        return null;
+                    }
+                    catch(StaleElementReferenceException)
+                    {
+                        return null;
+                    }
+                });
+            return expectedElement;
         }
 
         private static IWebElement GetElementByInScope(RemoteWebDriver driver, By @by, IWebElement scope, int timeout = SearchElementDefaultTimeout)
@@ -109,12 +126,19 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             var expectedElement = waiter.Until(
                 (a) =>
                 {
-                    var element = scope.FindElement(@by);
-                    if (element != null && element.Displayed && element.Enabled)
+                    try
                     {
-                        return element;
+                        var element = scope.FindElement(@by);
+                        if (element != null && element.Displayed && element.Enabled)
+                        {
+                            return element;
+                        }
+                        return null;
                     }
-                    return null;
+                    catch (StaleElementReferenceException)
+                    {
+                        return null;
+                    }
                 });
             return expectedElement;
         }
