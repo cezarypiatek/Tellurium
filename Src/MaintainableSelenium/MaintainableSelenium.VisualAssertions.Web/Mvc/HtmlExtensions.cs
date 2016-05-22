@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Ajax;
@@ -65,6 +66,12 @@ namespace MaintainableSelenium.VisualAssertions.Web.Mvc
         public static string ToJson(this object obj)
         {
             return JsonConvert.SerializeObject(obj);
+        }
+
+        public static IHtmlString GetAppVersion()
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            return MvcHtmlString.Create(version);
         }
 
     }
