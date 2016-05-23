@@ -77,7 +77,8 @@ namespace MaintainableSelenium.MvcPages
 
         public  void ClickOn(string elementId)
         {
-            this.Driver.GetElementById(elementId).Click();
+            var elementToClick = this.Driver.GetElementById(elementId);
+            Driver.ClickOn(elementToClick);
         }
 
         public IPageFragment GetPageFragmentById(string elementId)

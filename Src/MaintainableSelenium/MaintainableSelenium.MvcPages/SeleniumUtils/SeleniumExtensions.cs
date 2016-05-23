@@ -220,11 +220,30 @@ __selenium_observers__ =  window.__selenium_observers__ || {};
         /// <param name="linkText">Element tekst</param>
         public static  void ClickOnElementWithText(this RemoteWebDriver driver, IWebElement scope, string linkText)
         {
+            var expectedElement = GetElementWithText(driver, scope, linkText);
+            ClickOn(driver, expectedElement);
+        }
+
+        public static void ClickOn(this RemoteWebDriver driver, IWebElement expectedElement)
+        {
+            try
+            {
+                expectedElement.Click();
+            }
+            catch (InvalidOperationException)
+            {
+                driver.ScrollTo(expectedElement.Location.Y + expectedElement.Size.Height);
+                Thread.Sleep(500);
+                expectedElement.Click();
+            }
+        }
+
+        public static IWebElement GetElementWithText(this RemoteWebDriver driver, IWebElement scope, string linkText)
+        {
             try
             {
                 var by = By.XPath(string.Format(".//*[contains(text(), '{0}') or (@type='submit' and @value='{0}')]", linkText));
-                var expectedElement = GetElementByInScope(driver, @by, scope);
-                expectedElement.Click();
+                return GetElementByInScope(driver, @by, scope);
             }
             catch (WebDriverTimeoutException ex)
             {
