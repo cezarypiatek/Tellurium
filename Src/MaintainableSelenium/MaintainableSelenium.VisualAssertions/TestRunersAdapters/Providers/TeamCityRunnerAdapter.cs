@@ -32,7 +32,7 @@ namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
         private string GetDetailsMessage(TestSession session, BrowserPattern pattern)
         {
             var testResultPreviewPath = GetTestResultPreviewPath(session, pattern);
-            var detailsMessage = string.Format("Screenshots are different. Details {0}", testResultPreviewPath);
+            var detailsMessage = string.Format("Screenshots are different. Details at {0}", testResultPreviewPath);
             return detailsMessage;
         }
 
@@ -48,7 +48,7 @@ namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
             {
                 return string.Empty;
             }
-            return string.Format("{0}/Home/GetTestResultPreview?testSessionId={1}&patternId{2}", rootPath.TrimEnd('/'), session.Id, pattern.Id);
+            return string.Format("{0}/Home/GetTestResultPreview?testSessionId={1}&patternId={2}", rootPath.TrimEnd('/'), session.Id, pattern.Id);
         }
 
         static string Escape(string value)
