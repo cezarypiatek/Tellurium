@@ -1,10 +1,12 @@
 ﻿using System;
+using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
 
 namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
 {
     public class TeamCityRunnerAdapter : ITestRunnerAdapter
     {
         private const string TeamcityVariableName = "TEAMCITY_PROJECT_NAME";
+        private const string VisualAssertionWebPathVariableName = " MaintainableSelenium_VisualAssertions_Web";
 
         public bool IsPresent()
         {
@@ -18,12 +20,35 @@ namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
             Console.WriteLine("##teamcity[testFinished name='{0}']", escapedTestName);
         }
 
-        public void NotifyAboutTestFail(string testName)
+        public void NotifyAboutTestFail(string testName, TestSession session, BrowserPattern pattern)
         {
             var escapedTestName = Escape(testName);
+            var detailsMessage = GetDetailsMessage(session, pattern);
             Console.WriteLine("##teamcity[testStarted name='{0}']", escapedTestName);
-            Console.WriteLine("##teamcity[testFailed name='{0}' details='{1}']", escapedTestName, "Screenshots are different");
+            Console.WriteLine("##teamcity[testFailed name='{0}' details='{1}']", escapedTestName, detailsMessage);
             Console.WriteLine("##teamcity[testFinished name='{0}']", escapedTestName);
+        }
+
+        private string GetDetailsMessage(TestSession session, BrowserPattern pattern)
+        {
+            var testResultPreviewPath = GetTestResultPreviewPath(session, pattern);
+            var detailsMessage = string.Format("Screenshots are different. Details {0}", testResultPreviewPath);
+            return detailsMessage;
+        }
+
+        private string GetVisualAssertionWebPath()
+        {
+            return Environment.GetEnvironmentVariable(VisualAssertionWebPathVariableName);
+        }
+
+        private string GetTestResultPreviewPath(TestSession session, BrowserPattern pattern)
+        {
+            var rootPath = GetVisualAssertionWebPath();
+            if (string.IsNullOrWhiteSpace(rootPath))
+            {
+                return string.Empty;
+            }
+            return string.Format("{0}/Home/GetTestResultPreview?testSessionId={1}&patternId{2}", rootPath.TrimEnd('/'), session.Id, pattern.Id);
         }
 
         static string Escape(string value)

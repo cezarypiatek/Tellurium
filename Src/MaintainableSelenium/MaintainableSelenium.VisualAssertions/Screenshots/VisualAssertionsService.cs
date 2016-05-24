@@ -88,7 +88,7 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
                     {
                         testResult.TestPassed = false;
                         testResult.ErrorScreenshot = image;
-                        testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName);
+                        testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName, testSession, browserPattern);
                     }
                     testSession.AddTestResult(testResult);
                 }

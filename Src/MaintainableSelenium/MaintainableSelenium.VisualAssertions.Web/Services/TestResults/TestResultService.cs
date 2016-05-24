@@ -144,6 +144,13 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
                 TestResultId = testResult.Id
             };
         }
+
+        public TestResultListItemDTO GetTestResultPreview(long testSessionId, long patternId)
+        {
+            var query = new FindTestResultForPatternInSession(testSessionId, patternId);
+            var testResult = this.testRepository.FindOne(query);
+            return MapToTestResultListItemDTO(testResult);
+        }
     }
 
     public interface ITestResultService
@@ -156,6 +163,7 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
         TestSessionListViewModel GetTestSessionsFromProject(long projectId);
         ProjectListViewModel GetProjectsList();
         TestResultDetailsViewModel GetTestResultDetails(long testResultId);
+        TestResultListItemDTO GetTestResultPreview(long testSessionId, long patternId);
     }
 
     public enum ScreenshotType

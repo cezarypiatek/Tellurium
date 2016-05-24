@@ -1,4 +1,5 @@
 ﻿using System;
+using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
 
 namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
 {
@@ -16,7 +17,7 @@ namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
             Console.ResetColor();
         }
 
-        public void NotifyAboutTestFail(string testName)
+        public void NotifyAboutTestFail(string testName, TestSession session, BrowserPattern pattern)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.ResetColor();

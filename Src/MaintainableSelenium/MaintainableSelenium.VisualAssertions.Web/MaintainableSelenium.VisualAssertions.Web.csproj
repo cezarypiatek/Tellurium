@@ -194,6 +194,7 @@
     <Compile Include="Controllers\TestCaseController.cs" />
     <Compile Include="Models\Home\BrowserPatternDTO.cs" />
     <Compile Include="Services\TestCase\TestCaseService.cs" />
+    <Compile Include="Services\TestResults\Queries\FindTestResultForPatternInSession.cs" />
     <Compile Include="Services\TestResults\TestCaseCategoriesListViewModel.cs" />
     <Compile Include="Services\TestResults\TestResultService.cs" />
     <Compile Include="Global.asax.cs">
@@ -260,6 +261,7 @@
     <Content Include="Views\Home\ProjectList.cshtml" />
     <Content Include="Views\TestCase\ProjectsList.cshtml" />
     <Content Include="Views\TestCase\CategoriesList.cshtml" />
+    <Content Include="Views\Home\TestResultInfoPreloaded.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

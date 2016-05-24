@@ -64,5 +64,11 @@ namespace MaintainableSelenium.VisualAssertions.Web.Controllers
             this.testResultService.MarkAllAsPattern(testSessionId, browserName);
             return ActionResultFactory.AjaxSuccess();
         }
+
+        public ActionResult GetTestResultPreview(long testSessionId, long patternId)
+        {
+            var testResult = this.testResultService.GetTestResultPreview(testSessionId, patternId);
+            return this.View("TestResultInfoPreloaded", testResult);
+        }
     }
 }
