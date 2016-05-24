@@ -6,7 +6,7 @@ namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
     public class TeamCityRunnerAdapter : ITestRunnerAdapter
     {
         private const string TeamcityVariableName = "TEAMCITY_PROJECT_NAME";
-        private const string VisualAssertionWebPathVariableName = " MaintainableSelenium_VisualAssertions_Web";
+        private const string VisualAssertionWebPathVariableName = "MaintainableSelenium_VisualAssertions_Web";
 
         public bool IsPresent()
         {
