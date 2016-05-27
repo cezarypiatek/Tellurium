@@ -26,5 +26,10 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms.DefaultInputAdapters
         {
             return webElement.Selected ? Checked : UnChecked;
         }
+
+        public bool SupportSetRetry()
+        {
+            return true;
+        }
     }
 }

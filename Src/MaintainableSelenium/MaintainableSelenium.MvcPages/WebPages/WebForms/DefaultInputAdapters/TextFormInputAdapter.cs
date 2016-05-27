@@ -26,5 +26,10 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms.DefaultInputAdapters
         {
             return webElement.GetAttribute("value");
         }
+
+        public bool SupportSetRetry()
+        {
+            return true;
+        }
     }
 }

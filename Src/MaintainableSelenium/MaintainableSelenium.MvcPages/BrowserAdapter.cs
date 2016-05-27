@@ -20,6 +20,7 @@ namespace MaintainableSelenium.MvcPages
         private List<IFormInputAdapter> supportedInputsAdapters;
         private IScreenshotStorage screenshotStorage;
         private string BrowserName { get; set; }
+        private int NumberOfInputSetRetries { get; set; }
 
         public static IBrowserAdapter Create(BrowserAdapterConfig config)
         {
@@ -32,6 +33,7 @@ namespace MaintainableSelenium.MvcPages
             browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
             browserAdapter.SetupBrowserDimensions(config.BrowserDimensions);
             browserAdapter.BrowserName = config.BrowserType.ToString();
+            browserAdapter.NumberOfInputSetRetries = config.NumberOfInputSetRetries;
             return browserAdapter;
         }
 
@@ -72,7 +74,7 @@ namespace MaintainableSelenium.MvcPages
         public  WebForm<TModel> GetForm<TModel>(string formId)
         {
             var formElement = this.Driver.GetElementById(formId);
-            return new WebForm<TModel>(formElement, Driver, supportedInputsAdapters);
+            return new WebForm<TModel>(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries);
         }
 
         public  void ClickOn(string elementId)

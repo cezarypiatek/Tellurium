@@ -21,5 +21,10 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms.DefaultInputAdapters
             SelectElement selectedValue = new SelectElement(webElement);
             return selectedValue.SelectedOption.Text;
         }
+
+        public bool SupportSetRetry()
+        {
+            return true;
+        }
     }
 }

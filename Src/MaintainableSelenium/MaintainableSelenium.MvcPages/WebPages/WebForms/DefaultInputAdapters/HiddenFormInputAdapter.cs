@@ -20,5 +20,10 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms.DefaultInputAdapters
         {
             throw new NotSupportedException("Getting value of hidden fields is not supported");
         }
+
+        public bool SupportSetRetry()
+        {
+            return false;
+        }
     }
 }

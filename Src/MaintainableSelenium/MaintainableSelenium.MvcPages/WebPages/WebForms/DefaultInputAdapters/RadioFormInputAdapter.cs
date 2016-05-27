@@ -20,5 +20,10 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms.DefaultInputAdapters
         {
             return webElement.GetParent().GetParent().FindElements(By.TagName("label")).Single(x => x.Selected).Text;
         }
+
+        public bool SupportSetRetry()
+        {
+            return true;
+        }
     }
 }

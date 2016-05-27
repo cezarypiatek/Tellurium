@@ -8,6 +8,8 @@ namespace MaintainableSelenium.MvcPages
 {
     public class BrowserAdapterConfig
     {
+        public const int DefaultNumberOfSetRetries = 3;
+
         public BrowserType BrowserType { get; set; }
 
         public string SeleniumDriversPath { get; set; }
@@ -18,6 +20,8 @@ namespace MaintainableSelenium.MvcPages
 
         public  List<IFormInputAdapter> InputAdapters { get; set; }
 
+        public int NumberOfInputSetRetries { get; set; }
+
         public BrowserDimensionsConfig BrowserDimensions { get; set; }
 
         public BrowserCameraConfig BrowserCameraConfig { get; set; }
@@ -25,13 +29,14 @@ namespace MaintainableSelenium.MvcPages
         public BrowserAdapterConfig()
         {
             InputAdapters = new List<IFormInputAdapter>
-                {
+            {
                     new TextFormInputAdapter(),
                     new SelectFormInputAdapter(),
                     new CheckboxFormInputAdapter(),
                     new RadioFormInputAdapter(),
                     new HiddenFormInputAdapter()
                 };
+            NumberOfInputSetRetries = DefaultNumberOfSetRetries;
         }
     }
 }
