@@ -25,6 +25,8 @@ namespace MaintainableSelenium.MvcPages
         public BrowserDimensionsConfig BrowserDimensions { get; set; }
 
         public BrowserCameraConfig BrowserCameraConfig { get; set; }
+        
+        public AfterFieldValueSet AfterFieldValueSetAction { get; set; }
 
         public BrowserAdapterConfig()
         {
@@ -37,6 +39,7 @@ namespace MaintainableSelenium.MvcPages
                     new HiddenFormInputAdapter()
                 };
             NumberOfInputSetRetries = DefaultNumberOfSetRetries;
+            AfterFieldValueSetAction = AfterFieldValueSet.Nothing;
         }
     }
 }

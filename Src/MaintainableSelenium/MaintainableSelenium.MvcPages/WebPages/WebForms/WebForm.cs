@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using MaintainableSelenium.MvcPages.SeleniumUtils;
 using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
@@ -17,14 +18,16 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
     public class WebForm<TModel>: PageFragment
     {
         private readonly int numberOfSetRetries;
+        private readonly AfterFieldValueSet afterFieldValueSet;
         private static TimeSpan InputSearchTimeout = TimeSpan.FromSeconds(30);
 
         private List<IFormInputAdapter> SupportedInputs { get; set; }
 
-        public WebForm(IWebElement webElement, RemoteWebDriver driver, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries) 
+        public WebForm(IWebElement webElement, RemoteWebDriver driver, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries, AfterFieldValueSet afterFieldValueSet = AfterFieldValueSet.Nothing) 
             : base(driver, webElement)
         {
             this.numberOfSetRetries = numberOfSetRetries;
+            this.afterFieldValueSet = afterFieldValueSet;
             SupportedInputs = supportedInputs;
         }
 
@@ -33,7 +36,8 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
         /// </summary>
         /// <param name="field">Expression indicating given form field</param>
         /// <param name="value">Value to set for fields</param>
-        public void SetFieldValue<TFieldValue>(Expression<Func<TModel, TFieldValue>> field, string value)
+        /// <param name="customAction">Action to perform after field value has been set</param>
+        public void SetFieldValue<TFieldValue>(Expression<Func<TModel, TFieldValue>> field, string value, AfterFieldValueSet? customAction=null)
         {
             var fieldElement = GetField(field);
             var fieldAdapter = GetFieldAdapter(fieldElement);
@@ -55,6 +59,25 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             else
             {
                 fieldAdapter.SetValue(fieldElement, value);
+            }
+
+            InvokeAfterFieldValueSet(fieldElement, customAction ?? afterFieldValueSet);
+        }
+
+        private void InvokeAfterFieldValueSet(IWebElement fieldElement, AfterFieldValueSet actionType)
+        {
+            switch (actionType)
+            {
+                case AfterFieldValueSet.Nothing:
+                    break;
+                case AfterFieldValueSet.Blur:
+                    Driver.Blur();
+                    break;
+                case AfterFieldValueSet.MoveNext:
+                    fieldElement.SendKeys(Keys.Tab);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -97,5 +120,12 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             }
             return input;
         }
+    }
+
+    public enum AfterFieldValueSet
+    {
+        Nothing=1,
+        Blur,
+        MoveNext,
     }
 }
