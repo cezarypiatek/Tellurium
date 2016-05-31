@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Web.Mvc;
 using MaintainableSelenium.MvcPages.BrowserCamera;
 using MaintainableSelenium.MvcPages.SeleniumUtils;
@@ -101,7 +102,7 @@ namespace MaintainableSelenium.MvcPages
 
         public void Wait(int seconds)
         {
-            Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(seconds));
+            Thread.Sleep(seconds * 1000);
         }
 
         public void WaitForContentChange(string containerId, int timeOut = 30)
