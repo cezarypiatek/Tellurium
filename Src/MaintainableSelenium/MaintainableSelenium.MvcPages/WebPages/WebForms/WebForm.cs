@@ -120,6 +120,13 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             }
             return input;
         }
+
+        public FieldValueWatcher GetFieldValueWatcher<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
+        {
+            var fieldElement = GetField(field);
+            var fieldAdapter = GetFieldAdapter(fieldElement);
+            return new FieldValueWatcher(Driver, fieldElement, fieldAdapter);
+        }
     }
 
     public enum AfterFieldValueSet

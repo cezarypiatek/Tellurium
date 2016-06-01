@@ -113,6 +113,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WebPages\UrlHelper.cs" />
+    <Compile Include="WebPages\WebForms\FieldValueWatcher.cs" />
     <Compile Include="WebPages\WebForms\UnableToSetFieldValueException.cs" />
     <Compile Include="WebPages\WebForms\DefaultInputAdapters\CheckboxFormInputAdapter.cs" />
     <Compile Include="WebPages\WebForms\DefaultInputAdapters\HiddenFormInputAdapter.cs" />
