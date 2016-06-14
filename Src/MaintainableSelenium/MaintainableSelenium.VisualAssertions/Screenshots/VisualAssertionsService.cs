@@ -89,6 +89,7 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
                         testResult.TestPassed = false;
                         testResult.ErrorScreenshot = image;
                         testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName, testSession, browserPattern);
+                        testResult.BlindRegionsSnapshot = browserPattern.GetCopyOfAllBlindRegions();
                     }
                     testSession.AddTestResult(testResult);
                 }

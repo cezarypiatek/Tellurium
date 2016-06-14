@@ -56,9 +56,20 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
             this.IsActive = false;
         }
 
-        public virtual IList<BlindRegion> GetCopyOfBlindRegions()
+        public virtual IList<BlindRegion> GetCopyOfOwnBlindRegions()
         {
             return this.BlindRegions.Select(x => new BlindRegion
+            {
+                Left = x.Left,
+                Top = x.Top,
+                Width = x.Width,
+                Height = x.Height
+            }).ToList();
+        } 
+        
+        public virtual IList<BlindRegion> GetCopyOfAllBlindRegions()
+        {
+            return this.GetAllBlindRegions().Select(x => new BlindRegion
             {
                 Left = x.Left,
                 Top = x.Top,

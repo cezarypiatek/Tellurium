@@ -185,6 +185,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Models\Home\SaveCategoryBlindRegionsDTO.cs" />
     <Compile Include="Models\TestCase\TestCaseCategoryListItem.cs" />
+    <Compile Include="Mvc\Utils\ListExtensions.cs" />
     <Compile Include="Mvc\WindsorControllerFactory.cs" />
     <Compile Include="Services\TestCase\Queries\FindTestCaseCategoriesFromProject.cs" />
     <Compile Include="Services\TestResults\Queries\FindAllSessionFromProject.cs" />

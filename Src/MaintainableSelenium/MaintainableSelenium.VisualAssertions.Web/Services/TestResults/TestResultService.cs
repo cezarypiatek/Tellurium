@@ -6,6 +6,7 @@ using MaintainableSelenium.MvcPages.Utils;
 using MaintainableSelenium.VisualAssertions.Infrastructure;
 using MaintainableSelenium.VisualAssertions.Screenshots;
 using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using MaintainableSelenium.VisualAssertions.Web.Mvc.Utils;
 using MaintainableSelenium.VisualAssertions.Web.Services.TestResults.Queries;
 
 namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
@@ -70,13 +71,14 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
                     return patternBitmap;
                 case ScreenshotType.Error:
                 {
+
                     var errorBitmap = testResult.ErrorScreenshot.ToBitmap();
-                    return ImageHelpers.CreateImageDiff(patternBitmap, errorBitmap, testResult.Pattern.GetAllBlindRegions());
+                    return ImageHelpers.CreateImageDiff(patternBitmap, errorBitmap, testResult.BlindRegionsSnapshot.AsReadonly());
                 }
                 case ScreenshotType.Diff:
                 {
                     var errorBitmap = testResult.ErrorScreenshot.ToBitmap();
-                    return ImageHelpers.CreateImagesXor(patternBitmap, errorBitmap, testResult.Pattern.GetAllBlindRegions());
+                    return ImageHelpers.CreateImagesXor(patternBitmap, errorBitmap, testResult.BlindRegionsSnapshot.AsReadonly());
                 }
                 default:
                     throw new ArgumentOutOfRangeException("screenshotType", screenshotType, null);
