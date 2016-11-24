@@ -15,7 +15,7 @@ namespace MaintainableSelenium.VisualAssertions.Infrastructure.Persistence.Mappi
             Map(x => x.ErrorScreenshot).Length(int.MaxValue).LazyLoad();
             References(x => x.Pattern);
             References(x => x.TestSession);
-            HasMany(x => x.BlindRegionsSnapshot).Cascade.Persist();
+            HasManyToMany(x => x.BlindRegionsSnapshot).Cascade.Persist().Table("TestResultBlindRegionsSnapshot");
         }
     }
 }
