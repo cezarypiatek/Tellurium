@@ -58,43 +58,68 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
 
         private void CheckScreenshotWithPattern(byte[] image, ScreenshotIdentity screenshotIdentity)
         {
-            using (var tx = PersistanceEngine.GetSession().BeginTransaction())
+            try
             {
-                var project = this.GetProject(screenshotIdentity.ProjectName);
-                var testCase = GetTestCase(project, screenshotIdentity);
-                var browserPattern = testCase.GetActivePatternForBrowser(screenshotIdentity.BrowserName);
-                if (browserPattern == null)
+                Action finishNotification;
+                using (var tx = PersistanceEngine.GetSession().BeginTransaction())
                 {
-                    testCase.AddNewPattern(image, screenshotIdentity.BrowserName);
-                    testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName);
-                }
-                else
-                {
-                    var testSession = GetCurrentTestSession(project);
-                    var testResult = new TestResult
+                    var project = this.GetProject(screenshotIdentity.ProjectName);
+                    var testCase = GetTestCase(project, screenshotIdentity);
+                    var browserPattern = testCase.GetActivePatternForBrowser(screenshotIdentity.BrowserName);
+                    if (browserPattern == null)
                     {
-                        Pattern = browserPattern,
-                        ScreenshotName = screenshotIdentity.ScreenshotName,
-                        Category = screenshotIdentity.Category,
-                        BrowserName = screenshotIdentity.BrowserName
-                    };
-
-                    if (browserPattern.MatchTo(image))
-                    {
-                        testResult.TestPassed = true;
-                        testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName);
+                        testCase.AddNewPattern(image, screenshotIdentity.BrowserName);
+                        finishNotification = () => testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName);
                     }
                     else
                     {
-                        testResult.TestPassed = false;
-                        testResult.ErrorScreenshot = image;
-                        testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName, testSession, browserPattern);
-                        testResult.BlindRegionsSnapshot = browserPattern.GetCopyOfAllBlindRegions();
+                        var testSession = GetCurrentTestSession(project);
+                        var testResult = GetTestResult(image, screenshotIdentity, browserPattern);
+                        testSession.AddTestResult(testResult);
+                        finishNotification = () =>
+                        {
+                            if (testResult.TestPassed)
+                            {
+                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName);
+                            }
+                            else
+                            {
+                                testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName, testSession, browserPattern);
+                            }
+                        };
                     }
-                    testSession.AddTestResult(testResult);
+                    tx.Commit();
                 }
-                tx.Commit();
+                finishNotification.Invoke();
             }
+            catch (Exception ex)
+            {
+                testRunnerAdapter.NotifyAboutError(ex);
+            }
+        }
+
+        private TestResult GetTestResult(byte[] image, ScreenshotIdentity screenshotIdentity, BrowserPattern browserPattern)
+        {
+            var testResult = new TestResult
+            {
+                Pattern = browserPattern,
+                ScreenshotName = screenshotIdentity.ScreenshotName,
+                Category = screenshotIdentity.Category,
+                BrowserName = screenshotIdentity.BrowserName
+            };
+
+            if (browserPattern.MatchTo(image))
+            {
+                testResult.TestPassed = true;
+               
+            }
+            else
+            {
+                testResult.TestPassed = false;
+                testResult.ErrorScreenshot = image;
+                testResult.BlindRegionsSnapshot = browserPattern.GetCopyOfAllBlindRegions();
+            }
+            return testResult;
         }
 
         private static TestCase GetTestCase(Project project, ScreenshotIdentity screenshotIdentity)

@@ -1,4 +1,5 @@
 ﻿using System;
+using MaintainableSelenium.MvcPages.Utils;
 using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
 
 namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
@@ -27,6 +28,11 @@ namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
             Console.WriteLine("##teamcity[testStarted name='{0}']", escapedTestName);
             Console.WriteLine("##teamcity[testFailed name='{0}' details='{1}']", escapedTestName, detailsMessage);
             Console.WriteLine("##teamcity[testFinished name='{0}']", escapedTestName);
+        }
+
+        public void NotifyAboutError(Exception ex)
+        {
+            Console.WriteLine("##teamcity[message text='{0}' errorDetails='{1}' status='ERROR']",ex.GetFullExceptionMessage(), ex.StackTrace);
         }
 
         private string GetDetailsMessage(TestSession session, BrowserPattern pattern)
