@@ -173,50 +173,11 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
 
 
             blobCounter.ProcessImage(bitmapData);
-            var blobs = blobCounter.GetObjectsInformation();
+            var result = blobCounter.GetObjectsRectangles();
             bitmapWithPoints.UnlockBits(bitmapData);
-            var result = new List<Rectangle>();
-            for (int i = 0; i < blobs.Length; i++)
-            {
-                var edgePoints = blobCounter.GetBlobsEdgePoints(blobs[i]);
-                if (edgePoints.Count > 0)
-                {
-                    var surroundingSquare = GetSurroundingSquare(edgePoints);
-                    result.Add(surroundingSquare);
-                }
-            }
-            return RemoveNestedRectangles(result);
+            return RemoveNestedRectangles(new List<Rectangle>(result));
         }
-
-        private static Rectangle GetSurroundingSquare(List<IntPoint> edgePoints)
-        {
-            int minX = edgePoints[0].X, minY = edgePoints[0].Y, maxX = edgePoints[0].X, maxY = edgePoints[0].Y;
-
-            for (int j = 0; j < edgePoints.Count; j++)
-            {
-                var p = edgePoints[j];
-                if (p.X < minX)
-                {
-                    minX = p.X;
-                }
-                else if (p.X > maxX)
-                {
-                    maxX = p.X;
-                }
-
-                if (p.Y < minY)
-                {
-                    minY = p.Y;
-                }
-                else if (p.Y > maxY)
-                {
-                    maxY = p.Y;
-                }
-            }
-            var surroundingSquare = new Rectangle(minX, minY, maxX - minX, maxY - minY);
-            return surroundingSquare;
-        }
-
+       
         private static List<Rectangle> RemoveNestedRectangles(List<Rectangle> result)
         {
             var toRemove = result.Where(rectangle => result.Any(r => r != rectangle && IsRectangleInside(rectangle, r))).ToList();
