@@ -87,6 +87,20 @@ __selenium_observers__ =  window.__selenium_observers__ || {};
             driver.WaitUntil(timeout, d => (bool) driver.ExecuteScript( "return window.__selenium_observers__ && window.__selenium_observers__[arguments[0]].occured;", containerId));
         }
 
+
+        internal static bool IsElementClickable(this RemoteWebDriver driver, IWebElement element)
+        {
+            return (bool)driver.ExecuteScript(@"
+                    window.__selenium__isElementClickable = window.__selenium__isElementClickable || function(element)
+                    {
+                        var rec = element.getBoundingClientRect();
+                        var elementAtPosition = document.elementFromPoint(rec.left, rec.top);
+                        return element == elementAtPosition;
+                    };
+                    return window.__selenium__isElementClickable(arguments[0]);
+            ", element);
+        }
+
         public static int GetPageHeight(this RemoteWebDriver driver)
         {
             var scriptResult = driver.ExecuteScript("return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);");
@@ -149,48 +163,49 @@ __selenium_observers__ =  window.__selenium_observers__ || {};
         /// <param name="timeout">Timout for element serch</param>
         private static IWebElement GetElementBy(this RemoteWebDriver driver, By by, int timeout = SearchElementDefaultTimeout)
         {
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
-            var expectedElement = waiter.Until(
-                (a) =>
+            return driver.WaitUntil(timeout, (a) =>
+            {
+                try
                 {
-                    try
+                    var element = driver.FindElement(by);
+                    if (element != null && element.Displayed && element.Enabled)
                     {
-                        var element = driver.FindElement(by);
-                        if (element != null && element.Displayed && element.Enabled)
-                        {
-                            return element;
-                        }
-                        return null;
+                        return element;
                     }
-                    catch(StaleElementReferenceException)
-                    {
-                        return null;
-                    }
-                });
-            return expectedElement;
+                    return null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            });
         }
 
         private static IWebElement GetElementByInScope(RemoteWebDriver driver, By @by, IWebElement scope, int timeout = SearchElementDefaultTimeout)
         {
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
-            var expectedElement = waiter.Until(
-                (a) =>
+            return driver.WaitUntil(timeout, (a) =>
+            {
+                try
                 {
-                    try
+                    var element = scope.FindElement(@by);
+                    if (element != null && element.Displayed && element.Enabled)
                     {
-                        var element = scope.FindElement(@by);
-                        if (element != null && element.Displayed && element.Enabled)
-                        {
-                            return element;
-                        }
-                        return null;
+                        return element;
                     }
-                    catch (StaleElementReferenceException)
-                    {
-                        return null;
-                    }
-                });
-            return expectedElement;
+                    return null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            });
+        }
+
+        internal static TResult WaitUntil<TResult>(this RemoteWebDriver driver, int timeout,
+            Func<IWebDriver, TResult> waitPredictor)
+        {
+            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+            return waiter.Until(waitPredictor);
         }
 
         /// <summary>
@@ -232,8 +247,12 @@ __selenium_observers__ =  window.__selenium_observers__ || {};
             }
             catch (InvalidOperationException)
             {
-                driver.ScrollTo(expectedElement.Location.Y + expectedElement.Size.Height);
-                Thread.Sleep(500);
+                if (expectedElement.Location.Y > driver.GetWindowHeight())
+                {
+                    driver.ScrollTo(expectedElement.Location.Y + expectedElement.Size.Height);
+                    Thread.Sleep(500);
+                }
+                driver.WaitUntil(SearchElementDefaultTimeout, (d) => driver.IsElementClickable(expectedElement));
                 expectedElement.Click();
             }
         }
