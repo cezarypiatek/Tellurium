@@ -83,8 +83,8 @@ __selenium_observers__ =  window.__selenium_observers__ || {};
 
 		__selenium_observers__[$$expectedId].observer.observe(target, config);
 })();", containerId);
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
-            waiter.Until(d => (bool)driver.ExecuteScript("return __selenium_observers__[arguments[0]].occured;",containerId));
+
+            driver.WaitUntil(timeout, d => (bool) driver.ExecuteScript( "return window.__selenium_observers__ && window.__selenium_observers__[arguments[0]].occured;", containerId));
         }
 
         public static int GetPageHeight(this RemoteWebDriver driver)
