@@ -1,4 +1,4 @@
-using MaintainableSelenium.MvcPages.SeleniumUtils;
+using System.Threading;
 using OpenQA.Selenium.Remote;
 
 namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
@@ -14,10 +14,29 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
 
         public byte[] TakeScreenshot()
         {
-            driver.ZoomToHeight();
+            PreparePageForScreenshot();
             var screenshot = driver.GetScreenshot();
-            driver.ResetZoom();
+            RestorePageAfterScreenshot();
             return screenshot.AsByteArray;
+        }
+
+
+        void PreparePageForScreenshot()
+        {
+            driver.ExecuteScript(@"(function(){
+var windowHeight = window.innerHeight;
+var documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
+var zoomCoeff = windowHeight/documentHeight;
+if(zoomCoeff < 1) {document.body.style.zoom= zoomCoeff;  }
+})();");
+            Thread.Sleep(100);
+        }
+
+
+        void RestorePageAfterScreenshot()
+        {
+            driver.ExecuteScript(@"(function(){document.body.style.zoom= 1;})();");
+            Thread.Sleep(100);
         }
     }
 }
