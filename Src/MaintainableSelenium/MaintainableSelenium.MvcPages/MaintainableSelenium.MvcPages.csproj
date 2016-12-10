@@ -94,6 +94,7 @@
     <Compile Include="BrowserCamera\Lens\RegularLens.cs" />
     <Compile Include="BrowserCamera\Lens\ResizeableLens.cs" />
     <Compile Include="BrowserCamera\Lens\ScrollableLens.cs" />
+    <Compile Include="BrowserCamera\Lens\ZoomableLens.cs" />
     <Compile Include="BrowserCamera\ScreenshotStorageFactory.cs" />
     <Compile Include="BrowserDimensionsConfig.cs" />
     <Compile Include="BrowserCamera\IBrowserCamera.cs" />

@@ -15,6 +15,8 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
                     return new ScrollableLens(webDriver);
                 case LensType.Resizeable:
                     return new ResizeableLens(webDriver);
+                case LensType.Zoomable:
+                    return new ZoomableLens(webDriver);
                 default:
                     throw new ArgumentOutOfRangeException("type", type, null);
             }
@@ -25,6 +27,7 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
     {
         Regular = 1,
         Scrollable,
-        Resizeable
+        Resizeable,
+        Zoomable,
     }
 }

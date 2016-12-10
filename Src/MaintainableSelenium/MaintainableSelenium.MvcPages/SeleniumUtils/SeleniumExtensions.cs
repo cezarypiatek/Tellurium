@@ -87,6 +87,23 @@ __selenium_observers__ =  window.__selenium_observers__ || {};
             driver.WaitUntil(timeout, d => (bool) driver.ExecuteScript( "return window.__selenium_observers__ && window.__selenium_observers__[arguments[0]].occured;", containerId));
         }
 
+        internal static void ZoomToHeight(this RemoteWebDriver driver)
+        {
+            driver.ExecuteScript(@"(function(){
+var windowHeight = window.innerHeight;
+var documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
+var zoomCoeff = windowHeight/documentHeight;
+if(zoomCoeff < 1) {document.body.style.zoom= zoomCoeff;  }
+})();");
+            Thread.Sleep(100);
+        }
+
+
+        internal static void ResetZoom(this RemoteWebDriver driver)
+        {
+            driver.ExecuteScript(@"(function(){document.body.style.zoom= 1;})();");
+            Thread.Sleep(100);
+        }
 
         internal static bool IsElementClickable(this RemoteWebDriver driver, IWebElement element)
         {
