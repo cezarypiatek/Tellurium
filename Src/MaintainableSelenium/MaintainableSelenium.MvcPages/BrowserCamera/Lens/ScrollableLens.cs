@@ -58,10 +58,5 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
             var screenshot = driver.GetScreenshot();
             return screenshot.AsByteArray.ToBitmap();
         }
-
-        private static Bitmap Crop(Bitmap bmp, int x, int y, int width, int height)
-        {
-            return bmp.Clone(new Rectangle(x, y, width, height), bmp.PixelFormat);
-        }
     }
 }
