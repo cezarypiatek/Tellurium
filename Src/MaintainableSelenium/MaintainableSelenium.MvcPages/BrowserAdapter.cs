@@ -107,11 +107,10 @@ namespace MaintainableSelenium.MvcPages
             Thread.Sleep(seconds * 1000);
         }
 
-        public void WaitForContentChange(string containerId, int timeOut = 30)
+        public PageFragmentWatcher WatchForContentChange(string containerId)
         {
-            Driver.WaitForContentChange(containerId, timeOut);
+            return Driver.WatchForContentChanges(containerId);
         }
-
 
         public void Dispose()
         {
@@ -164,7 +163,17 @@ namespace MaintainableSelenium.MvcPages
         void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
 
         void SaveScreenshot(string screenshotName);
+
+        /// <summary>
+        /// Wait explicitly given amount of seconds
+        /// </summary>
+        /// <param name="seconds"></param>
         void Wait(int seconds);
-        void WaitForContentChange(string containerId, int timeOut = 30);
+
+        /// <summary>
+        /// Start obserwing container with given id for contnet change
+        /// </summary>
+        /// <param name="containerId">Container id</param>
+        PageFragmentWatcher WatchForContentChange(string containerId);
     }
 }

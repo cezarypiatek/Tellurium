@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Threading;
+using MaintainableSelenium.MvcPages.WebPages;
+using MaintainableSelenium.MvcPages.WebPages.WebForms;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
@@ -66,26 +68,13 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             return (int)(long)driver.ExecuteScript("return window.innerHeight");
         } 
         
-        internal static void WaitForContentChange(this RemoteWebDriver driver, string containerId, int  timeout = SearchElementDefaultTimeout)
+        internal static PageFragmentWatcher WatchForContentChanges(this RemoteWebDriver driver, string containerId)
         {
-            driver.ExecuteScript(@"var $$expectedId = arguments[0];
-__selenium_observers__ =  window.__selenium_observers__ || {};
-(function(){		
-		var target = document.getElementById($$expectedId);
-		__selenium_observers__[$$expectedId] = {
-				observer: new MutationObserver(function(mutations) {
-					__selenium_observers__[$$expectedId].occured = true;
-					__selenium_observers__[$$expectedId].observer.disconnect();
-				}),
-				occured:false
-		};
-		var config = { attributes: true, childList: true, characterData: true, subtree: true };
-
-		__selenium_observers__[$$expectedId].observer.observe(target, config);
-})();", containerId);
-
-            driver.WaitUntil(timeout, d => (bool) driver.ExecuteScript( "return window.__selenium_observers__ && window.__selenium_observers__[arguments[0]].occured;", containerId));
+            var watcher = new PageFragmentWatcher(driver, containerId);
+            watcher.StartWatching();
+            return watcher;
         }
+
 
         internal static bool IsElementClickable(this RemoteWebDriver driver, IWebElement element)
         {
