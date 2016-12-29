@@ -14,7 +14,6 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
     {
         private readonly IRepository<Project> projectRepository;
         private readonly ITestRunnerAdapter testRunnerAdapter;
-        private static readonly DateTime SessionStartDate = DateTime.Now;
         private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
         public string ProjectName { get; set; }
         public string ScreenshotCategory { get; set; }
@@ -32,12 +31,13 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
             {
                 throw new ApplicationException("Sessions cannot be null");
             }
-            var testSession = project.Sessions.FirstOrDefault(x => x.StartDate == SessionStartDate);
+            var currentStartDate = TestSessionContext.Current.StartDate;
+            var testSession = project.Sessions.FirstOrDefault(x => x.StartDate == currentStartDate);
             if (testSession == null)
             {
                 testSession = new TestSession
                 {
-                    StartDate = SessionStartDate
+                    StartDate = currentStartDate
                 };
                 project.AddSession(testSession);
             }
