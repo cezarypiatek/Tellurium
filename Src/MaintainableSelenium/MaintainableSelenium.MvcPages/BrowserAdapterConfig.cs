@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using MaintainableSelenium.MvcPages.BrowserCamera;
 using MaintainableSelenium.MvcPages.SeleniumUtils;
 using MaintainableSelenium.MvcPages.WebPages.WebForms;
@@ -37,9 +39,30 @@ namespace MaintainableSelenium.MvcPages
                     new CheckboxFormInputAdapter(),
                     new RadioFormInputAdapter(),
                     new HiddenFormInputAdapter()
-                };
+            };
             NumberOfInputSetRetries = DefaultNumberOfSetRetries;
             AfterFieldValueSetAction = AfterFieldValueSet.Nothing;
+        }
+
+        /// <summary>
+        /// Create config from mantainableSeleniumConfiguration section in app.config
+        /// </summary>
+        /// <param name="testExecutionPath">Path to location where test is executed</param>
+        public static BrowserAdapterConfig FromAppConfig(string testExecutionPath)
+        {
+            var config = (MantainableSeleniumConfigurationSection)ConfigurationManager.GetSection("mantainableSeleniumConfiguration");
+            var seleniumDriversPath = config.DriversPath;
+            if (Path.IsPathRooted(seleniumDriversPath) == false)
+            {
+                seleniumDriversPath = Path.Combine(testExecutionPath, seleniumDriversPath);
+            }
+            return new BrowserAdapterConfig
+            {
+                BrowserType = config.Browser,
+                SeleniumDriversPath = seleniumDriversPath,
+                ScreenshotsPath = config.ErrorScreenshotsPath,
+                PageUrl = config.PageUrl
+            };
         }
     }
 }
