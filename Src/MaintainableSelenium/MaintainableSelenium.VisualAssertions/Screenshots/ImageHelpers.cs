@@ -174,6 +174,17 @@ namespace MaintainableSelenium.VisualAssertions.Screenshots
 
             blobCounter.ProcessImage(bitmapData);
             var result = blobCounter.GetObjectsRectangles();
+            if (result.Length == 0)
+            {
+                blobCounter = new BlobCounter
+                {
+                    FilterBlobs = true,
+                    MinHeight = 1,
+                    MinWidth = 1
+                };
+                blobCounter.ProcessImage(bitmapData);
+                result = blobCounter.GetObjectsRectangles();
+            }
             bitmapWithPoints.UnlockBits(bitmapData);
             return RemoveNestedRectangles(new List<Rectangle>(result));
         }
