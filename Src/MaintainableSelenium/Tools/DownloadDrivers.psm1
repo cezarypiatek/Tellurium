@@ -77,14 +77,25 @@ function Install-EdgeDriver{
     $newestEdge = $page.Links |? {$_.innerText -like "*Release*"} | Sort-Object -Property innerText -Descending | Select-Object -First 1
     $tmpDir = New-TempDirectory
     Start-BitsTransfer -Source $newestEdge.href -Destination $tmpDir
-    Get-ChildItem $tmpDir | Copy-Item -Destination "c:\tmp\drivers"
+    $driversPath = New-DriversDirectory
+    Get-ChildItem $tmpDir | Copy-Item -Destination $driversPath
     Remove-Item $tmpDir -Force -Recurse   
 }
 
+function Install-OperaDriver{
+    $data = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/operasoftware/operachromiumdriver/releases/latest
+    $windowsEdition = $data.assets |? {$_.name -like "*win32*"} | Select-Object -First 1
+    $tmpDir = New-TempDirectory
+    Invoke-RestMethod -Method Get -Uri $windowsEdition.browser_download_url -OutFile "$tmpDir\opera.zip"
+    Expand-Archive -Path "$tmpDir\opera.zip" -DestinationPath $tmpDir
+    $driversPath = New-DriversDirectory
+    Copy-Item "$tmpDir\operadriver.exe" -Destination $driversPath
+    Remove-Item -Path $tmpDir -Force -Recurse
+}
 
 function Install-SeleniumWebDriver{
     [CmdletBinding()]
-    param([Parameter(Mandatory=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox")][string]$Browser)
+    param([Parameter(Mandatory=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox", "Opera")][string]$Browser)
     switch($Browser)
     {
         "Chrome" {Install-ChromeDriver; break}
@@ -92,7 +103,8 @@ function Install-SeleniumWebDriver{
         "InternetExplorer" {Install-IEDriver; break}
         "Edge" {Install-EdgeDriver; break}
         "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
-        default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox"}    
+        "Opera" {Install-OperaDriver; break}
+        default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
     }
 }
 
