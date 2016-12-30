@@ -15,6 +15,19 @@ function Add-ProjectDirectoryIfNotExist($Project, $DirPath)
     $fullPathToNewDire
 }
 
+function Add-FileToProject{
+    [CmdletBinding()]
+    param([Parameter(ValueFromPipeline=$true)]$Files)
+    process{
+        foreach($file in $Files)
+        {
+            $path = if($file -is [System.String]){$file}else{$file.FullName}
+            $projectItem = $Project.ProjectItems.AddFromFile($path)
+            $projectItem.Properties["CopyToOutputDirectory"].Value = 2
+        }
+    }
+}
+
 function New-TempDirectory{
     $tempDirectoryPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), [System.IO.Path]::GetRandomFileName()) 
     [System.IO.Directory]::CreateDirectory($tempDirectoryPath) | Out-Null  
@@ -39,7 +52,8 @@ function Download-FromGoogleapis{
     $tempDir = New-TempDirectory
     $driverTmpPath = "$tempDir\$DriverName.zip"
     Start-BitsTransfer -Source $newestFile.File -Destination $driverTmpPath    
-    Expand-Archive -Path $driverTmpPath -DestinationPath $DestinationPath -Force -Verbose
+    Expand-Archive -Path $driverTmpPath -DestinationPath $DestinationPath -Force
+    Add-FileToProject -Files "$DestinationPath\$DriverName.exe"
     Remove-Item -Path $driverTmpPath -Force -Recurse    
 }
 
@@ -49,7 +63,7 @@ function New-DriversDirectory{
 
 function Install-ChromeDriver{
     $driversPath = New-DriversDirectory
-    Download-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromdriver" -DestinationPath $driversPath
+    Download-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -DestinationPath $driversPath
 }
 
 function Install-IEDriver{
@@ -68,7 +82,7 @@ function Install-PhantomJSDriver{
     Invoke-RestMethod -Method Get -Uri $newestPhantom.url -OutFile "$tmpDir\phantom.zip"    
     Expand-Archive -Path "$tmpDir\phantom.zip"  -DestinationPath $tmpDir
     $driversPath = New-DriversDirectory
-    Get-ChildItem -Filter "phantomjs.exe" -Recurse -Path $tmpDir |  Copy-Item -Destination $driversPath
+    Get-ChildItem -Filter "phantomjs.exe" -Recurse -Path $tmpDir |  Copy-Item -Destination $driversPath -PassThru | Add-FileToProject
     Remove-Item $tmpDir -Force -Recurse
 }
 
@@ -78,7 +92,7 @@ function Install-EdgeDriver{
     $tmpDir = New-TempDirectory
     Start-BitsTransfer -Source $newestEdge.href -Destination $tmpDir
     $driversPath = New-DriversDirectory
-    Get-ChildItem $tmpDir | Copy-Item -Destination $driversPath
+    Get-ChildItem $tmpDir | Copy-Item -Destination $driversPath -PassThru | Add-FileToProject
     Remove-Item $tmpDir -Force -Recurse   
 }
 
@@ -89,7 +103,7 @@ function Install-OperaDriver{
     Invoke-RestMethod -Method Get -Uri $windowsEdition.browser_download_url -OutFile "$tmpDir\opera.zip"
     Expand-Archive -Path "$tmpDir\opera.zip" -DestinationPath $tmpDir
     $driversPath = New-DriversDirectory
-    Copy-Item "$tmpDir\operadriver.exe" -Destination $driversPath
+    Copy-Item "$tmpDir\operadriver.exe" -Destination $driversPath -PassThru | Add-FileToProject
     Remove-Item -Path $tmpDir -Force -Recurse
 }
 
