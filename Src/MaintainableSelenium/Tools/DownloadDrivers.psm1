@@ -43,12 +43,31 @@ function Download-FromGoogleapis{
     Remove-Item -Path $driverTmpPath -Force -Recurse    
 }
 
+function New-DriversDirectory{
+    Add-ProjectDirectoryIfNotExist -Project $project -DirPath "Drivers"
+}
+
 function Install-ChromeDriver{
-    $driversPath = Add-ProjectDirectoryIfNotExist -Project $project -DirPath "Drivers"
+    $driversPath = New-DriversDirectory
     Download-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromdriver" -DestinationPath $driversPath
 }
 
 function Install-IEDriver{
-    $driversPath = Add-ProjectDirectoryIfNotExist -Project $project -DirPath "Drivers"
+    $driversPath = New-DriversDirectory
     Download-FromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -DestinationPath  $driversPath
+}
+
+
+function Install-Phantom{    
+    $data = Invoke-RestMethod -Method Get -Uri https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads
+    $newestPhantom = $data.values |%{ 
+        $nameParts = $_.name -split "-"
+        @{name=$nameParts[0]; version=$nameParts[1]; url=$_.links.self.href; platform=$($nameParts[2] -replace "\.zip",""); }
+    }|? {$_.platform -eq "windows"}  | Sort-Object -Property versionstamp -Descending | Select-Object -First 1
+    $tmpDir = New-TempDirectory    
+    Invoke-RestMethod -Method Get -Uri $newestPhantom.url -OutFile "$tmpDir\phantom.zip"
+    Expand-Archive -Path "$tmpDir\phantom.zip"  -DestinationPath $tmpDir
+    $driversPath = New-DriversDirectory
+    Get-ChildItem -Filter "phantomjs.exe" -Recurse -Path $tmpDir |  Copy-Item -Destination $driversPath
+    Remove-Item $tmpDir -Force -Recurse
 }
