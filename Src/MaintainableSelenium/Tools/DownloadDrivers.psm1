@@ -1,15 +1,16 @@
-﻿param($installPath, $toolsPath, $package, $project)
+﻿param($installPath, $toolsPath, $package)
 
-function Add-ProjectDirectoryIfNotExist($Project, $DirPath)
-{
-    $projectPath = Split-Path $Project.FileName -Parent
+function Add-ProjectDirectoryIfNotExist($DirPath)
+{	
+	$project = Get-Project
+    $projectPath = Split-Path $project.FileName -Parent
     $fullPathToNewDire ="$projectPath\$DirPath"
     if((Test-Path $fullPathToNewDire) -ne $true){
         [void](New-Item -ItemType Directory -Force -Path  $fullPathToNewDire)
         $outRoot = ($DirPath -split "\\")[0]
         if([string]::IsNullOrWhiteSpace($outRoot) -ne $true)
         {
-            [void]$Project.ProjectItems.AddFromDirectory("$projectPath\$outRoot")
+            [void]$project.ProjectItems.AddFromDirectory("$projectPath\$outRoot")
         }
     }
     $fullPathToNewDire
@@ -18,11 +19,14 @@ function Add-ProjectDirectoryIfNotExist($Project, $DirPath)
 function Add-FileToProject{
     [CmdletBinding()]
     param([Parameter(ValueFromPipeline=$true)]$Files)
+	begin{
+		$project = Get-Project
+	}
     process{
         foreach($file in $Files)
         {
             $path = if($file -is [System.String]){$file}else{$file.FullName}
-            $projectItem = $Project.ProjectItems.AddFromFile($path)
+            $projectItem = $project.ProjectItems.AddFromFile($path)
             $projectItem.Properties["CopyToOutputDirectory"].Value = 2
         }
     }
@@ -58,7 +62,7 @@ function Download-FromGoogleapis{
 }
 
 function New-DriversDirectory{
-    Add-ProjectDirectoryIfNotExist -Project $project -DirPath "Drivers"
+    Add-ProjectDirectoryIfNotExist -DirPath "Drivers"
 }
 
 function Install-ChromeDriver{
