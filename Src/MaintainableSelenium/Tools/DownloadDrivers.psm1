@@ -58,16 +58,42 @@ function Install-IEDriver{
 }
 
 
-function Install-Phantom{    
+function Install-PhantomJSDriver{    
     $data = Invoke-RestMethod -Method Get -Uri https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads
     $newestPhantom = $data.values |%{ 
         $nameParts = $_.name -split "-"
         @{name=$nameParts[0]; version=$nameParts[1]; url=$_.links.self.href; platform=$($nameParts[2] -replace "\.zip",""); }
     }|? {$_.platform -eq "windows"}  | Sort-Object -Property versionstamp -Descending | Select-Object -First 1
     $tmpDir = New-TempDirectory    
-    Invoke-RestMethod -Method Get -Uri $newestPhantom.url -OutFile "$tmpDir\phantom.zip"
+    Invoke-RestMethod -Method Get -Uri $newestPhantom.url -OutFile "$tmpDir\phantom.zip"    
     Expand-Archive -Path "$tmpDir\phantom.zip"  -DestinationPath $tmpDir
     $driversPath = New-DriversDirectory
     Get-ChildItem -Filter "phantomjs.exe" -Recurse -Path $tmpDir |  Copy-Item -Destination $driversPath
     Remove-Item $tmpDir -Force -Recurse
 }
+
+function Install-EdgeDriver{
+    $page = Invoke-WebRequest -Uri https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/#downloads
+    $newestEdge = $page.Links |? {$_.innerText -like "*Release*"} | Sort-Object -Property innerText -Descending | Select-Object -First 1
+    $tmpDir = New-TempDirectory
+    Start-BitsTransfer -Source $newestEdge.href -Destination $tmpDir
+    Get-ChildItem $tmpDir | Copy-Item -Destination "c:\tmp\drivers"
+    Remove-Item $tmpDir -Force -Recurse   
+}
+
+
+function Install-SeleniumWebDriver{
+    [CmdletBinding()]
+    param([Parameter(Mandatory=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox")][string]$Browser)
+    switch($Browser)
+    {
+        "Chrome" {Install-ChromeDriver; break}
+        "PhantomJs" {Install-PhantomJSDriver; break}
+        "InternetExplorer" {Install-IEDriver; break}
+        "Edge" {Install-EdgeDriver; break}
+        "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
+        default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox"}    
+    }
+}
+
+Export-ModuleMember -Function Install-SeleniumWebDriver
