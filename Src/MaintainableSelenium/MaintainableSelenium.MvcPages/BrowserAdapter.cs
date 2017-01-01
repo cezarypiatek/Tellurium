@@ -19,7 +19,6 @@ namespace MaintainableSelenium.MvcPages
         private IBrowserCamera browserCamera;
         private INavigator navigator;
         private List<IFormInputAdapter> supportedInputsAdapters;
-        private IScreenshotStorage screenshotStorage;
         private string BrowserName { get; set; }
         private int NumberOfInputSetRetries { get; set; }
         private AfterFieldValueSet AfterFieldValueSetAction { get; set; }
@@ -31,13 +30,28 @@ namespace MaintainableSelenium.MvcPages
             var browserCameraConfig = config.BrowserCameraConfig ?? BrowserCameraConfig.CreateDefault();
             browserAdapter.browserCamera = BrowserCamera.BrowserCamera.CreateNew(browserAdapter.Driver, browserCameraConfig);
             browserAdapter.navigator = new Navigator(browserAdapter.Driver, config.PageUrl);
-            browserAdapter.screenshotStorage = new FileSystemScreenshotStorage(config.ScreenshotsPath);
             browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
             browserAdapter.SetupBrowserDimensions(config.BrowserDimensions);
             browserAdapter.BrowserName = config.BrowserType.ToString();
             browserAdapter.NumberOfInputSetRetries = config.NumberOfInputSetRetries;
             browserAdapter.AfterFieldValueSetAction = config.AfterFieldValueSetAction;
             return browserAdapter;
+        }
+
+        public static void Execute(BrowserAdapterConfig config, Action<IBrowserAdapter> action)
+        {
+            using (var browserAdapter = Create(config))
+            {
+                try
+                {
+                    action(browserAdapter);
+                }
+                catch (Exception)
+                {
+                    SaveErrorScreenshot(browserAdapter, config);
+                    throw;
+                }
+            }
         }
 
         public  void SetupBrowserDimensions(BrowserDimensionsConfig dimensionsConfig)
@@ -67,11 +81,18 @@ namespace MaintainableSelenium.MvcPages
             return browserCamera.TakeScreenshot();
         }
 
-        public void SaveScreenshot(string screenshotName)
+        public void SaveScreenshot(string directoryPath, string screenshotName, bool addBrowserPrefix=true)
         {
             var screenshotRawData = browserCamera.TakeScreenshot();
-            var fullScreenshotName = string.Format("{0}_{1}", BrowserName, screenshotName);
-            this.screenshotStorage.Persist(screenshotRawData, fullScreenshotName);
+            var fullScreenshotName = addBrowserPrefix ? $"{BrowserName}_{screenshotName}" : screenshotName;
+            var screenshotStorage = new FileSystemScreenshotStorage(directoryPath);
+            screenshotStorage.Persist(screenshotRawData, fullScreenshotName);
+        }
+
+        private static void SaveErrorScreenshot(IBrowserAdapter browserAdapter, BrowserAdapterConfig config)
+        {
+            string screenshotName = $"Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
+            browserAdapter.SaveScreenshot(config.ScreenshotsPath, screenshotName);
         }
 
         public  WebForm<TModel> GetForm<TModel>(string formId)
@@ -162,7 +183,7 @@ namespace MaintainableSelenium.MvcPages
 
         void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
 
-        void SaveScreenshot(string screenshotName);
+        void SaveScreenshot(string directoryPath, string screenshotName, bool addBrowserPrefix=true);
 
         /// <summary>
         /// Wait explicitly given amount of seconds

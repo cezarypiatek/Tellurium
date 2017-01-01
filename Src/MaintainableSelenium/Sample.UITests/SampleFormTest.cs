@@ -54,7 +54,6 @@ namespace MaintainableSelenium.Sample.UITests
                 browserAdapter.NavigateTo<TestFormsController>(c => c.Index());
                 AssertView.EqualsToPattern(browserAdapter, "Sample1");
                 
-                browserAdapter.SaveScreenshot("Test");
                 var detinationForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormDst);
                 var sourcenForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormSrc);
 
@@ -100,7 +99,6 @@ namespace MaintainableSelenium.Sample.UITests
                 browserAdapter.NavigateTo<TestFormsController>(c => c.Index());
                 AssertView.EqualsToPattern(browserAdapter, "Sample21");
                 
-                browserAdapter.SaveScreenshot("Test");
                 var detinationForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormDst);
                 var sourcenForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormSrc);
 
