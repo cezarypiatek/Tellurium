@@ -84,14 +84,15 @@ namespace MaintainableSelenium.MvcPages
         public void SaveScreenshot(string directoryPath, string screenshotName, bool addBrowserPrefix=true)
         {
             var screenshotRawData = browserCamera.TakeScreenshot();
-            var fullScreenshotName = addBrowserPrefix ? $"{BrowserName}_{screenshotName}" : screenshotName;
+            var fullScreenshotName = addBrowserPrefix ? string.Format("{0}_{1}", BrowserName, screenshotName)
+                : screenshotName;
             var screenshotStorage = new FileSystemScreenshotStorage(directoryPath);
             screenshotStorage.Persist(screenshotRawData, fullScreenshotName);
         }
 
         private static void SaveErrorScreenshot(IBrowserAdapter browserAdapter, BrowserAdapterConfig config)
         {
-            string screenshotName = $"Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
+            string screenshotName = string.Format("Error{0:yyyy_MM_dd__HH_mm_ss}", DateTime.Now);
             browserAdapter.SaveScreenshot(config.ScreenshotsPath, screenshotName);
         }
 
