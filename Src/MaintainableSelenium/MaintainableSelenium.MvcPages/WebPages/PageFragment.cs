@@ -15,14 +15,21 @@ namespace MaintainableSelenium.MvcPages.WebPages
             this.WebElement = webElement;
         }
         
-        public void ClickOnElementWithText(string linkText)
+        public void ClickOnElementWithText(string text)
         {
-            Driver.ClickOnElementWithText(WebElement, linkText);
+            Driver.ClickOnElementWithText(WebElement, text);
+        }
+
+        public void HoverOnElementWithText(string text)
+        {
+            var elementToHover = Driver.GetElementWithText(WebElement, text);
+            Driver.HoverOn(elementToHover);
         }
     }
 
     public interface IPageFragment
     {
-        void ClickOnElementWithText(string linkText);
+        void ClickOnElementWithText(string text);
+        void HoverOnElementWithText(string text);
     }
 }

@@ -4,6 +4,7 @@ using System.Threading;
 using MaintainableSelenium.MvcPages.WebPages;
 using MaintainableSelenium.MvcPages.WebPages.WebForms;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 
@@ -243,6 +244,12 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
                 driver.WaitUntil(SearchElementDefaultTimeout, (d) => driver.IsElementClickable(expectedElement));
                 expectedElement.Click();
             }
+        }
+
+        public static void HoverOn(this RemoteWebDriver driver, IWebElement elementToHover)
+        {
+            var action  = new Actions(driver);
+            action.MoveToElement(elementToHover).Perform();
         }
 
         public static IWebElement GetElementWithText(this RemoteWebDriver driver, IWebElement scope, string linkText)

@@ -108,6 +108,12 @@ namespace MaintainableSelenium.MvcPages
             Driver.ClickOn(elementToClick);
         }
 
+        public void HoverOn(string elementId)
+        {
+            var elementToHover = this.Driver.GetElementById(elementId);
+            Driver.HoverOn(elementToHover);
+        }
+
         public IPageFragment GetPageFragmentById(string elementId)
         {
             var pageFragment = Driver.GetElementById(elementId);
@@ -140,10 +146,17 @@ namespace MaintainableSelenium.MvcPages
             Driver.Quit();
         }
 
-        public void ClickOnElementWithText(string linkText)
+        public void ClickOnElementWithText(string text)
         {
             var scope = Driver.FindElementByTagName("body");
-            Driver.ClickOnElementWithText(scope, linkText);
+            Driver.ClickOnElementWithText(scope, text);
+        }
+
+        public void HoverOnElementWithText(string text)
+        {
+            var scope = Driver.FindElementByTagName("body");
+            var elementToHover = Driver.GetElementWithText(scope, text);
+            Driver.HoverOn(elementToHover);
         }
     }
 
@@ -166,6 +179,13 @@ namespace MaintainableSelenium.MvcPages
         /// </summary>
         /// <param name="elementId">Id of expected element</param>
         void ClickOn(string elementId);
+
+
+        /// <summary>
+        /// Simulate hover event on element with given id
+        /// </summary>
+        /// <param name="elementId">Id of expected element</param>
+        void HoverOn(string elementId);
 
         /// <summary>
         /// Return page fragment with given id
