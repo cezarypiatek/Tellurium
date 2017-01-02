@@ -263,6 +263,7 @@
     <Content Include="Views\TestCase\ProjectsList.cshtml" />
     <Content Include="Views\TestCase\CategoriesList.cshtml" />
     <Content Include="Views\Home\TestResultInfoPreloaded.cshtml" />
+    <Content Include="Views\TestCase\TestCase.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

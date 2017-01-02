@@ -1,22 +1,6 @@
-﻿@using MaintainableSelenium.VisualAssertions.Web.Mvc
-@model List<TestCaseListItem>
+﻿@model List<TestCaseListItem>
 
 @foreach (var testCaseInfo in Model)
 {
-    var detailsId = "TestCaseDetails" + testCaseInfo.TestCaseId;
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-md-6">@testCaseInfo.TestCaseName</div>
-                <div class="col-md-6 btn-toolbar">
-                    @foreach (var browser in testCaseInfo.Browsers)
-                    {
-                        @(Ajax.ActionLink<TestCaseController>(c => c.GetTestCasePattern(testCaseInfo.TestCaseId, browser.PatternId), browser.BrowserName, detailsId, new { @class = "btn btn-default" }))
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="panel-body" id="@detailsId">
-        </div>
-    </div>
+    Html.RenderPartial("TestCase", testCaseInfo);
 }

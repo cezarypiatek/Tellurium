@@ -14,9 +14,10 @@
                 @Model.ScreenshotName
             </div>
             <div class="col-md-2">
+                @(Html.ActionLink<TestCaseController>(c=>c.GetTestCase(Model.TestCaseId),"Edit pattern", new { @class = "btn btn-primary" }))
                 @if (Model.CanShowMarkAsPattern)
                 {
-                    @(Ajax.ChangeActionLink<HomeController>(c => c.MarkAsPattern(Model.TestResultId), "Mark as pattern", "Do you really want to mark this as pattern?", rowId, new { @class = "btn btn-primary" }))
+                    @(Ajax.ChangeActionLink<HomeController>(c => c.MarkAsPattern(Model.TestResultId), "Mark as pattern", "Do you really want to mark this as pattern?", rowId, new {@class = "btn btn-primary"}))
                 }
             </div>
         </div>

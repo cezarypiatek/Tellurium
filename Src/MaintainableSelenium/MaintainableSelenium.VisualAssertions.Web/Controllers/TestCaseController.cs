@@ -65,5 +65,11 @@ namespace MaintainableSelenium.VisualAssertions.Web.Controllers
             this.testCaseService.SaveGlobalBlindregions(dto);
             return ActionResultFactory.AjaxSuccess();
         }
+
+        public ActionResult GetTestCase(long id)
+        {
+            var result = this.testCaseService.GetTestCase(id);
+            return View("TestCase", "~/Views/_Layout.cshtml",result);
+        }
     }
 }

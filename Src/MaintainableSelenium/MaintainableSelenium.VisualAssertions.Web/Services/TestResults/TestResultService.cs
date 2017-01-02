@@ -102,6 +102,7 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
             return new TestResultListItemDTO()
             {
                 TestResultId = x.Id,
+                TestCaseId = x.Pattern.TestCase.Id,
                 TestPassed = x.TestPassed,
                 ScreenshotName = string.Format("{0} \\ {1}", x.Category, x.ScreenshotName),
                 CanShowMarkAsPattern = x.TestPassed == false && x.Pattern.IsActive,
@@ -190,6 +191,7 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
 
     public class TestResultListItemDTO
     {
+        public long TestCaseId { get; set; }
         public long TestResultId { get; set; }
         public bool TestPassed { get; set; }
         public string ScreenshotName { get; set; }

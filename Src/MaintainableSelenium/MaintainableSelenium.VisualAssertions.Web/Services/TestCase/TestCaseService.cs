@@ -108,21 +108,32 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase
             };
         }
 
+        public TestCaseListItem GetTestCase(long id)
+        {
+            var testCase = this.testCaseRepository.Get(id);
+            return MapToTestCaseListItem(testCase);
+        }
+
         public List<TestCaseListItem> GetTestCasesFromCategory(long categoryId)
         {
             var testCases = this.testCaseRepository.FindAll(new FindTestCasesFromCategory(categoryId));
-            return testCases.Select(x => new TestCaseListItem
+            return testCases.Select(MapToTestCaseListItem).ToList();
+        }
+
+        private static TestCaseListItem MapToTestCaseListItem(Screenshots.Domain.TestCase x)
+        {
+            return new TestCaseListItem
             {
                 TestCaseId = x.Id,
                 TestCaseName = x.PatternScreenshotName,
                 Browsers = x.GetActivePatterns()
-                .OrderBy(p=> p.BrowserName)
-                .Select(y => new BrowserPatternShortcut
-                {
-                    BrowserName = y.BrowserName,
-                    PatternId= y.Id,
-                }).ToList()
-            }).ToList();
+                    .OrderBy(p=> p.BrowserName)
+                    .Select(y => new BrowserPatternShortcut
+                    {
+                        BrowserName = y.BrowserName,
+                        PatternId= y.Id,
+                    }).ToList()
+            };
         }
 
         public BrowserPatternDTO GetTestCasePattern(long testCaseId, long patternId)
@@ -172,5 +183,6 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase
         byte[] GetPatternScreenshot(long patternId);
         ProjectListViewModel GetProjectsList();
         TestCaseCategoriesListViewModel GetTestCaseCategories(long projectId);
+        TestCaseListItem GetTestCase(long id);
     }
 }
