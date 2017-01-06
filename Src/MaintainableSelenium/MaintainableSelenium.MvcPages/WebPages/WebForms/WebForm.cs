@@ -127,6 +127,18 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             var fieldAdapter = GetFieldAdapter(fieldElement);
             return new FieldValueWatcher(Driver, fieldElement, fieldAdapter);
         }
+        
+        /// <summary>
+        /// Perform action and wait until value of given field will change
+        /// </summary>
+        /// <param name="field">Field which value should change after given action</param>
+        /// <param name="action">Action which should affect field value</param>
+        public void AffectValueWith<TFieldValue>(Expression<Func<TModel, TFieldValue>> field, Action action)
+        {
+            var fieldValueWatcher = this.GetFieldValueWatcher(field);
+            action();
+            fieldValueWatcher.WaitForValueChange();
+        }
     }
 
     public enum AfterFieldValueSet

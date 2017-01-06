@@ -140,6 +140,13 @@ namespace MaintainableSelenium.MvcPages
             return Driver.WatchForContentChanges(containerId);
         }
 
+        public void AffectElementWith(string elementId, Action action)
+        {
+            var watcher = WatchForContentChange(elementId);
+            action();
+            watcher.WaitForChange();
+        }
+
         public void Dispose()
         {
             Driver.Close();
@@ -217,5 +224,12 @@ namespace MaintainableSelenium.MvcPages
         /// </summary>
         /// <param name="containerId">Container id</param>
         PageFragmentWatcher WatchForContentChange(string containerId);
+
+        /// <summary>
+        /// Perform action and wait until element with given id will change.
+        /// </summary>
+        /// <param name="elementId">Id of observed element</param>
+        /// <param name="action">Action that should have impact on observed element</param>
+        void AffectElementWith(string elementId, Action action);
     }
 }
