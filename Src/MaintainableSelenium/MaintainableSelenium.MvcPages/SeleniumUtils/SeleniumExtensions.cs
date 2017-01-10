@@ -234,7 +234,7 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             {
                 expectedElement.Click();
             }
-            catch (InvalidOperationException)
+            catch (WebDriverException)
             {
                 if (expectedElement.Location.Y > driver.GetWindowHeight())
                 {
