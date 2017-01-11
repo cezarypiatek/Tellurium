@@ -147,6 +147,16 @@ namespace MaintainableSelenium.MvcPages
             watcher.WaitForChange();
         }
 
+        public void DisableAnimations()
+        {
+           this.Driver.DisableAnimations();
+        }
+
+        public void EnableAnimations()
+        {
+            this.Driver.EnableAnimations();
+        }
+
         public void Dispose()
         {
             Driver.Close();
@@ -231,5 +241,15 @@ namespace MaintainableSelenium.MvcPages
         /// <param name="elementId">Id of observed element</param>
         /// <param name="action">Action that should have impact on observed element</param>
         void AffectElementWith(string elementId, Action action);
+
+        /// <summary>
+        /// Disable animations on page
+        /// </summary>
+        void DisableAnimations();
+
+        /// <summary>
+        /// Restore animations on page
+        /// </summary>
+        void EnableAnimations();
     }
 }

@@ -269,5 +269,20 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
                 throw;
             }
         }
+
+        internal static void AppendHtml(this RemoteWebDriver driver, IWebElement element, string html)
+        {
+            driver.ExecuteScript("arguments[0].innerHTML += arguments[1];", element, html);
+        }
+
+        internal static bool IsPageLoaded(this RemoteWebDriver driver)
+        {
+            return (bool)driver.ExecuteScript(@"return document.readyState == 'complete';");
+        }
+
+        internal static void WaitUntilPageLoad(this RemoteWebDriver driver)
+        {
+            driver.WaitUntil(120, _ => driver.IsPageLoaded());
+        }
     }
 }
