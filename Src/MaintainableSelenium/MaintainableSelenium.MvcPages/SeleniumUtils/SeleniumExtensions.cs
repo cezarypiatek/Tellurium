@@ -96,12 +96,23 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             return (int)(long)scriptResult;
         }
 
-        public static void ScrollTo(this RemoteWebDriver driver, int y)
+        public static void ScrollToY(this RemoteWebDriver driver, int y)
         {
             driver.ExecuteScript(string.Format("window.scrollTo(0,{0})", y));
             Thread.Sleep(100);
         }
 
+        public static int GetScrollY(this RemoteWebDriver driver)
+        {
+            return (int)(long)driver.ExecuteScript(@"
+                if(typeof window.scrollY != 'undefined'){
+                    return window.scrollY;
+                }else if(typeof document.documentElement.scrollTop != 'undefined'){
+                    return document.documentElement.scrollTop;
+                }
+                return 0;
+");
+        }
 
         /// <summary>
         /// Check if any element has currently focus
@@ -236,13 +247,19 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             }
             catch (WebDriverException)
             {
+                int? originalScrollPosition = null;
                 if (expectedElement.Location.Y > driver.GetWindowHeight())
                 {
-                    driver.ScrollTo(expectedElement.Location.Y + expectedElement.Size.Height);
+                    originalScrollPosition = driver.GetScrollY();
+                    driver.ScrollToY(expectedElement.Location.Y + expectedElement.Size.Height);
                     Thread.Sleep(500);
                 }
                 driver.WaitUntil(SearchElementDefaultTimeout, (d) => driver.IsElementClickable(expectedElement));
                 expectedElement.Click();
+                if (originalScrollPosition != null)
+                {
+                    driver.ScrollToY(originalScrollPosition.Value);
+                }
             }
         }
 

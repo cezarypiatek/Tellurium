@@ -19,7 +19,7 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
         {
             var pageHeight = driver.GetPageHeight();
             var viewPortHeight = driver.GetWindowHeight();
-            driver.ScrollTo(0);
+            driver.ScrollToY(0);
 
             var screenshotFirstPart = GetScreenshotOfVisibleArea();
             if (screenshotFirstPart.Height >= pageHeight)
@@ -37,7 +37,7 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
                 for (int partNo = 1; partNo < numberOfParts; partNo++)
                 {
                     var yOffset = partNo * viewPortHeight;
-                    driver.ScrollTo(yOffset);
+                    driver.ScrollToY(yOffset);
                     var screenshotNextPart = GetScreenshotOfVisibleArea();
                     var heightToCover = pageHeight - yOffset;
                     
@@ -48,7 +48,7 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
                     g.DrawImage(screenshotNextPart, 0, yOffset, areaToCopy, GraphicsUnit.Pixel);
                     
                 }
-                driver.ScrollTo(0);
+                driver.ScrollToY(0);
                 return resultBmp.ToBytes();
             }
         }
