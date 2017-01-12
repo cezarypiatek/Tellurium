@@ -295,7 +295,15 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
 
         internal static void AppendHtml(this RemoteWebDriver driver, IWebElement element, string html)
         {
-            driver.ExecuteScript("arguments[0].innerHTML += arguments[1];", element, html);
+            driver.ExecuteScript(@"
+                (function(parent,text){
+                    var wrapper = document.createElement(""div"");
+                    wrapper.innerHTML = text;
+                    for(var i=0; i< wrapper.childNodes.length; i++)
+                    {
+                        parent.appendChild(wrapper.childNodes[i]);
+                    }
+                })(arguments[0],arguments[1]);", element, html);
         }
 
         internal static bool IsPageLoaded(this RemoteWebDriver driver)
