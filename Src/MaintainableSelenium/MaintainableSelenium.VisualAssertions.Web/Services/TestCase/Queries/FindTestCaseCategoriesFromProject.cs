@@ -16,7 +16,9 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase.Queries
 
         public List<TestCaseCategory> GetQuery(IQueryable<TestCaseCategory> query)
         {
-            return query.Where(x => x.Project.Id == this.projectId).ToList();
+            return query.Where(x => x.Project.Id == this.projectId)
+                .OrderBy(x=>x.Name)
+                .ToList();
         }
     }
 }

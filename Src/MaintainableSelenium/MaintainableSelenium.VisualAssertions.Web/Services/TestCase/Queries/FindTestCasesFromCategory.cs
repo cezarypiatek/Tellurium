@@ -4,7 +4,7 @@ using MaintainableSelenium.VisualAssertions.Infrastructure;
 
 namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase.Queries
 {
-    public class FindTestCasesFromCategory:IQueryAll<VisualAssertions.Screenshots.Domain.TestCase>
+    public class FindTestCasesFromCategory:IQueryAll<Screenshots.Domain.TestCase>
     {
         private readonly long categoryId;
 
@@ -13,9 +13,11 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase.Queries
             this.categoryId = categoryId;
         }
 
-        public List<VisualAssertions.Screenshots.Domain.TestCase> GetQuery(IQueryable<VisualAssertions.Screenshots.Domain.TestCase> query)
+        public List<Screenshots.Domain.TestCase> GetQuery(IQueryable<Screenshots.Domain.TestCase> query)
         {
-            return query.Where(x => x.Category.Id == categoryId).ToList();
+            return query.Where(x => x.Category.Id == categoryId)
+                .OrderBy(x=>x.PatternScreenshotName)
+                .ToList();
         }
     }
 }
