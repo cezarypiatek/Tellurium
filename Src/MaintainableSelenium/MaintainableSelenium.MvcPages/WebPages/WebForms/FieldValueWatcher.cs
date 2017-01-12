@@ -1,5 +1,4 @@
 using System;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 
@@ -8,21 +7,19 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
     public class FieldValueWatcher
     {
         private readonly RemoteWebDriver driver;
-        private readonly IWebElement fieldElement;
-        private readonly IFormInputAdapter fieldAdapter;
+        private readonly WebFormField field;
         private string initialValue;
 
-        public FieldValueWatcher(RemoteWebDriver driver, IWebElement fieldElement, IFormInputAdapter fieldAdapter)
+        public FieldValueWatcher(RemoteWebDriver driver, WebFormField field)
         {
             this.driver = driver;
-            this.fieldElement = fieldElement;
-            this.fieldAdapter = fieldAdapter;
+            this.field = field;
             MemorizeValue();
         }
 
         public void MemorizeValue()
         {
-            this.initialValue = this.fieldAdapter.GetValue(this.fieldElement);
+            this.initialValue = this.field.GetValue();
         }
 
         public void WaitForValueChange()
@@ -30,7 +27,7 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             this.initialValue = waiter.Until(d =>
             {
-                var currentValue = this.fieldAdapter.GetValue(fieldElement);
+                var currentValue = this.field.GetValue();
                 if (this.initialValue != currentValue)
                 {
                     return currentValue;

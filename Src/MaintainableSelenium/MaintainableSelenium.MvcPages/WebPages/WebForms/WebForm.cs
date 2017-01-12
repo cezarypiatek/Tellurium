@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using MaintainableSelenium.MvcPages.SeleniumUtils;
 using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Support.UI;
 
 namespace MaintainableSelenium.MvcPages.WebPages.WebForms
 {
@@ -19,7 +17,7 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
     {
         private readonly int numberOfSetRetries;
         private readonly AfterFieldValueSet afterFieldValueSet;
-        private static TimeSpan InputSearchTimeout = TimeSpan.FromSeconds(30);
+        
 
         private List<IFormInputAdapter> SupportedInputs { get; set; }
 
@@ -39,15 +37,14 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
         /// <param name="customAction">Action to perform after field value has been set</param>
         public void SetFieldValue<TFieldValue>(Expression<Func<TModel, TFieldValue>> field, string value, AfterFieldValueSet? customAction=null)
         {
-            var fieldElement = GetField(field);
-            var fieldAdapter = GetFieldAdapter(fieldElement);
+            var fieldWrapper = GetField(field);
 
-            if (fieldAdapter.SupportSetRetry())
+            if (fieldWrapper.FieldAdapter.SupportSetRetry())
             {
                 var success = RetryHelper.Retry(numberOfSetRetries, () =>
                 {
-                    fieldAdapter.SetValue(fieldElement, value);
-                    return fieldAdapter.GetValue(fieldElement) == value;
+                    fieldWrapper.SetValue(value);
+                    return fieldWrapper.GetValue() == value;
                 });
 
                 if (success == false)
@@ -58,11 +55,12 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             }
             else
             {
-                fieldAdapter.SetValue(fieldElement, value);
+                fieldWrapper.SetValue(value);
             }
 
-            InvokeAfterFieldValueSet(fieldElement, customAction ?? afterFieldValueSet);
+            InvokeAfterFieldValueSet(fieldWrapper.FieldElement, customAction ?? afterFieldValueSet);
         }
+
 
         private void InvokeAfterFieldValueSet(IWebElement fieldElement, AfterFieldValueSet actionType)
         {
@@ -87,23 +85,8 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
         /// <param name="field">Expression indicating given form field</param>
         public string GetFieldValue<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
         {
-            var fieldElement = GetField(field);
-            var fieldAdapter = GetFieldAdapter(fieldElement);
-            return fieldAdapter.GetValue(fieldElement);
-        }
-
-        private IWebElement GetField<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
-        {
-            var fieldName = GetFieldName(field);
-            var waiter = new WebDriverWait(Driver, InputSearchTimeout);
-            try
-            {
-                return waiter.Until(d => WebElement.FindElement(By.Name(fieldName)));
-            }
-            catch (WebDriverTimeoutException)
-            {
-                throw new FieldNotFoundException(fieldName);
-            }
+            var fieldWrapper = GetField(field);
+            return fieldWrapper.GetValue();
         }
 
         private static string GetFieldName<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
@@ -111,21 +94,10 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             return ExpressionHelper.GetExpressionText(field);
         }
 
-        private IFormInputAdapter GetFieldAdapter(IWebElement fieldElement)
-        {
-            var input = SupportedInputs.FirstOrDefault(x => x.CanHandle(fieldElement));
-            if (input == null)
-            {
-                throw new NotSupportedException("Not supported form element");
-            }
-            return input;
-        }
-
         public FieldValueWatcher GetFieldValueWatcher<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
         {
-            var fieldElement = GetField(field);
-            var fieldAdapter = GetFieldAdapter(fieldElement);
-            return new FieldValueWatcher(Driver, fieldElement, fieldAdapter);
+            var fieldWrapper = GetField(field);
+            return new FieldValueWatcher(Driver, fieldWrapper);
         }
         
         /// <summary>
@@ -138,6 +110,12 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             var fieldValueWatcher = this.GetFieldValueWatcher(field);
             action();
             fieldValueWatcher.WaitForValueChange();
+        }
+
+        private WebFormField GetField<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
+        {
+            var fieldName = GetFieldName(field);
+            return new WebFormField(WebElement, fieldName, SupportedInputs, Driver);
         }
     }
 
