@@ -245,8 +245,14 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             {
                 expectedElement.Click();
             }
-            catch (WebDriverException)
+            catch (Exception ex)
             {
+                //INFO: Different driver throws different exception
+                if (ex is InvalidOperationException == false  && ex is WebDriverException == false)
+                {
+                    throw;
+                }
+
                 int? originalScrollPosition = null;
                 if (expectedElement.Location.Y > driver.GetWindowHeight())
                 {
