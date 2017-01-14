@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Remote;
+﻿using MaintainableSelenium.MvcPages.SeleniumUtils;
+using OpenQA.Selenium.Remote;
 
 namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
 {
@@ -13,6 +14,7 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
 
         public byte[] TakeScreenshot()
         {
+            driver.ScrollToY(0);
             return driver.GetScreenshot().AsByteArray;
         }
     }
