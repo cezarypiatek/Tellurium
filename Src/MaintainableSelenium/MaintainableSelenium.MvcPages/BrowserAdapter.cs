@@ -10,12 +10,13 @@ using MaintainableSelenium.MvcPages.SeleniumUtils;
 using MaintainableSelenium.MvcPages.WebPages;
 using MaintainableSelenium.MvcPages.WebPages.WebForms;
 using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Support.Events;
 
 namespace MaintainableSelenium.MvcPages
 {
     public class BrowserAdapter : IBrowserAdapter
     {
-        private RemoteWebDriver Driver { get; set; }
+        public RemoteWebDriver Driver { get; private set; }
         private IBrowserCamera browserCamera;
         private INavigator navigator;
         private List<IFormInputAdapter> supportedInputsAdapters;
@@ -251,5 +252,10 @@ namespace MaintainableSelenium.MvcPages
         /// Restore animations on page
         /// </summary>
         void EnableAnimations();
+
+        /// <summary>
+        /// Get underlying selenium driver
+        /// </summary>
+        RemoteWebDriver Driver { get; }
     }
 }
