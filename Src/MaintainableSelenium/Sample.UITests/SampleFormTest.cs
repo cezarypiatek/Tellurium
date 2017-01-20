@@ -159,5 +159,26 @@ namespace MaintainableSelenium.Sample.UITests
 
             }
         }
+
+
+        [Test]
+        public void should_be_able_to_click_on_elements_with_text()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+
+        //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo<HomeController>(c => c.Index());
+
+
+                Assert.DoesNotThrow(()=> browserAdapter.ClickOnElementWithText("Register"));
+
+                var registerForm = browserAdapter.GetForm<RegisterViewModel>("RegisterForm");
+                Assert.DoesNotThrow(()=> registerForm.ClickOnElementWithText("Register"));
+            }
+        }
     }
 }

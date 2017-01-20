@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Threading;
+using MaintainableSelenium.MvcPages.Utils;
 using MaintainableSelenium.MvcPages.WebPages;
 using MaintainableSelenium.MvcPages.WebPages.WebForms;
 using OpenQA.Selenium;
@@ -279,7 +280,8 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         {
             try
             {
-                var by = By.XPath(string.Format(".//*[contains(text(), '{0}') or (@type='submit' and @value='{0}')]", linkText));
+                var xpathLiteral = XPathHelpers.ToXPathLiteral(linkText);
+                var by = By.XPath(string.Format(".//*[contains(text(), {0}) or (@type='submit' and @value={0})]", xpathLiteral));
                 return GetElementByInScope(driver, @by, scope);
             }
             catch (WebDriverTimeoutException ex)
