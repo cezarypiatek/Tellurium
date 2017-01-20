@@ -137,12 +137,25 @@ namespace MaintainableSelenium.Sample.UITests
 
                 var list = browserAdapter.GetListWithId("SampleList");
 
-                Assert.AreEqual(3, list.Count);
+                Assert.AreEqual(4, list.Count);
                 Assert.IsNotNull(list[0]);
                 Assert.IsNotNull(list[1]);
                 Assert.IsNotNull(list[2]);
+                Assert.IsNotNull(list[3]);
                 Assert.IsNotNull(list.First());
                 Assert.IsNotNull(list.Last());
+
+                var itemWithText = list.FindItemWithText("text to find");
+                Assert.IsNotNull(itemWithText);
+
+                var itemWithSingleQuote = list.FindItemWithText("It's hard to find");
+                Assert.IsNotNull(itemWithSingleQuote);
+
+                var itemWithDoubleQuote = list.FindItemWithText("other than \"this\" may me hidden");
+                Assert.IsNotNull(itemWithDoubleQuote);
+
+                var itemWithMixedQuote = list.FindItemWithText("\"text\" 'to' find");
+                Assert.IsNotNull(itemWithMixedQuote);
 
             }
         }

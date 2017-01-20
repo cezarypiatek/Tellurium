@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
@@ -88,6 +89,13 @@ namespace MaintainableSelenium.MvcPages.WebPages
         {
             var childElement = webElement.FindElement(By.XPath(selector));
             return new PageFragment(driver, childElement);
+        }
+
+        public IPageFragment FindItemWithText(string text)
+        {
+            var xpathLiteral = XPathHelpers.ToXPathLiteral(text);
+            var selector = string.Format("*[contains(string(), {0})]",xpathLiteral);
+            return GetPageFragmentByXPath(selector);
         }
     }
 

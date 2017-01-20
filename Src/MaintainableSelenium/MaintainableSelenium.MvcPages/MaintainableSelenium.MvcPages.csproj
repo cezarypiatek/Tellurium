@@ -110,6 +110,7 @@
     <Compile Include="MvcPagesAssemblyIdentity.cs" />
     <Compile Include="Utils\ImageExtensions.cs" />
     <Compile Include="Utils\RetryHelper.cs" />
+    <Compile Include="Utils\XPathHelpers.cs" />
     <Compile Include="WebPages\Navigator.cs">
       <SubType>Code</SubType>
     </Compile>
