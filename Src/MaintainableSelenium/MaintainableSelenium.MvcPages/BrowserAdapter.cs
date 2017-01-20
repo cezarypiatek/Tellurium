@@ -176,6 +176,11 @@ namespace MaintainableSelenium.MvcPages
             var elementToHover = Driver.GetElementWithText(scope, text);
             Driver.HoverOn(elementToHover);
         }
+
+        public WebList GetListWithId(string id)
+        {
+            return Driver.GetListWithId(id);
+        }
     }
 
     public interface IBrowserAdapter : IPageFragment, IBrowserCamera,  IDisposable

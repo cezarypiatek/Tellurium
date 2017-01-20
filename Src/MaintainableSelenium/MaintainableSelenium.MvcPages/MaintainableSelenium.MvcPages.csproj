@@ -136,6 +136,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WebPages\WebForms\WebFormField.cs" />
+    <Compile Include="WebPages\WebList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

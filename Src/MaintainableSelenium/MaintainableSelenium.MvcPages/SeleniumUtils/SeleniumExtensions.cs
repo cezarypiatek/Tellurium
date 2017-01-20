@@ -315,5 +315,11 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         {
             driver.WaitUntil(120, _ => driver.IsPageLoaded());
         }
+
+        internal static WebList GetListWithId(this RemoteWebDriver driver, string id)
+        {
+            var listElement = driver.GetElementById(id);
+            return new WebList(driver, listElement);
+        }
     }
 }

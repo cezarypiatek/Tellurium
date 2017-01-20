@@ -121,5 +121,30 @@ namespace MaintainableSelenium.Sample.UITests
                 AssertView.EqualsToPattern(browserAdapter, "Sample22");
             }
         }
+
+        [Test]
+        public void should_be_able_to_access_list()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+
+        //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo<HomeController>(c => c.Index());
+
+
+                var list = browserAdapter.GetListWithId("SampleList");
+
+                Assert.AreEqual(3, list.Count);
+                Assert.IsNotNull(list[0]);
+                Assert.IsNotNull(list[1]);
+                Assert.IsNotNull(list[2]);
+                Assert.IsNotNull(list.First());
+                Assert.IsNotNull(list.Last());
+
+            }
+        }
     }
 }

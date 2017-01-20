@@ -25,11 +25,17 @@ namespace MaintainableSelenium.MvcPages.WebPages
             var elementToHover = Driver.GetElementWithText(WebElement, text);
             Driver.HoverOn(elementToHover);
         }
+
+        public WebList GetListWithId(string id)
+        {
+            return Driver.GetListWithId(id);
+        }
     }
 
     public interface IPageFragment
     {
         void ClickOnElementWithText(string text);
         void HoverOnElementWithText(string text);
+        WebList GetListWithId(string id);
     }
 }
