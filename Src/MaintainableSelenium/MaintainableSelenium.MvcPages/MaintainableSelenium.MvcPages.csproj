@@ -103,6 +103,7 @@
     <Compile Include="BrowserCamera\ScreenshotIdentity.cs" />
     <Compile Include="MantainableSeleniumConfigurationSection.cs" />
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
+    <Compile Include="SeleniumUtils\StableWebElement.cs" />
     <Compile Include="SeleniumUtils\WebElementNotFoundException.cs" />
     <Compile Include="Utils\ExceptionHelper.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
