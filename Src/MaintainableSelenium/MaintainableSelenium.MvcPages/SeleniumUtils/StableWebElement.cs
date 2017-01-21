@@ -8,27 +8,28 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
 {
     public class StableWebElement: IStableWebElement
     {
-        private readonly StableWebElement parent;
+        private readonly ISearchContext parent;
         private IWebElement element;
         private readonly By elementByIdentifier;
 
-        public StableWebElement(StableWebElement parent, IWebElement element, By elementByIdentifier)
+        public StableWebElement(ISearchContext parent, IWebElement element, By elementByIdentifier)
         {
             this.parent = parent;
             this.element = element;
             this.elementByIdentifier = elementByIdentifier;
         }
 
-        private void RegenerateElement()
+        public void RegenerateElement()
         {
-            if (this.parent.IsStale())
+            var stableParent = parent as IStableWebElement;
+            if (stableParent != null && stableParent.IsStale())
             {
-                parent.RegenerateElement();
+                stableParent.RegenerateElement();
             }
             this.element = this.parent.FindElement(elementByIdentifier);
         }
 
-        private bool IsStale()
+        public bool IsStale()
         {
             try
             {
@@ -120,5 +121,9 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         public bool Displayed { get { return Execute(() => element.Displayed); } }
     }
 
-    public interface IStableWebElement : IWebElement { }
+    public interface IStableWebElement : IWebElement
+    {
+        void RegenerateElement();
+        bool IsStale();
+    }
 }

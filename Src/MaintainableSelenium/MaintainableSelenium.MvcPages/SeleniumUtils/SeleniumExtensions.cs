@@ -164,27 +164,12 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         /// <param name="timeout">Timout for element serch</param>
         private static IWebElement GetElementBy(this RemoteWebDriver driver, By by, int timeout = SearchElementDefaultTimeout)
         {
-            return driver.WaitUntil(timeout, (a) =>
-            {
-                try
-                {
-                    var element = driver.FindElement(by);
-                    if (element != null && element.Displayed && element.Enabled)
-                    {
-                        return element;
-                    }
-                    return null;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    return null;
-                }
-            });
+            return GetElementByInScope(driver, by, driver, timeout);
         }
 
-        private static IWebElement GetElementByInScope(RemoteWebDriver driver, By @by, IWebElement scope, int timeout = SearchElementDefaultTimeout)
+        private static IWebElement GetElementByInScope(RemoteWebDriver driver, By @by, ISearchContext scope, int timeout = SearchElementDefaultTimeout)
         {
-            return driver.WaitUntil(timeout, (a) =>
+            var foundElement = driver.WaitUntil(timeout, (a) =>
             {
                 try
                 {
@@ -200,6 +185,7 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
                     return null;
                 }
             });
+            return new StableWebElement(driver, foundElement, by);
         }
 
         internal static TResult WaitUntil<TResult>(this RemoteWebDriver driver, int timeout,
@@ -207,6 +193,13 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         {
             var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
             return waiter.Until(waitPredictor);
+        }
+
+        internal static IStableWebElement FindStableWebElement(this RemoteWebDriver driver, IWebElement parent, By by, int timeout = 30)
+        {
+            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+            var foundElement = waiter.Until(d => parent.FindElement(@by));
+            return new StableWebElement(parent,foundElement,by);
         }
 
         /// <summary>
@@ -234,7 +227,7 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         /// <param name="driver">Selenium driver</param>
         /// <param name="scope">Scope element to narrow link search</param>
         /// <param name="linkText">Element tekst</param>
-        public static  void ClickOnElementWithText(this RemoteWebDriver driver, IWebElement scope, string linkText)
+        public static  void ClickOnElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText)
         {
             var expectedElement = GetElementWithText(driver, scope, linkText);
             ClickOn(driver, expectedElement);
@@ -276,11 +269,11 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             action.MoveToElement(elementToHover).Perform();
         }
 
-        public static IWebElement GetElementWithText(this RemoteWebDriver driver, IWebElement scope, string linkText)
+        public static IWebElement GetElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText)
         {
             try
             {
-                var xpathLiteral = XPathHelpers.ToXPathLiteral(linkText);
+                var xpathLiteral = XPathHelpers.ToXPathLiteral(linkText.Trim());
                 var by = By.XPath(string.Format(".//*[contains(text(), {0}) or (@type='submit' and @value={0})]", xpathLiteral));
                 return GetElementByInScope(driver, @by, scope);
             }

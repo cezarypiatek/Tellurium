@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.MvcPages.Utils;
+using MaintainableSelenium.MvcPages.SeleniumUtils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Support.UI;
 
 namespace MaintainableSelenium.MvcPages.WebPages.WebForms
 {
@@ -12,7 +11,7 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
     {
         private readonly IWebElement form;
         private readonly string fieldName;
-        public IWebElement FieldElement { get; private set; }
+        public IStableWebElement FieldElement { get; private set; }
         public IFormInputAdapter FieldAdapter { get; private set; }
 
         private readonly List<IFormInputAdapter> supportedImputAdapters;
@@ -39,58 +38,22 @@ namespace MaintainableSelenium.MvcPages.WebPages.WebForms
             return input;
         }
 
-        private IWebElement GetFieldElement()
+        private IStableWebElement GetFieldElement()
         {
-            var waiter = new WebDriverWait(driver, InputSearchTimeout);
-            try
-            {
-                return waiter.Until(d => form.FindElement(By.Name(fieldName)));
-            }
-            catch (WebDriverTimeoutException)
-            {
-                throw new FieldNotFoundException(fieldName);
-            }
+            return driver.FindStableWebElement(form, By.Name(fieldName), (int) InputSearchTimeout.TotalSeconds);
         }
 
         public void SetValue(string value)
         {
-            InvokeAccessor(() =>
-            {
-                FieldAdapter.SetValue(FieldElement, value);
-            });
+            FieldAdapter.SetValue(FieldElement, value);
         }
 
         public string GetValue()
         {
-            var result = string.Empty;
-            InvokeAccessor(() =>
-            {
-                result = FieldAdapter.GetValue(FieldElement);
-            });
-            return result;
+            return FieldAdapter.GetValue(FieldElement);
         }
 
-        private void InvokeAccessor(Action accessor)
-        {
-            var success = RetryHelper.Retry(3, () =>
-            {
-                try
-                {
-                    accessor();
-                    return true;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    BuildFieldAccessFacility();
-                    return false;
-                }
-            });
-
-            if (success == false)
-            {
-                throw new FieldNotAccessibleException(fieldName);
-            }
-        }
+     
 
         private void BuildFieldAccessFacility()
         {

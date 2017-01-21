@@ -166,14 +166,12 @@ namespace MaintainableSelenium.MvcPages
 
         public void ClickOnElementWithText(string text)
         {
-            var scope = Driver.FindElementByTagName("body");
-            Driver.ClickOnElementWithText(scope, text);
+            Driver.ClickOnElementWithText(Driver, text);
         }
 
         public void HoverOnElementWithText(string text)
         {
-            var scope = Driver.FindElementByTagName("body");
-            var elementToHover = Driver.GetElementWithText(scope, text);
+            var elementToHover = Driver.GetElementWithText(Driver, text);
             Driver.HoverOn(elementToHover);
         }
 
