@@ -9,14 +9,15 @@ using MaintainableSelenium.MvcPages.BrowserCamera;
 using MaintainableSelenium.MvcPages.SeleniumUtils;
 using MaintainableSelenium.MvcPages.WebPages;
 using MaintainableSelenium.MvcPages.WebPages.WebForms;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Support.Events;
 
 namespace MaintainableSelenium.MvcPages
 {
     public class BrowserAdapter : IBrowserAdapter
     {
-        public RemoteWebDriver Driver { get; private set; }
+        private RemoteWebDriver Driver { get; set; }
         private IBrowserCamera browserCamera;
         private INavigator navigator;
         private List<IFormInputAdapter> supportedInputsAdapters;
@@ -166,22 +167,36 @@ namespace MaintainableSelenium.MvcPages
 
         public void ClickOnElementWithText(string text)
         {
-            Driver.ClickOnElementWithText(Driver, text);
+            Driver.ClickOnElementWithText(Driver, text, false);
+        }
+
+        public void ClickOnElementWithPartialText(string text)
+        {
+            Driver.ClickOnElementWithText(Driver, text, true);
         }
 
         public void HoverOnElementWithText(string text)
         {
-            var elementToHover = Driver.GetElementWithText(Driver, text);
-            Driver.HoverOn(elementToHover);
+            Driver.HoverOnElementWithText(Driver, text, false);
+        }
+
+        public void HoverOnElementWithPartialText(string text)
+        {
+            Driver.HoverOnElementWithText(Driver, text, true);
         }
 
         public WebList GetListWithId(string id)
         {
             return Driver.GetListWithId(id);
         }
+
+        public IWebDriver WrappedDriver { get { return Driver; } }
+      
+
+       
     }
 
-    public interface IBrowserAdapter : IPageFragment, IBrowserCamera,  IDisposable
+    public interface IBrowserAdapter : IPageFragment, IBrowserCamera,  IDisposable, IWrapsDriver
     {
         /// <summary>
         /// Return strongly typed adapter for web form with given id
@@ -255,10 +270,6 @@ namespace MaintainableSelenium.MvcPages
         /// Restore animations on page
         /// </summary>
         void EnableAnimations();
-
-        /// <summary>
-        /// Get underlying selenium driver
-        /// </summary>
-        RemoteWebDriver Driver { get; }
+       
     }
 }

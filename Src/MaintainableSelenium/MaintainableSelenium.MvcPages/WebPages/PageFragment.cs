@@ -17,13 +17,22 @@ namespace MaintainableSelenium.MvcPages.WebPages
         
         public void ClickOnElementWithText(string text)
         {
-            Driver.ClickOnElementWithText(WebElement, text);
+            Driver.ClickOnElementWithText(WebElement, text, false);
+        }
+
+        public void ClickOnElementWithPartialText(string text)
+        {
+            Driver.ClickOnElementWithText(WebElement, text, true);
         }
 
         public void HoverOnElementWithText(string text)
         {
-            var elementToHover = Driver.GetElementWithText(WebElement, text);
-            Driver.HoverOn(elementToHover);
+            Driver.HoverOnElementWithText(WebElement, text, false);
+        }
+
+        public void HoverOnElementWithPartialText(string text)
+        {
+            Driver.HoverOnElementWithText(WebElement, text, true);
         }
 
         public WebList GetListWithId(string id)
@@ -35,7 +44,9 @@ namespace MaintainableSelenium.MvcPages.WebPages
     public interface IPageFragment
     {
         void ClickOnElementWithText(string text);
-        void HoverOnElementWithText(string text);
+        void ClickOnElementWithPartialText(string text);
+        void HoverOnElementWithText(string tex);
+        void HoverOnElementWithPartialText(string text);
         WebList GetListWithId(string id);
     }
 }

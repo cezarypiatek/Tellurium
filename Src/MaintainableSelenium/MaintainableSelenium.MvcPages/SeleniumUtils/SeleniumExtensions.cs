@@ -227,10 +227,16 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         /// <param name="driver">Selenium driver</param>
         /// <param name="scope">Scope element to narrow link search</param>
         /// <param name="linkText">Element tekst</param>
-        public static  void ClickOnElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText)
+        public static  void ClickOnElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText, bool isPartialText)
         {
-            var expectedElement = GetElementWithText(driver, scope, linkText);
+            var expectedElement = GetElementWithText(driver, scope, linkText, isPartialText);
             ClickOn(driver, expectedElement);
+        }
+
+        public static  void HoverOnElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText, bool isPartialText)
+        {
+            var expectedElement = GetElementWithText(driver, scope, linkText, isPartialText);
+            HoverOn(driver, expectedElement);
         }
 
         public static void ClickOn(this RemoteWebDriver driver, IWebElement expectedElement)
@@ -269,13 +275,15 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             action.MoveToElement(elementToHover).Perform();
         }
 
-        public static IWebElement GetElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText)
+        public static IWebElement GetElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText, bool isPartialText)
         {
             try
             {
                 var xpathLiteral = XPathHelpers.ToXPathLiteral(linkText.Trim());
-                var by = By.XPath(string.Format(".//*[contains(text(), {0}) or (@type='submit' and @value={0})]", xpathLiteral));
-                return GetElementByInScope(driver, @by, scope);
+                var by = isPartialText
+                    ? By.XPath(string.Format(".//*[contains(text(), {0}) or (@type='submit' and @value={0})]", xpathLiteral))
+                    : By.XPath(string.Format(".//*[(normalize-space(text()) = {0}) or (@type='submit' and @value={0})]", xpathLiteral));
+                return GetElementByInScope(driver, by, scope);
             }
             catch (WebDriverTimeoutException ex)
             {
