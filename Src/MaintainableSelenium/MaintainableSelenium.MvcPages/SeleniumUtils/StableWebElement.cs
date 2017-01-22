@@ -4,6 +4,7 @@ using System.Drawing;
 using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace MaintainableSelenium.MvcPages.SeleniumUtils
 {
@@ -140,13 +141,14 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         {
             return Execute(() => element.As<ITakesScreenshot>().GetScreenshot());
         }
+
+        public IWebElement WrappedElement { get { return element; } }
     }
 
-    public interface IStableWebElement : IWebElement, ILocatable, ITakesScreenshot
+    public interface IStableWebElement : IWebElement, ILocatable, ITakesScreenshot, IWrapsElement
     {
         void RegenerateElement();
         bool IsStale();
-        IWebElement Unwrap();
     }
 
     internal static class GenericHelpers
