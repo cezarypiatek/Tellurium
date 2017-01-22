@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions.Internal;
 
 namespace MaintainableSelenium.MvcPages.SeleniumUtils
 {
@@ -42,6 +43,11 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             {
                 return true;
             }
+        }
+
+        public IWebElement Unwrap()
+        {
+            return element;
         }
 
         private T Execute<T>(Func<T> function)
@@ -119,11 +125,42 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         public Point Location { get { return Execute(() => element.Location); } }
         public Size Size { get { return Execute(() => element.Size); } }
         public bool Displayed { get { return Execute(() => element.Displayed); } }
+
+        public Point LocationOnScreenOnceScrolledIntoView
+        {
+            get { return Execute(() => element.As<ILocatable>().LocationOnScreenOnceScrolledIntoView); }
+        }
+
+        public ICoordinates Coordinates
+        {
+            get { return Execute(() => element.As<ILocatable>().Coordinates); }
+        }
+
+        public Screenshot GetScreenshot()
+        {
+            return Execute(() => element.As<ITakesScreenshot>().GetScreenshot());
+        }
     }
 
-    public interface IStableWebElement : IWebElement
+    public interface IStableWebElement : IWebElement, ILocatable, ITakesScreenshot
     {
         void RegenerateElement();
         bool IsStale();
+        IWebElement Unwrap();
+    }
+
+    internal static class GenericHelpers
+    {
+        public static TInterface As<TInterface>(this IWebElement element) where TInterface : class
+        {
+            var typed = element as TInterface;
+            if (typed == null)
+            {
+                var errorMessage = string.Format("Underlying element does not support this opperation. It should ilement {0} interface", typeof(TInterface).FullName);
+                throw new NotSupportedException(errorMessage);
+            }
+            return typed;
+        }
+
     }
 }
