@@ -3,7 +3,6 @@ using System.Diagnostics.Contracts;
 using System.Threading;
 using MaintainableSelenium.MvcPages.Utils;
 using MaintainableSelenium.MvcPages.WebPages;
-using MaintainableSelenium.MvcPages.WebPages.WebForms;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
@@ -14,6 +13,7 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
     public static class SeleniumExtensions
     {
         private const int SearchElementDefaultTimeout = 30;
+        internal const int PageLoadTimeout = 120;
 
         /// <summary>
         /// Get rid of focus from currently focused element
@@ -316,7 +316,7 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
 
         internal static void WaitUntilPageLoad(this RemoteWebDriver driver)
         {
-            driver.WaitUntil(120, _ => driver.IsPageLoaded());
+            driver.WaitUntil(PageLoadTimeout, _ => driver.IsPageLoaded());
         }
 
         internal static WebList GetListWithId(this RemoteWebDriver driver, string id)

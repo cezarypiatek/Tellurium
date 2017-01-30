@@ -149,6 +149,16 @@ namespace MaintainableSelenium.MvcPages
             watcher.WaitForChange();
         }
 
+        public void ReloadPageWith(Action action)
+        {
+            Driver.ExecuteScript("window.__selenium_visited__ = true;");
+            action();
+            Driver.WaitUntil(SeleniumExtensions.PageLoadTimeout,
+                driver =>
+                    Driver.IsPageLoaded() &&
+                    (bool) Driver.ExecuteScript("return  window.__selenium_visited__ === undefined;"));
+        }
+
         public void DisableAnimations()
         {
            this.Driver.DisableAnimations();
@@ -260,6 +270,12 @@ namespace MaintainableSelenium.MvcPages
         /// <param name="elementId">Id of observed element</param>
         /// <param name="action">Action that should have impact on observed element</param>
         void AffectElementWith(string elementId, Action action);
+
+        /// <summary>
+        /// Perform action and wait until page will reaload
+        /// </summary>
+        /// <param name="action">Action that should cause page reload</param>
+        void ReloadPageWith(Action action);
 
         /// <summary>
         /// Disable animations on page

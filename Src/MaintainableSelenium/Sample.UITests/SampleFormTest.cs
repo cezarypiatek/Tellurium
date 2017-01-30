@@ -174,9 +174,10 @@ namespace MaintainableSelenium.Sample.UITests
                 browserAdapter.NavigateTo<HomeController>(c => c.Index());
 
 
-                Assert.DoesNotThrow(()=> browserAdapter.ClickOnElementWithText("Register"));
+                browserAdapter.ReloadPageWith(()=> browserAdapter.ClickOnElementWithText("Register"));
 
                 var registerForm = browserAdapter.GetForm<RegisterViewModel>("RegisterForm");
+                browserAdapter.WrappedDriver.Manage().Logs.GetLog("browser");
                 Assert.DoesNotThrow(()=> registerForm.ClickOnElementWithText("Register"));
             }
         }
