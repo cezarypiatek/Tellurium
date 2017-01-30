@@ -39,6 +39,11 @@ namespace MaintainableSelenium.MvcPages.WebPages
         {
             return Driver.GetListWithId(id);
         }
+
+        public WebList ToWebList()
+        {
+            return new WebList(Driver, WebElement);
+        }
     }
 
     public interface IPageFragment
@@ -48,5 +53,6 @@ namespace MaintainableSelenium.MvcPages.WebPages
         void HoverOnElementWithText(string tex);
         void HoverOnElementWithPartialText(string text);
         WebList GetListWithId(string id);
+        WebList ToWebList();
     }
 }

@@ -200,6 +200,13 @@ namespace MaintainableSelenium.MvcPages
             return Driver.GetListWithId(id);
         }
 
+        public WebList ToWebList()
+        {
+            var body = Driver.FindElementByTagName("body");
+            var mainPageFragment = new PageFragment(Driver, body);
+            return mainPageFragment.ToWebList();
+        }
+
         public IWebDriver WrappedDriver { get { return Driver; } }
       
 

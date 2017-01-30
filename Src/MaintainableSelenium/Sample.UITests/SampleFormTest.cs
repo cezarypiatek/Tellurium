@@ -157,6 +157,14 @@ namespace MaintainableSelenium.Sample.UITests
                 var itemWithMixedQuote = list.FindItemWithText("\"text\" 'to' find");
                 Assert.IsNotNull(itemWithMixedQuote);
 
+
+                var listPageFragment = browserAdapter.GetPageFragmentById("SampleList");
+                var listFromFragment = listPageFragment.ToWebList();
+                Assert.AreEqual(4, listFromFragment.Count);
+                Assert.IsNotNull(listFromFragment[0]);
+                Assert.IsNotNull(listFromFragment[1]);
+                Assert.IsNotNull(listFromFragment[2]);
+                Assert.IsNotNull(listFromFragment[3]);
             }
         }
 
