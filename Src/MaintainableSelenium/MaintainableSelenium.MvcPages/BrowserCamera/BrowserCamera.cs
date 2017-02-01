@@ -44,9 +44,13 @@ namespace MaintainableSelenium.MvcPages.BrowserCamera
 
         private void MoveMouseOffTheScreen()
         {
-            var body = driver.FindElementByTagName("body");
-            var scrollY = driver.GetScrollY();
-            new Actions(driver).MoveToElement(body, 0, scrollY).Perform();
+            try
+            {
+                var body = driver.FindElementByTagName("body");
+                var scrollY = driver.GetScrollY();
+                new Actions(driver).MoveToElement(body, 0, scrollY + 1).Perform();
+           }
+           catch {}
         }
 
         public static IBrowserCamera CreateNew(RemoteWebDriver driver, BrowserCameraConfig cameraConfig)
