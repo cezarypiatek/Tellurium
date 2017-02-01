@@ -21,9 +21,9 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         /// <param name="driver">Selenium webdriver</param>
         public static void Blur(this RemoteWebDriver driver)
         {
-            if(IsThereElementWithFocus(driver))
+            driver.SwitchTo().DefaultContent();
+            if (IsThereElementWithFocus(driver))
             {
-                Thread.Sleep(500);
                 driver.ExecuteScript("var f= document.querySelector(':focus'); if(f!=undefined){f.blur()}");
                 Thread.Sleep(500);
             }
@@ -323,6 +323,11 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
         {
             var listElement = driver.GetElementById(id);
             return new WebList(driver, listElement);
+        }
+
+        internal static IWebElement GetActiveElement(this RemoteWebDriver driver)
+        {
+            return (IWebElement) driver.ExecuteScript("return document.activeElement;");
         }
     }
 }
