@@ -24,6 +24,7 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
             driver.SwitchTo().DefaultContent();
             if (IsThereElementWithFocus(driver))
             {
+                Thread.Sleep(500);
                 driver.ExecuteScript("var f= document.querySelector(':focus'); if(f!=undefined){f.blur()}");
                 Thread.Sleep(500);
             }
