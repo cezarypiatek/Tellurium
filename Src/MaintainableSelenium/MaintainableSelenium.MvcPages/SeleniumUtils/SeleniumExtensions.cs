@@ -81,12 +81,18 @@ namespace MaintainableSelenium.MvcPages.SeleniumUtils
 
         internal static bool IsElementClickable(this RemoteWebDriver driver, IWebElement element)
         {
+            //INFO: There is a few case when the mouse click can ommit actual element
+            // 1) Element has rounded corners
+            // 2) In inline-element space between lines is not clickable
+            // 3) Given element has child elements
             return (bool)driver.ExecuteScript(@"
                     window.__selenium__isElementClickable = window.__selenium__isElementClickable || function(element)
                     {
                         var rec = element.getBoundingClientRect();
-                        var elementAtPosition = document.elementFromPoint(rec.left, rec.top);
-                        return element == elementAtPosition;
+                        var elementAtPosition1 = document.elementFromPoint(rec.left, rec.top);
+                        var elementAtPosition2 = document.elementFromPoint(rec.left+rec.width/2, rec.top+rec.height/2);
+                        var elementAtPosition3 = document.elementFromPoint(rec.left+rec.width/3, rec.top+rec.height/3);
+                        return element == elementAtPosition1 || element.contains(elementAtPosition1) || element == elementAtPosition2 || element.contains(elementAtPosition2) || element == elementAtPosition3 || element.contains(elementAtPosition3);
                     };
                     return window.__selenium__isElementClickable(arguments[0]);
             ", element);

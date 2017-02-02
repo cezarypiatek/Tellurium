@@ -7,6 +7,7 @@ using System.Threading;
 using System.Web.Mvc;
 using MaintainableSelenium.MvcPages.BrowserCamera;
 using MaintainableSelenium.MvcPages.SeleniumUtils;
+using MaintainableSelenium.MvcPages.SeleniumUtils.Exceptions;
 using MaintainableSelenium.MvcPages.WebPages;
 using MaintainableSelenium.MvcPages.WebPages.WebForms;
 using OpenQA.Selenium;
@@ -153,10 +154,17 @@ namespace MaintainableSelenium.MvcPages
         {
             Driver.ExecuteScript("window.__selenium_visited__ = true;");
             action();
-            Driver.WaitUntil(SeleniumExtensions.PageLoadTimeout,
-                driver =>
-                    Driver.IsPageLoaded() &&
-                    (bool) Driver.ExecuteScript("return  window.__selenium_visited__ === undefined;"));
+            try
+            {
+                Driver.WaitUntil(SeleniumExtensions.PageLoadTimeout,
+                    driver =>
+                        Driver.IsPageLoaded() &&
+                        (bool) Driver.ExecuteScript("return  window.__selenium_visited__ === undefined;"));
+            }
+            catch (WebDriverTimeoutException)
+            {
+                throw new CannotReloadPageWithException();
+            }
         }
 
         public void DisableAnimations()
