@@ -1,4 +1,4 @@
-namespace MaintainableSelenium.VisualAssertions.Web.Models.TestCase
+namespace Tellurium.VisualAssertions.Dashboard.Models.TestCase
 {
     public class TestCaseCategoryListItem
     {

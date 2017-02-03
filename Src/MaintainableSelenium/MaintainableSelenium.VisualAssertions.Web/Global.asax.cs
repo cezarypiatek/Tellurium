@@ -3,13 +3,13 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
-using MaintainableSelenium.MvcPages;
-using MaintainableSelenium.VisualAssertions.Infrastructure.Persistence;
-using MaintainableSelenium.VisualAssertions.Web.Mvc;
 using NHibernate;
 using NHibernate.Context;
+using Tellurium.MvcPages;
+using Tellurium.VisualAssertions.Dashboard.Mvc;
+using Tellurium.VisualAssertions.Infrastructure.Persistence;
 
-namespace MaintainableSelenium.VisualAssertions.Web
+namespace Tellurium.VisualAssertions.Dashboard
 {
     public class MvcApplication : System.Web.HttpApplication
     {

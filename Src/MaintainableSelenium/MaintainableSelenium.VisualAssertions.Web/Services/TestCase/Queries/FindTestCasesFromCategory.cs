@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.VisualAssertions.Infrastructure;
+using Tellurium.VisualAssertions.Infrastructure;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase.Queries
+namespace Tellurium.VisualAssertions.Dashboard.Services.TestCase.Queries
 {
-    public class FindTestCasesFromCategory:IQueryAll<Screenshots.Domain.TestCase>
+    public class FindTestCasesFromCategory:IQueryAll<Tellurium.VisualAssertions.Screenshots.Domain.TestCase>
     {
         private readonly long categoryId;
 
@@ -13,7 +13,7 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase.Queries
             this.categoryId = categoryId;
         }
 
-        public List<Screenshots.Domain.TestCase> GetQuery(IQueryable<Screenshots.Domain.TestCase> query)
+        public List<Tellurium.VisualAssertions.Screenshots.Domain.TestCase> GetQuery(IQueryable<Tellurium.VisualAssertions.Screenshots.Domain.TestCase> query)
         {
             return query.Where(x => x.Category.Id == categoryId)
                 .OrderBy(x=>x.PatternScreenshotName)

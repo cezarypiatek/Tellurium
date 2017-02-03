@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using MaintainableSelenium.VisualAssertions.Infrastructure;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using Tellurium.VisualAssertions.Infrastructure;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Screenshots.Queries
+namespace Tellurium.VisualAssertions.Screenshots.Queries
 {
     public class FindProjectByName : IQueryOne<Project>
     {

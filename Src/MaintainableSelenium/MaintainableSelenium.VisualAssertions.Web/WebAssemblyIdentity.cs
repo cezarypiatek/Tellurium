@@ -1,4 +1,4 @@
-﻿namespace MaintainableSelenium.VisualAssertions.Web
+﻿namespace Tellurium.VisualAssertions.Dashboard
 {
     public class WebAssemblyIdentity
     {

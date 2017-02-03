@@ -1,9 +1,9 @@
 ﻿using System.Web.Mvc;
-using MaintainableSelenium.VisualAssertions.Web.Mvc;
-using MaintainableSelenium.VisualAssertions.Web.Services.TestResults;
 using Microsoft.Web.Mvc;
+using Tellurium.VisualAssertions.Dashboard.Mvc;
+using Tellurium.VisualAssertions.Dashboard.Services.TestResults;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Controllers
+namespace Tellurium.VisualAssertions.Dashboard.Controllers
 {
     public class HomeController : Controller
     {

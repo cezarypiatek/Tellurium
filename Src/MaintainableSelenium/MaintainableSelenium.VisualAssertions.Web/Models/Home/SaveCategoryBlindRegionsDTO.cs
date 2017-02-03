@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Models.Home
+namespace Tellurium.VisualAssertions.Dashboard.Models.Home
 {
     public class SaveCategoryBlindRegionsDTO
     {

@@ -1,7 +1,7 @@
 ﻿using FluentNHibernate.Mapping;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Infrastructure.Persistence.Mappings
+namespace Tellurium.VisualAssertions.Infrastructure.Persistence.Mappings
 {
     public class TestCaseMap : ClassMap<TestCase>
     {

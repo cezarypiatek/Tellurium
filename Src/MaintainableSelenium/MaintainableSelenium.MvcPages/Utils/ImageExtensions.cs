@@ -2,7 +2,7 @@
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace MaintainableSelenium.MvcPages.Utils
+namespace Tellurium.MvcPages.Utils
 {
     public static class ImageExtensions
     {

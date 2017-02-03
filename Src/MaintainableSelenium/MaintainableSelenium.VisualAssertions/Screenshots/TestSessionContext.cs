@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MaintainableSelenium.VisualAssertions.Screenshots
+namespace Tellurium.VisualAssertions.Screenshots
 {
     public class TestSessionContext
     {

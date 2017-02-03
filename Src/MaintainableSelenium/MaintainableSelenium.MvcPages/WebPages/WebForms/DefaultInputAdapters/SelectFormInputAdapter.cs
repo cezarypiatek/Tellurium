@@ -1,7 +1,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
-namespace MaintainableSelenium.MvcPages.WebPages.WebForms.DefaultInputAdapters
+namespace Tellurium.MvcPages.WebPages.WebForms.DefaultInputAdapters
 {
     public class SelectFormInputAdapter : IFormInputAdapter
     {

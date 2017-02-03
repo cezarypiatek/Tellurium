@@ -2,9 +2,9 @@
 using System.Drawing.Imaging;
 using System.IO;
 using System.Web.Mvc;
-using MaintainableSelenium.MvcPages.Utils;
+using Tellurium.MvcPages.Utils;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Mvc
+namespace Tellurium.VisualAssertions.Dashboard.Mvc
 {
     public static class ActionResultFactory
     {

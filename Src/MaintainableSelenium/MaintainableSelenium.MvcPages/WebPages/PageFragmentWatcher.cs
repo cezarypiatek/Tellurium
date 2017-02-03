@@ -1,7 +1,7 @@
-using MaintainableSelenium.MvcPages.SeleniumUtils;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.SeleniumUtils;
 
-namespace MaintainableSelenium.MvcPages.WebPages
+namespace Tellurium.MvcPages.WebPages
 {
     public class PageFragmentWatcher
     {

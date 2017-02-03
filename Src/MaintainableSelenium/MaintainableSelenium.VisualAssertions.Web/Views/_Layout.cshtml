@@ -1,4 +1,5 @@
-﻿@using MaintainableSelenium.VisualAssertions.Web.Mvc
+﻿@using Tellurium.VisualAssertions.Dashboard.Controllers
+@using Tellurium.VisualAssertions.Dashboard.Mvc
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -133,7 +134,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="@(Url.ActionFor<HomeController>(c => c.Index()))">Maintable Selenium @HtmlExtensions.GetAppVersion()</a>
+            <a class="navbar-brand" href="@(Url.ActionFor<HomeController>(c => c.Index()))">Tellurium @HtmlExtensions.GetAppVersion()</a>
         </div>
         <!-- Top Menu Items -->
         @*<ul class="nav navbar-right top-nav">

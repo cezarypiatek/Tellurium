@@ -1,7 +1,7 @@
 using System;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.SeleniumUtils;
 
-namespace MaintainableSelenium.MvcPages.WebPages.WebForms
+namespace Tellurium.MvcPages.WebPages.WebForms
 {
     public class FieldNotFoundException: WebElementNotFoundException
     {

@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium.Remote;
 
-namespace MaintainableSelenium.MvcPages.SeleniumUtils
+namespace Tellurium.MvcPages.SeleniumUtils
 {
     public static class AnimationExtensions
     {

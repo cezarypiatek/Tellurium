@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using MaintainableSelenium.MvcPages.Utils;
-using MaintainableSelenium.VisualAssertions.Infrastructure;
-using MaintainableSelenium.VisualAssertions.Screenshots;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
-using MaintainableSelenium.VisualAssertions.Web.Mvc.Utils;
-using MaintainableSelenium.VisualAssertions.Web.Services.TestResults.Queries;
+using Tellurium.MvcPages.Utils;
+using Tellurium.VisualAssertions.Dashboard.Mvc.Utils;
+using Tellurium.VisualAssertions.Dashboard.Services.TestResults.Queries;
+using Tellurium.VisualAssertions.Infrastructure;
+using Tellurium.VisualAssertions.Screenshots;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults
+namespace Tellurium.VisualAssertions.Dashboard.Services.TestResults
 {
     public class TestResultService : ITestResultService
     {

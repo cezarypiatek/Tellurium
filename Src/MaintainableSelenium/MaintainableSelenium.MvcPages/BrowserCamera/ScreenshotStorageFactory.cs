@@ -1,4 +1,4 @@
-﻿namespace MaintainableSelenium.MvcPages.BrowserCamera
+﻿namespace Tellurium.MvcPages.BrowserCamera
 {
     public static class ScreenshotStorageFactory
     {

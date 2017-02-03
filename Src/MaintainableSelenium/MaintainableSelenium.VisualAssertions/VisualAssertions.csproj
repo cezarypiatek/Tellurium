@@ -7,8 +7,8 @@
     <ProjectGuid>{54690D57-06A0-4DA6-A58D-A81E1FD5B3DC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MaintainableSelenium.VisualAssertions</RootNamespace>
-    <AssemblyName>MaintainableSelenium.VisualAssertions</AssemblyName>
+    <RootNamespace>Tellurium.VisualAssertions</RootNamespace>
+    <AssemblyName>Tellurium.VisualAssertions</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -112,9 +112,9 @@
     <Compile Include="Screenshots\AssertView.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MaintainableSelenium.MvcPages\MaintainableSelenium.MvcPages.csproj">
+    <ProjectReference Include="..\MaintainableSelenium.MvcPages\MvcPages.csproj">
       <Project>{3eebcffd-1814-4bfc-857c-6081d528e011}</Project>
-      <Name>MaintainableSelenium.MvcPages</Name>
+      <Name>MvcPages</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

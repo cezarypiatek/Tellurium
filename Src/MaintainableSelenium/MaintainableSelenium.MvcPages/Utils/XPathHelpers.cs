@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace MaintainableSelenium.MvcPages.Utils
+namespace Tellurium.MvcPages.Utils
 {
     internal static class XPathHelpers
     {

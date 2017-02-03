@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MaintainableSelenium.VisualAssertions.Infrastructure
+namespace Tellurium.VisualAssertions.Infrastructure
 {
     public interface IQueryAll<TEntity> where TEntity:Entity
     {

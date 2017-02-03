@@ -1,4 +1,4 @@
-namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
+namespace Tellurium.MvcPages.BrowserCamera.Lens
 {
     public interface IBrowserCameraLens
     {

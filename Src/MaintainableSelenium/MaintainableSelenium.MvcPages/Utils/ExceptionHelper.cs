@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MaintainableSelenium.MvcPages.Utils
+namespace Tellurium.MvcPages.Utils
 {
     public static class ExceptionHelper
     {

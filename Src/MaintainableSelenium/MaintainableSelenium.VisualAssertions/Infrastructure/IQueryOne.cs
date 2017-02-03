@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace MaintainableSelenium.VisualAssertions.Infrastructure
+namespace Tellurium.VisualAssertions.Infrastructure
 {
     public interface IQueryOne<TEntity> where TEntity : Entity
     {

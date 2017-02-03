@@ -1,4 +1,4 @@
-﻿namespace MaintainableSelenium.VisualAssertions.Web.Mvc
+﻿namespace Tellurium.VisualAssertions.Dashboard.Mvc
 {
     public class TestResultWidget : JqueryUIWidget
     {

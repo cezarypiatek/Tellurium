@@ -1,24 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.VisualAssertions.Infrastructure;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
-using MaintainableSelenium.VisualAssertions.Screenshots.Queries;
-using MaintainableSelenium.VisualAssertions.Web.Models.Home;
-using MaintainableSelenium.VisualAssertions.Web.Models.TestCase;
-using MaintainableSelenium.VisualAssertions.Web.Services.TestCase.Queries;
-using MaintainableSelenium.VisualAssertions.Web.Services.TestResults;
+using Tellurium.VisualAssertions.Dashboard.Models.Home;
+using Tellurium.VisualAssertions.Dashboard.Models.TestCase;
+using Tellurium.VisualAssertions.Dashboard.Services.TestCase.Queries;
+using Tellurium.VisualAssertions.Dashboard.Services.TestResults;
+using Tellurium.VisualAssertions.Infrastructure;
+using Tellurium.VisualAssertions.Screenshots.Domain;
+using Tellurium.VisualAssertions.Screenshots.Queries;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase
+namespace Tellurium.VisualAssertions.Dashboard.Services.TestCase
 {
     public class TestCaseService : ITestCaseService
     {
-        private readonly IRepository<VisualAssertions.Screenshots.Domain.TestCase> testCaseRepository;
+        private readonly IRepository<Tellurium.VisualAssertions.Screenshots.Domain.TestCase> testCaseRepository;
         private readonly IRepository<BrowserPattern> browserPatternRepository;
         private readonly IRepository<Project> projectRepository;
         private readonly ISessionContext sessionContext;
         private readonly IRepository<TestCaseCategory> testCaseCategoryRepository;
 
-        public TestCaseService(IRepository<VisualAssertions.Screenshots.Domain.TestCase> testCaseRepository, 
+        public TestCaseService(IRepository<Tellurium.VisualAssertions.Screenshots.Domain.TestCase> testCaseRepository, 
             IRepository<BrowserPattern> browserPatternRepository,
             IRepository<Project> projectRepository, 
             ISessionContext sessionContext, 
@@ -120,7 +120,7 @@ namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase
             return testCases.Select(MapToTestCaseListItem).ToList();
         }
 
-        private static TestCaseListItem MapToTestCaseListItem(Screenshots.Domain.TestCase x)
+        private static TestCaseListItem MapToTestCaseListItem(Tellurium.VisualAssertions.Screenshots.Domain.TestCase x)
         {
             return new TestCaseListItem
             {

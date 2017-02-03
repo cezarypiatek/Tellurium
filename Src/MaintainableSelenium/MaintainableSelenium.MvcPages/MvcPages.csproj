@@ -7,8 +7,8 @@
     <ProjectGuid>{3EEBCFFD-1814-4BFC-857C-6081D528E011}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MaintainableSelenium.MvcPages</RootNamespace>
-    <AssemblyName>MaintainableSelenium.MvcPages</AssemblyName>
+    <RootNamespace>Tellurium.MvcPages</RootNamespace>
+    <AssemblyName>Tellurium.MvcPages</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

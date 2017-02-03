@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MaintainableSelenium.MvcPages.SeleniumUtils
+namespace Tellurium.MvcPages.SeleniumUtils
 {
     public class WebElementNotFoundException: ApplicationException
     {

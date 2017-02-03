@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers;
+using Tellurium.VisualAssertions.TestRunersAdapters.Providers;
 
-namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters
+namespace Tellurium.VisualAssertions.TestRunersAdapters
 {
     public static class TestRunnerAdapterFactory
     {

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.VisualAssertions.Infrastructure;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using Tellurium.VisualAssertions.Infrastructure;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Services.TestResults.Queries
+namespace Tellurium.VisualAssertions.Dashboard.Services.TestResults.Queries
 {
     public class FindAllSessionFromProject:IQueryAll<TestSession>
     {

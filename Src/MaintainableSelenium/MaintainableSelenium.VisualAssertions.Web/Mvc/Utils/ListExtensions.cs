@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Mvc.Utils
+namespace Tellurium.VisualAssertions.Dashboard.Mvc.Utils
 {
     public static class ListExtensions
     {

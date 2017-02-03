@@ -2,7 +2,7 @@ using System;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 
-namespace MaintainableSelenium.MvcPages.WebPages.WebForms
+namespace Tellurium.MvcPages.WebPages.WebForms
 {
     public class FieldValueWatcher
     {

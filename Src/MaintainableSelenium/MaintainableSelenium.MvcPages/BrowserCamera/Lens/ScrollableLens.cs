@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
-using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.Utils;
 
-namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
+namespace Tellurium.MvcPages.BrowserCamera.Lens
 {
     public class ScrollableLens : IBrowserCameraLens
     {

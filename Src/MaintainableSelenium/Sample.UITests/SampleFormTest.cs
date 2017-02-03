@@ -1,13 +1,13 @@
 ﻿using System.IO;
-using MaintainableSelenium.MvcPages;
-using MaintainableSelenium.MvcPages.BrowserCamera;
-using MaintainableSelenium.MvcPages.BrowserCamera.Lens;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
 using MaintainableSelenium.Sample.Website.Mvc;
-using MaintainableSelenium.VisualAssertions.Screenshots;
 using NUnit.Framework;
 using Sample.Website.Controllers;
 using Sample.Website.Models;
+using Tellurium.MvcPages;
+using Tellurium.MvcPages.BrowserCamera;
+using Tellurium.MvcPages.BrowserCamera.Lens;
+using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.VisualAssertions.Screenshots;
 
 namespace MaintainableSelenium.Sample.UITests
 {

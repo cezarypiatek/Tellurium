@@ -1,7 +1,7 @@
 using NHibernate;
 using NHibernate.Context;
 
-namespace MaintainableSelenium.VisualAssertions.Infrastructure
+namespace Tellurium.VisualAssertions.Infrastructure
 {
     public class SessionContext : ISessionContext
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using MaintainableSelenium.VisualAssertions.Infrastructure;
+using Tellurium.VisualAssertions.Infrastructure;
 
-namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
+namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
     public class TestSession:Entity
     {

@@ -1,4 +1,4 @@
-namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
+namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
     public interface IBlindRegionForBrowserOwner
     {

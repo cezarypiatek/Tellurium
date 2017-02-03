@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MaintainableSelenium.MvcPages.SeleniumUtils.Exceptions
+namespace Tellurium.MvcPages.SeleniumUtils.Exceptions
 {
     public class CannotReloadPageWithException:ApplicationException
     {

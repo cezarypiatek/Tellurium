@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenQA.Selenium.Remote;
 
-namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
+namespace Tellurium.MvcPages.BrowserCamera.Lens
 {
     public static class BrowserCameraLensFactory
     {

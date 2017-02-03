@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using OpenQA.Selenium.Remote;
 
-namespace MaintainableSelenium.MvcPages.WebPages
+namespace Tellurium.MvcPages.WebPages
 {
     public interface INavigator
     {

@@ -1,1 +1,1 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="MaintainableSelenium.VisualAssertions.Web.MvcApplication" Language="C#" %>
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="Tellurium.VisualAssertions.Dashboard.MvcApplication" Language="C#" %>

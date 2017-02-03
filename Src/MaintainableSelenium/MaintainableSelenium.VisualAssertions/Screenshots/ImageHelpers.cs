@@ -5,15 +5,14 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
-using MaintainableSelenium.MvcPages.Utils;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using Tellurium.MvcPages.Utils;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 using Image = System.Drawing.Image;
 
 
-namespace MaintainableSelenium.VisualAssertions.Screenshots
+namespace Tellurium.VisualAssertions.Screenshots
 {
     public static class ImageHelpers
     {

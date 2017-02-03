@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>MaintainableSelenium.VisualAssertions</id>
+    <id>Tellurium.VisualAssertions</id>
     <version>$version$</version>
     <authors>Cezary Piatek</authors>
     <owners>Cezary Piatek</owners>
-    <licenseUrl>https://github.com/cezarypiatek/MaintainableSelenium/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/cezarypiatek/MaintainableSelenium/</projectUrl>  
+    <licenseUrl>https://github.com/cezarypiatek/Tellurium/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/cezarypiatek/Tellurium/</projectUrl>  
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An extension to MaintainableSelenium.MvcPages pack that allows to create test assertions based on webpage screenshots</description>
     <releaseNotes>Prerelase version</releaseNotes>
@@ -15,11 +15,11 @@
     <dependencies>
 	  <dependency id="AForge.Imaging" version="2.2.5"/>	
 	  <dependency id="FluentNHibernate" version="2.0.3.0"/>
-	  <dependency id="MaintainableSelenium.MvcPages" version="$version$" />	 	  
+	  <dependency id="Tellurium.MvcPages" version="$version$" />	 	  
     </dependencies>	
   </metadata>
   <files>
-		<file src="bin\$configuration$\MaintainableSelenium.VisualAssertions.dll" target="lib" />
-		<file src="bin\$configuration$\MaintainableSelenium.VisualAssertions.pdb" target="lib" />
+		<file src="bin\$configuration$\Tellurium.VisualAssertions.dll" target="lib" />
+		<file src="bin\$configuration$\Tellurium.VisualAssertions.pdb" target="lib" />
 	</files>
 </package>

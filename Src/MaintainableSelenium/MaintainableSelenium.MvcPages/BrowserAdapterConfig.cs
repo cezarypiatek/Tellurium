@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using MaintainableSelenium.MvcPages.BrowserCamera;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
-using MaintainableSelenium.MvcPages.WebPages.WebForms;
-using MaintainableSelenium.MvcPages.WebPages.WebForms.DefaultInputAdapters;
+using Tellurium.MvcPages.BrowserCamera;
+using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.WebPages.WebForms;
+using Tellurium.MvcPages.WebPages.WebForms.DefaultInputAdapters;
 
-namespace MaintainableSelenium.MvcPages
+namespace Tellurium.MvcPages
 {
     public class BrowserAdapterConfig
     {

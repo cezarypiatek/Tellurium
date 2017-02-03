@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Web.Mvc;
 using Microsoft.Web.Mvc;
 
-namespace MaintainableSelenium.MvcPages.WebPages
+namespace Tellurium.MvcPages.WebPages
 {
     public static class UrlHelper
     {

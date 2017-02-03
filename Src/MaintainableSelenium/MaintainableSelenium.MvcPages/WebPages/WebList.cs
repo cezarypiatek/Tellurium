@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.Utils;
 
-namespace MaintainableSelenium.MvcPages.WebPages
+namespace Tellurium.MvcPages.WebPages
 {
     public class WebList : IReadOnlyList<IPageFragment>
     {

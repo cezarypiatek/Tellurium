@@ -1,4 +1,4 @@
-namespace MaintainableSelenium.VisualAssertions.Infrastructure
+namespace Tellurium.VisualAssertions.Infrastructure
 {
     public abstract class Entity
     {

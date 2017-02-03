@@ -1,5 +1,6 @@
-﻿@using MaintainableSelenium.VisualAssertions.Web.Mvc
-@model MaintainableSelenium.VisualAssertions.Web.Models.Home.BrowserPatternDTO
+﻿@using Tellurium.VisualAssertions.Dashboard.Controllers
+@using Tellurium.VisualAssertions.Dashboard.Mvc
+@model Tellurium.VisualAssertions.Dashboard.Models.Home.BrowserPatternDTO
 @{
     var testCaseWidget = TestCaseWidget.Create<TestCaseController>(c => c.SaveLocalBlindspots(null), c => c.SaveCategoryBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
 }

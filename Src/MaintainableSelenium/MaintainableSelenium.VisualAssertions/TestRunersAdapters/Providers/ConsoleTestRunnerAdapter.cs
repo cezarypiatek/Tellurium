@@ -1,8 +1,8 @@
 ﻿using System;
-using MaintainableSelenium.MvcPages.Utils;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using Tellurium.MvcPages.Utils;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters.Providers
+namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
 {
     public class ConsoleTestRunnerAdapter:ITestRunnerAdapter
     {

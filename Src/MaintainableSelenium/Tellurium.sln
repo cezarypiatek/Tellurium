@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{34917168-5797-4557-86A8-B7BE41F78112}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,11 +16,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.UITest", "Sample.UIT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Website", "Sample.Website\Sample.Website.csproj", "{5F8390D3-916D-425C-85EB-4229D3D25F3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintainableSelenium.VisualAssertions.Web", "MaintainableSelenium.VisualAssertions.Web\MaintainableSelenium.VisualAssertions.Web.csproj", "{5D6ADD63-FDF2-4AFB-9282-7A6E02A35268}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualAssertions.Dashboard", "MaintainableSelenium.VisualAssertions.Web\VisualAssertions.Dashboard.csproj", "{5D6ADD63-FDF2-4AFB-9282-7A6E02A35268}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintainableSelenium.MvcPages", "MaintainableSelenium.MvcPages\MaintainableSelenium.MvcPages.csproj", "{3EEBCFFD-1814-4BFC-857C-6081D528E011}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcPages", "MaintainableSelenium.MvcPages\MvcPages.csproj", "{3EEBCFFD-1814-4BFC-857C-6081D528E011}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintainableSelenium.VisualAssertions", "MaintainableSelenium.VisualAssertions\MaintainableSelenium.VisualAssertions.csproj", "{54690D57-06A0-4DA6-A58D-A81E1FD5B3DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualAssertions", "MaintainableSelenium.VisualAssertions\VisualAssertions.csproj", "{54690D57-06A0-4DA6-A58D-A81E1FD5B3DC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualAssertions", "VisualAssertions", "{C65CF928-CE52-4336-AB21-FB40D96C345A}"
 EndProject

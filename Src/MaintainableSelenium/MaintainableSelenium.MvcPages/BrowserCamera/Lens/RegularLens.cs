@@ -1,7 +1,7 @@
-﻿using MaintainableSelenium.MvcPages.SeleniumUtils;
-using OpenQA.Selenium.Remote;
+﻿using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.SeleniumUtils;
 
-namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
+namespace Tellurium.MvcPages.BrowserCamera.Lens
 {
     public class RegularLens: IBrowserCameraLens
     {

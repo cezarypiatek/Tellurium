@@ -1,6 +1,6 @@
-using MaintainableSelenium.MvcPages.BrowserCamera.Lens;
+using Tellurium.MvcPages.BrowserCamera.Lens;
 
-namespace MaintainableSelenium.MvcPages.BrowserCamera
+namespace Tellurium.MvcPages.BrowserCamera
 {
     public class BrowserCameraConfig
     {

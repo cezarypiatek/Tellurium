@@ -1,12 +1,12 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using Tellurium.MvcPages.Utils;
 
-namespace MaintainableSelenium.MvcPages.SeleniumUtils
+namespace Tellurium.MvcPages.SeleniumUtils
 {
     public class StableWebElement: IStableWebElement
     {

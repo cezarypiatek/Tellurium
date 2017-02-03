@@ -1,8 +1,8 @@
 using System;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
 using OpenQA.Selenium;
+using Tellurium.MvcPages.SeleniumUtils;
 
-namespace MaintainableSelenium.MvcPages.WebPages.WebForms.DefaultInputAdapters
+namespace Tellurium.MvcPages.WebPages.WebForms.DefaultInputAdapters
 {
     public class CheckboxFormInputAdapter : IFormInputAdapter
     {

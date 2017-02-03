@@ -1,9 +1,9 @@
-﻿using MaintainableSelenium.MvcPages.BrowserCamera;
-using MaintainableSelenium.VisualAssertions.Infrastructure.Persistence;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
-using MaintainableSelenium.VisualAssertions.TestRunersAdapters;
+﻿using Tellurium.MvcPages.BrowserCamera;
+using Tellurium.VisualAssertions.Infrastructure.Persistence;
+using Tellurium.VisualAssertions.Screenshots.Domain;
+using Tellurium.VisualAssertions.TestRunersAdapters;
 
-namespace MaintainableSelenium.VisualAssertions.Screenshots
+namespace Tellurium.VisualAssertions.Screenshots
 {
     public static class AssertView
     {

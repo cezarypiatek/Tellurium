@@ -3,7 +3,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Castle.Windsor;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Mvc
+namespace Tellurium.VisualAssertions.Dashboard.Mvc
 {
     public class WindsorControllerFactory : DefaultControllerFactory
     {

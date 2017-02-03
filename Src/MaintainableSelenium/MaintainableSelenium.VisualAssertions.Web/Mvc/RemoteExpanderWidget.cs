@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Mvc
+namespace Tellurium.VisualAssertions.Dashboard.Mvc
 {
     public class RemoteExpanderWidget:JqueryUIWidget
     {

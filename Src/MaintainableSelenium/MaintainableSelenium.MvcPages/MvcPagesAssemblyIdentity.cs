@@ -1,4 +1,4 @@
-﻿namespace MaintainableSelenium.MvcPages
+﻿namespace Tellurium.MvcPages
 {
     public class MvcPagesAssemblyIdentity
     {

@@ -6,7 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Mvc
+namespace Tellurium.VisualAssertions.Dashboard.Mvc
 {
     /// <summary>
     /// Base class for jquery ui widget which will be registered using modernUnobtrusive library

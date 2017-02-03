@@ -1,7 +1,7 @@
 ﻿using System;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.TestRunersAdapters
+namespace Tellurium.VisualAssertions.TestRunersAdapters
 {
     public interface ITestRunnerAdapter
     {

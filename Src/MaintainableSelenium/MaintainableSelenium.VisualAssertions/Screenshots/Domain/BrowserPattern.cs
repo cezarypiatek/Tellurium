@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.VisualAssertions.Infrastructure;
+using Tellurium.VisualAssertions.Infrastructure;
 
-namespace MaintainableSelenium.VisualAssertions.Screenshots.Domain
+namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
     public class BrowserPattern:Entity
     {

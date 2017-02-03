@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
-using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.Utils;
 
-namespace MaintainableSelenium.MvcPages.WebPages.WebForms
+namespace Tellurium.MvcPages.WebPages.WebForms
 {
     /// <summary>
     /// Strongly typed adapter for web form

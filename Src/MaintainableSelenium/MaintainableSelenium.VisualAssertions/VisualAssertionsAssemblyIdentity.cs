@@ -1,4 +1,4 @@
-﻿namespace MaintainableSelenium.VisualAssertions
+﻿namespace Tellurium.VisualAssertions
 {
     public class VisualAssertionsAssemblyIdentity
     {

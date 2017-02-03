@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.SeleniumUtils;
 
-namespace MaintainableSelenium.MvcPages.WebPages.WebForms
+namespace Tellurium.MvcPages.WebPages.WebForms
 {
     public class WebFormField
     {

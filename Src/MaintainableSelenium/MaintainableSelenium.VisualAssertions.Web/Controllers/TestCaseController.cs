@@ -1,9 +1,9 @@
 ﻿using System.Web.Mvc;
-using MaintainableSelenium.VisualAssertions.Web.Models.Home;
-using MaintainableSelenium.VisualAssertions.Web.Mvc;
-using MaintainableSelenium.VisualAssertions.Web.Services.TestCase;
+using Tellurium.VisualAssertions.Dashboard.Models.Home;
+using Tellurium.VisualAssertions.Dashboard.Mvc;
+using Tellurium.VisualAssertions.Dashboard.Services.TestCase;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Controllers
+namespace Tellurium.VisualAssertions.Dashboard.Controllers
 {
     public class TestCaseController : Controller
     {

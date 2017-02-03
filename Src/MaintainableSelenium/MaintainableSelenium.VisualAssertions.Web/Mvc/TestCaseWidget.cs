@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
-using MaintainableSelenium.VisualAssertions.Web.Models.Home;
+using Tellurium.VisualAssertions.Dashboard.Models.Home;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Mvc
+namespace Tellurium.VisualAssertions.Dashboard.Mvc
 {
     public class TestCaseWidget : JqueryUIWidget
     {

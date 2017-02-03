@@ -1,14 +1,14 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Threading;
-using MaintainableSelenium.MvcPages.Utils;
-using MaintainableSelenium.MvcPages.WebPages;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
+using Tellurium.MvcPages.Utils;
+using Tellurium.MvcPages.WebPages;
 
-namespace MaintainableSelenium.MvcPages.SeleniumUtils
+namespace Tellurium.MvcPages.SeleniumUtils
 {
     public static class SeleniumExtensions
     {

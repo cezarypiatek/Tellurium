@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MaintainableSelenium.VisualAssertions.Infrastructure
+namespace Tellurium.VisualAssertions.Infrastructure
 {
     public interface IRepository<TEntity> where TEntity : Entity
     {

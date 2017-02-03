@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace MaintainableSelenium.MvcPages.Utils
+namespace Tellurium.MvcPages.Utils
 {
     internal static class RetryHelper
     {

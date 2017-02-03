@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing.Imaging;
 using System.IO;
-using MaintainableSelenium.MvcPages.Utils;
+using Tellurium.MvcPages.Utils;
 
-namespace MaintainableSelenium.MvcPages.BrowserCamera
+namespace Tellurium.MvcPages.BrowserCamera
 {
     public class FileSystemScreenshotStorage : IScreenshotStorage
     {

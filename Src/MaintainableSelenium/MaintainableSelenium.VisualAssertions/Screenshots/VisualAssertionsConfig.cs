@@ -1,4 +1,4 @@
-﻿namespace MaintainableSelenium.VisualAssertions.Screenshots
+﻿namespace Tellurium.VisualAssertions.Screenshots
 {
     public class VisualAssertionsConfig
     {

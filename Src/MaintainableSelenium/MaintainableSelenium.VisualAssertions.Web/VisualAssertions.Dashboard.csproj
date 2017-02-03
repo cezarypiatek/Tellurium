@@ -11,8 +11,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MaintainableSelenium.VisualAssertions.Web</RootNamespace>
-    <AssemblyName>MaintainableSelenium.VisualAssertions.Web</AssemblyName>
+    <RootNamespace>Tellurium.VisualAssertions.Dashboard</RootNamespace>
+    <AssemblyName>Tellurium.VisualAssertions.Dashboard</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -275,13 +275,13 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MaintainableSelenium.MvcPages\MaintainableSelenium.MvcPages.csproj">
+    <ProjectReference Include="..\MaintainableSelenium.MvcPages\MvcPages.csproj">
       <Project>{3eebcffd-1814-4bfc-857c-6081d528e011}</Project>
-      <Name>MaintainableSelenium.MvcPages</Name>
+      <Name>MvcPages</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MaintainableSelenium.VisualAssertions\MaintainableSelenium.VisualAssertions.csproj">
+    <ProjectReference Include="..\MaintainableSelenium.VisualAssertions\VisualAssertions.csproj">
       <Project>{54690d57-06a0-4da6-a58d-a81e1fd5b3dc}</Project>
-      <Name>MaintainableSelenium.VisualAssertions</Name>
+      <Name>VisualAssertions</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

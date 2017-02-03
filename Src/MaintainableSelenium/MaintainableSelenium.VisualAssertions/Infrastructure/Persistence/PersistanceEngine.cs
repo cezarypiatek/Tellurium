@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 using FluentNHibernate.Cfg;
-using MaintainableSelenium.VisualAssertions.Infrastructure.Persistence.Conventions;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Context;
 using NHibernate.Tool.hbm2ddl;
+using Tellurium.VisualAssertions.Infrastructure.Persistence.Conventions;
 
-namespace MaintainableSelenium.VisualAssertions.Infrastructure.Persistence
+namespace Tellurium.VisualAssertions.Infrastructure.Persistence
 {
     public static class PersistanceEngine
     {

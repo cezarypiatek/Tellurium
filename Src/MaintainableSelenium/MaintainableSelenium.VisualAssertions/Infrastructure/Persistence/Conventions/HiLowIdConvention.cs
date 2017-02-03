@@ -1,7 +1,7 @@
 using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
 
-namespace MaintainableSelenium.VisualAssertions.Infrastructure.Persistence.Conventions
+namespace Tellurium.VisualAssertions.Infrastructure.Persistence.Conventions
 {
     public class HiLowIdConvention:IIdConvention
     {

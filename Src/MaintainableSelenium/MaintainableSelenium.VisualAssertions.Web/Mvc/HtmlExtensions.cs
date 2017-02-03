@@ -7,7 +7,7 @@ using System.Web.Mvc.Ajax;
 using System.Web.Routing;
 using Newtonsoft.Json;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Mvc
+namespace Tellurium.VisualAssertions.Dashboard.Mvc
 {
     public static class HtmlExtensions
     {

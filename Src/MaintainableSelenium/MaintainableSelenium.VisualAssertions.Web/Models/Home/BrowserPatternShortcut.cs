@@ -1,4 +1,4 @@
-namespace MaintainableSelenium.VisualAssertions.Web.Models.Home
+namespace Tellurium.VisualAssertions.Dashboard.Models.Home
 {
     public class BrowserPatternShortcut
     {

@@ -1,8 +1,8 @@
 using System.Drawing;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.SeleniumUtils;
 
-namespace MaintainableSelenium.MvcPages.BrowserCamera.Lens
+namespace Tellurium.MvcPages.BrowserCamera.Lens
 {
     public class ResizeableLens:IBrowserCameraLens
     {

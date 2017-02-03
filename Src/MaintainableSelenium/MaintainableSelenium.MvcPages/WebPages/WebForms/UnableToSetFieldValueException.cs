@@ -1,6 +1,6 @@
 using System;
 
-namespace MaintainableSelenium.MvcPages.WebPages.WebForms
+namespace Tellurium.MvcPages.WebPages.WebForms
 {
     public class UnableToSetFieldValueException:ApplicationException
     {

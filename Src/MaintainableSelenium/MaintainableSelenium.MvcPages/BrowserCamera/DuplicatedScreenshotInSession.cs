@@ -1,6 +1,6 @@
 using System;
 
-namespace MaintainableSelenium.MvcPages.BrowserCamera
+namespace Tellurium.MvcPages.BrowserCamera
 {
     public class DuplicatedScreenshotInSession: ApplicationException
     {

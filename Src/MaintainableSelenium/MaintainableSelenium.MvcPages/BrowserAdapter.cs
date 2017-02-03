@@ -5,16 +5,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Web.Mvc;
-using MaintainableSelenium.MvcPages.BrowserCamera;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
-using MaintainableSelenium.MvcPages.SeleniumUtils.Exceptions;
-using MaintainableSelenium.MvcPages.WebPages;
-using MaintainableSelenium.MvcPages.WebPages.WebForms;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.BrowserCamera;
+using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.SeleniumUtils.Exceptions;
+using Tellurium.MvcPages.WebPages;
+using Tellurium.MvcPages.WebPages.WebForms;
 
-namespace MaintainableSelenium.MvcPages
+namespace Tellurium.MvcPages
 {
     public class BrowserAdapter : IBrowserAdapter
     {

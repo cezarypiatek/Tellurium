@@ -1,11 +1,11 @@
 using System;
-using MaintainableSelenium.MvcPages.BrowserCamera.Lens;
-using MaintainableSelenium.MvcPages.SeleniumUtils;
-using MaintainableSelenium.MvcPages.Utils;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.BrowserCamera.Lens;
+using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.Utils;
 
-namespace MaintainableSelenium.MvcPages.BrowserCamera
+namespace Tellurium.MvcPages.BrowserCamera
 {
     /// <summary>
     /// Responsible for taking screenshots of the page

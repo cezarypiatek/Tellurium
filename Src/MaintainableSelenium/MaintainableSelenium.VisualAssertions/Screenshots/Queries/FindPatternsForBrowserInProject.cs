@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.VisualAssertions.Infrastructure;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
 using NHibernate.Linq;
+using Tellurium.VisualAssertions.Infrastructure;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Screenshots.Queries
+namespace Tellurium.VisualAssertions.Screenshots.Queries
 {
     public class FindPatternsForBrowserInProject:IQueryAll<BrowserPattern>
     {

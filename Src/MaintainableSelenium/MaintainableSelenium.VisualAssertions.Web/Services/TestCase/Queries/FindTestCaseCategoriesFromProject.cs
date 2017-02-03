@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MaintainableSelenium.VisualAssertions.Infrastructure;
-using MaintainableSelenium.VisualAssertions.Screenshots.Domain;
+using Tellurium.VisualAssertions.Infrastructure;
+using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace MaintainableSelenium.VisualAssertions.Web.Services.TestCase.Queries
+namespace Tellurium.VisualAssertions.Dashboard.Services.TestCase.Queries
 {
     public class FindTestCaseCategoriesFromProject:IQueryAll<TestCaseCategory>
     {

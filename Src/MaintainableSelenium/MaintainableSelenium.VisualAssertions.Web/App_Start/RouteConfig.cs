@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace MaintainableSelenium.VisualAssertions.Web
+namespace Tellurium.VisualAssertions.Dashboard
 {
     public class RouteConfig
     {
