@@ -112,7 +112,7 @@
     <Compile Include="Screenshots\AssertView.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MaintainableSelenium.MvcPages\MvcPages.csproj">
+    <ProjectReference Include="..\MvcPages\MvcPages.csproj">
       <Project>{3eebcffd-1814-4bfc-857c-6081d528e011}</Project>
       <Name>MvcPages</Name>
     </ProjectReference>
