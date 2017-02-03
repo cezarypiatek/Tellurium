@@ -9,6 +9,7 @@ namespace MaintainableSelenium.MvcPages
         private const string DriversKey = "driversPath";
         private const string PageUrlKey = "pageUrl";
         private const string ErrorScreenshotsPathKey = "errorScreenshotsPath";
+        private const string AnimationsDisabledKey = "animationsDisabled";
 
         [ConfigurationProperty(BrowserKey, DefaultValue = BrowserType.Firefox, IsRequired = false)]
         public BrowserType Browser
@@ -36,6 +37,13 @@ namespace MaintainableSelenium.MvcPages
         {
             get { return this[ErrorScreenshotsPathKey] as string; }
             set { this[ErrorScreenshotsPathKey] = value; }
+        }
+
+        [ConfigurationProperty(AnimationsDisabledKey, DefaultValue = false, IsRequired = false)]
+        public bool AnimationsDisabled
+        {
+            get { return (bool)this[AnimationsDisabledKey]; }
+            set { this[AnimationsDisabledKey] = value; }
         }
     }
 }

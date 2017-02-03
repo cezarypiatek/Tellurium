@@ -30,6 +30,8 @@ namespace MaintainableSelenium.MvcPages
         
         public AfterFieldValueSet AfterFieldValueSetAction { get; set; }
 
+        public bool AnimationsDisabled { get; set; }
+
         public BrowserAdapterConfig()
         {
             InputAdapters = new List<IFormInputAdapter>
@@ -61,7 +63,8 @@ namespace MaintainableSelenium.MvcPages
                 BrowserType = config.Browser,
                 SeleniumDriversPath = seleniumDriversPath,
                 ScreenshotsPath = config.ErrorScreenshotsPath,
-                PageUrl = config.PageUrl
+                PageUrl = config.PageUrl,
+                AnimationsDisabled = config.AnimationsDisabled
             };
         }
     }

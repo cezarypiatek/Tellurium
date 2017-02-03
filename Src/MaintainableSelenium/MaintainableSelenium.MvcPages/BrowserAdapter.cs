@@ -38,6 +38,10 @@ namespace MaintainableSelenium.MvcPages
             browserAdapter.BrowserName = config.BrowserType.ToString();
             browserAdapter.NumberOfInputSetRetries = config.NumberOfInputSetRetries;
             browserAdapter.AfterFieldValueSetAction = config.AfterFieldValueSetAction;
+            if (config.AnimationsDisabled)
+            {
+                browserAdapter.navigator.PageReload += (sender, args) => browserAdapter.Driver.DisableAnimations();
+            }
             return browserAdapter;
         }
 
@@ -160,6 +164,7 @@ namespace MaintainableSelenium.MvcPages
                     driver =>
                         Driver.IsPageLoaded() &&
                         (bool) Driver.ExecuteScript("return  window.__selenium_visited__ === undefined;"));
+                navigator.OnPageReload();
             }
             catch (WebDriverTimeoutException)
             {
