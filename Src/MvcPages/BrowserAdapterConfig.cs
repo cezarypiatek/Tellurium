@@ -52,7 +52,7 @@ namespace Tellurium.MvcPages
         /// <param name="testExecutionPath">Path to location where test is executed</param>
         public static BrowserAdapterConfig FromAppConfig(string testExecutionPath)
         {
-            var config = (MantainableSeleniumConfigurationSection)ConfigurationManager.GetSection("maintainableSeleniumConfiguration");
+            var config = (TelluriumConfigurationSection)ConfigurationManager.GetSection("telluriumConfiguration");
             var seleniumDriversPath = config.DriversPath;
             if (Path.IsPathRooted(seleniumDriversPath) == false)
             {

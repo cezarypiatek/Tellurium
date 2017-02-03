@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Sample.Website.Models
+namespace Tellurium.Sample.Website.Models
 {
     public class ExternalLoginConfirmationViewModel
     {

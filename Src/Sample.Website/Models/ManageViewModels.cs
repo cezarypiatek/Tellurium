@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
-namespace Sample.Website.Models
+namespace Tellurium.Sample.Website.Models
 {
     public class IndexViewModel
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{9F6C1CA3-730E-46B9-A12A-0607507D6FBF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MaintainableSelenium.Sample.UITests</RootNamespace>
-    <AssemblyName>MaintainableSelenium.Sample.UITests</AssemblyName>
+    <RootNamespace>Tellurium.Sample.UITests</RootNamespace>
+    <AssemblyName>Tellurium.Sample.UITests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>

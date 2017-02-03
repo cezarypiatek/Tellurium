@@ -5,9 +5,9 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Sample.Website.Models;
+using Tellurium.Sample.Website.Models;
 
-namespace Sample.Website.Controllers
+namespace Tellurium.Sample.Website.Controllers
 {
     [Authorize]
     public class ManageController : Controller

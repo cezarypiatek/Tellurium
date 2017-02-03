@@ -1,8 +1,9 @@
 ﻿using Microsoft.Owin;
 using Owin;
+using Tellurium.Sample.Website;
 
-[assembly: OwinStartupAttribute(typeof(Sample.Website.Startup))]
-namespace Sample.Website
+[assembly: OwinStartup(typeof(Startup))]
+namespace Tellurium.Sample.Website
 {
     public partial class Startup
     {

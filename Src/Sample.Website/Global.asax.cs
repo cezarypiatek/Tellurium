@@ -2,7 +2,7 @@
 using System.Web.Optimization;
 using System.Web.Routing;
 
-namespace Sample.Website
+namespace Tellurium.Sample.Website
 {
     public class MvcApplication : System.Web.HttpApplication
     {

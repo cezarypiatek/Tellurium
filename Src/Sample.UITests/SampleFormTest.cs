@@ -1,15 +1,15 @@
 ﻿using System.IO;
-using MaintainableSelenium.Sample.Website.Mvc;
 using NUnit.Framework;
-using Sample.Website.Controllers;
-using Sample.Website.Models;
 using Tellurium.MvcPages;
 using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.MvcPages.BrowserCamera.Lens;
 using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.Sample.Website.Controllers;
+using Tellurium.Sample.Website.Models;
+using Tellurium.Sample.Website.Mvc;
 using Tellurium.VisualAssertions.Screenshots;
 
-namespace MaintainableSelenium.Sample.UITests
+namespace Tellurium.Sample.UITests
 {
     //INFO: Run Sample.Website and detach debugger before running test
     [TestFixture, Explicit]

@@ -1,8 +1,8 @@
 ﻿using System.Web.Mvc;
 using Microsoft.Web.Mvc;
-using Sample.Website.Models;
+using Tellurium.Sample.Website.Models;
 
-namespace Sample.Website.Controllers
+namespace Tellurium.Sample.Website.Controllers
 {
     public class TestFormsController:Controller
     {

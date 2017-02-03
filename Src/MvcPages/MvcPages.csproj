@@ -101,7 +101,7 @@
     <Compile Include="BrowserCamera\IBrowserCamera.cs" />
     <Compile Include="BrowserCamera\IScreenshotStorage.cs" />
     <Compile Include="BrowserCamera\ScreenshotIdentity.cs" />
-    <Compile Include="MantainableSeleniumConfigurationSection.cs" />
+    <Compile Include="TelluriumConfigurationSection.cs" />
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotReloadPageWithException.cs" />
     <Compile Include="SeleniumUtils\StableWebElement.cs" />

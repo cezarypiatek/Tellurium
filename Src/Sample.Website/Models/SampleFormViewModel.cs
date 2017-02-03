@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
-namespace Sample.Website.Models
+namespace Tellurium.Sample.Website.Models
 {
     public class SampleFormViewModel
     {

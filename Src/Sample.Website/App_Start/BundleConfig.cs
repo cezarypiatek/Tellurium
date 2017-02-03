@@ -1,6 +1,6 @@
 ﻿using System.Web.Optimization;
 
-namespace Sample.Website
+namespace Tellurium.Sample.Website
 {
     public class BundleConfig
     {

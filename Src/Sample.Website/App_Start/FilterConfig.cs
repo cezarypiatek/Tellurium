@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace Sample.Website
+namespace Tellurium.Sample.Website
 {
     public class FilterConfig
     {

@@ -3,7 +3,7 @@ using Tellurium.MvcPages.SeleniumUtils;
 
 namespace Tellurium.MvcPages
 {
-    public class MantainableSeleniumConfigurationSection: ConfigurationSection
+    public class TelluriumConfigurationSection: ConfigurationSection
     {
         private const string BrowserKey = "browser";
         private const string DriversKey = "driversPath";

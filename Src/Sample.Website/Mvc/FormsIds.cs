@@ -1,4 +1,4 @@
-﻿namespace MaintainableSelenium.Sample.Website.Mvc
+﻿namespace Tellurium.Sample.Website.Mvc
 {
     public static class FormsIds
     {

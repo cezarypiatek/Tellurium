@@ -4,9 +4,9 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
-using Sample.Website.Models;
+using Tellurium.Sample.Website.Models;
 
-namespace Sample.Website
+namespace Tellurium.Sample.Website
 {
     public partial class Startup
     {

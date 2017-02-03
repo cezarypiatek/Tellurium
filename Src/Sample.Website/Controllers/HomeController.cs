@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace Sample.Website.Controllers
+namespace Tellurium.Sample.Website.Controllers
 {
     public class HomeController : Controller
     {
