@@ -41,13 +41,16 @@ namespace MaintainableSelenium.MvcPages.WebPages
         public void OnPageReload()
         {
             var handler = PageReload;
-            handler?.Invoke(this, new PageReloadEventArgs()
+            if (handler != null)
             {
-                NewUrl = driver.Url
-            });
+                handler.Invoke(this, new PageReloadEventArgs()
+                {
+                    NewUrl = driver.Url
+                });
+            }
         }
     }
-    
+       
     public class PageReloadEventArgs:EventArgs
     {
         public string NewUrl { get; set; }
