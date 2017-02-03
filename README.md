@@ -1,16 +1,16 @@
-# Maintainable Selenium
+# Tellurium (aka Maintainable Selenium)
 [![Build status](https://ci.appveyor.com/api/projects/status/t0jlwy833c7sqyte?svg=true)](https://ci.appveyor.com/project/cezarypiatek/maintainableselenium)
 
 A utility pack to create maintainanble UI tests for ASP.NET MVC projects using Selenium
 
-To get know how to use Maintainable Selenium check project's Wiki
+To get know how to use **Tellurium** check project's Wiki
 
 ##Nuget package
 - MvcPages
-  https://www.nuget.org/packages/MaintainableSelenium.MvcPages
+  https://www.nuget.org/packages/Tellurium.MvcPages
 
 - VisualAssertions
-  https://www.nuget.org/packages/MaintainableSelenium.VisualAssertions
+  https://www.nuget.org/packages/Tellurium.VisualAssertions
 
 
 
