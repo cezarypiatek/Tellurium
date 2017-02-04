@@ -6,7 +6,8 @@
     <authors>Cezary Piatek</authors>
     <owners>Cezary Piatek</owners>
     <licenseUrl>https://github.com/cezarypiatek/Tellurium/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/cezarypiatek/Tellurium/</projectUrl>  
+    <projectUrl>https://github.com/cezarypiatek/Tellurium/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/cezarypiatek/Tellurium/master/Doc/TelluriumLogo128x128.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A utility pack to create maintainanle UI test for ASP.NET MVC projects using Selenium</description>
     <releaseNotes>Prerelase version</releaseNotes>
