@@ -10,6 +10,7 @@ namespace Tellurium.MvcPages.WebPages
     {
         void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
         void OnPageReload();
+        void RefreshPage();
         event EventHandler<PageReloadEventArgs> PageReload;
     }
 
@@ -33,6 +34,12 @@ namespace Tellurium.MvcPages.WebPages
             var actionAddress = UrlHelper.BuildActionAddressFromExpression(action);
             var url = string.Format("{0}/{1}", rootUrl, actionAddress);
             driver.Navigate().GoToUrl(url);
+            OnPageReload();
+        }
+
+        public void RefreshPage()
+        {
+            this.driver.Navigate().Refresh();
             OnPageReload();
         }
 

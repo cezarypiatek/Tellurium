@@ -129,7 +129,7 @@ namespace Tellurium.MvcPages
 
         public void RefreshPage()
         {
-            this.Driver.Navigate().Refresh();
+            this.navigator.RefreshPage();
         }
         
         public void WaitForElementWithId(string elementId, int timeOut = 30)
@@ -268,6 +268,11 @@ namespace Tellurium.MvcPages
 
         byte [] TakeScreenshot();
 
+
+        /// <summary>
+        /// Navigate to page represented by given controller's action
+        /// </summary>
+        /// <param name="action">Expression to given action></param>
         void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
 
         void SaveScreenshot(string directoryPath, string screenshotName, bool addBrowserPrefix=true);
