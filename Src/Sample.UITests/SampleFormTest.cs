@@ -96,7 +96,7 @@ namespace Tellurium.Sample.UITests
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
             {
                 //Test
-                browserAdapter.NavigateTo<TestFormsController>(c => c.Index());
+                browserAdapter.NavigateTo("TestForms/Index/");
                 AssertView.EqualsToPattern(browserAdapter, "Sample21");
                 
                 var detinationForm = browserAdapter.GetForm(FormsIds.TestFormDst);

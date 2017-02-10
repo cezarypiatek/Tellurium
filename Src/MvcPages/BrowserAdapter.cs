@@ -83,6 +83,11 @@ namespace Tellurium.MvcPages
             navigator.NavigateTo(action);
         }
 
+        public void NavigateTo(string subpagePath)
+        {
+            navigator.NavigateTo(subpagePath);
+        }
+
         public byte [] TakeScreenshot()
         {
             return browserCamera.TakeScreenshot();
@@ -284,6 +289,12 @@ namespace Tellurium.MvcPages
         /// </summary>
         /// <param name="action">Expression to given action></param>
         void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
+
+        /// <summary>
+        /// Navigate to page related to root page
+        /// </summary>
+        /// <param name="subpagePath">Path to page</param>
+        void NavigateTo(string subpagePath);
 
         void SaveScreenshot(string directoryPath, string screenshotName, bool addBrowserPrefix=true);
 

@@ -9,6 +9,7 @@ namespace Tellurium.MvcPages.WebPages
     public interface INavigator
     {
         void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
+        void NavigateTo(string subpagePath);
         void OnPageReload();
         void RefreshPage();
         event EventHandler<PageReloadEventArgs> PageReload;
@@ -32,7 +33,12 @@ namespace Tellurium.MvcPages.WebPages
         public void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller
         {
             var actionAddress = UrlHelper.BuildActionAddressFromExpression(action);
-            var url = $"{rootUrl}/{actionAddress}";
+            NavigateTo(actionAddress);
+        }
+
+        public void NavigateTo(string subpagePath)
+        {
+            var url = $"{rootUrl}/{subpagePath}";
             driver.Navigate().GoToUrl(url);
             OnPageReload();
         }
