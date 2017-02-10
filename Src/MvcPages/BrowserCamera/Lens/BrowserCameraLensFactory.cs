@@ -18,7 +18,7 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
                 case LensType.Zoomable:
                     return new ZoomableLens(webDriver);
                 default:
-                    throw new ArgumentOutOfRangeException("type", type, null);
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
     }

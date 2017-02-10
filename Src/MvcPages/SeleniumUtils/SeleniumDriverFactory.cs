@@ -33,7 +33,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 case BrowserType.Edge:
                     return new EdgeDriver(driversPath);
                 default:
-                    throw new ArgumentOutOfRangeException("driverType", driverType, null);
+                    throw new ArgumentOutOfRangeException(nameof(driverType), driverType, null);
             }
         }
 
@@ -62,7 +62,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 case BrowserType.Edge:
                     return DesiredCapabilities.Edge();
                 default:
-                    throw new ArgumentOutOfRangeException("driverType", driverType, null);
+                    throw new ArgumentOutOfRangeException(nameof(driverType), driverType, null);
             }
         }
     }

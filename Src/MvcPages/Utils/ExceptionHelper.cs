@@ -12,7 +12,7 @@ namespace Tellurium.MvcPages.Utils
             }
             
             var innerExceptionMessage = exception.InnerException.GetFullExceptionMessage();
-            return string.Format("{0}\r\n{1}", exception.Message, innerExceptionMessage).Trim();
+            return $"{exception.Message}\r\n{innerExceptionMessage}".Trim();
         }
     }
 }

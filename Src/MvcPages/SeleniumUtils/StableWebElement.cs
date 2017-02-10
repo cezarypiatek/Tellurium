@@ -158,7 +158,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             var typed = element as TInterface;
             if (typed == null)
             {
-                var errorMessage = string.Format("Underlying element does not support this opperation. It should ilement {0} interface", typeof(TInterface).FullName);
+                var errorMessage = $"Underlying element does not support this opperation. It should ilement {typeof(TInterface).FullName} interface";
                 throw new NotSupportedException(errorMessage);
             }
             return typed;

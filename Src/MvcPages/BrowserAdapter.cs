@@ -91,7 +91,7 @@ namespace Tellurium.MvcPages
         public void SaveScreenshot(string directoryPath, string screenshotName, bool addBrowserPrefix=true)
         {
             var screenshotRawData = browserCamera.TakeScreenshot();
-            var fullScreenshotName = addBrowserPrefix ? string.Format("{0}_{1}", BrowserName, screenshotName)
+            var fullScreenshotName = addBrowserPrefix ? $"{BrowserName}_{screenshotName}"
                 : screenshotName;
             var screenshotStorage = new FileSystemScreenshotStorage(directoryPath);
             screenshotStorage.Persist(screenshotRawData, fullScreenshotName);
@@ -99,7 +99,7 @@ namespace Tellurium.MvcPages
 
         private static void SaveErrorScreenshot(IBrowserAdapter browserAdapter, BrowserAdapterConfig config)
         {
-            string screenshotName = string.Format("Error{0:yyyy_MM_dd__HH_mm_ss}", DateTime.Now);
+            string screenshotName = $"Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
             browserAdapter.SaveScreenshot(config.ScreenshotsPath, screenshotName);
         }
 
@@ -220,10 +220,7 @@ namespace Tellurium.MvcPages
             return mainPageFragment.ToWebList();
         }
 
-        public IWebDriver WrappedDriver { get { return Driver; } }
-      
-
-       
+        public IWebDriver WrappedDriver => Driver;
     }
 
     public interface IBrowserAdapter : IPageFragment, IBrowserCamera,  IDisposable, IWrapsDriver

@@ -13,7 +13,7 @@ namespace Tellurium.MvcPages.WebPages
             var controllerName = action.GetControllerName();
             var actionName = action.GetActionName();
             var areaName = GetAreaName<TController>();
-            var actionLink = string.Format("{0}/{1}/{2}", areaName, controllerName, actionName).Trim('/');
+            var actionLink = $"{areaName}/{controllerName}/{actionName}".Trim('/');
             return actionLink;
         }
 

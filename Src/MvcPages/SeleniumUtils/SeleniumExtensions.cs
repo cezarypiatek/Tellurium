@@ -106,7 +106,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         public static void ScrollToY(this RemoteWebDriver driver, int y)
         {
-            driver.ExecuteScript(string.Format("window.scrollTo(0,{0})", y));
+            driver.ExecuteScript($"window.scrollTo(0,{y})");
             Thread.Sleep(100);
         }
 
@@ -156,7 +156,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             {
                 if (ex.InnerException is NoSuchElementException)
                 {
-                    var message = string.Format("Cannot find element with id='{0}'", elementId);
+                    var message = $"Cannot find element with id='{elementId}'";
                     throw new WebElementNotFoundException(message, ex);
                 }
                 throw;
@@ -296,7 +296,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             {
                 if (ex.InnerException is NoSuchElementException)
                 {
-                    var message = string.Format("Cannot find element with text='{0}'", linkText);
+                    var message = $"Cannot find element with text='{linkText}'";
                     throw new WebElementNotFoundException(message, ex);
                 }
                 throw;

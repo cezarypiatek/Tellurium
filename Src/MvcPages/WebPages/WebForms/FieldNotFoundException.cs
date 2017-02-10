@@ -6,7 +6,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
     public class FieldNotFoundException: WebElementNotFoundException
     {
         public FieldNotFoundException(string fieldName)
-            : base(string.Format("Cannot find field with name '{0}'",fieldName))
+            : base($"Cannot find field with name '{fieldName}'")
         {
         }
     }
@@ -14,7 +14,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
     public class FieldNotAccessibleException:ApplicationException
     {
         public FieldNotAccessibleException(string fieldName)
-            :base(string.Format("Cannot access field with name '{0}'",fieldName))
+            :base($"Cannot access field with name '{fieldName}'")
         {
         }
     }

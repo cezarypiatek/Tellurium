@@ -32,7 +32,7 @@ namespace Tellurium.MvcPages.WebPages
         public void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller
         {
             var actionAddress = UrlHelper.BuildActionAddressFromExpression(action);
-            var url = string.Format("{0}/{1}", rootUrl, actionAddress);
+            var url = $"{rootUrl}/{actionAddress}";
             driver.Navigate().GoToUrl(url);
             OnPageReload();
         }

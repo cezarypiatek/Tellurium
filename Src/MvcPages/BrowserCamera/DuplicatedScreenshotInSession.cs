@@ -6,13 +6,7 @@ namespace Tellurium.MvcPages.BrowserCamera
     {
         private readonly ScreenshotIdentity screenshotIdentity;
 
-        public override string Message
-        {
-            get
-            {
-                return string.Format("Cannot take twice the same screenshot. Duplicated screenshot: {0}", screenshotIdentity.FullName);
-            }
-        }
+        public override string Message => $"Cannot take twice the same screenshot. Duplicated screenshot: {screenshotIdentity.FullName}";
 
         public DuplicatedScreenshotInSession(ScreenshotIdentity screenshotIdentity)
         {

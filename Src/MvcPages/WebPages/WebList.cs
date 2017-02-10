@@ -25,12 +25,12 @@ namespace Tellurium.MvcPages.WebPages
             {
                 try
                 {
-                    var selectorToFind = string.Format("*[{0}]", index + 1);
+                    var selectorToFind = $"*[{index + 1}]";
                     return GetPageFragmentByXPath(selectorToFind);
                 }
                 catch (NoSuchElementException ex)
                 {
-                    var exceptionMessage = string.Format("Unable to locate child element on index {0}", index);
+                    var exceptionMessage = $"Unable to locate child element on index {index}";
                     throw new IndexOutOfRangeException(exceptionMessage, ex);
                 }
             }
@@ -94,7 +94,7 @@ namespace Tellurium.MvcPages.WebPages
         public IPageFragment FindItemWithText(string text)
         {
             var xpathLiteral = XPathHelpers.ToXPathLiteral(text);
-            var selector = string.Format("*[contains(string(), {0})]",xpathLiteral);
+            var selector = $"*[contains(string(), {xpathLiteral})]";
             return GetPageFragmentByXPath(selector);
         }
     }
