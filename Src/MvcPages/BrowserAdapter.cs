@@ -169,6 +169,7 @@ namespace Tellurium.MvcPages
         public void ReloadPageWith(Action action)
         {
             Driver.ExecuteScript("window.__selenium_visited__ = true;");
+            navigator.OnBeforePageReload();
             action();
             try
             {

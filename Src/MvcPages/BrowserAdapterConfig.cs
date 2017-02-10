@@ -90,7 +90,7 @@ namespace Tellurium.MvcPages
             {
                 foreach (var endpoint in GetEndpintsFromAssemblies())
                 {
-                    yield return endpoint;
+                    yield return MvcEndpointsHelper.NormalizeEndpointAddress(endpoint);
                 }    
             }
         }
@@ -101,7 +101,7 @@ namespace Tellurium.MvcPages
             {
                 foreach (var endpoint in MvcEndpointsHelper.GetAvailablePagesFromAssembly(endpointsAssembly))
                 {
-                    yield return endpoint;
+                    yield return MvcEndpointsHelper.NormalizeEndpointAddress(endpoint);
                 }
             }
         }

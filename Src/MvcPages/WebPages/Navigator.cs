@@ -16,6 +16,7 @@ namespace Tellurium.MvcPages.WebPages
         void RefreshPage();
         event EventHandler<PageReloadEventArgs> PageReload;
         IReadOnlyCollection<string> GetAllRequestedEndpoints();
+        void OnBeforePageReload();
     }
 
     public class Navigator : INavigator
@@ -45,7 +46,7 @@ namespace Tellurium.MvcPages.WebPages
 
         public void NavigateTo(string subpagePath)
         {
-            CollectRequestedEndpointsData();
+            OnBeforePageReload();
             var url = $"{rootUrl}/{subpagePath}";
             driver.Navigate().GoToUrl(url);
             OnPageReload();
@@ -53,12 +54,17 @@ namespace Tellurium.MvcPages.WebPages
 
         public void RefreshPage()
         {
-            CollectRequestedEndpointsData();
+            OnBeforePageReload();
             this.driver.Navigate().Refresh();
             OnPageReload();
         }
 
         public event EventHandler<PageReloadEventArgs> PageReload;
+
+        public void OnBeforePageReload()
+        {
+            CollectRequestedEndpointsData();
+        }
 
         public void OnPageReload()
         {
@@ -90,7 +96,7 @@ namespace Tellurium.MvcPages.WebPages
         public IReadOnlyCollection<string> GetAllRequestedEndpoints()
         {
             CollectRequestedEndpointsData();
-            return this.requestedEndpoints.Select(x=> new Uri(x).LocalPath.TrimEnd('/')).ToArray();
+            return this.requestedEndpoints.Select(x=> MvcEndpointsHelper.NormalizeEndpointAddress(new Uri(x).LocalPath)).ToArray();
         }
     }
        

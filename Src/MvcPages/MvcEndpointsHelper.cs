@@ -54,7 +54,11 @@ namespace Tellurium.MvcPages
             var controllers = GetAllControllers(assembly);
             return controllers.SelectMany(GetAllActionsUrlForController).ToList();
         }
-        
+
+        public static string NormalizeEndpointAddress(string endpoint)
+        {
+            return endpoint.Replace("/Index", "").Trim('/');
+        }
 
     }
 }
