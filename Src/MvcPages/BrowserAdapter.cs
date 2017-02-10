@@ -25,19 +25,20 @@ namespace Tellurium.MvcPages
         private string BrowserName { get; set; }
         private int NumberOfInputSetRetries { get; set; }
         private AfterFieldValueSet AfterFieldValueSetAction { get; set; }
-
+        private IReadOnlyCollection<string> availableEndpoints = new List<string>();
         public static IBrowserAdapter Create(BrowserAdapterConfig config)
         {
             var browserAdapter = new BrowserAdapter();
             browserAdapter.Driver = SeleniumDriverFactory.CreateLocalDriver(config.BrowserType, config.SeleniumDriversPath);
             var browserCameraConfig = config.BrowserCameraConfig ?? BrowserCameraConfig.CreateDefault();
             browserAdapter.browserCamera = BrowserCamera.BrowserCamera.CreateNew(browserAdapter.Driver, browserCameraConfig);
-            browserAdapter.navigator = new Navigator(browserAdapter.Driver, config.PageUrl);
+            browserAdapter.navigator = new Navigator(browserAdapter.Driver, config.PageUrl, config.MeasureEndpointCoverage);
             browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
             browserAdapter.SetupBrowserDimensions(config.BrowserDimensions);
             browserAdapter.BrowserName = config.BrowserType.ToString();
             browserAdapter.NumberOfInputSetRetries = config.NumberOfInputSetRetries;
             browserAdapter.AfterFieldValueSetAction = config.AfterFieldValueSetAction;
+            browserAdapter.availableEndpoints = config.GetAvailableEndpoints().ToList();
             if (config.AnimationsDisabled)
             {
                 browserAdapter.navigator.PageReload += (sender, args) => browserAdapter.Driver.DisableAnimations();
@@ -195,8 +196,22 @@ namespace Tellurium.MvcPages
 
         public void Dispose()
         {
+            GenerateEndpointCoverageReport();
             Driver.Close();
             Driver.Quit();
+        }
+
+        private void GenerateEndpointCoverageReport()
+        {
+            var visitedEndpoints = this.navigator.GetAllRequestedEndpoints();
+            var coveragedEndpoints = this.availableEndpoints.Intersect(visitedEndpoints);
+            var uncoverageEndpoints = this.availableEndpoints.Except(visitedEndpoints);
+            Console.WriteLine($"Endpoints coverage: {coveragedEndpoints.Count()}/{this.availableEndpoints.Count}");
+            Console.WriteLine("Uncoveraged endpoints:");
+            foreach (var uncoverageEndpoint in uncoverageEndpoints)
+            {
+                Console.WriteLine($"\t {uncoverageEndpoint}");
+            }
         }
 
         public void ClickOnElementWithText(string text)

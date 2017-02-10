@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Reflection;
 using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.WebPages.WebForms;
@@ -31,6 +32,12 @@ namespace Tellurium.MvcPages
         public AfterFieldValueSet AfterFieldValueSetAction { get; set; }
 
         public bool AnimationsDisabled { get; set; }
+
+        public bool MeasureEndpointCoverage { get; set; }
+
+        public List<string> AvailableEndpoints { get; set; }
+
+        public List<Assembly> AvailableEndpointsAssemblies { get; set; }
 
         public BrowserAdapterConfig()
         {
@@ -64,8 +71,39 @@ namespace Tellurium.MvcPages
                 SeleniumDriversPath = seleniumDriversPath,
                 ScreenshotsPath = config.ErrorScreenshotsPath,
                 PageUrl = config.PageUrl,
-                AnimationsDisabled = config.AnimationsDisabled
+                AnimationsDisabled = config.AnimationsDisabled,
+                MeasureEndpointCoverage = config.MeasureEndpointCoverage
             };
+        }
+
+        public IEnumerable<string> GetAvailableEndpoints()
+        {
+            if (this.AvailableEndpoints?.Count > 0)
+            {
+                foreach (var endpoint in AvailableEndpoints.AsReadOnly())
+                {
+                    yield return endpoint;
+                }
+            }
+
+            if (this.AvailableEndpointsAssemblies?.Count > 0 )
+            {
+                foreach (var endpoint in GetEndpintsFromAssemblies())
+                {
+                    yield return endpoint;
+                }    
+            }
+        }
+
+        private IEnumerable<string> GetEndpintsFromAssemblies()
+        {
+            foreach (var endpointsAssembly in AvailableEndpointsAssemblies)
+            {
+                foreach (var endpoint in MvcEndpointsHelper.GetAvailablePagesFromAssembly(endpointsAssembly))
+                {
+                    yield return endpoint;
+                }
+            }
         }
     }
 }

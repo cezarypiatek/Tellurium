@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using NUnit.Framework;
 using Tellurium.MvcPages;
 using Tellurium.MvcPages.BrowserCamera;
@@ -174,8 +176,12 @@ namespace Tellurium.Sample.UITests
         {
             //Initialize MvcPages
             var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
-
-        //Prepare infrastructure for test
+            browserAdapterConfig.MeasureEndpointCoverage = true;
+            browserAdapterConfig.AvailableEndpointsAssemblies = new List<Assembly>()
+            {
+                typeof(HomeController).Assembly
+            };
+            //Prepare infrastructure for test
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
             {
                 //Test

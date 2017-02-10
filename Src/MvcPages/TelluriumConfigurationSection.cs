@@ -5,11 +5,13 @@ namespace Tellurium.MvcPages
 {
     public class TelluriumConfigurationSection: ConfigurationSection
     {
+        private bool measureEndpointCoverage;
         private const string BrowserKey = "browser";
         private const string DriversKey = "driversPath";
         private const string PageUrlKey = "pageUrl";
         private const string ErrorScreenshotsPathKey = "errorScreenshotsPath";
         private const string AnimationsDisabledKey = "animationsDisabled";
+        private const string MeasureEndpointCoverageKey = "measureEndpointCoverage";
 
         [ConfigurationProperty(BrowserKey, DefaultValue = BrowserType.Firefox, IsRequired = false)]
         public BrowserType Browser
@@ -44,6 +46,13 @@ namespace Tellurium.MvcPages
         {
             get { return (bool)this[AnimationsDisabledKey]; }
             set { this[AnimationsDisabledKey] = value; }
+        }
+
+        [ConfigurationProperty(MeasureEndpointCoverageKey, DefaultValue = false, IsRequired = false)]
+        public bool MeasureEndpointCoverage
+        {
+            get { return (bool)this[MeasureEndpointCoverageKey]; }
+            set { this[MeasureEndpointCoverageKey] = value; }
         }
     }
 }
