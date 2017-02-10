@@ -7,6 +7,7 @@
     <owners>Cezary Piatek</owners>
     <licenseUrl>https://github.com/cezarypiatek/Tellurium/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/cezarypiatek/Tellurium/</projectUrl>  
+    <iconUrl>https://raw.githubusercontent.com/cezarypiatek/Tellurium/master/Doc/TelluriumLogo128x128.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An extension to Tellurium.MvcPages pack that allows to create test assertions based on webpage screenshots</description>
     <releaseNotes>Prerelase version</releaseNotes>
