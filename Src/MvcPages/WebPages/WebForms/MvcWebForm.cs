@@ -53,7 +53,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         /// <param name="action">Action which should affect field value</param>
         public void AffectValueWith<TFieldValue>(Expression<Func<TModel, TFieldValue>> field, Action action)
         {
-            var fieldName = this.GetFieldValue(field);
+            var fieldName = GetFieldName(field);
             base.AffectValueWith(fieldName, action);
         }
 
