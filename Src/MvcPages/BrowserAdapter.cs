@@ -9,6 +9,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.BrowserCamera;
+using Tellurium.MvcPages.EndpointCoverage;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 using Tellurium.MvcPages.WebPages;
@@ -197,22 +198,10 @@ namespace Tellurium.MvcPages
 
         public void Dispose()
         {
-            GenerateEndpointCoverageReport();
+            var visitedEndpoints = this.navigator.GetAllRequestedEndpoints();
+            EndpointCoverageReportGenerator.GenerateEndpointCoverageReport(this.availableEndpoints, visitedEndpoints);
             Driver.Close();
             Driver.Quit();
-        }
-
-        private void GenerateEndpointCoverageReport()
-        {
-            var visitedEndpoints = this.navigator.GetAllRequestedEndpoints();
-            var coveragedEndpoints = this.availableEndpoints.Intersect(visitedEndpoints);
-            var uncoverageEndpoints = this.availableEndpoints.Except(visitedEndpoints);
-            Console.WriteLine($"Endpoints coverage: {coveragedEndpoints.Count()}/{this.availableEndpoints.Count}");
-            Console.WriteLine("Uncoveraged endpoints:");
-            foreach (var uncoverageEndpoint in uncoverageEndpoints)
-            {
-                Console.WriteLine($"\t {uncoverageEndpoint}");
-            }
         }
 
         public void ClickOnElementWithText(string text)

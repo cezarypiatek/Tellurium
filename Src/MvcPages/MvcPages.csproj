@@ -101,6 +101,7 @@
     <Compile Include="BrowserCamera\IBrowserCamera.cs" />
     <Compile Include="BrowserCamera\IScreenshotStorage.cs" />
     <Compile Include="BrowserCamera\ScreenshotIdentity.cs" />
+    <Compile Include="EndpointCoverage\EndpointCoverageReportGenerator.cs" />
     <Compile Include="MvcEndpointsHelper.cs" />
     <Compile Include="TelluriumConfigurationSection.cs" />
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
@@ -147,9 +148,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EndpointCoverage\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
