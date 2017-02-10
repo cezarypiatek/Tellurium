@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Microsoft.Web.Mvc;
 
 namespace Tellurium.MvcPages
@@ -57,8 +58,10 @@ namespace Tellurium.MvcPages
 
         public static string NormalizeEndpointAddress(string endpoint)
         {
-            return endpoint.Replace("/Index", "").Trim('/');
+            var address = endpoint.Replace("/Index", "").Trim('/');
+            return IdPattern.Replace(address,"");
         }
 
+        private static readonly Regex IdPattern = new Regex(@"/\d+$");
     }
 }
