@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Web.Mvc;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
@@ -10,19 +8,15 @@ using Tellurium.MvcPages.Utils;
 namespace Tellurium.MvcPages.WebPages.WebForms
 {
     /// <summary>
-    /// Strongly typed adapter for web form
+    /// Weakly typed adapter for web form
     /// </summary>
-    /// <typeparam name="TModel">Type of model connected with given web form</typeparam>
-    public class WebForm<TModel>: PageFragment
+    public class WebForm : PageFragment
     {
         private readonly int numberOfSetRetries;
         private readonly AfterFieldValueSet afterFieldValueSet;
-        
-
         private List<IFormInputAdapter> SupportedInputs { get; set; }
 
-        public WebForm(IWebElement webElement, RemoteWebDriver driver, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries, AfterFieldValueSet afterFieldValueSet = AfterFieldValueSet.Nothing) 
-            : base(driver, webElement)
+        public WebForm(IWebElement webElement, RemoteWebDriver driver, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries, AfterFieldValueSet afterFieldValueSet = AfterFieldValueSet.Nothing) : base(driver, webElement)
         {
             this.numberOfSetRetries = numberOfSetRetries;
             this.afterFieldValueSet = afterFieldValueSet;
@@ -30,14 +24,14 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         }
 
         /// <summary>
-        /// Set value for field indicated by expression
+        /// Set value for field indicated by field name
         /// </summary>
-        /// <param name="field">Expression indicating given form field</param>
-        /// <param name="value">Value to set for fields</param>
+        /// <param name="fieldName">Field name</param>
+        /// <param name="value">Value to set for field</param>
         /// <param name="customAction">Action to perform after field value has been set</param>
-        public void SetFieldValue<TFieldValue>(Expression<Func<TModel, TFieldValue>> field, string value, AfterFieldValueSet? customAction=null)
+        public void SetFieldValue(string fieldName, string value, AfterFieldValueSet? customAction = null)
         {
-            var fieldWrapper = GetField(field);
+            var fieldWrapper = GetFieldWrapper(fieldName);
 
             if (fieldWrapper.FieldAdapter.SupportSetRetry())
             {
@@ -49,7 +43,6 @@ namespace Tellurium.MvcPages.WebPages.WebForms
 
                 if (success == false)
                 {
-                    var fieldName = GetFieldName(field);
                     throw new UnableToSetFieldValueException(fieldName, value);
                 }
             }
@@ -61,7 +54,34 @@ namespace Tellurium.MvcPages.WebPages.WebForms
             InvokeAfterFieldValueSet(fieldWrapper.FieldElement, customAction ?? afterFieldValueSet);
         }
 
+        /// <summary>
+        /// Get value of field indicated by field name
+        /// </summary>
+        /// <param name="fieldName">Field name</param>
+        public string GetFieldValue(string fieldName)
+        {
+            var fieldWrapper = GetFieldWrapper(fieldName);
+            return fieldWrapper.GetValue();
+        }
 
+        public FieldValueWatcher GetFieldValueWatcher(string fieldName)
+        {
+            var fieldWrapper = GetFieldWrapper(fieldName);
+            return new FieldValueWatcher(Driver, fieldWrapper);
+        }
+
+        /// <summary>
+        /// Perform action and wait until value of given field will change
+        /// </summary>
+        /// <param name="fieldName">Field which value should change after given action</param>
+        /// <param name="action">Action which should affect field value</param>
+        public void AffectValueWith(string fieldName, Action action)
+        {
+            var fieldValueWatcher = this.GetFieldValueWatcher(fieldName);
+            action();
+            fieldValueWatcher.WaitForValueChange();
+        }
+        
         private void InvokeAfterFieldValueSet(IWebElement fieldElement, AfterFieldValueSet actionType)
         {
             switch (actionType)
@@ -79,50 +99,9 @@ namespace Tellurium.MvcPages.WebPages.WebForms
             }
         }
 
-        /// <summary>
-        /// Get value of field indicated by expression
-        /// </summary>
-        /// <param name="field">Expression indicating given form field</param>
-        public string GetFieldValue<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
+        private WebFormField GetFieldWrapper(string fieldName)
         {
-            var fieldWrapper = GetField(field);
-            return fieldWrapper.GetValue();
-        }
-
-        private static string GetFieldName<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
-        {
-            return ExpressionHelper.GetExpressionText(field);
-        }
-
-        public FieldValueWatcher GetFieldValueWatcher<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
-        {
-            var fieldWrapper = GetField(field);
-            return new FieldValueWatcher(Driver, fieldWrapper);
-        }
-        
-        /// <summary>
-        /// Perform action and wait until value of given field will change
-        /// </summary>
-        /// <param name="field">Field which value should change after given action</param>
-        /// <param name="action">Action which should affect field value</param>
-        public void AffectValueWith<TFieldValue>(Expression<Func<TModel, TFieldValue>> field, Action action)
-        {
-            var fieldValueWatcher = this.GetFieldValueWatcher(field);
-            action();
-            fieldValueWatcher.WaitForValueChange();
-        }
-
-        private WebFormField GetField<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
-        {
-            var fieldName = GetFieldName(field);
             return new WebFormField(WebElement, fieldName, SupportedInputs, Driver);
         }
-    }
-
-    public enum AfterFieldValueSet
-    {
-        Nothing=1,
-        Blur,
-        MoveNext,
     }
 }

@@ -132,12 +132,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WebPages\WebForms\FieldNotFoundException.cs" />
-    <Compile Include="WebPages\WebForms\WebForm.cs">
+    <Compile Include="WebPages\WebForms\MvcWebForm.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SeleniumUtils\SeleniumExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WebPages\WebForms\WebForm.cs" />
     <Compile Include="WebPages\WebForms\WebFormField.cs" />
     <Compile Include="WebPages\WebList.cs" />
   </ItemGroup>

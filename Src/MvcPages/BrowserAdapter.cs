@@ -103,10 +103,16 @@ namespace Tellurium.MvcPages
             browserAdapter.SaveScreenshot(config.ScreenshotsPath, screenshotName);
         }
 
-        public  WebForm<TModel> GetForm<TModel>(string formId)
+        public  MvcWebForm<TModel> GetForm<TModel>(string formId)
         {
             var formElement = this.Driver.GetElementById(formId);
-            return new WebForm<TModel>(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
+            return new MvcWebForm<TModel>(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
+        }
+
+        public WebForm GetForm(string formId)
+        {
+            var formElement = this.Driver.GetElementById(formId);
+            return new WebForm(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
         }
 
         public  void ClickOn(string elementId)
@@ -230,7 +236,14 @@ namespace Tellurium.MvcPages
         /// </summary>
         /// <typeparam name="TModel">Model connected with form</typeparam>
         /// <param name="formId">Id of expected form</param>
-        WebForm<TModel> GetForm<TModel>(string formId);
+        MvcWebForm<TModel> GetForm<TModel>(string formId);
+
+
+        /// <summary>
+        /// Return weakly typed adapter for web form with given id
+        /// </summary>
+        /// <param name="formId">Id of expected form</param>
+        WebForm GetForm(string formId);
 
         /// <summary>
         /// Refresh page
