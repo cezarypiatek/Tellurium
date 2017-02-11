@@ -7,7 +7,7 @@ using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.WebPages.WebForms;
 using Tellurium.MvcPages.WebPages.WebForms.DefaultInputAdapters;
 
-namespace Tellurium.MvcPages
+namespace Tellurium.MvcPages.Configuration
 {
     public class BrowserAdapterConfig
     {

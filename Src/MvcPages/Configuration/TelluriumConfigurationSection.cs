@@ -1,7 +1,7 @@
 using System.Configuration;
 using Tellurium.MvcPages.SeleniumUtils;
 
-namespace Tellurium.MvcPages
+namespace Tellurium.MvcPages.Configuration
 {
     public class TelluriumConfigurationSection: ConfigurationSection
     {

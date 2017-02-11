@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Tellurium.MvcPages;
 using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.MvcPages.BrowserCamera.Lens;
+using Tellurium.MvcPages.Configuration;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.Sample.Website.Controllers;
 using Tellurium.Sample.Website.Models;

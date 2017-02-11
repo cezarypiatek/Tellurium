@@ -9,6 +9,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.BrowserCamera;
+using Tellurium.MvcPages.Configuration;
 using Tellurium.MvcPages.EndpointCoverage;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;

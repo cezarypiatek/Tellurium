@@ -1,4 +1,4 @@
-namespace Tellurium.MvcPages
+namespace Tellurium.MvcPages.Configuration
 {
     public class BrowserDimensionsConfig
     {
