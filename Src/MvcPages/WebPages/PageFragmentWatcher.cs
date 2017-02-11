@@ -1,5 +1,9 @@
+using System;
+using System.Linq.Expressions;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.WebPages.WebForms;
 
 namespace Tellurium.MvcPages.WebPages
 {
@@ -35,7 +39,28 @@ __selenium_observers__ =  window.__selenium_observers__ || {};
 
         public void WaitForChange(int timeout = 30)
         {
-            driver.WaitUntil(timeout, d => (bool)driver.ExecuteScript("return window.__selenium_observers__ && window.__selenium_observers__[arguments[0]].occured;", containerId));
+            try
+            {
+                driver.WaitUntil(timeout,
+                    d =>
+                        (bool)
+                        driver.ExecuteScript(
+                            "return window.__selenium_observers__ && window.__selenium_observers__[arguments[0]].occured;",
+                            containerId));
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                throw new CannotObserveAnyChanges(containerId, ex);
+            }
+            
+        }
+    }
+
+    public class CannotObserveAnyChanges:ApplicationException
+    {
+        public CannotObserveAnyChanges(string containerId, Exception innerException)
+            :base($"No changes has been obverved for element with id '{containerId}'", innerException)
+        {
         }
     }
 }
