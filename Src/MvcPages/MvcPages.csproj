@@ -88,7 +88,6 @@
     <Compile Include="BrowserAdapterConfig.cs" />
     <Compile Include="BrowserCamera\BrowserCameraConfig.cs" />
     <Compile Include="BrowserCamera\BrowserCamera.cs" />
-    <Compile Include="BrowserCamera\DuplicatedScreenshotInSession.cs" />
     <Compile Include="BrowserCamera\FileSystemScreenshotStorage.cs" />
     <Compile Include="BrowserCamera\Lens\BrowserCameraLensFactory.cs" />
     <Compile Include="BrowserCamera\Lens\IBrowserCameraLens.cs" />
@@ -100,7 +99,6 @@
     <Compile Include="BrowserDimensionsConfig.cs" />
     <Compile Include="BrowserCamera\IBrowserCamera.cs" />
     <Compile Include="BrowserCamera\IScreenshotStorage.cs" />
-    <Compile Include="BrowserCamera\ScreenshotIdentity.cs" />
     <Compile Include="EndpointCoverage\EndpointCoverageReportGenerator.cs" />
     <Compile Include="MvcEndpointsHelper.cs" />
     <Compile Include="TelluriumConfigurationSection.cs" />

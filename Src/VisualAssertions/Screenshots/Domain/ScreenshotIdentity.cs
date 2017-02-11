@@ -1,4 +1,4 @@
-namespace Tellurium.MvcPages.BrowserCamera
+namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
     public class ScreenshotIdentity
     {
