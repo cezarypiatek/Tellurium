@@ -63,6 +63,7 @@ namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
                 .Replace("'", "|'")
                 .Replace("\r", "|r")
                 .Replace("\n", "|n")
+                .Replace("[", "|[")
                 .Replace("]", "|]");
         }
     }
