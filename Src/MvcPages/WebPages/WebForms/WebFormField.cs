@@ -10,7 +10,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
     public class WebFormField
     {
         private readonly IWebElement form;
-        private readonly string fieldName;
+        public string FieldName { get; }
         public IStableWebElement FieldElement { get; private set; }
         public IFormInputAdapter FieldAdapter { get; private set; }
 
@@ -22,7 +22,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         public WebFormField(IWebElement form, string fieldName, List<IFormInputAdapter> supportedImputAdapters, RemoteWebDriver driver)
         {
             this.form = form;
-            this.fieldName = fieldName;
+            this.FieldName = fieldName;
             this.supportedImputAdapters = supportedImputAdapters;
             this.driver = driver;
             BuildFieldAccessFacility();
@@ -40,7 +40,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
 
         private IStableWebElement GetFieldElement()
         {
-            return driver.FindStableWebElement(form, By.Name(fieldName), (int) InputSearchTimeout.TotalSeconds);
+            return driver.FindStableWebElement(form, By.Name(FieldName), (int) InputSearchTimeout.TotalSeconds);
         }
 
         public void SetValue(string value)

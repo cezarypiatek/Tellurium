@@ -1,4 +1,5 @@
 using System;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 
@@ -25,15 +26,30 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         public void WaitForValueChange()
         {
             var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            this.initialValue = waiter.Until(d =>
+            try
             {
-                var currentValue = this.field.GetValue();
-                if (this.initialValue != currentValue)
+                this.initialValue = waiter.Until(d =>
                 {
-                    return currentValue;
-                }
-                return null;
-            });
+                    var currentValue = this.field.GetValue();
+                    if (this.initialValue != currentValue)
+                    {
+                        return currentValue;
+                    }
+                    return null;
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                throw  new CannotObserveFieldValueChange(field.FieldName, initialValue, ex);
+            }
+        }
+    }
+
+    public class CannotObserveFieldValueChange:ApplicationException
+    {
+        public CannotObserveFieldValueChange(string fieldName, string startingValue, Exception innerException)
+            :base($"Value for field '{fieldName}' has not been changed. Initial values was '{startingValue}' and is still the same.", innerException)
+        {
         }
     }
 }
