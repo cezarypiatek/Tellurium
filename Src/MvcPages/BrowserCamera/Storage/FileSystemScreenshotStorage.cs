@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using Tellurium.MvcPages.Utils;
 
-namespace Tellurium.MvcPages.BrowserCamera
+namespace Tellurium.MvcPages.BrowserCamera.Storage
 {
     public class FileSystemScreenshotStorage : IScreenshotStorage
     {
@@ -14,7 +14,13 @@ namespace Tellurium.MvcPages.BrowserCamera
             this.screenshotDirectoryPath = screenshotDirectoryPath;
         }
 
-        public void Persist(byte[] image, string screenshotName)
+        public virtual void Persist(byte[] image, string screenshotName)
+        {
+            var screenshotPath = GetScreenshotPath(screenshotName);
+            image.ToBitmap().Save(screenshotPath, ImageFormat.Jpeg);
+        }
+
+        protected string GetScreenshotPath(string screenshotName)
         {
             if (string.IsNullOrWhiteSpace(screenshotDirectoryPath))
             {
@@ -23,12 +29,10 @@ namespace Tellurium.MvcPages.BrowserCamera
 
             if (string.IsNullOrWhiteSpace(screenshotName))
             {
-                throw new ArgumentException("Screenshot name cannot be empty", "screenshotName");
+                throw new ArgumentException("Screenshot name cannot be empty", nameof(screenshotName));
             }
-
-            var fileName = string.Format("{0}.jpg", screenshotName);
-            var screenshotPath = Path.Combine(screenshotDirectoryPath, fileName);
-            image.ToBitmap().Save(screenshotPath, ImageFormat.Jpeg);
+            var fileName = $"{screenshotName}.jpg";
+            return Path.Combine(screenshotDirectoryPath, fileName);
         }
     }
 }

@@ -9,6 +9,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.BrowserCamera;
+using Tellurium.MvcPages.BrowserCamera.Storage;
 using Tellurium.MvcPages.Configuration;
 using Tellurium.MvcPages.EndpointCoverage;
 using Tellurium.MvcPages.SeleniumUtils;
@@ -28,7 +29,8 @@ namespace Tellurium.MvcPages
         private int NumberOfInputSetRetries { get; set; }
         private AfterFieldValueSet AfterFieldValueSetAction { get; set; }
         private IReadOnlyCollection<string> availableEndpoints = new List<string>();
-        public static IBrowserAdapter Create(BrowserAdapterConfig config)
+
+        public static BrowserAdapter Create(BrowserAdapterConfig config)
         {
             var browserAdapter = new BrowserAdapter();
             browserAdapter.Driver = SeleniumDriverFactory.CreateLocalDriver(config.BrowserType, config.SeleniumDriversPath);
@@ -48,7 +50,7 @@ namespace Tellurium.MvcPages
             return browserAdapter;
         }
 
-        public static void Execute(BrowserAdapterConfig config, Action<IBrowserAdapter> action)
+        public static void Execute(BrowserAdapterConfig config, Action<BrowserAdapter> action)
         {
             using (var browserAdapter = Create(config))
             {
@@ -58,7 +60,7 @@ namespace Tellurium.MvcPages
                 }
                 catch (Exception)
                 {
-                    SaveErrorScreenshot(browserAdapter, config);
+                    browserAdapter.SaveErrorScreenshot(config);
                     throw;
                 }
             }
@@ -98,17 +100,23 @@ namespace Tellurium.MvcPages
 
         public void SaveScreenshot(string directoryPath, string screenshotName, bool addBrowserPrefix=true)
         {
+            var storage = new FileSystemScreenshotStorage(directoryPath);
+            PersistScreenshot(storage, screenshotName, addBrowserPrefix);
+        }
+
+        private void PersistScreenshot(IScreenshotStorage storage, string screenshotName, bool addBrowserPrefix = true)
+        {
             var screenshotRawData = browserCamera.TakeScreenshot();
             var fullScreenshotName = addBrowserPrefix ? $"{BrowserName}_{screenshotName}"
                 : screenshotName;
-            var screenshotStorage = new FileSystemScreenshotStorage(directoryPath);
-            screenshotStorage.Persist(screenshotRawData, fullScreenshotName);
+            storage.Persist(screenshotRawData, fullScreenshotName);
         }
 
-        private static void SaveErrorScreenshot(IBrowserAdapter browserAdapter, BrowserAdapterConfig config)
+        private  void SaveErrorScreenshot(BrowserAdapterConfig config)
         {
             string screenshotName = $"Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
-            browserAdapter.SaveScreenshot(config.ScreenshotsPath, screenshotName);
+            var storage = ScreenshotStorageFactory.CreateForErrorScreenshot(config);
+            this.PersistScreenshot(storage, screenshotName);
         }
 
         public  MvcWebForm<TModel> GetForm<TModel>(string formId)

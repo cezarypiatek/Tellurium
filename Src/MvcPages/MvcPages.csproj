@@ -85,17 +85,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrowserAdapter.cs" />
+    <Compile Include="BrowserCamera\Storage\CompositeScreenshotStorage.cs" />
+    <Compile Include="BrowserCamera\Storage\TeamCityScreenshotStorage.cs" />
     <Compile Include="Configuration\BrowserAdapterConfig.cs" />
     <Compile Include="BrowserCamera\BrowserCameraConfig.cs" />
     <Compile Include="BrowserCamera\BrowserCamera.cs" />
-    <Compile Include="BrowserCamera\FileSystemScreenshotStorage.cs" />
+    <Compile Include="BrowserCamera\Storage\FileSystemScreenshotStorage.cs" />
     <Compile Include="BrowserCamera\Lens\BrowserCameraLensFactory.cs" />
     <Compile Include="BrowserCamera\Lens\IBrowserCameraLens.cs" />
     <Compile Include="BrowserCamera\Lens\RegularLens.cs" />
     <Compile Include="BrowserCamera\Lens\ResizeableLens.cs" />
     <Compile Include="BrowserCamera\Lens\ScrollableLens.cs" />
     <Compile Include="BrowserCamera\Lens\ZoomableLens.cs" />
-    <Compile Include="BrowserCamera\ScreenshotStorageFactory.cs" />
+    <Compile Include="BrowserCamera\Storage\ScreenshotStorageFactory.cs" />
     <Compile Include="Configuration\BrowserDimensionsConfig.cs" />
     <Compile Include="BrowserCamera\IBrowserCamera.cs" />
     <Compile Include="BrowserCamera\IScreenshotStorage.cs" />
