@@ -38,13 +38,13 @@ namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
         private string GetDetailsMessage(TestSession session, BrowserPattern pattern)
         {
             var testResultPreviewPath = GetTestResultPreviewPath(session, pattern);
-            var detailsMessage = string.Format("Screenshots are different. Details at {0}", testResultPreviewPath);
-            return detailsMessage;
+            var detailsInfo = string.IsNullOrWhiteSpace(testResultPreviewPath)? "": $"Details at {testResultPreviewPath}";
+            return $"Screenshots are different. {detailsInfo}";
         }
 
         private string GetVisualAssertionWebPath()
         {
-            return Environment.GetEnvironmentVariable(VisualAssertionWebPathVariableName);
+            return Environment.GetEnvironmentVariable(VisualAssertionWebPathVariableName)?.TrimEnd('/');
         }
 
         private string GetTestResultPreviewPath(TestSession session, BrowserPattern pattern)
@@ -54,7 +54,7 @@ namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
             {
                 return string.Empty;
             }
-            return string.Format("{0}/Home/GetTestResultPreview?testSessionId={1}&patternId={2}", rootPath.TrimEnd('/'), session.Id, pattern.Id);
+            return $"{rootPath}/Home/GetTestResultPreview?testSessionId={session.Id}&patternId={pattern.Id}";
         }
 
         static string Escape(string value)
