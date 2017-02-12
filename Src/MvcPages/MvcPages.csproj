@@ -86,7 +86,9 @@
   <ItemGroup>
     <Compile Include="BrowserAdapter.cs" />
     <Compile Include="BrowserCamera\Storage\CompositeScreenshotStorage.cs" />
-    <Compile Include="BrowserCamera\Storage\TeamCityScreenshotStorage.cs" />
+    <Compile Include="Utils\TeamCityHelpers.cs" />
+    <Compile Include="Reports\ErrorReport\TelluriumErrorReportBuilder.cs" />
+    <Compile Include="Reports\ErrorReport\TelluriumErrorReportScreenshotStorage.cs" />
     <Compile Include="Configuration\BrowserAdapterConfig.cs" />
     <Compile Include="BrowserCamera\BrowserCameraConfig.cs" />
     <Compile Include="BrowserCamera\BrowserCamera.cs" />

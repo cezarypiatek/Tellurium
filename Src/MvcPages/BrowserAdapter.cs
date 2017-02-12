@@ -12,6 +12,7 @@ using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.MvcPages.BrowserCamera.Storage;
 using Tellurium.MvcPages.Configuration;
 using Tellurium.MvcPages.EndpointCoverage;
+using Tellurium.MvcPages.Reports.ErrorReport;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 using Tellurium.MvcPages.WebPages;
@@ -29,6 +30,7 @@ namespace Tellurium.MvcPages
         private int NumberOfInputSetRetries { get; set; }
         private AfterFieldValueSet AfterFieldValueSetAction { get; set; }
         private IReadOnlyCollection<string> availableEndpoints = new List<string>();
+        private TelluriumErrorReportBuilder errorReportBuilder;
 
         public static BrowserAdapter Create(BrowserAdapterConfig config)
         {
@@ -43,6 +45,7 @@ namespace Tellurium.MvcPages
             browserAdapter.NumberOfInputSetRetries = config.NumberOfInputSetRetries;
             browserAdapter.AfterFieldValueSetAction = config.AfterFieldValueSetAction;
             browserAdapter.availableEndpoints = config.GetAvailableEndpoints().ToList();
+            browserAdapter.errorReportBuilder = new TelluriumErrorReportBuilder(config.ErrorReportOutputDir);
             if (config.AnimationsDisabled)
             {
                 browserAdapter.navigator.PageReload += (sender, args) => browserAdapter.Driver.DisableAnimations();
@@ -58,9 +61,9 @@ namespace Tellurium.MvcPages
                 {
                     action(browserAdapter);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    browserAdapter.SaveErrorScreenshot(config);
+                    browserAdapter.ReportError(config, ex);
                     throw;
                 }
             }
@@ -101,22 +104,18 @@ namespace Tellurium.MvcPages
         public void SaveScreenshot(string directoryPath, string screenshotName, bool addBrowserPrefix=true)
         {
             var storage = new FileSystemScreenshotStorage(directoryPath);
-            PersistScreenshot(storage, screenshotName, addBrowserPrefix);
-        }
-
-        private void PersistScreenshot(IScreenshotStorage storage, string screenshotName, bool addBrowserPrefix = true)
-        {
             var screenshotRawData = browserCamera.TakeScreenshot();
-            var fullScreenshotName = addBrowserPrefix ? $"{BrowserName}_{screenshotName}"
-                : screenshotName;
+            var fullScreenshotName = addBrowserPrefix ? $"{BrowserName}_{screenshotName}" : screenshotName;
             storage.Persist(screenshotRawData, fullScreenshotName);
         }
 
-        private  void SaveErrorScreenshot(BrowserAdapterConfig config)
+        private  void ReportError(BrowserAdapterConfig config, Exception exception)
         {
-            string screenshotName = $"Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
+            string screenshotName = $"{BrowserName}_Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
+            var screenshotRawData = browserCamera.TakeScreenshot();
             var storage = ScreenshotStorageFactory.CreateForErrorScreenshot(config);
-            this.PersistScreenshot(storage, screenshotName);
+            storage?.Persist(screenshotRawData, screenshotName);
+            errorReportBuilder.ReportException(exception, screenshotRawData, screenshotName);
         }
 
         public  MvcWebForm<TModel> GetForm<TModel>(string formId)

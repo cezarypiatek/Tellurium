@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -195,6 +196,33 @@ namespace Tellurium.Sample.UITests
                 browserAdapter.WrappedDriver.Manage().Logs.GetLog("browser");
                 Assert.DoesNotThrow(()=> registerForm.ClickOnElementWithText("Register"));
             }
+        }
+
+
+        [Test]
+        public void should_be_able_to_generate_error_report()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+            browserAdapterConfig.ErrorReportOutputDir = TestContext.CurrentContext.TestDirectory;
+
+            //Prepare infrastructure for test
+            Assert.Throws<Exception>(() =>
+            {
+                BrowserAdapter.Execute(browserAdapterConfig, browserAdapter =>
+                {
+                    //Test
+                    browserAdapter.NavigateTo<HomeController>(c => c.Index());
+
+
+                    browserAdapter.ReloadPageWith(() => browserAdapter.ClickOnElementWithText("Register"));
+
+                    var registerForm = browserAdapter.GetForm<RegisterViewModel>("RegisterForm");
+                    browserAdapter.WrappedDriver.Manage().Logs.GetLog("browser");
+                    Assert.DoesNotThrow(() => registerForm.ClickOnElementWithText("Register"));
+                    throw new Exception("Intentionaly thrown exception!!!");
+                });
+            });
         }
     }
 }

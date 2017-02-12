@@ -39,6 +39,8 @@ namespace Tellurium.MvcPages.Configuration
 
         public List<Assembly> AvailableEndpointsAssemblies { get; set; }
 
+        public string ErrorReportOutputDir { get; set; }
+
         public BrowserAdapterConfig()
         {
             InputAdapters = new List<IFormInputAdapter>
