@@ -19,7 +19,7 @@ namespace Tellurium.MvcPages.Configuration
 
         public string PageUrl { get; set; }
 
-        public string ScreenshotsPath { get; set; }
+        public string ErrorScreenshotsPath { get; set; }
 
         public  List<IFormInputAdapter> InputAdapters { get; set; }
 
@@ -69,7 +69,7 @@ namespace Tellurium.MvcPages.Configuration
             {
                 BrowserType = config.Browser,
                 SeleniumDriversPath = seleniumDriversPath,
-                ScreenshotsPath = config.ErrorScreenshotsPath,
+                ErrorScreenshotsPath = config.ErrorScreenshotsPath,
                 PageUrl = config.PageUrl,
                 AnimationsDisabled = config.AnimationsDisabled,
                 MeasureEndpointCoverage = config.MeasureEndpointCoverage

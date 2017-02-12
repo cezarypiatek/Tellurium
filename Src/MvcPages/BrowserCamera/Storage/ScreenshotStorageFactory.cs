@@ -17,8 +17,8 @@ namespace Tellurium.MvcPages.BrowserCamera.Storage
             if (TeamCityScreenshotStorage.IsAvailable())
                 yield return new TeamCityScreenshotStorage();
 
-            if (string.IsNullOrWhiteSpace(adapterConfig.ScreenshotsPath) == false)
-                yield return new FileSystemScreenshotStorage(adapterConfig.ScreenshotsPath);
+            if (string.IsNullOrWhiteSpace(adapterConfig.ErrorScreenshotsPath) == false)
+                yield return new FileSystemScreenshotStorage(adapterConfig.ErrorScreenshotsPath);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Tellurium.Sample.UITests
                 BrowserType = driverType,
                 SeleniumDriversPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"),
                 PageUrl = "http://localhost:51767",
-                ScreenshotsPath = @"c:\selenium\",
+                ErrorScreenshotsPath = @"c:\selenium\",
                 BrowserDimensions = new BrowserDimensionsConfig
                 {
                     Width = 1200,
