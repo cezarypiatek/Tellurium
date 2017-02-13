@@ -12,7 +12,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
         public virtual IList<BrowserPattern> Patterns { get; set; }
         public virtual Project Project { get; set; }
 
-        public virtual void AddNewPattern(byte[] screenshot, string browserName, IList<BlindRegion> blindRegions =null)
+        public virtual BrowserPattern AddNewPattern(byte[] screenshot, string browserName, IList<BlindRegion> blindRegions =null)
         {
             var ownBlindRegions = blindRegions ?? new List<BlindRegion>();
             var inheritedBlindRegions = this.Category.GetAllBlindRegionsForBrowser(browserName);
@@ -31,6 +31,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
                 TestCase = this
             };
             this.Patterns.Add(newPattern);
+            return newPattern;
         }
 
         public virtual BrowserPattern GetActivePatternForBrowser(string browserName)

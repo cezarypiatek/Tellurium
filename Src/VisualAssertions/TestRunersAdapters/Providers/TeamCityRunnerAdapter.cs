@@ -1,24 +1,26 @@
 ﻿using System;
+using System.IO;
 using Tellurium.MvcPages.Utils;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 
 namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
 {
-    public class TeamCityRunnerAdapter : ITestRunnerAdapter
+    internal class TeamCityRunnerAdapter : ITestRunnerAdapter
     {
         private const string TeamcityVariableName = "TEAMCITY_PROJECT_NAME";
-        private const string VisualAssertionWebPathVariableName = "Tellurium_VisualAssertions_Web";
+        public const string VisualAssertionWebPathVariableName = "Tellurium_VisualAssertions_Web";
 
         public bool IsPresent()
         {
             return Environment.GetEnvironmentVariable(TeamcityVariableName) != null;
         }
 
-        public void NotifyAboutTestSuccess(string testName)
+        public void NotifyAboutTestSuccess(string testName, TestSession session, BrowserPattern pattern)
         {
             var escapedTestName = Escape(testName);
             Console.WriteLine("##teamcity[testStarted name='{0}']", escapedTestName);
             Console.WriteLine("##teamcity[testFinished name='{0}']", escapedTestName);
+            UploadReportTabToCI(session, pattern.BrowserName);
         }
 
         public void NotifyAboutTestFail(string testName, TestSession session, BrowserPattern pattern)
@@ -28,6 +30,7 @@ namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
             Console.WriteLine("##teamcity[testStarted name='{0}']", escapedTestName);
             Console.WriteLine("##teamcity[testFailed name='{0}' details='{1}']", escapedTestName, detailsMessage);
             Console.WriteLine("##teamcity[testFinished name='{0}']", escapedTestName);
+            UploadReportTabToCI(session, pattern.BrowserName);
         }
 
         public void NotifyAboutError(Exception ex)
@@ -65,6 +68,39 @@ namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
                 .Replace("\n", "|n")
                 .Replace("[", "|[")
                 .Replace("]", "|]");
+        }
+
+
+        private static bool reportUploaded = false;
+
+        private void UploadReportTabToCI(TestSession session, string browserName)
+        {
+            if (TeamCityHelpers.IsAvailable() == false)
+            {
+                return;
+            }
+
+            if (reportUploaded)
+            {
+                return;
+            }
+            var visaulAssertionsDashboardUrl = TeamCityHelpers.GetTeamcityVariable(VisualAssertionWebPathVariableName);
+            if (string.IsNullOrWhiteSpace(visaulAssertionsDashboardUrl))
+            {
+                return;
+            }
+
+            var reportContent = $@"<html>
+<head>
+<script>
+window.location = ""{visaulAssertionsDashboardUrl}/Home/GetTestsFromSessionSession?sessionId={session.Id}&browserName={browserName}"";
+</script>
+</head><body></body>
+</html> ";
+
+            File.WriteAllText("VisualAssertions.html", reportContent);
+            TeamCityHelpers.UploadFileAsArtifact("VisualAssertions.html");
+            reportUploaded = true;
         }
     }
 }

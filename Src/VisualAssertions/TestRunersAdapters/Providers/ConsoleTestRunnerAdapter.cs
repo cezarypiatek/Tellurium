@@ -11,7 +11,7 @@ namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
             return true;
         }
 
-        public void NotifyAboutTestSuccess(string testName)
+        public void NotifyAboutTestSuccess(string testName, TestSession session, BrowserPattern pattern)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Test passed: {0}", testName);

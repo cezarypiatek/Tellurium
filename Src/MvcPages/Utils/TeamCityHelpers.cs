@@ -20,7 +20,7 @@ namespace Tellurium.MvcPages.Utils
             return GetTeamcityVariable(TeamcityProjectName) != null;
         }
 
-        private static string GetTeamcityVariable(string variableName)
+        public static string GetTeamcityVariable(string variableName)
         {
             return Environment.GetEnvironmentVariable(variableName);
         }

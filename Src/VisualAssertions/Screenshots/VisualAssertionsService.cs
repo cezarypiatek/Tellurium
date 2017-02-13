@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.VisualAssertions.Infrastructure;
@@ -7,6 +8,8 @@ using Tellurium.VisualAssertions.Infrastructure.Persistence;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 using Tellurium.VisualAssertions.Screenshots.Queries;
 using Tellurium.VisualAssertions.TestRunersAdapters;
+using Tellurium.MvcPages.Utils;
+using Tellurium.VisualAssertions.TestRunersAdapters.Providers;
 
 namespace Tellurium.VisualAssertions.Screenshots
 {
@@ -66,21 +69,22 @@ namespace Tellurium.VisualAssertions.Screenshots
                     var project = this.GetProject(screenshotIdentity.ProjectName);
                     var testCase = GetTestCase(project, screenshotIdentity);
                     var browserPattern = testCase.GetActivePatternForBrowser(screenshotIdentity.BrowserName);
+                    var testSession = GetCurrentTestSession(project);
+
                     if (browserPattern == null)
                     {
-                        testCase.AddNewPattern(image, screenshotIdentity.BrowserName);
-                        finishNotification = () => testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName);
+                        var newPattern = testCase.AddNewPattern(image, screenshotIdentity.BrowserName);
+                        finishNotification = () => testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, newPattern);
                     }
                     else
                     {
-                        var testSession = GetCurrentTestSession(project);
                         var testResult = GetTestResult(image, screenshotIdentity, browserPattern);
                         testSession.AddTestResult(testResult);
                         finishNotification = () =>
                         {
                             if (testResult.TestPassed)
                             {
-                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName);
+                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, browserPattern);
                             }
                             else
                             {
