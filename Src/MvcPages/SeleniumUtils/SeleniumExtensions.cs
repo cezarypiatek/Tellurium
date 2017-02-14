@@ -22,12 +22,23 @@ namespace Tellurium.MvcPages.SeleniumUtils
         public static void Blur(this RemoteWebDriver driver)
         {
             driver.SwitchTo().DefaultContent();
-            if (IsThereElementWithFocus(driver))
+            RetryHelper.Retry(3, () =>
             {
+                ExecuteBlur(driver);
                 Thread.Sleep(500);
-                driver.ExecuteScript("var f= document.querySelector(':focus'); if(f!=undefined){f.blur()}");
-                Thread.Sleep(500);
-            }
+                return IsThereElementWithFocus(driver) == false;
+            });
+        }
+
+        private static void ExecuteBlur(RemoteWebDriver driver)
+        {
+            driver.ExecuteScript(
+                @"(function(){
+                        var f= document.querySelector(':focus'); 
+                        if(f!=undefined){
+                            f.blur();
+                        }
+                       })();");
         }
 
         /// <summary>
@@ -129,15 +140,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         [Pure]
         private static bool IsThereElementWithFocus(RemoteWebDriver driver)
         {
-            try
-            {
-                driver.FindElementByCssSelector(":focus");
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
+            return (bool) driver.ExecuteScript("return document.querySelector(':focus')!=undefined;");
         }
 
         /// <summary>
