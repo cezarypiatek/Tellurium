@@ -41,12 +41,28 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
 
         private void CreateReportIfNotExists()
         {
-            if (File.Exists(ReportFilePath) == false || reportInitizlized == false)
+            if (ShouldCreateReportFile())
             {
                 File.WriteAllText(ReportFilePath, $"<html><head></head><body><style>img{{width:100%}}</style>{ImagePlaceholder}</body></html>");
                 Console.WriteLine($"Report created at: {ReportFilePath}");
                 reportInitizlized = true;
+                if (TeamCityHelpers.IsAvailable())
+                {
+                    TeamCityHelpers.SetTeamcityEnvironmentVariable(TeamCityTelluriumReportVariableName, "true");
+                }
+                
             }
+        }
+
+        private const string TeamCityTelluriumReportVariableName = "TelluriumReportCreated";
+
+        private bool ShouldCreateReportFile()
+        {
+            if (TeamCityHelpers.IsAvailable() && TeamCityHelpers.GetTeamcityVariable(TeamCityTelluriumReportVariableName) != "true")
+            {
+                return false;
+            }
+            return File.Exists(ReportFilePath) == false || reportInitizlized == false;
         }
     }
 }
