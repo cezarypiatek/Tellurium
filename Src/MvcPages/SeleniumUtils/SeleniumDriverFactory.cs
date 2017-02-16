@@ -8,11 +8,21 @@ using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.PhantomJS;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Safari;
+using Tellurium.MvcPages.Configuration;
 
 namespace Tellurium.MvcPages.SeleniumUtils
 {
     public static class SeleniumDriverFactory
     {
+        public static RemoteWebDriver CreateDriver(BrowserAdapterConfig config)
+        {
+            if (config.UseRemoteDriver)
+            {
+                return CreateRemoteDriver(config.BrowserType, config.SeleniumServerUrl);
+            }
+            return CreateLocalDriver(config.BrowserType, config.SeleniumDriversPath);
+        }
+
         public static RemoteWebDriver CreateLocalDriver(BrowserType driverType, string driversPath)
         {
             switch (driverType)
@@ -39,6 +49,10 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         public static RemoteWebDriver CreateRemoteDriver(BrowserType driverType, string seleniumServerUrl)
         {
+            if (string.IsNullOrWhiteSpace(seleniumServerUrl))
+            {
+                throw new ArgumentException("For remote driver selenium server url is required.");
+            }
             var browserCapabilities = GetBrowserCapabilities(driverType);
             return new RemoteWebDriver(new Uri(seleniumServerUrl), browserCapabilities);
         }

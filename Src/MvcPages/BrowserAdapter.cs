@@ -35,7 +35,7 @@ namespace Tellurium.MvcPages
         public static BrowserAdapter Create(BrowserAdapterConfig config)
         {
             var browserAdapter = new BrowserAdapter();
-            browserAdapter.Driver = SeleniumDriverFactory.CreateLocalDriver(config.BrowserType, config.SeleniumDriversPath);
+            browserAdapter.Driver = SeleniumDriverFactory.CreateDriver(config);
             var browserCameraConfig = config.BrowserCameraConfig ?? BrowserCameraConfig.CreateDefault();
             browserAdapter.browserCamera = BrowserCamera.BrowserCamera.CreateNew(browserAdapter.Driver, browserCameraConfig);
             browserAdapter.navigator = new Navigator(browserAdapter.Driver, config.PageUrl, config.MeasureEndpointCoverage);

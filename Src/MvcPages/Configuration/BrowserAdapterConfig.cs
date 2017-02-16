@@ -41,6 +41,10 @@ namespace Tellurium.MvcPages.Configuration
 
         public string ErrorReportOutputDir { get; set; }
 
+        public bool UseRemoteDriver { get; set; }
+
+        public string SeleniumServerUrl { get; set; }
+
         public BrowserAdapterConfig()
         {
             InputAdapters = new List<IFormInputAdapter>
@@ -74,7 +78,9 @@ namespace Tellurium.MvcPages.Configuration
                 ErrorScreenshotsPath = config.ErrorScreenshotsPath,
                 PageUrl = config.PageUrl,
                 AnimationsDisabled = config.AnimationsDisabled,
-                MeasureEndpointCoverage = config.MeasureEndpointCoverage
+                MeasureEndpointCoverage = config.MeasureEndpointCoverage,
+                UseRemoteDriver =  config.UseRemoteDriver,
+                SeleniumServerUrl = config.SeleniumServerUrl
             };
         }
 

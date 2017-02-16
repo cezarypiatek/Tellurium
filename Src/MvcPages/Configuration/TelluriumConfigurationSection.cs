@@ -12,6 +12,8 @@ namespace Tellurium.MvcPages.Configuration
         private const string ErrorScreenshotsPathKey = "errorScreenshotsPath";
         private const string AnimationsDisabledKey = "animationsDisabled";
         private const string MeasureEndpointCoverageKey = "measureEndpointCoverage";
+        private const string UseRemoteDriverKey = "useRemoteDriver";
+        private const string SeleniumServerUrlKey = "seleniumServerUrl";
 
         [ConfigurationProperty(BrowserKey, DefaultValue = BrowserType.Firefox, IsRequired = false)]
         public BrowserType Browser
@@ -53,6 +55,20 @@ namespace Tellurium.MvcPages.Configuration
         {
             get { return (bool)this[MeasureEndpointCoverageKey]; }
             set { this[MeasureEndpointCoverageKey] = value; }
+        }
+
+        [ConfigurationProperty(UseRemoteDriverKey, DefaultValue = false, IsRequired = false)]
+        public bool UseRemoteDriver
+        {
+            get { return (bool)this[UseRemoteDriverKey]; }
+            set { this[UseRemoteDriverKey] = value; }
+        }
+
+        [ConfigurationProperty(SeleniumServerUrlKey, DefaultValue = null, IsRequired = false)]
+        public string SeleniumServerUrl
+        {
+            get { return this[SeleniumServerUrlKey] as string; }
+            set { this[SeleniumServerUrlKey] = value; }
         }
     }
 }
