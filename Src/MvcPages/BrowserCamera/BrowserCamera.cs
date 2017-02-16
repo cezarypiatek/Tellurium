@@ -25,7 +25,6 @@ namespace Tellurium.MvcPages.BrowserCamera
         {
             try
             {
-                throw new Exception();
                 driver.Blur();
                 var currentActiveElement = driver.GetActiveElement();
                 MoveMouseOffTheScreen();
