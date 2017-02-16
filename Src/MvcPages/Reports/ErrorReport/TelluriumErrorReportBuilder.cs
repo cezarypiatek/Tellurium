@@ -23,6 +23,11 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
             AppendImageToReport(imgPath, $"{exception.Message}\r\n{exception.StackTrace}");
         }
 
+        public void ReportException(Exception exception)
+        {
+            AppendImageToReport("", $"{exception.Message}\r\n{exception.StackTrace}");
+        }
+
         private void AppendImageToReport(string imagePath, string description)
         {
             CreateReportIfNotExists();
@@ -43,7 +48,7 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
         {
             if (ShouldCreateReportFile())
             {
-                File.WriteAllText(ReportFilePath, $"<html><head></head><body><style>img{{width:100%}}</style>{ImagePlaceholder}</body></html>");
+                File.WriteAllText(ReportFilePath, $"<html><head></head><body><style>img{{max-width:100%}}</style>{ImagePlaceholder}</body></html>");
                 Console.WriteLine($"Report created at: {ReportFilePath}");
                 reportInitizlized = true;
                 if (TeamCityHelpers.IsAvailable())

@@ -15,6 +15,7 @@ using Tellurium.MvcPages.EndpointCoverage;
 using Tellurium.MvcPages.Reports.ErrorReport;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
+using Tellurium.MvcPages.Utils;
 using Tellurium.MvcPages.WebPages;
 using Tellurium.MvcPages.WebPages.WebForms;
 
@@ -112,10 +113,17 @@ namespace Tellurium.MvcPages
         private  void ReportError(BrowserAdapterConfig config, Exception exception)
         {
             string screenshotName = $"{BrowserName}_Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
-            var screenshotRawData = browserCamera.TakeScreenshot();
+            var screenshotRawData = ExceptionHelper.SwallowException(()=> browserCamera.TakeScreenshot(), null) ;
             var storage = ScreenshotStorageFactory.CreateForErrorScreenshot(config);
-            storage?.Persist(screenshotRawData, screenshotName);
-            errorReportBuilder.ReportException(exception, screenshotRawData, screenshotName);
+            if (screenshotRawData != null)
+            {
+                storage?.Persist(screenshotRawData, screenshotName);
+                errorReportBuilder.ReportException(exception, screenshotRawData, screenshotName);
+            }
+            else
+            {
+                errorReportBuilder.ReportException(exception);
+            }
         }
 
         public  MvcWebForm<TModel> GetForm<TModel>(string formId)

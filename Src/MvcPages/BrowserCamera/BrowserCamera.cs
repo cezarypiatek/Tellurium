@@ -25,11 +25,12 @@ namespace Tellurium.MvcPages.BrowserCamera
         {
             try
             {
+                throw new Exception();
                 driver.Blur();
                 var currentActiveElement = driver.GetActiveElement();
                 MoveMouseOffTheScreen();
                 var screenshot = this.lens.TakeScreenshot();
-                if (currentActiveElement.TagName != "body")
+                if (currentActiveElement != null && currentActiveElement.TagName != "body")
                 {
                     driver.HoverOn(currentActiveElement);
                 }

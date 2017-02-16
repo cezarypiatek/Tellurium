@@ -14,5 +14,17 @@ namespace Tellurium.MvcPages.Utils
             var innerExceptionMessage = exception.InnerException.GetFullExceptionMessage();
             return $"{exception.Message}\r\n{innerExceptionMessage}".Trim();
         }
+
+        public static T SwallowException<T>(Func<T> func, T defaultValue)
+        {
+            try
+            {
+                return func();
+            }
+            catch
+            {
+                return defaultValue;
+            }
+        }
     }
 }
