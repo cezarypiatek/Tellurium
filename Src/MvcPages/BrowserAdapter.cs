@@ -185,21 +185,33 @@ namespace Tellurium.MvcPages
 
         public void ReloadPageWith(Action action)
         {
-            Driver.ExecuteScript("window.__selenium_visited__ = true;");
+            MarkPageAsVisited();
             navigator.OnBeforePageReload();
             action();
             try
             {
-                Driver.WaitUntil(SeleniumExtensions.PageLoadTimeout,
-                    driver =>
-                        Driver.IsPageLoaded() &&
-                        (bool) Driver.ExecuteScript("return  window.__selenium_visited__ === undefined;"));
+                Driver.WaitUntil(SeleniumExtensions.PageLoadTimeout, driver => ExceptionHelper.SwallowException(IsNewlyLoadedPage, false));
                 navigator.OnPageReload();
             }
             catch (WebDriverTimeoutException)
             {
                 throw new CannotReloadPageWithException();
             }
+        }
+
+        private bool IsNewlyLoadedPage()
+        {
+            return Driver.IsPageLoaded() && HasVisitedPageMark() == false;
+        }
+
+        private bool HasVisitedPageMark()
+        {
+            return (bool) Driver.ExecuteScript("return window.__selenium_visited__ === true;");
+        }
+
+        private void MarkPageAsVisited()
+        {
+            Driver.ExecuteScript("window.__selenium_visited__ = true;");
         }
 
         public void DisableAnimations()
