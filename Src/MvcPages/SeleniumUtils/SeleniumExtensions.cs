@@ -321,7 +321,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         internal static bool IsPageLoaded(this RemoteWebDriver driver)
         {
-            return (bool)driver.ExecuteScript(@"return document.readyState == 'complete';");
+            return (bool)driver.ExecuteScript(@"return document && document.readyState == 'complete';");
         }
 
         internal static void WaitUntilPageLoad(this RemoteWebDriver driver)
