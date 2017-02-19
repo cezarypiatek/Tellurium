@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.EndpointCoverage;
 
 namespace Tellurium.MvcPages.WebPages
 {
@@ -15,11 +16,10 @@ namespace Tellurium.MvcPages.WebPages
         void OnPageReload();
         void RefreshPage();
         event EventHandler<PageReloadEventArgs> PageReload;
-        IReadOnlyCollection<string> GetAllRequestedEndpoints();
         void OnBeforePageReload();
     }
 
-    public class Navigator : INavigator
+    public class Navigator : INavigator, IEndpointCollector
     {
         private readonly RemoteWebDriver driver;
         private readonly string rootUrl;

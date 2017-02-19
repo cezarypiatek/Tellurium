@@ -86,6 +86,11 @@
   <ItemGroup>
     <Compile Include="BrowserAdapter.cs" />
     <Compile Include="BrowserCamera\Storage\CompositeScreenshotStorage.cs" />
+    <Compile Include="EndpointCoverage\EndpointExplorers\AspMvcEndpointExplorer.cs" />
+    <Compile Include="EndpointCoverage\EndpointExplorers\CompositeEndpointExplorer.cs" />
+    <Compile Include="EndpointCoverage\EndpointCoverageReportBuilderFactory.cs" />
+    <Compile Include="EndpointCoverage\EndpointExplorers\EndpointExplorerFactory.cs" />
+    <Compile Include="EndpointCoverage\EndpointExplorers\ExplicitEndpointExplorer.cs" />
     <Compile Include="Utils\TeamCityHelpers.cs" />
     <Compile Include="Reports\ErrorReport\TelluriumErrorReportBuilder.cs" />
     <Compile Include="Reports\ErrorReport\TelluriumErrorReportScreenshotStorage.cs" />
@@ -103,7 +108,7 @@
     <Compile Include="Configuration\BrowserDimensionsConfig.cs" />
     <Compile Include="BrowserCamera\IBrowserCamera.cs" />
     <Compile Include="BrowserCamera\IScreenshotStorage.cs" />
-    <Compile Include="EndpointCoverage\EndpointCoverageReportGenerator.cs" />
+    <Compile Include="EndpointCoverage\EndpointCoverageReportBuilder.cs" />
     <Compile Include="MvcEndpointsHelper.cs" />
     <Compile Include="Configuration\TelluriumConfigurationSection.cs" />
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />

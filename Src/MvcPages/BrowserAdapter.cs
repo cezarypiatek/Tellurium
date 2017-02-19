@@ -30,8 +30,8 @@ namespace Tellurium.MvcPages
         private string BrowserName { get; set; }
         private int NumberOfInputSetRetries { get; set; }
         private AfterFieldValueSet AfterFieldValueSetAction { get; set; }
-        private IReadOnlyCollection<string> availableEndpoints = new List<string>();
         private TelluriumErrorReportBuilder errorReportBuilder;
+        private EndpointCoverageReportBuilder endpointCoverageReportBuilder;
 
         public static BrowserAdapter Create(BrowserAdapterConfig config)
         {
@@ -39,14 +39,15 @@ namespace Tellurium.MvcPages
             browserAdapter.Driver = SeleniumDriverFactory.CreateDriver(config);
             var browserCameraConfig = config.BrowserCameraConfig ?? BrowserCameraConfig.CreateDefault();
             browserAdapter.browserCamera = BrowserCamera.BrowserCamera.CreateNew(browserAdapter.Driver, browserCameraConfig);
-            browserAdapter.navigator = new Navigator(browserAdapter.Driver, config.PageUrl, config.MeasureEndpointCoverage);
+            var navigator = new Navigator(browserAdapter.Driver, config.PageUrl, config.MeasureEndpointCoverage);
+            browserAdapter.navigator = navigator;
             browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
             browserAdapter.SetupBrowserDimensions(config.BrowserDimensions);
             browserAdapter.BrowserName = config.BrowserType.ToString();
             browserAdapter.NumberOfInputSetRetries = config.NumberOfInputSetRetries;
             browserAdapter.AfterFieldValueSetAction = config.AfterFieldValueSetAction;
-            browserAdapter.availableEndpoints = config.GetAvailableEndpoints().ToList();
             browserAdapter.errorReportBuilder = new TelluriumErrorReportBuilder(config.ErrorReportOutputDir);
+            browserAdapter.endpointCoverageReportBuilder = EndpointCoverageReportBuilderFactory.Create(config, navigator);
             if (config.AnimationsDisabled)
             {
                 browserAdapter.navigator.PageReload += (sender, args) => browserAdapter.Driver.DisableAnimations();
@@ -226,8 +227,7 @@ namespace Tellurium.MvcPages
 
         public void Dispose()
         {
-            var visitedEndpoints = this.navigator.GetAllRequestedEndpoints();
-            EndpointCoverageReportGenerator.GenerateEndpointCoverageReport(this.availableEndpoints, visitedEndpoints);
+            endpointCoverageReportBuilder?.GenerateEndpointCoverageReport();
             Driver.Close();
             Driver.Quit();
         }

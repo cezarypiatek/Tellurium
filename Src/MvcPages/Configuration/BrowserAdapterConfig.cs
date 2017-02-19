@@ -83,35 +83,5 @@ namespace Tellurium.MvcPages.Configuration
                 SeleniumServerUrl = config.SeleniumServerUrl
             };
         }
-
-        public IEnumerable<string> GetAvailableEndpoints()
-        {
-            if (this.AvailableEndpoints?.Count > 0)
-            {
-                foreach (var endpoint in AvailableEndpoints.AsReadOnly())
-                {
-                    yield return endpoint;
-                }
-            }
-
-            if (this.AvailableEndpointsAssemblies?.Count > 0 )
-            {
-                foreach (var endpoint in GetEndpintsFromAssemblies())
-                {
-                    yield return MvcEndpointsHelper.NormalizeEndpointAddress(endpoint);
-                }    
-            }
-        }
-
-        private IEnumerable<string> GetEndpintsFromAssemblies()
-        {
-            foreach (var endpointsAssembly in AvailableEndpointsAssemblies)
-            {
-                foreach (var endpoint in MvcEndpointsHelper.GetAvailablePagesFromAssembly(endpointsAssembly))
-                {
-                    yield return MvcEndpointsHelper.NormalizeEndpointAddress(endpoint);
-                }
-            }
-        }
     }
 }
