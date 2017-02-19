@@ -5,7 +5,6 @@ namespace Tellurium.MvcPages.Configuration
 {
     public class TelluriumConfigurationSection: ConfigurationSection
     {
-        private bool measureEndpointCoverage;
         private const string BrowserKey = "browser";
         private const string DriversKey = "driversPath";
         private const string PageUrlKey = "pageUrl";

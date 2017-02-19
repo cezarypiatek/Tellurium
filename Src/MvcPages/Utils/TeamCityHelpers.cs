@@ -27,7 +27,7 @@ namespace Tellurium.MvcPages.Utils
 
         public static void SetTeamcityEnvironmentVariable(string variableName, string value)
         {
-            Console.WriteLine($"##teamcity[buildStatisticValue key='env.{variableName}' value='{value}']");
+            Console.WriteLine($"##teamcity[setParameter name='env.{variableName}' value='{value}']");
         }
 
         private static string BuildNumber => GetTeamcityVariable(TeamcityBuilNumber);
