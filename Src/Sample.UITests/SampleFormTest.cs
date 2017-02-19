@@ -193,7 +193,7 @@ namespace Tellurium.Sample.UITests
                 browserAdapter.ReloadPageWith(()=> browserAdapter.ClickOnElementWithText("Register"));
 
                 var registerForm = browserAdapter.GetForm<RegisterViewModel>("RegisterForm");
-                browserAdapter.WrappedDriver.Manage().Logs.GetLog("browser");
+                registerForm.ClickOnElementWithText("Więcej");
                 Assert.DoesNotThrow(()=> registerForm.ClickOnElementWithText("Register"));
             }
         }
