@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -44,6 +45,8 @@ namespace Tellurium.MvcPages.Configuration
         public bool UseRemoteDriver { get; set; }
 
         public string SeleniumServerUrl { get; set; }
+
+        public Action<string> WriteOutput { get; set; }
 
         public BrowserAdapterConfig()
         {

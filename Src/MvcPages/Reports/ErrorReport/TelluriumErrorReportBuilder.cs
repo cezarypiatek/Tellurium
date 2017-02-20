@@ -1,24 +1,27 @@
 ﻿using System;
 using System.IO;
-using Tellurium.MvcPages.Utils;
 
 namespace Tellurium.MvcPages.Reports.ErrorReport
 {
     internal class TelluriumErrorReportBuilder
     {
         private readonly string reportOutputDir;
+        private readonly Action<string> writeOutput;
+        private readonly ICIAdapter ciAdapter;
         private const string ReportFileName = "TelluriumErrorReport.html";
         private const string ImagePlaceholder = "<!--Placeholder-->";
         private  string ReportFilePath => Path.Combine(reportOutputDir, ReportFileName);
 
-        public TelluriumErrorReportBuilder(string reportOutputDir=null)
+        public TelluriumErrorReportBuilder(string reportOutputDir, Action<string> writeOutput, ICIAdapter ciAdapter)
         {
-            this.reportOutputDir = string.IsNullOrWhiteSpace(reportOutputDir)? Environment.CurrentDirectory: reportOutputDir;
+            this.reportOutputDir = reportOutputDir;
+            this.writeOutput = writeOutput;
+            this.ciAdapter = ciAdapter;
         }
 
         public void ReportException(Exception exception, byte[] errorScreenShot, string screnshotName)
         {
-            var storage = new TelluriumErrorReportScreenshotStorage(reportOutputDir);
+            var storage = new TelluriumErrorReportScreenshotStorage(reportOutputDir, ciAdapter);
             var imgPath = storage.PersistErrorScreenshot(errorScreenShot, screnshotName);
             AppendImageToReport(imgPath, $"{exception.Message}\r\n{exception.StackTrace}");
         }
@@ -36,9 +39,9 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
                 $"<figure><image src=\"{imagePath}\"/><figcaption><pre>{description}</pre></figcaption></figure>";
             var newReportContent = reportContent.Replace(ImagePlaceholder, newEntry + ImagePlaceholder);
             File.WriteAllText(ReportFilePath, newReportContent);
-            if (TeamCityHelpers.IsAvailable())
+            if (ciAdapter.IsAvailable())
             {
-                TeamCityHelpers.UploadFileAsArtifact(ReportFilePath);
+                ciAdapter.UploadFileAsArtifact(ReportFilePath);
             }
         }
 
@@ -49,25 +52,33 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
             if (ShouldCreateReportFile())
             {
                 File.WriteAllText(ReportFilePath, $"<html><head></head><body><style>img{{max-width:100%}}</style>{ImagePlaceholder}</body></html>");
-                Console.WriteLine($"Report created at: {ReportFilePath}");
+                writeOutput($"Report created at: {ReportFilePath}");
                 reportInitizlized = true;
-                if (TeamCityHelpers.IsAvailable())
+                if (ciAdapter.IsAvailable())
                 {
-                    TeamCityHelpers.SetTeamcityEnvironmentVariable(TeamCityTelluriumReportVariableName, "true");
+                    ciAdapter.SetEnvironmentVariable(TelluriumReportVariableName, "true");
                 }
                 
             }
         }
 
-        private const string TeamCityTelluriumReportVariableName = "TelluriumReportCreated";
+        private const string TelluriumReportVariableName = "TelluriumReportCreated";
 
         private bool ShouldCreateReportFile()
         {
-            if (TeamCityHelpers.IsAvailable() && TeamCityHelpers.GetTeamcityVariable(TeamCityTelluriumReportVariableName) != "true")
+            if (ciAdapter.IsAvailable() && ciAdapter.GetEnvironmentVariable(TelluriumReportVariableName) != "true")
             {
                 return false;
             }
             return File.Exists(ReportFilePath) == false || reportInitizlized == false;
         }
+    }
+
+    internal interface ICIAdapter
+    {
+        bool IsAvailable();
+        void SetEnvironmentVariable(string name, string value);
+        string GetEnvironmentVariable(string name);
+        string UploadFileAsArtifact(string filePath);
     }
 }

@@ -91,7 +91,8 @@
     <Compile Include="EndpointCoverage\EndpointCoverageReportBuilderFactory.cs" />
     <Compile Include="EndpointCoverage\EndpointExplorers\EndpointExplorerFactory.cs" />
     <Compile Include="EndpointCoverage\EndpointExplorers\ExplicitEndpointExplorer.cs" />
-    <Compile Include="Utils\TeamCityHelpers.cs" />
+    <Compile Include="Reports\ErrorReport\TeamCityAdapter.cs" />
+    <Compile Include="Reports\ErrorReport\TelluriumErrorReportBuilderFactory.cs" />
     <Compile Include="Reports\ErrorReport\TelluriumErrorReportBuilder.cs" />
     <Compile Include="Reports\ErrorReport\TelluriumErrorReportScreenshotStorage.cs" />
     <Compile Include="Configuration\BrowserAdapterConfig.cs" />

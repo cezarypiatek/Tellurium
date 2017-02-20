@@ -46,7 +46,7 @@ namespace Tellurium.MvcPages
             browserAdapter.BrowserName = config.BrowserType.ToString();
             browserAdapter.NumberOfInputSetRetries = config.NumberOfInputSetRetries;
             browserAdapter.AfterFieldValueSetAction = config.AfterFieldValueSetAction;
-            browserAdapter.errorReportBuilder = new TelluriumErrorReportBuilder(config.ErrorReportOutputDir);
+            browserAdapter.errorReportBuilder = TelluriumErrorReportBuilderFactory.Create(config);
             browserAdapter.endpointCoverageReportBuilder = EndpointCoverageReportBuilderFactory.Create(config, navigator);
             if (config.AnimationsDisabled)
             {
