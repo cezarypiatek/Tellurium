@@ -16,7 +16,8 @@
     <dependencies>
 	  <dependency id="AForge.Imaging" version="2.2.5"/>	
 	  <dependency id="FluentNHibernate" version="2.0.3.0"/>
-	  <dependency id="Tellurium.MvcPages" version="$version$" />	 	  
+	  <dependency id="Tellurium.MvcPages" version="$version$" />
+	  <dependency id="TeamCity.ServiceMessages" version="3.0.5.1" />
     </dependencies>	
   </metadata>
   <files>

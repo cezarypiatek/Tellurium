@@ -1,4 +1,5 @@
-﻿using Tellurium.MvcPages.BrowserCamera;
+﻿using System;
+using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.VisualAssertions.Infrastructure.Persistence;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 using Tellurium.VisualAssertions.TestRunersAdapters;
@@ -11,7 +12,8 @@ namespace Tellurium.VisualAssertions.Screenshots
 
         public static void Init(VisualAssertionsConfig config)
         {
-            var testRunnerAdapter = TestRunnerAdapterFactory.CreateForCurrentEnvironment();
+            var testOutputWriter = config.TestOutputWriter ?? Console.WriteLine;
+            var testRunnerAdapter = TestRunnerAdapterFactory.CreateForCurrentEnvironment(testOutputWriter);
             var projectRepository = new Repository<Project>(PersistanceEngine.GetSessionContext());
             visualAssertionsService = new VisualAssertionsService(projectRepository,testRunnerAdapter)
             {

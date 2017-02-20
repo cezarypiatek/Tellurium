@@ -93,6 +93,7 @@ namespace Tellurium.Sample.UITests
                 BrowserName = browserAdapterConfig.BrowserType.ToString(),
                 ProjectName = "Sample Project",
                 ScreenshotCategory = "Sample Form",
+                TestOutputWriter = TestContext.Progress.WriteLine
             });
 
 
