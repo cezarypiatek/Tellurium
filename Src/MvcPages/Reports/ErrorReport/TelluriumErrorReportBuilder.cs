@@ -68,7 +68,7 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
         {
             if (ciAdapter.IsAvailable() && ciAdapter.GetEnvironmentVariable(TelluriumReportVariableName) != "true")
             {
-                return false;
+                return true;
             }
             return File.Exists(ReportFilePath) == false || reportInitizlized == false;
         }
