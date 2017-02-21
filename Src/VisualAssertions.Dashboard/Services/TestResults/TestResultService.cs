@@ -87,11 +87,15 @@ namespace Tellurium.VisualAssertions.Dashboard.Services.TestResults
 
         public TestResultListViewModel GetTestsFromSession(long sessionId, string browserName)
         {
-            var testSession = this.testSessionRepository.Get(sessionId);
-            var testResults = testSession.TestResults.Where(x => x.BrowserName == browserName).ToList();
+            var query = new FindTestResultsFromSession(sessionId, browserName, TestResultStatus.All);
+            var testResults = this.testRepository.FindAll(query);
+            var failedCount = testResults.Count(x => x.TestPassed == false);
             return new TestResultListViewModel()
             {
-                TestSessionId = testSession.Id,
+                AllCount = testResults.Count,
+                FailedCount = failedCount,
+                PassedCount = testResults.Count-failedCount,
+                TestSessionId = sessionId,
                 BrowserName = browserName,
                 TestResults = testResults.ConvertAll(MapToTestResultListItemDTO)
             };
@@ -154,6 +158,16 @@ namespace Tellurium.VisualAssertions.Dashboard.Services.TestResults
             var testResult = this.testRepository.FindOne(query);
             return MapToTestResultListItemDTO(testResult);
         }
+
+        public TestResultsInStatusViewModel GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatus status)
+        {
+            var query = new FindTestResultsFromSession(sessionId, browserName, status);
+            var testResults = this.testRepository.FindAll(query);
+            return new TestResultsInStatusViewModel()
+            {
+                TestResults = testResults.ConvertAll(MapToTestResultListItemDTO)
+            };
+        }
     }
 
     public interface ITestResultService
@@ -167,6 +181,7 @@ namespace Tellurium.VisualAssertions.Dashboard.Services.TestResults
         ProjectListViewModel GetProjectsList();
         TestResultDetailsViewModel GetTestResultDetails(long testResultId);
         TestResultListItemDTO GetTestResultPreview(long testSessionId, long patternId);
+        TestResultsInStatusViewModel GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatus status);
     }
 
     public enum ScreenshotType
@@ -182,11 +197,26 @@ namespace Tellurium.VisualAssertions.Dashboard.Services.TestResults
         public bool TestPassed { get; set; }
     }
 
+    public enum TestResultStatus
+    {
+        All,
+        Passed,
+        Failed
+    }
+
     public class TestResultListViewModel
     {
         public List<TestResultListItemDTO> TestResults { get; set; }
         public long TestSessionId { get; set; }
         public string BrowserName { get; set; }
+        public int AllCount { get; set; }
+        public int PassedCount { get; set; }
+        public int FailedCount { get; set; }
+    }
+
+    public class TestResultsInStatusViewModel
+    {
+        public List<TestResultListItemDTO> TestResults { get; set; }
     }
 
     public class TestResultListItemDTO

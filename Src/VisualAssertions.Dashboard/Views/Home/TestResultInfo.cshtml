@@ -10,16 +10,18 @@
 <div class="panel @rowClass test-row" id="@rowId">
     <div class="panel-heading ">
         <div class="row">
-            <div class="col-md-10 test-row-expander" @widget.GetAttributeString()>
+            <div class="col-md-9 test-row-expander" @widget.GetAttributeString()>
                 <span class="glyphicon glyphicon-menu-right"></span>
                 @Model.ScreenshotName
             </div>
-            <div class="col-md-2">
-                @(Html.ActionLink<TestCaseController>(c=>c.GetTestCase(Model.TestCaseId),"Edit pattern", new { @class = "btn btn-primary" }))
-                @if (Model.CanShowMarkAsPattern)
-                {
-                    @(Ajax.ChangeActionLink<HomeController>(c => c.MarkAsPattern(Model.TestResultId), "Mark as pattern", "Do you really want to mark this as pattern?", rowId, new {@class = "btn btn-primary"}))
-                }
+            <div class="col-md-3">
+                <div class="pull-right">
+                    @(Html.ActionLink<TestCaseController>(c => c.GetTestCase(Model.TestCaseId), "Edit pattern", new { @class = "btn btn-primary" }))
+                    @if (Model.CanShowMarkAsPattern)
+                    {
+                        @(Ajax.ChangeActionLink<HomeController>(c => c.MarkAsPattern(Model.TestResultId), "Mark as pattern", "Do you really want to mark this as pattern?", rowId, new { @class = "btn btn-primary" }))
+                    }    
+                </div>
             </div>
         </div>
     </div>

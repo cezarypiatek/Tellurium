@@ -33,6 +33,12 @@ namespace Tellurium.VisualAssertions.Dashboard.Controllers
             return View("TestResultList", tests);
         }
 
+        public ActionResult GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatus status)
+        {
+            var tests = this.testResultService.GetTestsFromSessionInStatus(sessionId, browserName, status);
+            return View("TestResultsInStatus", tests);
+        }
+
         public ActionResult GetTestResult(long testId)
         {
             var test = this.testResultService.GetTestResult(testId);

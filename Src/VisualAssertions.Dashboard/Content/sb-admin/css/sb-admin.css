@@ -225,3 +225,7 @@ ul.alert-dropdown {
 .panel-yellow > a:hover {
     color: #df8a13;
 }
+
+.top-offset {
+    margin-top: 20px;
+}
