@@ -56,19 +56,20 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
                 reportInitizlized = true;
                 if (ciAdapter.IsAvailable())
                 {
-                    ciAdapter.SetEnvironmentVariable(TelluriumReportVariableName, "true");
+                    ciAdapter.SetEnvironmentVariable(ReportVariableName, ReportyVariableVal);
                 }
                 
             }
         }
 
-        private const string TelluriumReportVariableName = "TelluriumReportCreated";
+        private const string ReportVariableName = "TelluriumReportCreated";
+        private const string ReportyVariableVal = "true";
 
         private bool ShouldCreateReportFile()
         {
-            if (ciAdapter.IsAvailable() && ciAdapter.GetEnvironmentVariable(TelluriumReportVariableName) != "true")
+            if (ciAdapter.IsAvailable() && ciAdapter.GetEnvironmentVariable(ReportVariableName) == ReportyVariableVal)
             {
-                return true;
+                return false;
             }
             return File.Exists(ReportFilePath) == false || reportInitizlized == false;
         }
