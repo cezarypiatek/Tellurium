@@ -199,6 +199,23 @@ namespace Tellurium.Sample.UITests
             }
         }
 
+        [Test]
+        public void should_be_able_to_detect_dom_changes()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+  
+            //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo<AccountController>(c => c.Register());
+
+                var form = browserAdapter.GetForm("RegisterForm");
+                Assert.DoesNotThrow(()=> browserAdapter.AffectElementWith("RegisterForm", () => form.ClickOnElementWithText("Register")));
+            }
+        }
+
 
         [Test]
         public void should_be_able_to_generate_error_report()

@@ -1,40 +1,38 @@
 using System;
-using System.Linq.Expressions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
-using Tellurium.MvcPages.WebPages.WebForms;
 
 namespace Tellurium.MvcPages.WebPages
 {
     public class PageFragmentWatcher
     {
         private readonly RemoteWebDriver driver;
-        private readonly string containerId;
-
-        public PageFragmentWatcher(RemoteWebDriver driver, string containerId)
+        private readonly IWebElement element;
+        private readonly string watcherId;
+        
+        public PageFragmentWatcher(RemoteWebDriver driver, IWebElement element)
         {
             this.driver = driver;
-            this.containerId = containerId;
+            this.element = element;
+            this.watcherId = Guid.NewGuid().ToString();
         }
 
         public void StartWatching()
         {
-            driver.ExecuteScript(@"var $$expectedId = arguments[0];
-__selenium_observers__ =  window.__selenium_observers__ || {};
-(function(){		
-		var target = document.getElementById($$expectedId);
-		__selenium_observers__[$$expectedId] = {
-				observer: new MutationObserver(function(mutations) {
-					__selenium_observers__[$$expectedId].occured = true;
-					__selenium_observers__[$$expectedId].observer.disconnect();
-				}),
-				occured:false
-		};
-		var config = { attributes: true, childList: true, characterData: true, subtree: true };
-
-		__selenium_observers__[$$expectedId].observer.observe(target, config);
-})();", containerId);
+            driver.ExecuteScript(@"
+(function(target, watcherId){
+        window.__selenium_observers__ =  window.__selenium_observers__ || {};
+        window.__selenium_observers__[watcherId] = {
+                observer: new MutationObserver(function(mutations) {
+                        window.__selenium_observers__[watcherId].occured = true;
+                        window.__selenium_observers__[watcherId].observer.disconnect();
+                }),
+                occured:false
+        };
+        var config = { attributes: true, childList: true, characterData: true, subtree: true };
+        window.__selenium_observers__[watcherId].observer.observe(target, config);
+})(arguments[0],arguments[1]);", element, watcherId);
         }
 
         public void WaitForChange(int timeout = 30)
@@ -46,11 +44,11 @@ __selenium_observers__ =  window.__selenium_observers__ || {};
                         (bool)
                         driver.ExecuteScript(
                             "return window.__selenium_observers__ && window.__selenium_observers__[arguments[0]].occured;",
-                            containerId));
+                            watcherId));
             }
             catch (WebDriverTimeoutException ex)
             {
-                throw new CannotObserveAnyChanges(containerId, ex);
+                throw new CannotObserveAnyChanges(element, ex);
             }
             
         }
@@ -58,9 +56,12 @@ __selenium_observers__ =  window.__selenium_observers__ || {};
 
     public class CannotObserveAnyChanges:ApplicationException
     {
-        public CannotObserveAnyChanges(string containerId, Exception innerException)
-            :base($"No changes has been obverved for element with id '{containerId}'", innerException)
+        public IWebElement ObservedElement { get; private set; }
+
+        public CannotObserveAnyChanges(IWebElement observedElement, Exception innerException)
+            :base($"No changes has been obverved for given element'", innerException)
         {
+            this.ObservedElement = observedElement;
         }
     }
 }
