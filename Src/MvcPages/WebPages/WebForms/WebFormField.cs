@@ -30,15 +30,15 @@ namespace Tellurium.MvcPages.WebPages.WebForms
 
         private IFormInputAdapter GetFieldAdapter(IWebElement fieldElement)
         {
-            var input = supportedImputAdapters.FirstOrDefault(x => x.CanHandle(fieldElement));
-            if (input == null)
+            var adpter = supportedImputAdapters.FirstOrDefault(x => x.CanHandle(fieldElement));
+            if (adpter == null)
             {
                 throw new NotSupportedException("Not supported form element");
             }
-            return input;
+            return adpter;
         }
 
-        private IStableWebElement GetFieldElement()
+        private IStableWebElement FindFieldElement()
         {
             return driver.FindStableWebElement(form, By.Name(FieldName), (int) InputSearchTimeout.TotalSeconds);
         }
@@ -53,11 +53,9 @@ namespace Tellurium.MvcPages.WebPages.WebForms
             return FieldAdapter.GetValue(FieldElement);
         }
 
-     
-
         private void BuildFieldAccessFacility()
         {
-            FieldElement = GetFieldElement();
+            FieldElement = FindFieldElement();
             FieldAdapter = GetFieldAdapter(FieldElement);
         }
     }

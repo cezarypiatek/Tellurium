@@ -31,7 +31,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         /// <param name="customAction">Action to perform after field value has been set</param>
         public void SetFieldValue(string fieldName, string value, AfterFieldValueSet? customAction = null)
         {
-            var fieldWrapper = GetFieldWrapper(fieldName);
+            var fieldWrapper = CreateFieldWrapper(fieldName);
 
             if (fieldWrapper.FieldAdapter.SupportSetRetry())
             {
@@ -60,13 +60,13 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         /// <param name="fieldName">Field name</param>
         public string GetFieldValue(string fieldName)
         {
-            var fieldWrapper = GetFieldWrapper(fieldName);
+            var fieldWrapper = CreateFieldWrapper(fieldName);
             return fieldWrapper.GetValue();
         }
 
         public FieldValueWatcher GetFieldValueWatcher(string fieldName)
         {
-            var fieldWrapper = GetFieldWrapper(fieldName);
+            var fieldWrapper = CreateFieldWrapper(fieldName);
             return new FieldValueWatcher(Driver, fieldWrapper);
         }
 
@@ -99,7 +99,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
             }
         }
 
-        private WebFormField GetFieldWrapper(string fieldName)
+        private WebFormField CreateFieldWrapper(string fieldName)
         {
             return new WebFormField(WebElement, fieldName, SupportedInputs, Driver);
         }
