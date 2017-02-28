@@ -25,6 +25,8 @@ namespace Tellurium.MvcPages
     {
         private RemoteWebDriver Driver { get; set; }
         private IBrowserCamera browserCamera;
+        private IBrowserCamera errorBrowserCamera;
+
         private INavigator navigator;
         private List<IFormInputAdapter> supportedInputsAdapters;
         private string BrowserName { get; set; }
@@ -32,13 +34,15 @@ namespace Tellurium.MvcPages
         private AfterFieldValueSet AfterFieldValueSetAction { get; set; }
         private TelluriumErrorReportBuilder errorReportBuilder;
         private EndpointCoverageReportBuilder endpointCoverageReportBuilder;
+        
 
         public static BrowserAdapter Create(BrowserAdapterConfig config)
         {
             var browserAdapter = new BrowserAdapter();
             browserAdapter.Driver = SeleniumDriverFactory.CreateDriver(config);
             var browserCameraConfig = config.BrowserCameraConfig ?? BrowserCameraConfig.CreateDefault();
-            browserAdapter.browserCamera = BrowserCamera.BrowserCamera.CreateNew(browserAdapter.Driver, browserCameraConfig);
+            browserAdapter.browserCamera = BrowserCameraFactory.CreateNew(browserAdapter.Driver, browserCameraConfig);
+            browserAdapter.errorBrowserCamera = BrowserCameraFactory.CreateErrorBrowserCamera(browserAdapter.Driver);
             var navigator = new Navigator(browserAdapter.Driver, config.PageUrl, config.MeasureEndpointCoverage);
             browserAdapter.navigator = navigator;
             browserAdapter.supportedInputsAdapters = config.InputAdapters.ToList();
@@ -114,7 +118,7 @@ namespace Tellurium.MvcPages
         private  void ReportError(BrowserAdapterConfig config, Exception exception)
         {
             string screenshotName = $"{BrowserName}_Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
-            var screenshotRawData = ExceptionHelper.SwallowException(()=> browserCamera.TakeScreenshot(), null) ;
+            var screenshotRawData = errorBrowserCamera.TakeScreenshot();
             var storage = ScreenshotStorageFactory.CreateForErrorScreenshot(config);
             if (screenshotRawData != null)
             {

@@ -85,6 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrowserAdapter.cs" />
+    <Compile Include="BrowserCamera\BrowserCameraFactory.cs" />
+    <Compile Include="BrowserCamera\ErrorBrowserCamera.cs" />
     <Compile Include="BrowserCamera\Storage\CompositeScreenshotStorage.cs" />
     <Compile Include="EndpointCoverage\EndpointExplorers\AspMvcEndpointExplorer.cs" />
     <Compile Include="EndpointCoverage\EndpointExplorers\CompositeEndpointExplorer.cs" />

@@ -52,11 +52,5 @@ namespace Tellurium.MvcPages.BrowserCamera
            }
            catch {}
         }
-
-        public static IBrowserCamera CreateNew(RemoteWebDriver driver, BrowserCameraConfig cameraConfig)
-        {
-            var lens = BrowserCameraLensFactory.Create(driver, cameraConfig.LensType);
-            return new BrowserCamera(driver,  lens);
-        }
     }
 }
