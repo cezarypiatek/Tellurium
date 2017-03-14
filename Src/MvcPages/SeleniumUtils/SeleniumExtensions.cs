@@ -292,7 +292,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             {
                 var xpathLiteral = XPathHelpers.ToXPathLiteral(linkText.Trim());
                 var by = isPartialText
-                    ? By.XPath(string.Format(".//*[contains(text(), {0}) or ((@type='submit' or  @type='reset') and @value={0}) or (@title={0})]", xpathLiteral))
+                    ? By.XPath(string.Format(".//*[contains(text(), {0}) or ((@type='submit' or  @type='reset') and contains(@value,{0})) or contains(@title,{0})]", xpathLiteral))
                     : By.XPath(string.Format(".//*[((normalize-space(.) = {0}) and (count(*)=0) )or (normalize-space(text()) = {0}) or ((@type='submit' or  @type='reset') and @value={0}) or (@title={0})]", xpathLiteral));
                 return GetElementByInScope(driver, by, scope);
             }
