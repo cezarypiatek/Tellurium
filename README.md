@@ -6,7 +6,7 @@ A utility pack to create maintainanble UI tests for ASP.NET MVC projects using S
 
 To get know how to use **Tellurium** check project's [Wiki page](https://github.com/cezarypiatek/Tellurium/wiki)
 
-##Nuget package
+## Nuget package
 - MvcPages
   https://www.nuget.org/packages/Tellurium.MvcPages
 
@@ -15,5 +15,5 @@ To get know how to use **Tellurium** check project's [Wiki page](https://github.
 
 
 
-###Nuget feed with packages from lates build
+### Nuget feed with packages from lates build
 https://ci.appveyor.com/nuget/maintainableselenium-dhfqs7br0y2v
