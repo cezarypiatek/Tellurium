@@ -18,7 +18,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms.DefaultInputAdapters
 
         public void SetValue(IWebElement webElement, string value)
         {
-            webElement.Clear();
+            webElement.ClearTextualInput();
             webElement.Type(value);
         }
 

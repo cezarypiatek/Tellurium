@@ -49,8 +49,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
         /// <param name="speed">Speed of typing (chars per minute). 0 means default selenium speed</param>
         public static void Type(this IWebElement input, string text, int speed = 0)
         {
-            input.Focus();
-
             if (speed == 0)
             {
                 input.SendKeys(text);
@@ -63,6 +61,20 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     input.SendKeys(charToType.ToString());
                     Thread.Sleep(delay);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Clear textual input without generating change event
+        /// </summary>
+        /// <param name="input">Input element</param>
+        public static void ClearTextualInput(this IWebElement input)
+        {
+            var oldValue = input.GetAttribute("value");
+            if (string.IsNullOrEmpty(oldValue) == false)
+            {
+                input.SendKeys(Keys.End);
+                input.SendKeys("".PadLeft(oldValue.Length, Keys.Backspace[0]));
             }
         }
 
