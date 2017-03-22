@@ -1,0 +1,32 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Controllers
+@using Tellurium.VisualAssertion.Dashboard.Mvc
+@using Tellurium.VisualAssertion.Dashboard.Services.TestResults
+@model Tellurium.VisualAssertion.Dashboard.Services.TestResults.TestResultDetailsViewModel
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#pattern@(Model.TestResultId)" aria-controls="pattern@(Model.TestResultId)" role="tab" data-toggle="tab">Pattern</a></li>
+    @if (Model.TestPassed == false)
+    {
+        <li role="presentation"><a href="#error@(Model.TestResultId)" aria-controls="error@(Model.TestResultId)" role="tab" data-toggle="tab">Error</a></li>
+        <li role="presentation"><a href="#diff@(Model.TestResultId)" aria-controls="diff@(Model.TestResultId)" role="tab" data-toggle="tab">Diff</a></li>
+    }
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="pattern@(Model.TestResultId)">
+        <img class="screenshot screenshot-pattern" src="@(Url.ActionFor<HomeController>(c=>c.GetScreenshot(Model.TestResultId, ScreenshotType.Pattern)))" />
+    </div>
+    @if (Model.TestPassed == false)
+    {
+        <div role="tabpanel" class="tab-pane" id="error@(Model.TestResultId)">
+            <div class="screenshot-container">
+                <img class="screenshot screenshot-error" src="@(Url.ActionFor<HomeController>(c => c.GetScreenshot(Model.TestResultId, ScreenshotType.Error)))" />
+                <div class="screenshot-overlay"></div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="diff@(Model.TestResultId)">
+            <img class="screenshot screenshot-diff" src="@(Url.ActionFor<HomeController>(c => c.GetScreenshot(Model.TestResultId, ScreenshotType.Diff)))" />
+        </div>
+    }
+</div>
+

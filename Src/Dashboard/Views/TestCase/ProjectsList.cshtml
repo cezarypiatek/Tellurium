@@ -1,0 +1,19 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Controllers
+@using Tellurium.VisualAssertion.Dashboard.Mvc
+@using Tellurium.VisualAssertion.Dashboard.Services.TestResults
+@model Tellurium.VisualAssertion.Dashboard.Services.TestResults.ProjectListViewModel
+@{
+    ViewData["Title"] = "Test Cases";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<ul class="list-group">
+    @foreach (var project in Model.Projects)
+    {
+        <li class="list-group-item">
+            <a href="@(Url.ActionFor<TestCaseController>(c => c.GetTestCaseCategories(project.ProjectId)))"
+               data-ajax="true"
+               data-ajax-update="#@PageElementsIds.PageBody">@project.ProjectName</a>
+        </li>
+    }
+</ul>

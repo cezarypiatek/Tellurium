@@ -1,0 +1,46 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Controllers
+@using Tellurium.VisualAssertion.Dashboard.Models.Home
+@using Tellurium.VisualAssertion.Dashboard.Mvc
+@using Tellurium.VisualAssertion.Dashboard.Mvc.Widgets
+@model Tellurium.VisualAssertion.Dashboard.Models.Home.BrowserPatternDTO
+@{
+    var testCaseWidget = TestCaseWidget.Create<TestCaseController>(c => c.SaveLocalBlindspots(null), c => c.SaveCategoryBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
+}
+<div @testCaseWidget.GetAttributeString()>
+    <div class="testcase-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group" data-testcase-element="scope">
+                    <span class="btn btn-default active" data-testcase-element="local">
+                        <span class="local legend-square"></span> <span class="legend-label">Draw local blindspot</span>
+                    </span>
+                    <span class="btn btn-default" data-testcase-element="category">
+                        <span class="category legend-square"></span> <span class="legend-label">Draw category blindspot</span>
+                    </span>
+                    <span class="btn btn-default" data-testcase-element="global">
+                        <span class="global legend-square"></span><span class="legend-label">Draw global blindspot</span> 
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-2 pull-right">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary local" data-testcase-element="save">Save local blindspots</button>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="category" data-testcase-element="save">Save category blindspots</a></li>
+                        <li><a href="#" data-testcase-element="save">Save global blindspots</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="testcase-board" data-testcase-element="board">
+        <img class="screenshot" src="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePatternImage(Model.PatternId)))" />
+        <div class="testcase-overlay">
+            <span class="label" style="color: black"></span>
+        </div>
+    </div>
+</div>

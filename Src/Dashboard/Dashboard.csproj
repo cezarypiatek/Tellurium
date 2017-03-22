@@ -1,0 +1,99 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
+    <AssemblyName>Dashboard</AssemblyName>
+    <RootNamespace>Tellurium.VisualAssertion.Dashboard</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\lib\jquery-ui\**" />
+    <Content Remove="wwwroot\lib\jquery-ui\**" />
+    <EmbeddedResource Remove="wwwroot\lib\jquery-ui\**" />
+    <None Remove="wwwroot\lib\jquery-ui\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\js\jquery-proxy.js" />
+    <Content Include="wwwroot\js\jquery-ui.modern-unobtrusive.js" />
+    <Content Include="wwwroot\sb-admin\css\bootstrap-rtl.css" />
+    <Content Include="wwwroot\sb-admin\css\bootstrap-rtl.min.css" />
+    <Content Include="wwwroot\sb-admin\css\bootstrap.css" />
+    <Content Include="wwwroot\sb-admin\css\bootstrap.min.css" />
+    <Content Include="wwwroot\sb-admin\css\plugins\morris.css" />
+    <Content Include="wwwroot\sb-admin\css\sb-admin-rtl.css" />
+    <Content Include="wwwroot\sb-admin\css\sb-admin.css" />
+    <Content Include="wwwroot\sb-admin\font-awesome\css\font-awesome.css" />
+    <Content Include="wwwroot\sb-admin\font-awesome\css\font-awesome.min.css" />
+    <Content Include="wwwroot\sb-admin\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="wwwroot\sb-admin\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="wwwroot\sb-admin\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="wwwroot\sb-admin\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="wwwroot\sb-admin\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\bordered-pulled.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\core.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\fixed-width.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\font-awesome.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\icons.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\larger.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\list.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\mixins.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\path.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\rotated-flipped.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\spinning.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\stacked.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\less\variables.less" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\font-awesome.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_bordered-pulled.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_core.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_fixed-width.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_icons.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_larger.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_list.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_mixins.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_path.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_rotated-flipped.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_spinning.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_stacked.scss" />
+    <Content Include="wwwroot\sb-admin\font-awesome\scss\_variables.scss" />
+    <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="wwwroot\sb-admin\js\bootstrap.min.js" />
+    <Content Include="wwwroot\widgets\remoteexpander.js" />
+    <Content Include="wwwroot\widgets\testcase.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="bootstrap" Version="3.3.7" />
+    <PackageReference Include="BuildBundlerMinifier" Version="2.4.337" />
+    <PackageReference Include="Castle.Windsor" Version="3.4.0" />
+    <PackageReference Include="Castle.Windsor.MsDependencyInjection" Version="1.3.1" />
+    <PackageReference Include="jQuery" Version="3.1.1" />
+    <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
+    <PackageReference Include="NHibernate" Version="4.1.1.4000" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.0.0" />
+    <PackageReference Include="Topshelf" Version="4.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MvcPages\MvcPages.csproj" />
+    <ProjectReference Include="..\VisualAssertions\VisualAssertions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mvc\TagHelpers\" />
+  </ItemGroup>
+
+</Project>

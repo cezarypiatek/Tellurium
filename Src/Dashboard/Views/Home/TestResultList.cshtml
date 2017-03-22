@@ -1,0 +1,43 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Controllers
+@using Tellurium.VisualAssertion.Dashboard.Mvc
+@using Tellurium.VisualAssertion.Dashboard.Services.TestResults
+@model Tellurium.VisualAssertion.Dashboard.Services.TestResults.TestResultListViewModel
+
+@{
+    ViewData["Title"] = "Tests Results";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row">
+        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatus.All)))"
+           class="btn btn-primary"
+           data-ajax="true"
+           data-ajax-method="POST"
+           data-ajax-confirm="Do you really want to mark this as pattern?"
+           data-ajax-update="#TestResultsList">All tests: @Model.AllCount</a>
+        
+        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatus.Passed)))"
+           class="btn btn-success"
+           data-ajax="true"
+           data-ajax-update="#TestResultsList">Passed tests:@Model.PassedCount</a>        
+        
+        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatus.Failed)))"
+           class="btn btn-danger"
+           data-ajax="true"
+           data-ajax-update="#TestResultsList">Failed tests: @Model.FailedCount</a>
+    </div>
+    <div class="row">
+        <a href="@(Url.ActionFor<HomeController>(c => c.MarkAllAsPattern(Model.TestSessionId, Model.BrowserName)))"
+           class="btn btn-primary pull-right"
+           data-ajax="true"
+           data-ajax-method="POST"
+           data-ajax-confirm="Do you really want to replace patter for all cases?">Mark all as pattern</a>
+    </div>
+    <div id="TestResultsList" class="row top-offset">
+        @foreach (var testResultInfo in Model.TestResults)
+        {
+            Html.RenderPartial("TestResultInfo", testResultInfo);
+        }
+    </div>
+    
+</div>

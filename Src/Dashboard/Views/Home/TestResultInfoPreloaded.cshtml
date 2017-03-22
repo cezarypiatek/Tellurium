@@ -1,0 +1,37 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Controllers
+@using Tellurium.VisualAssertion.Dashboard.Mvc
+@using Tellurium.VisualAssertion.Dashboard.Mvc.Widgets
+@using Tellurium.VisualAssertion.Dashboard.Services.TestResults
+@model Tellurium.VisualAssertion.Dashboard.Services.TestResults.TestResultWithPreview
+@{
+    Layout = "~/Views/_Layout.cshtml";
+    var rowClass = Model.ListItem.TestPassed ? "panel-success" : "panel-danger";
+    var detailsId = "RowDetails" + Model.ListItem.TestResultId;
+    var rowId = "Row" + Model.ListItem.TestResultId;
+    var widget = RemoteExpanderWidget.Create<HomeController>(c => c.GetTestResultDetails(Model.ListItem.TestResultId), detailsId, Url);
+}
+<div class="panel @rowClass test-row" id="@rowId">
+    <div class="panel-heading ">
+        <div class="row">
+            <div class="col-md-10 test-row-expander" @widget.GetAttributeString()>
+                <span class="glyphicon glyphicon-menu-right"></span>
+                @Model.ListItem.ScreenshotName
+            </div>
+            <div class="col-md-2">
+                @if (Model.ListItem.CanShowMarkAsPattern)
+                {
+                    <a href="@(Url.ActionFor<HomeController>(c => c.MarkAsPattern(Model.ListItem.TestResultId)))"
+                       class="btn btn-primary"
+                       data-ajax="true"
+                       data-ajax-method="POST"
+                       data-ajax-confirm="Do you really want to mark this as pattern?"
+                       data-ajax-update="@rowId">Mark as pattern</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div id="@detailsId" class="panel-body">
+        @{Html.RenderPartial("TestResultDetails", Model.Preview);}
+    </div>
+</div>

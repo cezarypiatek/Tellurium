@@ -1,0 +1,7 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Services.TestResults
+@model Tellurium.VisualAssertion.Dashboard.Services.TestResults.TestResultsInStatusViewModel
+
+@foreach (var testResultInfo in Model.TestResults)
+{
+    Html.RenderPartial("TestResultInfo", testResultInfo);
+}

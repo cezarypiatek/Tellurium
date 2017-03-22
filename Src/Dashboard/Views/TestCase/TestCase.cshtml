@@ -1,0 +1,23 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Controllers
+@using Tellurium.VisualAssertion.Dashboard.Models.TestCase
+@using Tellurium.VisualAssertion.Dashboard.Mvc
+@model Tellurium.VisualAssertion.Dashboard.Models.TestCase.TestCaseListItem
+@{
+    var detailsId = "TestCaseDetails" + Model.TestCaseId;
+}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-6">@Model.TestCaseName</div>
+            <div class="col-md-6 btn-toolbar">
+                @foreach (var browser in Model.Browsers)
+                {
+                    <a href="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePattern(Model.TestCaseId, browser.PatternId)))" class="btn btn-default" data-ajax="true" data-ajax-update="#@detailsId">@browser.BrowserName</a>
+                }
+
+            </div>
+        </div>
+    </div>
+    <div class="panel-body" id="@detailsId">
+    </div>
+</div>

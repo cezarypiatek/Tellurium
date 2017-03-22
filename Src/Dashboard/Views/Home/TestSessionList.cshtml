@@ -1,0 +1,33 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Services.TestResults
+@model Tellurium.VisualAssertion.Dashboard.Services.TestResults.TestSessionListViewModel
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Session</th>
+        <th>Browsers</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var sessionInfo in Model.TestSessions)
+    {
+        <tr>
+            <td>
+                @sessionInfo.StartDate
+            </td>
+            <td>
+                <div class="btn-toolbar">
+                    @foreach (var browser in sessionInfo.Browsers)
+                    {
+                        <a asp-controller="Home" 
+                           asp-action="GetTestsFromSessionSession" 
+                           asp-route-sessionId="@sessionInfo.SessionId" 
+                           asp-route-browserName="@browser" 
+                           class="btn btn-default">@browser</a>
+                    }
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

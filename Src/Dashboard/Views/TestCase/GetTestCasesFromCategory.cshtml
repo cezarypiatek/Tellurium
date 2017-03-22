@@ -1,0 +1,7 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Models.TestCase
+@model List<Tellurium.VisualAssertion.Dashboard.Models.TestCase.TestCaseListItem>
+
+@foreach (var testCaseInfo in Model)
+{
+    Html.RenderPartial("TestCase", testCaseInfo);
+}

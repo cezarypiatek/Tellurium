@@ -1,0 +1,8 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Models.TestCase
+@model Tellurium.VisualAssertion.Dashboard.Models.TestCase.TestCaseListItem
+
+@{
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+@{Html.RenderPartial("TestCase", Model);}

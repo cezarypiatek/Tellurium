@@ -1,0 +1,16 @@
+﻿@using Tellurium.VisualAssertion.Dashboard.Mvc
+@using Tellurium.VisualAssertion.Dashboard.Services.TestResults
+@model Tellurium.VisualAssertion.Dashboard.Services.TestResults.ProjectListViewModel
+@{
+    ViewData["Title"] = "Test Sessions";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<ul class="list-group">
+    @foreach (var project in Model.Projects)
+    {
+        <li class="list-group-item">
+            <a asp-controller="Home" asp-action="GetTestSessionFromProject" asp-route-projectId="@project.ProjectId" data-ajax="true" data-ajax-update="#@PageElementsIds.PageBody">@project.ProjectName</a>
+        </li>
+    }
+</ul>

@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<parameters>
-  <parameter name="ConnectionString" description="Connection string to Tellurium DB " defaultValue="Data Source=localhost;Database=Tellurium;Integrated Security=true;">
-      <parameterEntry kind="XmlFile" scope="\\Web.config$" match="//*[@name='connection.connection_string']/text()" />
-  </parameter>
-</parameters>
