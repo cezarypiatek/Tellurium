@@ -164,31 +164,20 @@ function Install-OperaDriver{
     Remove-Item -Path $tmpDir -Force -Recurse
 }
 
-function Get-Platform{
-    param($Architecture)
-    
-    switch($Architecture){
-        "x86" {return "win32"}
-        "x64" {return "win64"}
-        default {throw "Unknow architecture"}
-    }
-}
-
 function Install-SeleniumWebDriver{
     [CmdletBinding()]
     param(
     [Parameter(Mandatory=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox", "Opera")][string]$Browser,
-    [ValidateSet("x86","x64")]$Architecture="x86"
-    )
-	$platform = Get-Platform -Architecture $Architecture
+    [ValidateSet("win32","win64")]$Platform="win32"
+    )	
     switch($Browser)
     {
-        "Chrome" {Install-ChromeDriver -Platform $platform; break}
+        "Chrome" {Install-ChromeDriver -Platform $Platform; break}
         "PhantomJs" {Install-PhantomJSDriver; break}
-        "InternetExplorer" {Install-IEDriver -Platform $platform; break}
+        "InternetExplorer" {Install-IEDriver -Platform $Platform; break}
         "Edge" {Install-EdgeDriver; break}
         "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
-        "Opera" {Install-OperaDriver -Platform $platform; break}
+        "Opera" {Install-OperaDriver -Platform $Platform; break}
         default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
     }
 }
@@ -197,17 +186,17 @@ function Get-SeleniumWebDriverVersions{
 	[CmdletBinding()]
     param(
     [Parameter(Mandatory=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox", "Opera")][string]$Browser,
-    [ValidateSet("x86","x64")]$Architecture="x86"
+    [ValidateSet("win32","win64")]$Platform="win32"
     )
 	
 	switch($Browser)
     {
-        "Chrome" {Get-ChromeDriverVersions -Platform $platform; break}
+        "Chrome" {Get-ChromeDriverVersions -Platform $Platform; break}
         "PhantomJs" {Get-PhantomJSDriverVersions; break}
-        "InternetExplorer" {Get-IEDriverVersions -Platform $platform; break}
+        "InternetExplorer" {Get-IEDriverVersions -Platform $Platform; break}
         "Edge" {Get-EdgeDriverVersions; break}
         "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
-        "Opera" {Get-OperaDriverVersions -Platform $platform; break}
+        "Opera" {Get-OperaDriverVersions -Platform $Platform; break}
         default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
     }
 }
