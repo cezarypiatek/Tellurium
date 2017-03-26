@@ -39,8 +39,7 @@ function New-TempDirectory{
 }
 
 function Download-FromGoogleapis{
-    param($BaseUrl, $DriverName, $DestinationPath)
-    $platform = "win32"     
+    param($BaseUrl, $DriverName, $DestinationPath, $Platform="win32")
     $p = Invoke-WebRequest "$BaseUrl/?prefix="
     $o = [xml]$p.Content 
     $newestFile = $o.ListBucketResult.Contents |% {
@@ -52,7 +51,7 @@ function Download-FromGoogleapis{
         $minor = $versionParts[1] -replace "[^\d]",""
         [PsCustomObject](@{Version= [int]$major*100 +[int]$minor  ; File= "$BaseUrl/$($_.Key)"})
     }
-    }|? {$_.File -like "*$platform*"} | Sort-Object -Property Version | Select-Object -Last 1
+    }|? {$_.File -like "*$Platform*"} | Sort-Object -Property Version | Select-Object -Last 1
     $tempDir = New-TempDirectory
     $driverTmpPath = "$tempDir\$DriverName.zip"
     Start-BitsTransfer -Source $newestFile.File -Destination $driverTmpPath    
@@ -66,13 +65,15 @@ function New-DriversDirectory{
 }
 
 function Install-ChromeDriver{
+    param([string]$Platform)
     $driversPath = New-DriversDirectory
-    Download-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -DestinationPath $driversPath
+    Download-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform -DestinationPath $driversPath
 }
 
 function Install-IEDriver{
+    param([string]$Platform)
     $driversPath = New-DriversDirectory
-    Download-FromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -DestinationPath  $driversPath
+    Download-FromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform -DestinationPath  $driversPath
 }
 
 
@@ -101,8 +102,9 @@ function Install-EdgeDriver{
 }
 
 function Install-OperaDriver{
+    param([string]$Platform)
     $data = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/operasoftware/operachromiumdriver/releases/latest
-    $windowsEdition = $data.assets |? {$_.name -like "*win32*"} | Select-Object -First 1
+    $windowsEdition = $data.assets |? {$_.name -like "*$Platform*"} | Select-Object -First 1
     $tmpDir = New-TempDirectory
     Invoke-RestMethod -Method Get -Uri $windowsEdition.browser_download_url -OutFile "$tmpDir\opera.zip"
     Expand-Archive -Path "$tmpDir\opera.zip" -DestinationPath $tmpDir
@@ -111,17 +113,31 @@ function Install-OperaDriver{
     Remove-Item -Path $tmpDir -Force -Recurse
 }
 
+function Get-Platform{
+    param($Architecture)
+    
+    switch($Architecture){
+        "x86" {return "win32"}
+        "x64" {return "win64"}
+        default {throw "Unknow architecture"}
+    }
+}
+
 function Install-SeleniumWebDriver{
     [CmdletBinding()]
-    param([Parameter(Mandatory=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox", "Opera")][string]$Browser)
+    param(
+    [Parameter(Mandatory=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox", "Opera")][string]$Browser,
+    [ValidateSet("x86","x64")]$Architecture="x86"
+    )
+	$platform = Get-Platform -Architecture $Architecture
     switch($Browser)
     {
-        "Chrome" {Install-ChromeDriver; break}
+        "Chrome" {Install-ChromeDriver -Platform $platform; break}
         "PhantomJs" {Install-PhantomJSDriver; break}
-        "InternetExplorer" {Install-IEDriver; break}
+        "InternetExplorer" {Install-IEDriver -Platform $platform; break}
         "Edge" {Install-EdgeDriver; break}
         "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
-        "Opera" {Install-OperaDriver; break}
+        "Opera" {Install-OperaDriver -Platform $platform; break}
         default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
     }
 }
