@@ -40,24 +40,25 @@ function New-TempDirectory{
 
 function Get-VersionsFromGoogleapis{
 	param($BaseUrl, $DriverName, $Platform="win32")
-    $p = Invoke-WebRequest "$BaseUrl/?prefix="
+    $p = Invoke-WebRequest "$BaseUrl/?prefix=" -Headers @{"Accept-Encoding"="gzip"}
     $o = [xml]$p.Content 
-    $o.ListBucketResult.Contents |% {
+    ($o.ListBucketResult.Contents) |? { $_.Key -like "*$DriverName*" }  |% {
 		$parts =  $_.Key -split "/"; 
 		if(($parts.Length -eq 2)  -and ($parts[1].EndsWith(".zip")))
 		{
 			$versionParts =  $parts[0] -split "\."
 			$major = $versionParts[0] -replace "[^\d]",""
 			$minor = $versionParts[1] -replace "[^\d]",""
-			[PsCustomObject](@{Version= [int]$major*100 +[int]$minor  ; File= "$BaseUrl/$($_.Key)"; VersionString= $parts[0]})
+            $elementPlatform = ($parts[1] -split "[_\.]")[1]
+			[PsCustomObject](@{VersionNumber= [int]$major*100 +[int]$minor  ; File= "$BaseUrl/$($_.Key)"; Version= $parts[0]; Platform=$elementPlatform} )
 		}
-    }|? {$_.File -like "*$Platform*"} | Sort-Object -Property Version
+    }|? { ([string]::IsNullOrWhiteSpace($Platform) -eq $true) -or ($_.Platform -eq "$Platform")} | Sort-Object -Property VersionNumber
 }
 
 function Download-FromGoogleapis{
     param($BaseUrl, $DriverName, $DestinationPath, $Platform="win32")
     $allVersions = Get-VersionsFromGoogleapis -BaseUrl $BaseUrl -DriverName $DriverName -Platform $Platform
-	$newestFile = $allVersions | Sort-Object -Property Version | Select-Object -Last 1	
+	$newestFile = $allVersions | Sort-Object -Property VersionNumber | Select-Object -Last 1	
     $tempDir = New-TempDirectory
     $driverTmpPath = "$tempDir\$DriverName.zip"
     Start-BitsTransfer -Source $newestFile.File -Destination $driverTmpPath    
@@ -71,19 +72,53 @@ function New-DriversDirectory{
 }
 
 function Get-ChromeDriverVersions{
-	param([string]$Platform)
-	Get-VersionsFromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform | Sort-Object -Descending Version | Select-Object VersionString
+	[CmdletBinding()]
+    param([string]$Platform)
+    Get-VersionsFromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform | Sort-Object -Descending VersionNumber, Platform | Select-Object Version, Platform
+}
+
+
+function Create-Parameters{
+    param([scriptblock]$Params)
+    $runtimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+	$parameters = . $Params
+	foreach($parameter in $parameters)
+	{Ge
+		$runtimeParameterDictionary.Add($parameter.Name, $parameter)
+	}    
+    $runtimeParameterDictionary
+}
+
+function New-Parameter{
+    param($Name, $Position, $ValidateSet, $Mandatory=$false)
+    $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+    $parameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+    $parameterAttribute.Mandatory = $Mandatory
+    $parameterAttribute.Position = $Position
+    $attributeCollection.Add($parameterAttribute)   
+    $validateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute -ArgumentList $ValidateSet
+    $attributeCollection.Add($validateSetAttribute)
+    New-Object System.Management.Automation.RuntimeDefinedParameter($Name, [string], $attributeCollection)
 }
 
 function Install-ChromeDriver{
+    [CmdletBinding()]
     param([string]$Platform)
-    $driversPath = New-DriversDirectory
-    Download-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform -DestinationPath $driversPath
+    DynamicParam{
+       Create-Parameters -Params {
+            New-Parameter -Name "Version" -Position 1 -ValidateSet $(Get-ChromeDriverVersions -Platform $Platform | Select-Object -ExpandProperty VersionString)        
+       }
+    }
+    process{
+        $driversPath = New-DriversDirectory
+        $version = $PsBoundParameters["Version"]
+        Download-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform -DestinationPath $driversPath
+    }
 }
 
 function Get-IEDriverVersions{
 	param([string]$Platform)
-	Get-VersionsFromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform | Sort-Object -Descending Version | Select-Object VersionString
+	Get-VersionsFromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform | Sort-Object -Descending VersionNumber | Select-Object Version, Platform
 }
 
 function Install-IEDriver{
@@ -96,19 +131,21 @@ function Install-IEDriver{
 function Get-PahntomJSDriverAvailabeFiles{
     $data = Invoke-RestMethod -Method Get -Uri https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads
     $data.values |%{ 
-        $nameParts = $_.name -split "-"
-        [PsCustomObject]@{name=$nameParts[0]; version=$nameParts[1]; url=$_.links.self.href; platform=$($nameParts[2] -replace "\.zip",""); }
-    }|? {$_.platform -eq "windows"} 
+        if($_.name -match "phantomjs-([\d\.]+)-(.*?)\.(.*)")
+        {
+            [PsCustomObject]@{Version=$Matches[1]; Url=$_.links.self.href; Platform=$Matches[2] ; }
+        }
+    }
 }
 
 function Get-PhantomJSDriverVersions{ 
-    Get-PahntomJSDriverAvailabeFiles | Sort-Object version -Descending | Select-Object version
+    Get-PahntomJSDriverAvailabeFiles | Sort-Object Version -Descending | Select-Object Version, Platform
 }
 
 function Install-PhantomJSDriver{
-    $newestPhantom = Get-PahntomJSDriverAvailabeFiles | Sort-Object -Property version -Descending | Select-Object -First 1
+    $newestPhantom = Get-PahntomJSDriverAvailabeFiles | Sort-Object -Property Version -Descending | Select-Object -First 1
     $tmpDir = New-TempDirectory    
-    Invoke-RestMethod -Method Get -Uri $newestPhantom.url -OutFile "$tmpDir\phantom.zip"    
+    Invoke-RestMethod -Method Get -Uri $newestPhantom.Url -OutFile "$tmpDir\phantom.zip"    
     Expand-Archive -Path "$tmpDir\phantom.zip"  -DestinationPath $tmpDir
     $driversPath = New-DriversDirectory
     Get-ChildItem -Filter "phantomjs.exe" -Recurse -Path $tmpDir |  Copy-Item -Destination $driversPath -PassThru | Add-FileToProject
@@ -143,21 +180,21 @@ function Get-OperaDriverAvailableFiles{
             $nameParts = $asset.name -split "[_\.]"
             if($nameParts.length -eq 3)
             {
-                [pscustomobject](@{version = $version; platform=$nameParts[1]; url=$asset.browser_download_url })
+                [pscustomobject](@{Version = $version; Platform=$nameParts[1]; Url=$asset.browser_download_url })
             }
         }
     }
 }
 
 function Get-OperaDriverVersions{
-    Get-OperaDriverAvailableFiles | Select-Object version
+    Get-OperaDriverAvailableFiles | Select-Object Version, Platform
 }
 
 function Install-OperaDriver{
     param([string]$Platform)    
-    $windowsEdition = Get-OperaDriverAvailableFiles |? {$_.platform -like "*$Platform*"} | Select-Object -First 1
+    $windowsEdition = Get-OperaDriverAvailableFiles |? {$_.Platform -like "*$Platform*"} | Select-Object -First 1
     $tmpDir = New-TempDirectory
-    Invoke-RestMethod -Method Get -Uri $windowsEdition.browser_download_url -OutFile "$tmpDir\opera.zip"
+    Invoke-RestMethod -Method Get -Uri $windowsEdition.Url -OutFile "$tmpDir\opera.zip"
     Expand-Archive -Path "$tmpDir\opera.zip" -DestinationPath $tmpDir
     $driversPath = New-DriversDirectory
     Copy-Item "$tmpDir\operadriver.exe" -Destination $driversPath -PassThru | Add-FileToProject
