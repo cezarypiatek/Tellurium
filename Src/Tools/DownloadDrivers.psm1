@@ -38,20 +38,26 @@ function New-TempDirectory{
     $tempDirectoryPath
 }
 
-function Download-FromGoogleapis{
-    param($BaseUrl, $DriverName, $DestinationPath, $Platform="win32")
+function Get-VersionsFromGoogleapis{
+	param($BaseUrl, $DriverName, $Platform="win32")
     $p = Invoke-WebRequest "$BaseUrl/?prefix="
     $o = [xml]$p.Content 
-    $newestFile = $o.ListBucketResult.Contents |% {
-    $parts =  $_.Key -split "/"; 
-    if(($parts.Length -eq2)  -and($parts[1].EndsWith(".zip")))
-    {
-        $versionParts =  $parts[0] -split "\."
-        $major = $versionParts[0] -replace "[^\d]",""
-        $minor = $versionParts[1] -replace "[^\d]",""
-        [PsCustomObject](@{Version= [int]$major*100 +[int]$minor  ; File= "$BaseUrl/$($_.Key)"})
-    }
-    }|? {$_.File -like "*$Platform*"} | Sort-Object -Property Version | Select-Object -Last 1
+    $o.ListBucketResult.Contents |% {
+		$parts =  $_.Key -split "/"; 
+		if(($parts.Length -eq 2)  -and ($parts[1].EndsWith(".zip")))
+		{
+			$versionParts =  $parts[0] -split "\."
+			$major = $versionParts[0] -replace "[^\d]",""
+			$minor = $versionParts[1] -replace "[^\d]",""
+			[PsCustomObject](@{Version= [int]$major*100 +[int]$minor  ; File= "$BaseUrl/$($_.Key)"; VersionString= $parts[0]})
+		}
+    }|? {$_.File -like "*$Platform*"} | Sort-Object -Property Version
+}
+
+function Download-FromGoogleapis{
+    param($BaseUrl, $DriverName, $DestinationPath, $Platform="win32")
+    $allVersions = Get-VersionsFromGoogleapis -BaseUrl $BaseUrl -DriverName $DriverName -Platform $Platform
+	$newestFile = $allVersions | Sort-Object -Property Version | Select-Object -Last 1	
     $tempDir = New-TempDirectory
     $driverTmpPath = "$tempDir\$DriverName.zip"
     Start-BitsTransfer -Source $newestFile.File -Destination $driverTmpPath    
@@ -64,10 +70,20 @@ function New-DriversDirectory{
     Add-ProjectDirectoryIfNotExist -DirPath "Drivers"
 }
 
+function Get-ChromeDriverVersions{
+	param([string]$Platform)
+	Get-VersionsFromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform | Sort-Object -Descending Version | Select-Object VersionString
+}
+
 function Install-ChromeDriver{
     param([string]$Platform)
     $driversPath = New-DriversDirectory
     Download-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform -DestinationPath $driversPath
+}
+
+function Get-IEDriverVersions{
+	param([string]$Platform)
+	Get-VersionsFromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform | Sort-Object -Descending Version | Select-Object VersionString
 }
 
 function Install-IEDriver{
@@ -77,12 +93,20 @@ function Install-IEDriver{
 }
 
 
-function Install-PhantomJSDriver{    
+function Get-PahntomJSDriverAvailabeFiles{
     $data = Invoke-RestMethod -Method Get -Uri https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads
-    $newestPhantom = $data.values |%{ 
+    $data.values |%{ 
         $nameParts = $_.name -split "-"
-        @{name=$nameParts[0]; version=$nameParts[1]; url=$_.links.self.href; platform=$($nameParts[2] -replace "\.zip",""); }
-    }|? {$_.platform -eq "windows"}  | Sort-Object -Property versionstamp -Descending | Select-Object -First 1
+        [PsCustomObject]@{name=$nameParts[0]; version=$nameParts[1]; url=$_.links.self.href; platform=$($nameParts[2] -replace "\.zip",""); }
+    }|? {$_.platform -eq "windows"} 
+}
+
+function Get-PhantomJSDriverVersions{ 
+    Get-PahntomJSDriverAvailabeFiles | Sort-Object version -Descending | Select-Object version
+}
+
+function Install-PhantomJSDriver{
+    $newestPhantom = Get-PahntomJSDriverAvailabeFiles | Sort-Object -Property version -Descending | Select-Object -First 1
     $tmpDir = New-TempDirectory    
     Invoke-RestMethod -Method Get -Uri $newestPhantom.url -OutFile "$tmpDir\phantom.zip"    
     Expand-Archive -Path "$tmpDir\phantom.zip"  -DestinationPath $tmpDir
@@ -91,20 +115,47 @@ function Install-PhantomJSDriver{
     Remove-Item $tmpDir -Force -Recurse
 }
 
-function Install-EdgeDriver{
+function Get-EdgeDriverAvailableFiles{
     $page = Invoke-WebRequest -Uri https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/#downloads
-    $newestEdge = $page.Links |? {$_.innerText -like "*Release*"} | Sort-Object -Property innerText -Descending | Select-Object -First 1
+    $page.Links |? {$_.innerText -like "*Release*"} |% { [PsCustomObject]@{version = $_.innerText; path=$_.href } }
+}
+
+function Get-EdgeDriverVersions{
+    Get-EdgeDriverAvailableFiles | Sort-Object version -Descending | Select-Object version
+}
+
+function Install-EdgeDriver{    
+    $newestEdge = Get-EdgeDriverAvailableFiles | Sort-Object version -Descending | Select-Object -First 1
     $tmpDir = New-TempDirectory
-    Start-BitsTransfer -Source $newestEdge.href -Destination $tmpDir
+    Start-BitsTransfer -Source $newestEdge.path -Destination $tmpDir
     $driversPath = New-DriversDirectory
     Get-ChildItem $tmpDir | Copy-Item -Destination $driversPath -PassThru | Add-FileToProject
     Remove-Item $tmpDir -Force -Recurse   
 }
 
+function Get-OperaDriverAvailableFiles{
+     $relases = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/operasoftware/operachromiumdriver/releases
+     foreach($release in $relases)     
+     {        
+        $version = $release.name
+        foreach($asset in $release.assets)
+        {            
+            $nameParts = $asset.name -split "[_\.]"
+            if($nameParts.length -eq 3)
+            {
+                [pscustomobject](@{version = $version; platform=$nameParts[1]; url=$asset.browser_download_url })
+            }
+        }
+    }
+}
+
+function Get-OperaDriverVersions{
+    Get-OperaDriverAvailableFiles | Select-Object version
+}
+
 function Install-OperaDriver{
-    param([string]$Platform)
-    $data = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/operasoftware/operachromiumdriver/releases/latest
-    $windowsEdition = $data.assets |? {$_.name -like "*$Platform*"} | Select-Object -First 1
+    param([string]$Platform)    
+    $windowsEdition = Get-OperaDriverAvailableFiles |? {$_.platform -like "*$Platform*"} | Select-Object -First 1
     $tmpDir = New-TempDirectory
     Invoke-RestMethod -Method Get -Uri $windowsEdition.browser_download_url -OutFile "$tmpDir\opera.zip"
     Expand-Archive -Path "$tmpDir\opera.zip" -DestinationPath $tmpDir
@@ -142,4 +193,23 @@ function Install-SeleniumWebDriver{
     }
 }
 
-Export-ModuleMember -Function Install-SeleniumWebDriver
+function Get-SeleniumWebDriverVersions{
+	[CmdletBinding()]
+    param(
+    [Parameter(Mandatory=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox", "Opera")][string]$Browser,
+    [ValidateSet("x86","x64")]$Architecture="x86"
+    )
+	
+	switch($Browser)
+    {
+        "Chrome" {Get-ChromeDriverVersions -Platform $platform; break}
+        "PhantomJs" {Get-PhantomJSDriverVersions; break}
+        "InternetExplorer" {Get-IEDriverVersions -Platform $platform; break}
+        "Edge" {Get-EdgeDriverVersions; break}
+        "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
+        "Opera" {Get-OperaDriverVersions -Platform $platform; break}
+        default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+    }
+}
+
+Export-ModuleMember -Function Install-SeleniumWebDriver, Get-SeleniumWebDriverVersions
