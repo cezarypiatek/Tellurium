@@ -17,11 +17,13 @@
 	  <dependency id="Microsoft.AspNet.Mvc" version="5.2.3" />
 	  <dependency id="Microsoft.AspNet.Mvc.Futures" version="5.0.0"/>	
 	  <dependency id="Selenium.Support" version="2.53.0" />	 
+	  <dependency id="System.Management.Automation.dll" version="10.0.10586.0" />	 
     </dependencies>	
   </metadata>
   <files>
 		<file src="bin\$configuration$\Tellurium.MvcPages.dll" target="lib" />
 		<file src="bin\$configuration$\Tellurium.MvcPages.pdb" target="lib" />
+		<file src="..\Libs\WASP.dll" target="lib" />
 		<file src="..\Tools\init.ps1" target="tools" />
 		<file src="..\Tools\DownloadDrivers.psm1" target="tools" />
 	</files>
