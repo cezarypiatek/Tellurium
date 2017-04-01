@@ -38,3 +38,16 @@
         @Html.ValidationMessageFor(m => m.SelectListValue, "", new {@class = "text-danger"})
     </div>
 </div>
+
+<div class="form-group">
+    <label class="col-md-3 control-label">Single file uploading</label>
+    <div class="col-md-9">
+        <input type="file" name="SingleFile" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-md-3 control-label">Multiple files uploading</label>
+    <div class="col-md-9">
+        <input type="file" multiple="" name="MultipleFiles" class="form-control"/>
+    </div>
+</div>

@@ -78,6 +78,9 @@ namespace Tellurium.Sample.UITests
                 detinationForm.SetFieldValue(x=>x.SelectListValue, selectListValue);
 
                 AssertView.EqualsToPattern(browserAdapter, "Sample2");
+
+                var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "SampleFileToUpload.docx");
+                detinationForm.SetFieldValue("SingleFile", path);
             }
         }
 

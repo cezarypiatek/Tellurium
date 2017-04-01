@@ -29,12 +29,16 @@ namespace Tellurium.MvcPages
 
         private INavigator navigator;
         private List<IFormInputAdapter> supportedInputsAdapters;
-        private string BrowserName { get; set; }
+        public string BrowserName { get; private set; }
         private int NumberOfInputSetRetries { get; set; }
         private AfterFieldValueSet AfterFieldValueSetAction { get; set; }
         private TelluriumErrorReportBuilder errorReportBuilder;
         private EndpointCoverageReportBuilder endpointCoverageReportBuilder;
-        
+
+        public BrowserAdapter()
+        {
+            BrowserAdapterContext.Current = this;
+        }
 
         public static BrowserAdapter Create(BrowserAdapterConfig config)
         {
@@ -232,6 +236,7 @@ namespace Tellurium.MvcPages
         public void Dispose()
         {
             endpointCoverageReportBuilder?.GenerateEndpointCoverageReport();
+            BrowserAdapterContext.Current = null;
             Driver.Close();
             Driver.Quit();
         }
@@ -369,6 +374,5 @@ namespace Tellurium.MvcPages
         /// Restore animations on page
         /// </summary>
         void EnableAnimations();
-       
     }
 }

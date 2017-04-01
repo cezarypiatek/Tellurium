@@ -56,6 +56,7 @@ namespace Tellurium.MvcPages.Configuration
                     new SelectFormInputAdapter(),
                     new CheckboxFormInputAdapter(),
                     new RadioFormInputAdapter(),
+                    new FileFormInputAdapter(),
                     new HiddenFormInputAdapter()
             };
             NumberOfInputSetRetries = DefaultNumberOfSetRetries;

@@ -45,6 +45,10 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Management.Automation.dll.10.0.10586.0\lib\net40\System.Management.Automation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
@@ -74,6 +78,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WASP">
+      <HintPath>..\Libs\WASP.dll</HintPath>
+    </Reference>
     <Reference Include="WebDriver, Version=2.53.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Selenium.WebDriver.2.53.1\lib\net40\WebDriver.dll</HintPath>
       <Private>True</Private>
@@ -85,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrowserAdapter.cs" />
+    <Compile Include="BrowserAdapterContext.cs" />
     <Compile Include="BrowserCamera\BrowserCameraFactory.cs" />
     <Compile Include="BrowserCamera\ErrorBrowserCamera.cs" />
     <Compile Include="BrowserCamera\Storage\CompositeScreenshotStorage.cs" />
@@ -116,6 +124,8 @@
     <Compile Include="Configuration\TelluriumConfigurationSection.cs" />
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotReloadPageWithException.cs" />
+    <Compile Include="SeleniumUtils\FileUploading\FileUploadException.cs" />
+    <Compile Include="SeleniumUtils\FileUploading\FileUploadingExtensions.cs" />
     <Compile Include="SeleniumUtils\StableWebElement.cs" />
     <Compile Include="SeleniumUtils\WebElementNotFoundException.cs" />
     <Compile Include="Utils\ExceptionHelper.cs" />
@@ -132,6 +142,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WebPages\UrlHelper.cs" />
+    <Compile Include="WebPages\WebForms\DefaultInputAdapters\FileFormInputAdapter.cs" />
     <Compile Include="WebPages\WebForms\FieldValueWatcher.cs" />
     <Compile Include="WebPages\PageFragmentWatcher.cs" />
     <Compile Include="WebPages\WebForms\UnableToSetFieldValueException.cs" />
@@ -157,6 +168,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="SeleniumUtils\FileUploading\FileUploader.psm1" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
