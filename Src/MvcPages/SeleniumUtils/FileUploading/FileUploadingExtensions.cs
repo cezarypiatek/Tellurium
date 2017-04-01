@@ -8,10 +8,6 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
 {
     public static class FileUploadingExtensions
     {
-#pragma warning disable 169
-        private static IntPtr keepReferencoToWasp = Huddled.Wasp.Constants.InvalidHandle;
-#pragma warning restore 169
-
         public static void UploadFileForCurrentBrowser(string filePath)
         {
             UploadFile(BrowserAdapterContext.Current.BrowserName, filePath);
@@ -32,7 +28,8 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
                     var script = ReadFileContentFromEmbededResource("FileUploader.psm1");
                     try
                     {
-                        invoker.Invoke($"Set-Location \"{AppDomain.CurrentDomain.BaseDirectory}\"");
+                        var waspLocation = typeof(Huddled.Wasp.Constants).Assembly.Location;
+                        invoker.Invoke($"Import-Module \"{waspLocation}\"");
                         invoker.Invoke(script);
                         invoker.Invoke($"Upload-File -BrowserName {browserName} -FilePath \"{filePath}\"");
                     }

@@ -1,5 +1,4 @@
-﻿Import-Module .\WASP.dll
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 
 function Get-BrowserProcessName($BrowserName)
 {
