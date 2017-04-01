@@ -17,7 +17,7 @@
 	  <dependency id="Microsoft.AspNet.Mvc" version="5.2.3" />
 	  <dependency id="Microsoft.AspNet.Mvc.Futures" version="5.0.0"/>	
 	  <dependency id="Selenium.Support" version="2.53.0" />	 
-	  <dependency id="System.Management.Automation.dll" version="10.0.10586.0" />	 
+	  <dependency id="System.Management.Automation" version="6.1.7601.17515" />	 
     </dependencies>	
   </metadata>
   <files>
