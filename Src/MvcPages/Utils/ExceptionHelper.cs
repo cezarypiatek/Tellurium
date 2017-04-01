@@ -26,5 +26,16 @@ namespace Tellurium.MvcPages.Utils
                 return defaultValue;
             }
         }
+        public static void SwallowException(Action func)
+        {
+            try
+            {
+                func();
+            }
+            catch
+            {
+                
+            }
+        }
     }
 }
