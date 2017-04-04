@@ -33,7 +33,14 @@ function Get-UploadWindow($BrowserName, $TimeOut)
 function Upload-File($BrowserName, $FilePath, $TimeOut=30)
 {
     $uploadWindow = Get-UploadWindow -BrowserName $BrowserName -TimeOut $TimeOut    
+    $uploadWindow.Activate()
     $fileNameInput = $uploadWindow | Select-Control -Recurse -Class "Edit" | Select-Object -First 1  
     $fileNameInput.Activate()
-    $fileNameInput | Send-Keys "$FilePath{enter}"
+    $fileNameInput | Send-Keys "$FilePath"
+    $closeTries = 0
+    do{
+        Start-Sleep -Seconds 1
+        $fileNameInput | Send-Keys "{enter}"
+        $closeTries++
+    }while(($closeTries -lt 3) -and ($uploadWindow.GetIsActive() -eq $true))
 }
