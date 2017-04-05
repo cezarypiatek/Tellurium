@@ -30,17 +30,48 @@ function Get-UploadWindow($BrowserName, $TimeOut)
     }
 }
 
+$definition = @"
+    using System.Runtime.InteropServices;
+    using System;
+    public static class Robot
+    {
+        private static int WM_SETTEXT = 0x0C;
+        private static int WM_LBUTTONDOWN = 0x201;
+        private static int WM_LBUTTONUP = 0x202;
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hwnd, int msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPStr)] string lParam);
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int msg, uint wParam, uint lParam);
+
+
+        public static void SendClick(IntPtr buttonHandle)
+        {
+            SendMessage(buttonHandle, WM_LBUTTONDOWN, 0, 0);
+            SendMessage(buttonHandle, WM_LBUTTONUP, 0, 0);
+            SendMessage(buttonHandle, WM_LBUTTONDOWN, 0, 0);
+            SendMessage(buttonHandle, WM_LBUTTONUP, 0, 0);
+        }
+
+        public static void SendText(System.IntPtr textBoxHandle, string text)
+        {
+            SendMessage(textBoxHandle, WM_SETTEXT, (System.IntPtr)text.Length, text);
+        }
+    }
+    
+"@
+Add-Type -TypeDefinition $definition
+
 function Upload-File($BrowserName, $FilePath, $TimeOut=30)
 {
     $uploadWindow = Get-UploadWindow -BrowserName $BrowserName -TimeOut $TimeOut    
     $uploadWindow.Activate()
     $fileNameInput = $uploadWindow | Select-Control -Recurse -Class "Edit" | Select-Object -First 1  
     $fileNameInput.Activate()
-    $fileNameInput | Send-Keys "$FilePath"
-    $closeTries = 0
-    do{
-        Start-Sleep -Seconds 1
-        $fileNameInput | Send-Keys "{enter}"
-        $closeTries++
-    }while(($closeTries -lt 3) -and ($uploadWindow.GetIsActive() -eq $true))
+    [Robot]::SendText($fileNameInput,"$FilePath")
+    $acceptButton =  $uploadWindow | Select-Control -Class "Button" | Select-Object -First 1
+    $acceptButton.Activate()
+    Start-Sleep -Seconds 1
+    [Robot]::SendClick($acceptButton)
 }
