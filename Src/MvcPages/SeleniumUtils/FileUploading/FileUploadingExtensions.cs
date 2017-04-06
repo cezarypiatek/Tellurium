@@ -15,9 +15,11 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
 
         public static void UploadFile(string browserName, string filePath)
         {
-            if (File.Exists(filePath) == false)
+            var absoluteFilePath = Path.IsPathRooted(filePath) ? filePath : ToAbsolutePath(filePath);
+
+            if (File.Exists(absoluteFilePath) == false)
             {
-                throw new FileUploadException($"Cannot upload file '{filePath}'. File does not exist.");
+                throw new FileUploadException($"Cannot upload file '{absoluteFilePath}'. File does not exist.");
             }
 
             using (Runspace runspace = RunspaceFactory.CreateRunspace())
@@ -31,14 +33,19 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
                         var waspLocation = typeof(Huddled.Wasp.Constants).Assembly.Location;
                         invoker.Invoke($"Import-Module \"{waspLocation}\"");
                         invoker.Invoke(script);
-                        invoker.Invoke($"Upload-File -BrowserName {browserName} -FilePath \"{filePath}\"");
+                        invoker.Invoke($"Upload-File -BrowserName {browserName} -FilePath \"{absoluteFilePath}\"");
                     }
                     catch(Exception ex)
                     {
-                        throw new FileUploadException($"Cannot upload file {filePath}. Reason: '{ex.Message}'");
+                        throw new FileUploadException($"Cannot upload file {absoluteFilePath}. Reason: '{ex.Message}'");
                     }
                 }
             }
+        }
+
+        private static string ToAbsolutePath(string filePath)
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
         }
 
         private static string ReadFileContentFromEmbededResource(string fileName)
