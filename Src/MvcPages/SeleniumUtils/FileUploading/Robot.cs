@@ -43,6 +43,8 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
                     return "iexplore";
                 case "Opera":
                     return "opera";
+                case "Edge":
+                    return "MicrosoftEdge";
                 default:
                     throw new FileUploadException("Not supported browser");
             }
