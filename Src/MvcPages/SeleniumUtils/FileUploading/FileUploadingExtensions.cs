@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
+using System.Linq;
 using System.Reflection;
+using Tellurium.MvcPages.SeleniumUtils.FileUploading.WindowsInternals;
 
 namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
 {
@@ -15,32 +15,49 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
 
         public static void UploadFile(string browserName, string filePath)
         {
-            var absoluteFilePath = Path.IsPathRooted(filePath) ? filePath : ToAbsolutePath(filePath);
+            var absoluteFilePath = GetAbsoluteExistingPath(filePath);
+            var uploadWindow = Robot.GetUploadWindow(browserName);
+            uploadWindow.Activate();
+            var fileNameInput = uploadWindow.GetControls("Edit").First();
+            fileNameInput.Activate();
+            WindowsMethods.SendText(fileNameInput, absoluteFilePath);
+
+            var confirmButton = uploadWindow.GetControls("Button").First();
+            confirmButton.Activate();
+            WindowsMethods.SendClick(confirmButton);
+        }
+
+        private static string GetAbsoluteExistingPath(string filePath)
+        {
+            if (filePath.Contains("\""))
+            {
+                var absoluteFilesPaths = filePath.Split('"')
+                    .Where(x=> string.IsNullOrWhiteSpace(x) == false)
+                    .Select(MapToAbsoluteFilePath)
+                    .ToList();
+
+                foreach (var path in absoluteFilesPaths)
+                {
+                    if (File.Exists(path) == false)
+                    {
+                        throw new FileUploadException($"Cannot upload file '{path}'. File does not exist.");
+                    }
+                }
+                var quotedPaths = absoluteFilesPaths.Select(x => $"\"{x}\"");
+                return string.Join(" ", quotedPaths);
+            }
+            var absoluteFilePath = MapToAbsoluteFilePath(filePath);
 
             if (File.Exists(absoluteFilePath) == false)
             {
                 throw new FileUploadException($"Cannot upload file '{absoluteFilePath}'. File does not exist.");
             }
+            return absoluteFilePath;
+        }
 
-            using (Runspace runspace = RunspaceFactory.CreateRunspace())
-            {
-                runspace.Open();
-                using (RunspaceInvoke invoker = new RunspaceInvoke(runspace))
-                {
-                    var script = ReadFileContentFromEmbededResource("FileUploader.psm1");
-                    try
-                    {
-                        var waspLocation = typeof(Huddled.Wasp.Constants).Assembly.Location;
-                        invoker.Invoke($"Import-Module \"{waspLocation}\"");
-                        invoker.Invoke(script);
-                        invoker.Invoke($"Upload-File -BrowserName {browserName} -FilePath \"{absoluteFilePath}\"");
-                    }
-                    catch(Exception ex)
-                    {
-                        throw new FileUploadException($"Cannot upload file {absoluteFilePath}. Reason: '{ex.Message}'");
-                    }
-                }
-            }
+        private static string MapToAbsoluteFilePath(string filePath)
+        {
+            return Path.IsPathRooted(filePath) ? filePath : ToAbsolutePath(filePath);
         }
 
         private static string ToAbsolutePath(string filePath)
