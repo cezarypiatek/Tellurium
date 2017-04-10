@@ -48,6 +48,10 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         public IWebElement Unwrap()
         {
+            if (IsStale())
+            {
+                RegenerateElement();
+            }
             return element;
         }
 
@@ -142,7 +146,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return Execute(() => element.As<ITakesScreenshot>().GetScreenshot());
         }
 
-        public IWebElement WrappedElement { get { return element; } }
+        public IWebElement WrappedElement => Unwrap();
     }
 
     public interface IStableWebElement : IWebElement, ILocatable, ITakesScreenshot, IWrapsElement
