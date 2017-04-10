@@ -348,9 +348,21 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return new WebList(driver, listElement);
         }
 
+        internal static WebTable GetTableWithId(this RemoteWebDriver driver, string id)
+        {
+            var listElement = driver.GetElementById(id);
+            return new WebTable(driver, listElement);
+        }
+
         internal static IWebElement GetActiveElement(this RemoteWebDriver driver)
         {
             return (IWebElement) driver.ExecuteScript("return document.activeElement;");
+        }
+
+
+        internal static IWebElement TryFindElement(this ISearchContext context, By by)
+        {
+            return ExceptionHelper.SwallowException(() => context.FindElement(by), null);
         }
     }
 }

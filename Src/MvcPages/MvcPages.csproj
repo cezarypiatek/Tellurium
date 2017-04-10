@@ -132,6 +132,7 @@
     <Compile Include="Utils\ImageExtensions.cs" />
     <Compile Include="Utils\RetryHelper.cs" />
     <Compile Include="Utils\XPathHelpers.cs" />
+    <Compile Include="WebPages\EmptyWebElementCollectionException.cs" />
     <Compile Include="WebPages\Navigator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -139,6 +140,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WebPages\UrlHelper.cs" />
+    <Compile Include="WebPages\WebElementCollection.cs" />
     <Compile Include="WebPages\WebForms\DefaultInputAdapters\FileFormInputAdapter.cs" />
     <Compile Include="WebPages\WebForms\FieldValueWatcher.cs" />
     <Compile Include="WebPages\PageFragmentWatcher.cs" />
@@ -161,6 +163,8 @@
     <Compile Include="WebPages\WebForms\WebForm.cs" />
     <Compile Include="WebPages\WebForms\WebFormField.cs" />
     <Compile Include="WebPages\WebList.cs" />
+    <Compile Include="WebPages\WebTable.cs" />
+    <Compile Include="WebPages\WebTableRow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

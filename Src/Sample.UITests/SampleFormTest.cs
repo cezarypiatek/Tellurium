@@ -175,6 +175,108 @@ namespace Tellurium.Sample.UITests
             }
         }
 
+        [Test]
+        public void should_be_able_to_access_table_with_body()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+
+        //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo<HomeController>(c => c.Index());
+
+
+                var table = browserAdapter.GetTableWithId("TableWithHeaderAndBody");
+
+                //Access cell using row index and column name
+                Assert.AreEqual(2, table.Count);
+                Assert.IsNotNull(table[0]);
+                Assert.IsNotNull(table[0]["Lp"]);
+                Assert.AreEqual("1", table[0]["Lp"].Text);
+                Assert.IsNotNull(table[0]["First name"]);
+                Assert.AreEqual("John", table[0]["First name"].Text);
+                Assert.IsNotNull(table[0]["Last name"]);
+                Assert.AreEqual("Nash", table[0]["Last name"].Text);
+
+                Assert.IsNotNull(table[1]);
+                Assert.IsNotNull(table[1]["Lp"]);
+                Assert.AreEqual("2", table[1]["Lp"].Text);
+                Assert.IsNotNull(table[1]["First name"]);
+                Assert.AreEqual("Steve", table[1]["First name"].Text);
+                Assert.IsNotNull(table[1]["Last name"]);
+                Assert.AreEqual("Jobs", table[1]["Last name"].Text);
+
+                //Access cell using row index and column index
+                Assert.AreEqual(2, table.Count);
+                Assert.IsNotNull(table[0]);
+                Assert.IsNotNull(table[0][0]);
+                Assert.AreEqual("1", table[0][0].Text);
+                Assert.IsNotNull(table[0][1]);
+                Assert.AreEqual("John", table[0][1].Text);
+                Assert.IsNotNull(table[0][2]);
+                Assert.AreEqual("Nash", table[0][2].Text);
+
+                Assert.IsNotNull(table[1]);
+                Assert.IsNotNull(table[1][0]);
+                Assert.AreEqual("2", table[1][0].Text);
+                Assert.IsNotNull(table[1][1]);
+                Assert.AreEqual("Steve", table[1][1].Text);
+                Assert.IsNotNull(table[1][2]);
+                Assert.AreEqual("Jobs", table[1][2].Text);
+
+                Assert.IsNotNull(table.First());
+                Assert.IsNotNull(table.Last());
+
+                var itemWithText = table.FindItemWithText("Steve");
+                Assert.IsNotNull(itemWithText);
+            }
+        }
+
+
+        [Test]
+        public void should_be_able_to_access_table_without_body()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+
+        //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo<HomeController>(c => c.Index());
+
+
+                var table = browserAdapter.GetTableWithId("TableWithoutHeaderAndBody");
+
+               
+                //Access cell using row index and column index
+                Assert.AreEqual(2, table.Count);
+                Assert.IsNotNull(table[0]);
+                Assert.IsNotNull(table[0][0]);
+                Assert.AreEqual("1", table[0][0].Text);
+                Assert.IsNotNull(table[0][1]);
+                Assert.AreEqual("John", table[0][1].Text);
+                Assert.IsNotNull(table[0][2]);
+                Assert.AreEqual("Nash", table[0][2].Text);
+
+                Assert.IsNotNull(table[1]);
+                Assert.IsNotNull(table[1][0]);
+                Assert.AreEqual("2", table[1][0].Text);
+                Assert.IsNotNull(table[1][1]);
+                Assert.AreEqual("Steve", table[1][1].Text);
+                Assert.IsNotNull(table[1][2]);
+                Assert.AreEqual("Jobs", table[1][2].Text);
+
+                Assert.IsNotNull(table.First());
+                Assert.IsNotNull(table.Last());
+
+                var itemWithText = table.FindItemWithText("Steve");
+                Assert.IsNotNull(itemWithText);
+            }
+        }
+
 
         [Test]
         public void should_be_able_to_click_on_elements_with_text()

@@ -268,12 +268,31 @@ namespace Tellurium.MvcPages
 
         public WebList ToWebList()
         {
-            var body = Driver.FindElementByTagName("body");
+            var body = GetPageBody();
             var mainPageFragment = new PageFragment(Driver, body);
             return mainPageFragment.ToWebList();
         }
 
+        private IWebElement GetPageBody()
+        {
+            return Driver.FindElementByTagName("body");
+        }
+
+        public WebTable GetTableWithId(string id)
+        {
+            return Driver.GetTableWithId(id);
+        }
+
+        public WebTable ToWebTableList()
+        {
+            var body = GetPageBody();
+            return new WebTable(Driver, body);
+        }
+
+        public string Text => GetPageBody().Text;
+
         public IWebDriver WrappedDriver => Driver;
+        public IWebElement WrappedElement { get; }
     }
 
     public interface IBrowserAdapter : IPageFragment, IBrowserCamera,  IDisposable, IWrapsDriver

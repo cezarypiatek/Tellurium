@@ -1,4 +1,5 @@
 using OpenQA.Selenium;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
 
@@ -44,9 +45,23 @@ namespace Tellurium.MvcPages.WebPages
         {
             return new WebList(Driver, WebElement);
         }
+
+        public WebTable GetTableWithId(string id)
+        {
+            return Driver.GetTableWithId(id);
+        }
+
+        public WebTable ToWebTableList()
+        {
+            return new WebTable(Driver, WebElement);
+        }
+
+        public string Text => WebElement.Text;
+
+        public IWebElement WrappedElement => WebElement;
     }
 
-    public interface IPageFragment
+    public interface IPageFragment:IWrapsElement
     {
         void ClickOnElementWithText(string text);
         void ClickOnElementWithPartialText(string text);
@@ -54,5 +69,9 @@ namespace Tellurium.MvcPages.WebPages
         void HoverOnElementWithPartialText(string text);
         WebList GetListWithId(string id);
         WebList ToWebList();
+
+        WebTable GetTableWithId(string id);
+        WebTable ToWebTableList();
+        string Text { get; }
     }
 }
