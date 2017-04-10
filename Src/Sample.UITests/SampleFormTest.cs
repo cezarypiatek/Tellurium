@@ -304,7 +304,7 @@ namespace Tellurium.Sample.UITests
         }
 
         [Test]
-        public void should_be_able_to_detect_dom_changes()
+        public void should_be_able_to_detect_dom_changes_on_element_with_id()
         {
             //Initialize MvcPages
             var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
@@ -317,6 +317,23 @@ namespace Tellurium.Sample.UITests
 
                 var form = browserAdapter.GetForm("RegisterForm");
                 Assert.DoesNotThrow(()=> browserAdapter.AffectElementWith("RegisterForm", () => form.ClickOnElementWithText("Register")));
+            }
+        }
+
+        [Test]
+        public void should_be_able_to_detect_dom_changes_on_page_fragment()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+  
+            //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo<AccountController>(c => c.Register());
+
+                var form = browserAdapter.GetForm("RegisterForm");
+                Assert.DoesNotThrow(()=> form.AffectWith(() => form.ClickOnElementWithText("Register")));
             }
         }
 

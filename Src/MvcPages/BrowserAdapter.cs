@@ -192,6 +192,15 @@ namespace Tellurium.MvcPages
             watcher.WaitForChange();
         }
 
+        public void AffectWith(Action action)
+        {
+            var body = GetPageBody();
+            var watcher = new PageFragmentWatcher(Driver, body);
+            watcher.StartWatching();
+            action();
+            watcher.WaitForChange();
+        }
+
         public void ReloadPageWith(Action action)
         {
             MarkPageAsVisited();

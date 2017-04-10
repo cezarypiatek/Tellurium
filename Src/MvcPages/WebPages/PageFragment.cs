@@ -1,3 +1,4 @@
+using System;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
@@ -58,6 +59,14 @@ namespace Tellurium.MvcPages.WebPages
 
         public string Text => WebElement.Text;
 
+        public void AffectWith(Action action)
+        {
+            var watcher = new PageFragmentWatcher(Driver, WebElement);
+            watcher.StartWatching();
+            action();
+            watcher.WaitForChange();
+        }
+
         public IWebElement WrappedElement => WebElement;
     }
 
@@ -73,5 +82,6 @@ namespace Tellurium.MvcPages.WebPages
         WebTable GetTableWithId(string id);
         WebTable ToWebTableList();
         string Text { get; }
+        void AffectWith(Action action);
     }
 }
