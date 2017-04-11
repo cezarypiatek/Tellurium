@@ -21,7 +21,7 @@ namespace Tellurium.MvcPages.Configuration
             set { this[BrowserKey] = value;  }
         }
 
-        [ConfigurationProperty(DriversKey, DefaultValue = "Drivers", IsRequired = false)]
+        [ConfigurationProperty(DriversKey, DefaultValue = "", IsRequired = false)]
         public string DriversPath
         {
             get { return this[DriversKey] as string; }
