@@ -6,16 +6,14 @@
     <AssemblyName>Dashboard</AssemblyName>
     <RootNamespace>Tellurium.VisualAssertion.Dashboard</RootNamespace>
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Remove="wwwroot\lib\jquery-ui\**" />
-    <Content Remove="wwwroot\lib\jquery-ui\**" />
-    <EmbeddedResource Remove="wwwroot\lib\jquery-ui\**" />
-    <None Remove="wwwroot\lib\jquery-ui\**" />
+    <Content Remove="wwwroot\js\**" />	
+    <Content Remove="wwwroot\widgets\**" />	
+    <Content Remove="wwwroot\sb-admin\font-awesome\less\**" />	
+	<Content Remove="wwwroot\sb-admin\font-awesome\scss\**" />	
   </ItemGroup>
-
   <ItemGroup>
-    <Content Include="wwwroot\js\jquery-proxy.js" />
+    <None Include="wwwroot\js\jquery-proxy.js" />    
     <Content Include="wwwroot\js\jquery-ui.modern-unobtrusive.js" />
     <Content Include="wwwroot\sb-admin\css\bootstrap-rtl.css" />
     <Content Include="wwwroot\sb-admin\css\bootstrap-rtl.min.css" />
@@ -62,8 +60,8 @@
     <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="wwwroot\widgets\remoteexpander.js" />
-    <Content Include="wwwroot\widgets\testcase.js" />
+    <None Include="wwwroot\widgets\remoteexpander.js" />
+    <None Include="wwwroot\widgets\testcase.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="bootstrap" Version="3.3.7" />
@@ -94,5 +92,16 @@
   <ItemGroup>
     <Folder Include="Mvc\TagHelpers\" />
   </ItemGroup>
-
+  <Target Name="RestoreNPM" BeforeTargets="BundleMinify">
+    <Exec Command="npm install" />
+  </Target>
+  <Target Name="PrepareContent" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <DistFiles Include="wwwroot\dist\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 </Project>
