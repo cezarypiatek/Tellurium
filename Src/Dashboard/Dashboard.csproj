@@ -62,7 +62,6 @@
     <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="wwwroot\sb-admin\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="wwwroot\sb-admin\js\bootstrap.min.js" />
     <Content Include="wwwroot\widgets\remoteexpander.js" />
     <Content Include="wwwroot\widgets\testcase.js" />
   </ItemGroup>
