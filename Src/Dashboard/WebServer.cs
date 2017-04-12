@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace Tellurium.VisualAssertion.Dashboard
 {
@@ -10,9 +11,14 @@ namespace Tellurium.VisualAssertion.Dashboard
 
         public void Run(bool consoleMode=false)
         {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true)
+                .Build();
+
             host = new WebHostBuilder()
                 .UseKestrel()
-                .UseUrls("http://*:5000")
+                .UseConfiguration(config)
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
