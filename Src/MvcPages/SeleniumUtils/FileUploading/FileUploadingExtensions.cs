@@ -62,6 +62,17 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
 
         private static string ToAbsolutePath(string filePath)
         {
+            if (AppDomain.CurrentDomain.SetupInformation.PrivateBinPath != null)
+            {
+                foreach (var rootPath in AppDomain.CurrentDomain.SetupInformation.PrivateBinPath.Split(';'))
+                {
+                    var absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, rootPath, filePath);
+                    if (File.Exists(absolutePath))
+                    {
+                        return absolutePath;
+                    }
+                }
+            }
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
         }
 
