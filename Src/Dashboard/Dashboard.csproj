@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
     <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
-    <AssemblyName>Dashboard</AssemblyName>
+    <AssemblyName>TelluriumDashboard</AssemblyName>
     <RootNamespace>Tellurium.VisualAssertion.Dashboard</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
