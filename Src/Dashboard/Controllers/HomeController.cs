@@ -60,7 +60,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Controllers
         public ActionResult MarkAsPattern(long testResultId)
         {
             this.testResultService.MarkAsPattern(testResultId);
-            return this.RedirectToAction("GetTestResult", testResultId);
+            return this.RedirectToAction("GetTestResult", new { testId= testResultId});
         }
 
         [HttpPost]
