@@ -1,15 +1,16 @@
 ﻿@using Tellurium.VisualAssertion.Dashboard.Controllers
-@using Tellurium.VisualAssertion.Dashboard.Models.Home
 @using Tellurium.VisualAssertion.Dashboard.Mvc
 @using Tellurium.VisualAssertion.Dashboard.Mvc.Widgets
 @model Tellurium.VisualAssertion.Dashboard.Models.Home.BrowserPatternDTO
 @{
     var testCaseWidget = TestCaseWidget.Create<TestCaseController>(c => c.SaveLocalBlindspots(null), c => c.SaveCategoryBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
+    var versionDropdownId = "PatternVersion" + Model.PatternId;
+    var containerId = "TestCaseDetails" + Model.TestCaseId;
 }
 <div @testCaseWidget.GetAttributeString()>
     <div class="testcase-toolbar">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col">
                 <div class="btn-group" data-testcase-element="scope">
                     <span class="btn btn-default active" data-testcase-element="local">
                         <span class="local legend-square"></span> <span class="legend-label">Draw local blindspot</span>
@@ -22,25 +23,63 @@
                     </span>
                 </div>
             </div>
-            <div class="col-md-2 pull-right">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-primary local" data-testcase-element="save">Save local blindspots</button>
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" class="category" data-testcase-element="save">Save category blindspots</a></li>
-                        <li><a href="#" data-testcase-element="save">Save global blindspots</a></li>
-                    </ul>
+            <div class="col">
+                <label class="control-label col version-label" for="@versionDropdownId">Version</label>    
+                <select class="form-control col version-dropdown" id="@versionDropdownId" data-ui-fn="ajaxdropdown" data-ui-ajaxdropdown-target="@containerId">
+                    @foreach (var option in Model.AllPatterns.Options)
+                    {
+                        var url = Url.ActionFor<TestCaseController>(c => c.GetTestCasePattern(Model.TestCaseId, option.Value));
+                        if (option.Value == Model.AllPatterns.Selected)
+                        {
+                            <option value="@url" selected>@option.Label</option>
+                        }
+                        else
+                        {
+                            <option value="@url">@option.Label</option>
+                        }
+
+                    }
+                </select>
+                <div class="col-md-3">
+                    <select class="form-control" id="@versionDropdownId" data-ui-fn="ajaxdropdown" data-ui-ajaxdropdown-target="@containerId">
+                        @foreach (var option in Model.AllPatterns.Options)
+                        {
+                            var url = Url.ActionFor<TestCaseController>(c => c.GetTestCasePattern(Model.TestCaseId, option.Value));
+                            if (option.Value == Model.AllPatterns.Selected)
+                            {
+                                <option value="@url" selected>@option.Label</option>
+                            }
+                            else
+                            {
+                                <option value="@url">@option.Label</option>
+                            }
+
+                        }
+                    </select>
                 </div>
+            </div>
+            <div class="col pull-right">
+                @if (Model.IsActive)
+                {
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary local" data-testcase-element="save">Save local blindspots</button>
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="category" data-testcase-element="save">Save category blindspots</a></li>
+                            <li><a href="#" data-testcase-element="save">Save global blindspots</a></li>
+                        </ul>
+                    </div>    
+                }
             </div>
         </div>
     </div>
     <div class="testcase-board" data-testcase-element="board">
-        <img class="screenshot" src="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePatternImage(Model.PatternId)))" />
-        <div class="testcase-overlay">
-            <span class="label" style="color: black"></span>
+        <img class="screenshot noselect" src="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePatternImage(Model.PatternId)))" />
+        <div class="testcase-overlay noselect">
+            <span class="label noselect" style="color: black"></span>
         </div>
     </div>
 </div>

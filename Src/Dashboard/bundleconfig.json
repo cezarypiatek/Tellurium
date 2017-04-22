@@ -17,6 +17,7 @@
       "wwwroot/js/jquery-proxy.js",
       "wwwroot/js/jquery-ui.modern-unobtrusive.js",
       "wwwroot/widgets/remoteexpander.js",
+      "wwwroot/widgets/AjaxDropdown.js",
       "wwwroot/widgets/testcase.js"
     ],    
     "minify": {

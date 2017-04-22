@@ -11,5 +11,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Models.Home
         public List<BlindRegion> CategoryBlindRegions { get; set; }
         public List<BlindRegion> LocalBlindRegions { get; set; }
         public string BrowserName { get; set; }
+        public bool IsActive { get; set; }
+        public Dropdown<long> AllPatterns { get; set; }
     }
 }

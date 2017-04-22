@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Tellurium.VisualAssertion.Dashboard.Models;
 using Tellurium.VisualAssertion.Dashboard.Models.Home;
 using Tellurium.VisualAssertion.Dashboard.Models.TestCase;
 using Tellurium.VisualAssertion.Dashboard.Services.TestCase.Queries;
@@ -139,7 +140,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase
         public BrowserPatternDTO GetTestCasePattern(long testCaseId, long patternId)
         {
             var testCase = this.testCaseRepository.Get(testCaseId);
-            var browserPattern = browserPatternRepository.Get(patternId);
+            var browserPattern = testCase.Patterns.First(x => x.Id == patternId);
             var projectBlindRegionForBrowser = testCase.Project.GetOwnBlindRegionForBrowser(browserPattern.BrowserName) ?? new BlindRegionForBrowser();
             var categoryBlindRegionForBrowser = testCase.Category.GetOwnBlindRegionForBrowser(browserPattern.BrowserName) ?? new BlindRegionForBrowser();
             return new BrowserPatternDTO
@@ -149,7 +150,28 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase
                 LocalBlindRegions = browserPattern.BlindRegions.ToList(),
                 BrowserName = browserPattern.BrowserName,
                 PatternId = browserPattern.Id,
-                TestCaseId = testCase.Id
+                TestCaseId = testCase.Id,
+                IsActive = browserPattern.IsActive,
+                AllPatterns = MapToAllPatternsDropdown(patternId, testCase, browserPattern)
+            };
+        }
+
+        private static Dropdown<long> MapToAllPatternsDropdown(long patternId, VisualAssertions.Screenshots.Domain.TestCase testCase, BrowserPattern browserPattern)
+        {
+            var allPatterns = testCase.Patterns
+                .Where(x=>x.BrowserName == browserPattern.BrowserName)
+                .OrderByDescending(x=>x.Id).ToList();
+
+            var counter = 0;
+            return new Dropdown<long>()
+            {
+                Selected = patternId,
+                Options = allPatterns
+                    .Select(x=> new DropdownItem<long>()
+                    {
+                        Label = (allPatterns.Count - (counter++)).ToString(),
+                        Value = x.Id
+                    }).ToList()
             };
         }
 
