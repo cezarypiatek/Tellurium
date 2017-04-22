@@ -40,23 +40,6 @@
 
                     }
                 </select>
-                <div class="col-md-3">
-                    <select class="form-control" id="@versionDropdownId" data-ui-fn="ajaxdropdown" data-ui-ajaxdropdown-target="@containerId">
-                        @foreach (var option in Model.AllPatterns.Options)
-                        {
-                            var url = Url.ActionFor<TestCaseController>(c => c.GetTestCasePattern(Model.TestCaseId, option.Value));
-                            if (option.Value == Model.AllPatterns.Selected)
-                            {
-                                <option value="@url" selected>@option.Label</option>
-                            }
-                            else
-                            {
-                                <option value="@url">@option.Label</option>
-                            }
-
-                        }
-                    </select>
-                </div>
             </div>
             <div class="col pull-right">
                 @if (Model.IsActive)
