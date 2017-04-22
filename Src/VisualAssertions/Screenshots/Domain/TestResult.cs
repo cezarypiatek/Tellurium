@@ -8,7 +8,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
         public virtual string ScreenshotName { get; set; }
         public virtual string Category { get; set; }
         public virtual string BrowserName { get; set; }
-        public virtual bool TestPassed { get; set; }
+        public virtual TestResultStatus Status { get; set; }
         public virtual BrowserPattern Pattern { get; set; }
         public virtual TestSession TestSession { get; set; }
         public virtual byte[] ErrorScreenshot { get; set; }
@@ -28,5 +28,12 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
                 this.Pattern.TestCase.AddNewPattern(this.ErrorScreenshot, this.Pattern.BrowserName, blindRegionsCopy);
             }
         }
+    }
+
+    public enum TestResultStatus
+    {
+        Failed=0,
+        Passed,
+        NewPattern
     }
 }

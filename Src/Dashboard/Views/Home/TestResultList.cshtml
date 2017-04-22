@@ -9,22 +9,25 @@
 }
 <div class="container-fluid">
     <div class="row">
-        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatus.All)))"
+        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatusFilter.All)))"
            class="btn btn-primary"
            data-ajax="true"
-           data-ajax-method="POST"
-           data-ajax-confirm="Do you really want to mark this as pattern?"
            data-ajax-update="#TestResultsList">All tests: @Model.AllCount</a>
         
-        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatus.Passed)))"
+        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatusFilter.Passed)))"
            class="btn btn-success"
            data-ajax="true"
            data-ajax-update="#TestResultsList">Passed tests:@Model.PassedCount</a>        
         
-        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatus.Failed)))"
+        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatusFilter.Failed)))"
            class="btn btn-danger"
            data-ajax="true"
            data-ajax-update="#TestResultsList">Failed tests: @Model.FailedCount</a>
+        
+        <a href="@(Url.ActionFor<HomeController>(c=>c.GetTestsFromSessionInStatus(Model.TestSessionId, Model.BrowserName, TestResultStatusFilter.New)))"
+           class="btn btn-info"
+           data-ajax="true"
+           data-ajax-update="#TestResultsList">New tests: @Model.NewCount</a>
     </div>
     <div class="row">
         <a href="@(Url.ActionFor<HomeController>(c => c.MarkAllAsPattern(Model.TestSessionId, Model.BrowserName)))"

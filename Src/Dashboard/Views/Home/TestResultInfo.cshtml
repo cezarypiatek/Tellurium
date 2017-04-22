@@ -4,7 +4,7 @@
 @using Tellurium.VisualAssertion.Dashboard.Services.TestResults
 @model Tellurium.VisualAssertion.Dashboard.Services.TestResults.TestResultListItemDTO
 @{
-    var rowClass = Model.TestPassed ? "panel-success" : "panel-danger";
+    var rowClass = Model.TestPassed ? "panel-success" : (Model.TestFailed? "panel-danger":"panel-info");
     var detailsId = "RowDetails" + Model.TestResultId;
     var rowId = "Row" + Model.TestResultId;
     var widget = RemoteExpanderWidget.Create<HomeController>(c => c.GetTestResultDetails(Model.TestResultId), detailsId, Url);

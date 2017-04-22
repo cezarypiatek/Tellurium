@@ -5,7 +5,7 @@
 @model Tellurium.VisualAssertion.Dashboard.Services.TestResults.TestResultWithPreview
 @{
     Layout = "~/Views/_Layout.cshtml";
-    var rowClass = Model.ListItem.TestPassed ? "panel-success" : "panel-danger";
+    var rowClass = Model.ListItem.TestPassed ? "panel-success" : (Model.ListItem.TestFailed ? "panel-danger" : "panel-info");
     var detailsId = "RowDetails" + Model.ListItem.TestResultId;
     var rowId = "Row" + Model.ListItem.TestResultId;
     var widget = RemoteExpanderWidget.Create<HomeController>(c => c.GetTestResultDetails(Model.ListItem.TestResultId), detailsId, Url);

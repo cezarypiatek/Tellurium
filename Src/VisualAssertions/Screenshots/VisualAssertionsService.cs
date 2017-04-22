@@ -70,28 +70,27 @@ namespace Tellurium.VisualAssertions.Screenshots
                     var testCase = GetTestCase(project, screenshotIdentity);
                     var browserPattern = testCase.GetActivePatternForBrowser(screenshotIdentity.BrowserName);
                     var testSession = GetCurrentTestSession(project);
-
-                    if (browserPattern == null)
+                    var newPattern = browserPattern == null ? testCase.AddNewPattern(image, screenshotIdentity.BrowserName) : null;
+                    var testResult = GetTestResult(image, screenshotIdentity, browserPattern, newPattern);
+                    testSession.AddTestResult(testResult);
+                    finishNotification = () =>
                     {
-                        var newPattern = testCase.AddNewPattern(image, screenshotIdentity.BrowserName);
-                        finishNotification = () => testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, newPattern);
-                    }
-                    else
-                    {
-                        var testResult = GetTestResult(image, screenshotIdentity, browserPattern);
-                        testSession.AddTestResult(testResult);
-                        finishNotification = () =>
+                        switch (testResult.Status)
                         {
-                            if (testResult.TestPassed)
-                            {
-                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, browserPattern);
-                            }
-                            else
-                            {
+                            case TestResultStatus.Failed:
                                 testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName, testSession, browserPattern);
-                            }
-                        };
-                    }
+                                break;
+                            case TestResultStatus.Passed:
+                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, browserPattern);
+                                break;
+                            case TestResultStatus.NewPattern:
+                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, newPattern);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    };
+
                     tx.Commit();
                 }
                 finishNotification.Invoke();
@@ -102,24 +101,27 @@ namespace Tellurium.VisualAssertions.Screenshots
             }
         }
 
-        private TestResult GetTestResult(byte[] image, ScreenshotIdentity screenshotIdentity, BrowserPattern browserPattern)
+        private TestResult GetTestResult(byte[] image, ScreenshotIdentity screenshotIdentity, BrowserPattern browserPattern, BrowserPattern newPattern)
         {
             var testResult = new TestResult
             {
-                Pattern = browserPattern,
+                Pattern = newPattern ?? browserPattern,
                 ScreenshotName = screenshotIdentity.ScreenshotName,
                 Category = screenshotIdentity.Category,
                 BrowserName = screenshotIdentity.BrowserName
             };
 
-            if (browserPattern.MatchTo(image))
+            if (newPattern != null)
             {
-                testResult.TestPassed = true;
-               
+                testResult.Status = TestResultStatus.NewPattern;
+            }
+            else if (browserPattern.MatchTo(image))
+            {
+                testResult.Status = TestResultStatus.Passed;
             }
             else
             {
-                testResult.TestPassed = false;
+                testResult.Status = TestResultStatus.Failed;
                 testResult.ErrorScreenshot = image;
                 testResult.BlindRegionsSnapshot = browserPattern.GetCopyOfAllBlindRegions();
             }

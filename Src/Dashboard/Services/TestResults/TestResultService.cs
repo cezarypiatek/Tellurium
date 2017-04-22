@@ -87,14 +87,17 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
 
         public TestResultListViewModel GetTestsFromSession(long sessionId, string browserName)
         {
-            var query = new FindTestResultsFromSession(sessionId, browserName, TestResultStatus.All);
+            var query = new FindTestResultsFromSession(sessionId, browserName, TestResultStatusFilter.All);
             var testResults = this.testRepository.FindAll(query);
-            var failedCount = testResults.Count(x => x.TestPassed == false);
+            var failedCount = testResults.Count(x => x.Status == TestResultStatus.Failed);
+            var passedCount = testResults.Count(x => x.Status == TestResultStatus.Passed);
+            var newCount = testResults.Count(x => x.Status == TestResultStatus.NewPattern);
             return new TestResultListViewModel()
             {
                 AllCount = testResults.Count,
                 FailedCount = failedCount,
-                PassedCount = testResults.Count-failedCount,
+                PassedCount = passedCount,
+                NewCount = newCount,
                 TestSessionId = sessionId,
                 BrowserName = browserName,
                 TestResults = testResults.ConvertAll(MapToTestResultListItemDTO)
@@ -107,9 +110,10 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
             {
                 TestResultId = x.Id,
                 TestCaseId = x.Pattern.TestCase.Id,
-                TestPassed = x.TestPassed,
+                TestPassed = x.Status==TestResultStatus.Passed,
+                TestFailed = x.Status==TestResultStatus.Failed,
                 ScreenshotName = string.Format("{0} \\ {1}", x.Category, x.ScreenshotName),
-                CanShowMarkAsPattern = x.TestPassed == false && x.Pattern.IsActive,
+                CanShowMarkAsPattern = x.Status == TestResultStatus.Failed && x.Pattern.IsActive,
             };
         }
 
@@ -147,7 +151,8 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
             var testResult = this.testRepository.Get(testResultId);
             return new TestResultDetailsViewModel()
             {
-                TestPassed = testResult.TestPassed,
+                TestPassed = testResult.Status == TestResultStatus.Passed,
+                TestFailed = testResult.Status == TestResultStatus.Failed,
                 TestResultId = testResult.Id
             };
         }
@@ -163,7 +168,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
             };
         }
 
-        public TestResultsInStatusViewModel GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatus status)
+        public TestResultsInStatusViewModel GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatusFilter status)
         {
             var query = new FindTestResultsFromSession(sessionId, browserName, status);
             var testResults = this.testRepository.FindAll(query);
@@ -185,7 +190,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
         ProjectListViewModel GetProjectsList();
         TestResultDetailsViewModel GetTestResultDetails(long testResultId);
         TestResultWithPreview GetTestResultPreview(long testSessionId, long patternId);
-        TestResultsInStatusViewModel GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatus status);
+        TestResultsInStatusViewModel GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatusFilter status);
     }
 
     public enum ScreenshotType
@@ -199,13 +204,15 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
     {
         public long TestResultId { get; set; }
         public bool TestPassed { get; set; }
+        public bool TestFailed { get; set; }
     }
 
-    public enum TestResultStatus
+    public enum TestResultStatusFilter
     {
         All,
         Passed,
-        Failed
+        Failed,
+        New
     }
 
     public class TestResultListViewModel
@@ -216,6 +223,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
         public int AllCount { get; set; }
         public int PassedCount { get; set; }
         public int FailedCount { get; set; }
+        public int NewCount { get; set; }
     }
 
     public class TestResultsInStatusViewModel
@@ -236,6 +244,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
         public bool TestPassed { get; set; }
         public string ScreenshotName { get; set; }
         public bool CanShowMarkAsPattern { get; set; }
+        public bool TestFailed { get; set; }
     }
 
     public class ProjectListViewModel

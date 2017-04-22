@@ -32,7 +32,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Controllers
             return View("TestResultList", tests);
         }
 
-        public ActionResult GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatus status)
+        public ActionResult GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatusFilter status)
         {
             var tests = this.testResultService.GetTestsFromSessionInStatus(sessionId, browserName, status);
             return View("TestResultsInStatus", tests);

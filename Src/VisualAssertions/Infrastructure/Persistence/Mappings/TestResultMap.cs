@@ -10,7 +10,7 @@ namespace Tellurium.VisualAssertions.Infrastructure.Persistence.Mappings
             Id(x => x.Id);
             Map(x => x.ScreenshotName);
             Map(x => x.BrowserName);
-            Map(x => x.TestPassed);
+            Map(x => x.Status).CustomType<TestResultStatus>();
             Map(x => x.Category);
             Map(x => x.ErrorScreenshot).Length(int.MaxValue).LazyLoad();
             References(x => x.Pattern);

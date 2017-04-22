@@ -11,9 +11,9 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults.Queries
     {
         private readonly long sessionId;
         private readonly string browserName;
-        private readonly TestResultStatus resultStatus;
+        private readonly TestResultStatusFilter resultStatus;
 
-        public FindTestResultsFromSession(long sessionId, string browserName, TestResultStatus resultStatus)
+        public FindTestResultsFromSession(long sessionId, string browserName, TestResultStatusFilter resultStatus)
         {
             this.sessionId = sessionId;
             this.browserName = browserName;
@@ -28,12 +28,14 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults.Queries
 
             switch (resultStatus)
             {
-                case TestResultStatus.All:
+                case TestResultStatusFilter.All:
                     return testFromSession.ToList();
-                case TestResultStatus.Passed:
-                    return testFromSession.Where(x=>x.TestPassed).ToList();
-                case TestResultStatus.Failed:
-                    return testFromSession.Where(x => x.TestPassed == false).ToList();
+                case TestResultStatusFilter.Passed:
+                    return testFromSession.Where(x=>x.Status == TestResultStatus.Passed).ToList();
+                case TestResultStatusFilter.Failed:
+                    return testFromSession.Where(x => x.Status == TestResultStatus.Failed).ToList();
+                case TestResultStatusFilter.New:
+                    return testFromSession.Where(x => x.Status == TestResultStatus.NewPattern).ToList();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
