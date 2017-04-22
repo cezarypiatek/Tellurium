@@ -118,15 +118,27 @@
                 addSquareToBoard(data, "global");
             });
         });
-        
 
+        var moving = false;
+        var $currentMovingSquare = null;
+        var moveStartOffset = null;
+        var currentMovingSquareOriginalOffset = null;
+        $board.on("mousedown", ".blind", function(e) {
+            moving = true;
+            moveStartOffset = getOffset(e);
+            $currentMovingSquare = $(this);
+            var offset = $currentMovingSquare.offset();
+            currentMovingSquareOriginalOffset = getOffset({ pageX: offset.left, pageY: offset.top});
+        });
+        
         $board.on("mousedown", function (e) {
             drawing = true;
             startPoint = getOffset(e);
             currSquare = $("<div></div>",{"class":"blind "+scope, tabindex:index++});
             $board.append(currSquare);
         });
-        $board.on("mouseup", function () {
+
+        $("body").on("mouseup", function () {
             if (drawing) {
                 drawing = false;
                 if (currSquare.width() < 5 || currSquare.height() < 5) {
@@ -134,6 +146,11 @@
                 }
                 currSquare.focus();
                 currSquare = null;
+            }
+
+            if (moving) {
+                moving = false;
+                $currentMovingSquare = null;
             }
         });
 
@@ -145,14 +162,45 @@
             };
         }
 
-        $board.on("mousemove", function (e) {
+        var lastOffset = null;
+
+        $board.on("mouseleave", function(e) {
             var offset = getOffset(e);
+            var maxWidth = $board.width();
+            var maxHeight = $board.height();
+
+            if (offset.x < 0) {
+                offset.x = 0;
+            } else if (offset.x > maxWidth) {
+                offset.x = maxWidth;
+            }
+
+            if (offset.y < 0) {
+                offset.y = 0;
+            } else if (offset.y > maxHeight) {
+                offset.y = maxHeight;
+            }
 
             $label.text("X:" + offset.x + " Y:" + offset.y);
 
             if (drawing) {
-                var maxWidth = $board.width();
-                var maxHeight = $board.height();
+                currSquare.css({
+                    left: Math.min(startPoint.x, offset.x) / maxWidth * 100 + "%",
+                    top: Math.min(startPoint.y, offset.y) / maxHeight * 100 + "%",
+                    width: Math.abs(offset.x - startPoint.x) / maxWidth * 100 + "%",
+                    height: Math.abs(offset.y - startPoint.y) / maxHeight * 100 + "%"
+                });
+            }
+        });
+
+        $board.on("mousemove", function (e) {
+            var offset = getOffset(e);
+
+            $label.text("X:" + offset.x + " Y:" + offset.y);
+            var maxWidth = $board.width();
+            var maxHeight = $board.height();
+
+            if (drawing) {
                 currSquare.css({
                     left: Math.min(startPoint.x, offset.x) / maxWidth *100 + "%",
                     top: Math.min(startPoint.y, offset.y) / maxHeight * 100 + "%",
@@ -160,6 +208,37 @@
                     height: Math.abs(offset.y - startPoint.y) / maxHeight * 100 + "%"
                 });
             }
+
+            if (moving) {
+
+                var xOff = offset.x - moveStartOffset.x;
+                var yOff = offset.y - moveStartOffset.y;
+                var newX = currentMovingSquareOriginalOffset.x + xOff;
+                var newY = currentMovingSquareOriginalOffset.y + yOff;
+                var squareWidth = $currentMovingSquare.outerWidth();
+                var squareHeight = $currentMovingSquare.outerHeight();
+
+                var newRight = newX + squareWidth;
+                var newBottom = newY + squareHeight;
+                if (newX < 0) {
+                    newX = 0;
+                } else if (newRight > maxWidth) {
+                    newX = maxWidth - squareWidth;
+                }
+
+                if (newY < 0) {
+                    newY = 0;
+                } else if (newBottom > maxHeight) {
+                    newY = maxHeight - squareHeight;
+                }
+                
+                $currentMovingSquare.css({
+                    left: newX / maxWidth * 100 + "%",
+                    top: newY / maxHeight * 100 + "%"
+                });    
+                
+            }
+            lastOffset = offset;
         });
     },
     _getScreenshotDimensions: function() {
