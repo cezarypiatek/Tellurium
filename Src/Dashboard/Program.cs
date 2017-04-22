@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using Topshelf;
 
@@ -11,6 +13,7 @@ namespace Tellurium.VisualAssertion.Dashboard
 #if DEBUG
             using (var server = new WebServer())
             {
+                Console.SetOut(new DebugWriter());
                 server.Run(consoleMode:true);
                 Console.ReadKey();
             }
@@ -38,6 +41,15 @@ namespace Tellurium.VisualAssertion.Dashboard
                 hostConfiguration.SetServiceName("TelluriumDashboard");
                 hostConfiguration.StartAutomatically();
             });
+        }
+    }
+
+    public class DebugWriter : StringWriter
+    {
+        public override void WriteLine(string value)
+        {
+            Debug.WriteLine(value);
+            base.WriteLine(value);
         }
     }
 }
