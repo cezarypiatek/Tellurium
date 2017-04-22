@@ -22,7 +22,6 @@ namespace Tellurium.VisualAssertion.Dashboard
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
-                .UseApplicationInsights()
                 .Build();
 
             if (consoleMode)
