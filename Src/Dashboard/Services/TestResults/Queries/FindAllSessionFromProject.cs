@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHibernate.Linq;
 using Tellurium.VisualAssertions.Infrastructure;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 
@@ -17,6 +18,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults.Queries
         public List<TestSession> GetQuery(IQueryable<TestSession> query)
         {
             return query.Where(x => x.Project.Id == projectId)
+                .FetchMany(x=>x.Browsers)
                 .OrderByDescending(x => x.StartDate).ToList();
         }
     }

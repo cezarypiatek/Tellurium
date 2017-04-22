@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHibernate.Linq;
 using Tellurium.VisualAssertions.Infrastructure;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 
@@ -22,6 +23,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults.Queries
         public List<TestResult> GetQuery(IQueryable<TestResult> query)
         {
             var testFromSession = query.Where(x=>x.TestSession.Id == sessionId)
+                .Fetch(x=>x.Pattern)
                 .Where(x=>x.BrowserName == browserName);
 
             switch (resultStatus)
