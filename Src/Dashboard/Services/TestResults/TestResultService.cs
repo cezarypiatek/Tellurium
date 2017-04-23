@@ -62,23 +62,16 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
 
         public Bitmap GetScreenshot(long testId, ScreenshotType screenshotType)
         {
-            var testResult = this.testRepository.Get(testId);
+            var query = new FindErrorScreenshot(testId);
+            var testResult = this.testRepository.FindOne(query);
             var patternBitmap = testResult.Pattern.PatternScreenshot.Image.ToBitmap();
-
+            var errorBitmap = testResult.ErrorScreenshot.ToBitmap();
             switch (screenshotType)
             {
-                case ScreenshotType.Pattern:
-                    return patternBitmap;
                 case ScreenshotType.Error:
-                {
-                    var errorBitmap = testResult.ErrorScreenshot.ToBitmap();
                     return ImageHelpers.CreateImageDiff(patternBitmap, errorBitmap, testResult.BlindRegionsSnapshot.AsReadonly());
-                }
                 case ScreenshotType.Diff:
-                {
-                    var errorBitmap = testResult.ErrorScreenshot.ToBitmap();
                     return ImageHelpers.CreateImagesXor(patternBitmap, errorBitmap, testResult.BlindRegionsSnapshot.AsReadonly());
-                }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(screenshotType), screenshotType, null);
             }
@@ -198,8 +191,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
 
     public enum ScreenshotType
     {
-        Pattern = 1,
-        Error,
+        Error=2,
         Diff
     }
 
