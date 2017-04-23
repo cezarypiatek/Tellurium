@@ -43,5 +43,10 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
         {
             Patterns = new List<BrowserPattern>();
         }
+
+        public virtual BrowserPattern GetActivePatternForBrowser(string browserName)
+        {
+            return Patterns.SingleOrDefault(x => x.BrowserName == browserName && x.IsActive);
+        }
     }
 }

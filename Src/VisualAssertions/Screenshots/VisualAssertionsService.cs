@@ -70,7 +70,7 @@ namespace Tellurium.VisualAssertions.Screenshots
                 {
                     var project = this.GetProject(screenshotIdentity.ProjectName);
                     var testCase = GetTestCase(project, screenshotIdentity);
-                    var browserPattern = GetActivePatternForBrowser(screenshotIdentity, testCase);
+                    var browserPattern = testCase.GetActivePatternForBrowser(screenshotIdentity.BrowserName);
                     var testSession = GetCurrentTestSession(project);
                     var newPattern = browserPattern == null ? testCase.AddNewPattern(image, screenshotIdentity.BrowserName) : null;
                     var testResult = GetTestResult(image, screenshotIdentity, browserPattern, newPattern);
