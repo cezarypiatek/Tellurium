@@ -2,6 +2,9 @@
 @using Tellurium.VisualAssertion.Dashboard.Mvc
 @using Tellurium.VisualAssertion.Dashboard.Services.TestResults
 @model Tellurium.VisualAssertion.Dashboard.Services.TestResults.TestResultDetailsViewModel
+@{
+    var editorContainerId = "TestCaseDetails" + Model.TestCaseId;
+}
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#pattern@(Model.TestResultId)" aria-controls="pattern@(Model.TestResultId)" role="tab" data-toggle="tab">Pattern</a></li>
     @if (Model.TestFailed)
@@ -9,6 +12,7 @@
         <li role="presentation"><a href="#error@(Model.TestResultId)" aria-controls="error@(Model.TestResultId)" role="tab" data-toggle="tab">Error</a></li>
         <li role="presentation"><a href="#diff@(Model.TestResultId)" aria-controls="diff@(Model.TestResultId)" role="tab" data-toggle="tab">Diff</a></li>
     }
+    <li role="presentation"><a href="#@editorContainerId" data-src="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePattern(Model.PatternId)))" aria-controls="edit@(Model.TestResultId)" role="tab" data-toggle="tab">Edit</a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -28,5 +32,8 @@
             <img class="screenshot screenshot-diff" src="@(Url.ActionFor<HomeController>(c => c.GetScreenshot(Model.TestResultId, ScreenshotType.Diff)))" />
         </div>
     }
+    <div role="tabpanel" class="tab-pane" id="@editorContainerId">
+       
+    </div>
 </div>
 

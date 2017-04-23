@@ -12,7 +12,7 @@
             <div class="col-md-6 btn-toolbar">
                 @foreach (var browser in Model.Browsers)
                 {
-                    <a href="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePattern(Model.TestCaseId, browser.PatternId)))" class="btn btn-default" data-ajax="true" data-ajax-update="#@detailsId">@browser.BrowserName</a>
+                    <a href="@(Url.ActionFor<TestCaseController>(c => c.GetTestCasePattern(browser.PatternId)))" class="btn btn-default" data-ajax="true" data-ajax-update="#@detailsId">@browser.BrowserName</a>
                 }
 
             </div>

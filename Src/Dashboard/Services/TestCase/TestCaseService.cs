@@ -137,10 +137,10 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase
             };
         }
 
-        public BrowserPatternDTO GetTestCasePattern(long testCaseId, long patternId)
+        public BrowserPatternDTO GetTestCasePattern(long patternId)
         {
-            var testCase = this.testCaseRepository.Get(testCaseId);
-            var browserPattern = testCase.Patterns.First(x => x.Id == patternId);
+            var browserPattern = browserPatternRepository.Get(patternId);
+            var testCase = browserPattern.TestCase;
             var projectBlindRegionForBrowser = testCase.Project.GetOwnBlindRegionForBrowser(browserPattern.BrowserName) ?? new BlindRegionForBrowser();
             var categoryBlindRegionForBrowser = testCase.Category.GetOwnBlindRegionForBrowser(browserPattern.BrowserName) ?? new BlindRegionForBrowser();
             return new BrowserPatternDTO
@@ -201,7 +201,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase
         void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto);
         void SaveCategoryBlindregions(SaveCategoryBlindRegionsDTO dto);
         List<TestCaseListItem> GetTestCasesFromCategory(long categoryId);
-        BrowserPatternDTO GetTestCasePattern(long testCaseId, long patternId);
+        BrowserPatternDTO GetTestCasePattern(long patternId);
         byte[] GetPatternScreenshot(long patternId);
         ProjectListViewModel GetProjectsList();
         TestCaseCategoriesListViewModel GetTestCaseCategories(long projectId);

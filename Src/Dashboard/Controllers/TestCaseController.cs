@@ -33,9 +33,9 @@ namespace Tellurium.VisualAssertion.Dashboard.Controllers
             return PartialView(testCases);
         }
 
-        public ActionResult GetTestCasePattern(long testCaseId, long patternId)
+        public ActionResult GetTestCasePattern(long patternId)
         {
-            var result = this.testCaseService.GetTestCasePattern(testCaseId, patternId);
+            var result = this.testCaseService.GetTestCasePattern(patternId);
             return PartialView(result);
         }
 

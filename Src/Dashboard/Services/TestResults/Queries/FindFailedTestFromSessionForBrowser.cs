@@ -20,6 +20,8 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults.Queries
         public List<TestResult> GetQuery(IQueryable<TestResult> query)
         {
             return query.Where(x => x.TestSession.Id == testSessionId && x.Status == TestResultStatus.Failed && x.BrowserName == browserName)
+                .Fetch(x=>x.Pattern)
+                .ThenFetch(p=>p.TestCase)
                 .ToList();
         }
     }

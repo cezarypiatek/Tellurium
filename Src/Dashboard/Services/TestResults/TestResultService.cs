@@ -71,7 +71,6 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
                     return patternBitmap;
                 case ScreenshotType.Error:
                 {
-
                     var errorBitmap = testResult.ErrorScreenshot.ToBitmap();
                     return ImageHelpers.CreateImageDiff(patternBitmap, errorBitmap, testResult.BlindRegionsSnapshot.AsReadonly());
                 }
@@ -81,7 +80,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
                     return ImageHelpers.CreateImagesXor(patternBitmap, errorBitmap, testResult.BlindRegionsSnapshot.AsReadonly());
                 }
                 default:
-                    throw new ArgumentOutOfRangeException("screenshotType", screenshotType, null);
+                    throw new ArgumentOutOfRangeException(nameof(screenshotType), screenshotType, null);
             }
         }
 
@@ -110,6 +109,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
             {
                 TestResultId = x.Id,
                 TestCaseId = x.Pattern.TestCase.Id,
+                TestPatternId = x.Pattern.Id,
                 TestPassed = x.Status==TestResultStatus.Passed,
                 TestFailed = x.Status==TestResultStatus.Failed,
                 ScreenshotName = string.Format("{0} \\ {1}", x.Category, x.ScreenshotName),
@@ -148,12 +148,15 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
 
         public TestResultDetailsViewModel GetTestResultDetails(long testResultId)
         {
-            var testResult = this.testRepository.Get(testResultId);
+            var query = new FindTestResultDetails(testResultId);
+            var testResult = this.testRepository.FindOne(query);
             return new TestResultDetailsViewModel()
             {
                 TestPassed = testResult.Status == TestResultStatus.Passed,
                 TestFailed = testResult.Status == TestResultStatus.Failed,
-                TestResultId = testResult.Id
+                TestResultId = testResult.Id,
+                PatternId = testResult.Pattern.Id,
+                TestCaseId= testResult.Pattern.TestCase.Id
             };
         }
 
@@ -205,6 +208,8 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
         public long TestResultId { get; set; }
         public bool TestPassed { get; set; }
         public bool TestFailed { get; set; }
+        public long PatternId { get; set; }
+        public long TestCaseId { get; set; }
     }
 
     public enum TestResultStatusFilter
@@ -245,6 +250,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
         public string ScreenshotName { get; set; }
         public bool CanShowMarkAsPattern { get; set; }
         public bool TestFailed { get; set; }
+        public long TestPatternId { get; set; }
     }
 
     public class ProjectListViewModel

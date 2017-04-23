@@ -25,10 +25,10 @@
             </div>
             <div class="col">
                 <label class="control-label col version-label" for="@versionDropdownId">Version</label>    
-                <select class="form-control col version-dropdown" id="@versionDropdownId" data-ui-fn="ajaxdropdown" data-ui-ajaxdropdown-target="@containerId">
+                <select class="form-control col version-dropdown" id="@versionDropdownId" data-ui-fn="ajaxdropdown" data-ui-ajaxdropdown-target="#@containerId">
                     @foreach (var option in Model.AllPatterns.Options)
                     {
-                        var url = Url.ActionFor<TestCaseController>(c => c.GetTestCasePattern(Model.TestCaseId, option.Value));
+                        var url = Url.ActionFor<TestCaseController>(c => c.GetTestCasePattern(option.Value));
                         if (option.Value == Model.AllPatterns.Selected)
                         {
                             <option value="@url" selected>@option.Label</option>
