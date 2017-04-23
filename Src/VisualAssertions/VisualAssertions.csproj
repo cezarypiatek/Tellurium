@@ -89,6 +89,7 @@
     <Compile Include="Infrastructure\Persistence\Repository.cs" />
     <Compile Include="Infrastructure\SessionContext.cs" />
     <Compile Include="Screenshots\Domain\ScreenshotIdentity.cs" />
+    <Compile Include="Screenshots\Queries\FindtActivePatternForBrowser.cs" />
     <Compile Include="Screenshots\TestSessionContext.cs" />
     <Compile Include="Screenshots\VisualAssertionsConfig.cs" />
     <Compile Include="TestRunersAdapters\ITestRunnerAdapter.cs" />

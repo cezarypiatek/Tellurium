@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.VisualAssertions.Infrastructure;
@@ -8,8 +7,6 @@ using Tellurium.VisualAssertions.Infrastructure.Persistence;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 using Tellurium.VisualAssertions.Screenshots.Queries;
 using Tellurium.VisualAssertions.TestRunersAdapters;
-using Tellurium.MvcPages.Utils;
-using Tellurium.VisualAssertions.TestRunersAdapters.Providers;
 
 namespace Tellurium.VisualAssertions.Screenshots
 {
@@ -17,15 +14,20 @@ namespace Tellurium.VisualAssertions.Screenshots
     {
         private readonly IRepository<Project> projectRepository;
         private readonly ITestRunnerAdapter testRunnerAdapter;
+        private readonly IRepository<BrowserPattern> browserPatternRepository;
         private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
         public string ProjectName { get; set; }
         public string ScreenshotCategory { get; set; }
         public string BrowserName { get; set; }
 
-        public VisualAssertionsService(IRepository<Project> projectRepository, ITestRunnerAdapter testRunnerAdapter)
+        public VisualAssertionsService(
+            IRepository<Project> projectRepository, 
+            ITestRunnerAdapter testRunnerAdapter,
+            IRepository<BrowserPattern> browserPatternRepository) 
         {
             this.projectRepository = projectRepository;
             this.testRunnerAdapter = testRunnerAdapter;
+            this.browserPatternRepository = browserPatternRepository;
         }
 
         private TestSession GetCurrentTestSession(Project project)
@@ -68,7 +70,7 @@ namespace Tellurium.VisualAssertions.Screenshots
                 {
                     var project = this.GetProject(screenshotIdentity.ProjectName);
                     var testCase = GetTestCase(project, screenshotIdentity);
-                    var browserPattern = testCase.GetActivePatternForBrowser(screenshotIdentity.BrowserName);
+                    var browserPattern = GetActivePatternForBrowser(screenshotIdentity, testCase);
                     var testSession = GetCurrentTestSession(project);
                     var newPattern = browserPattern == null ? testCase.AddNewPattern(image, screenshotIdentity.BrowserName) : null;
                     var testResult = GetTestResult(image, screenshotIdentity, browserPattern, newPattern);
@@ -99,6 +101,12 @@ namespace Tellurium.VisualAssertions.Screenshots
             {
                 testRunnerAdapter.NotifyAboutError(ex);
             }
+        }
+
+        private BrowserPattern GetActivePatternForBrowser(ScreenshotIdentity screenshotIdentity, TestCase testCase)
+        {
+            var query = new FindtActivePatternForBrowser(testCase.Id, screenshotIdentity.BrowserName);
+            return this.browserPatternRepository.FindOne(query);
         }
 
         private TestResult GetTestResult(byte[] image, ScreenshotIdentity screenshotIdentity, BrowserPattern browserPattern, BrowserPattern newPattern)
@@ -143,8 +151,16 @@ namespace Tellurium.VisualAssertions.Screenshots
             return testCase;
         }
 
+        private static readonly Dictionary<string, long> ProjectNameIdCache = new Dictionary<string, long>();
+
         private Project GetProject(string projectName)
         {
+            if (ProjectNameIdCache.ContainsKey(projectName))
+            {
+                var projectId = ProjectNameIdCache[projectName];
+                return projectRepository.Get(projectId);
+            }
+
             var project = projectRepository.FindOne(new FindProjectByName(projectName));
             if (project == null)
             {
@@ -154,6 +170,7 @@ namespace Tellurium.VisualAssertions.Screenshots
                 };
                 projectRepository.Save(project);
             }
+            ProjectNameIdCache[projectName] = project.Id;
             return project;
         }
     }
