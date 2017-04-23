@@ -31,11 +31,11 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults.Queries
                 case TestResultStatusFilter.All:
                     return testFromSession.ToList();
                 case TestResultStatusFilter.Passed:
-                    return testFromSession.Where(x=>x.Status == TestResultStatus.Passed).ToList();
+                    return testFromSession.Where(x=>x.Status == TestResultStatus.Passed).OrderBy(x=>x.Id).ToList();
                 case TestResultStatusFilter.Failed:
-                    return testFromSession.Where(x => x.Status == TestResultStatus.Failed).ToList();
+                    return testFromSession.Where(x => x.Status == TestResultStatus.Failed).OrderBy(x => x.Id).ToList();
                 case TestResultStatusFilter.New:
-                    return testFromSession.Where(x => x.Status == TestResultStatus.NewPattern).ToList();
+                    return testFromSession.Where(x => x.Status == TestResultStatus.NewPattern).OrderBy(x => x.Id).ToList();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
