@@ -19,7 +19,6 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults.Queries
             return query.Where(x => x.Id == testId)
                 .Fetch(x => x.Pattern)
                 .ThenFetch(x=>x.PatternScreenshot)
-                .FetchMany(x=>x.BlindRegionsSnapshot)
                 .First();
         }
     }
