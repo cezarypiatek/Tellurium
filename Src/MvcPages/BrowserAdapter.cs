@@ -40,10 +40,15 @@ namespace Tellurium.MvcPages
             BrowserAdapterContext.Current = this;
         }
 
-        public static BrowserAdapter Create(BrowserAdapterConfig config)
+        /// <summary>
+        /// Create BrowserAdapter based on configuration
+        /// </summary>
+        /// <param name="config">BrowserAdapter configuration</param>
+        /// <param name="driver">Existing driver, if null the driver will be created using provided configuration</param>
+        public static BrowserAdapter Create(BrowserAdapterConfig config, RemoteWebDriver driver = null)
         {
             var browserAdapter = new BrowserAdapter();
-            browserAdapter.Driver = SeleniumDriverFactory.CreateDriver(config);
+            browserAdapter.Driver = driver ?? SeleniumDriverFactory.CreateDriver(config);
             var browserCameraConfig = config.BrowserCameraConfig ?? BrowserCameraConfig.CreateDefault();
             browserAdapter.browserCamera = BrowserCameraFactory.CreateNew(browserAdapter.Driver, browserCameraConfig);
             browserAdapter.errorBrowserCamera = BrowserCameraFactory.CreateErrorBrowserCamera(browserAdapter.Driver);
