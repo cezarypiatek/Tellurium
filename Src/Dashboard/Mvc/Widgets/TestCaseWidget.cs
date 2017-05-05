@@ -31,23 +31,12 @@ namespace Tellurium.VisualAssertion.Dashboard.Mvc.Widgets
             this.SetOption("caseId", testCaseId);
         }
 
-        public void SetSaveLocalBlindspotsAction<TController>(Expression<Action<TController>> action)
+        public void SetSaveBlindspotsAction<TController>(Expression<Action<TController>> action)
             where TController : Controller
         {
-            this.SetOption("actionSaveLocal", urlHelper.ActionFor(action));
+            this.SetOption("actionSave", urlHelper.ActionFor(action));
         }  
         
-        public void SetSaveCategoryBlindspotsAction<TController>(Expression<Action<TController>> action)
-            where TController : Controller
-        {
-            this.SetOption("actionSaveCategory", urlHelper.ActionFor(action));
-        }
-
-        public void SetSaveGlobalBlindspotsAction<TController>(Expression<Action<TController>> action)
-            where TController : Controller
-        {
-            this.SetOption("actionSaveGlobal", urlHelper.ActionFor(action));
-        }
 
         public void SetLocalBlindspots(List<BlindRegion> blindRegions)
         {
@@ -64,9 +53,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Mvc.Widgets
             this.SetComplexOption("categoryRegions", blindRegions);
         }
 
-        public static TestCaseWidget Create<TController>(Expression<Action<TController>> actionSaveLocal,
-            Expression<Action<TController>> actionSaveCategory,
-            Expression<Action<TController>> actionSaveGlobal, BrowserPatternDTO browserPattern, IUrlHelper urlHelper)
+        public static TestCaseWidget Create<TController>(Expression<Action<TController>> actionSave, BrowserPatternDTO browserPattern, IUrlHelper urlHelper)
             where TController : Controller
         {
             var widget = new TestCaseWidget(urlHelper);
@@ -76,9 +63,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Mvc.Widgets
             widget.SetLocalBlindspots(browserPattern.LocalBlindRegions);
             widget.SetCategoryBlindspots(browserPattern.CategoryBlindRegions);
             widget.SetGlobalBlindspots(browserPattern.GlobalBlindRegions);
-            widget.SetSaveLocalBlindspotsAction(actionSaveLocal);
-            widget.SetSaveCategoryBlindspotsAction(actionSaveCategory);
-            widget.SetSaveGlobalBlindspotsAction(actionSaveGlobal);
+            widget.SetSaveBlindspotsAction(actionSave);
             return widget;
         }
     }

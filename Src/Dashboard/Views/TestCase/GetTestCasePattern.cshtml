@@ -3,7 +3,7 @@
 @using Tellurium.VisualAssertion.Dashboard.Mvc.Widgets
 @model Tellurium.VisualAssertion.Dashboard.Models.Home.BrowserPatternDTO
 @{
-    var testCaseWidget = TestCaseWidget.Create<TestCaseController>(c => c.SaveLocalBlindspots(null), c => c.SaveCategoryBlindspots(null), c => c.SaveGlobalBlindspots(null), Model, Url);
+    var testCaseWidget = TestCaseWidget.Create<TestCaseController>(c => c.SaveBlindRegions(null), Model, Url);
     var versionDropdownId = "PatternVersion" + Model.PatternId;
     var containerId = "TestCaseDetails" + Model.TestCaseId;
 }
@@ -44,17 +44,7 @@
             <div class="col pull-right">
                 @if (Model.IsActive)
                 {
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary local" data-testcase-element="save">Save local blindspots</button>
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" class="category" data-testcase-element="save">Save category blindspots</a></li>
-                            <li><a href="#" data-testcase-element="save">Save global blindspots</a></li>
-                        </ul>
-                    </div>    
+                    <button type="button" class="btn btn-primary" data-testcase-element="save">Save blindspots</button>
                 }
             </div>
         </div>

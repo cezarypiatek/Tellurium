@@ -32,42 +32,53 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase
             this.testCaseCategoryRepository = testCaseCategoryRepository;
         }
 
-        public void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto)
+        public void SaveBlindRegions(SaveBlindRegionsDTO dto)
         {
             using (var tx = sessionContext.Session.BeginTransaction())
             {
-                var browserPattern = this.browserPatternRepository.Get(dto.BrowserPatternId);
-                browserPattern.ReplaceLocalBlindRegionsSet(dto.LocalBlindRegions);
+                SaveLocalBlindregions(dto.Local);
+                SaveCategoryBlindregions(dto.Category);
+                SaveGlobalBlindregions(dto.Global);
                 tx.Commit();
             }
         }
 
-        public void SaveCategoryBlindregions(SaveCategoryBlindRegionsDTO dto)
+        private void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto)
         {
-            using (var tx = sessionContext.Session.BeginTransaction())
+            if (dto == null)
             {
-                var testCase = this.testCaseRepository.Get(dto.TestCaseId);
-                var categoryRegionsForBrowser = GetGlobalBlindRegionsForBrowser(testCase.Category, dto.BrowserName);
-                categoryRegionsForBrowser.ReplaceBlindRegionsSet(dto.BlindRegions);
-                var browserPatterQUery = new FindPatternsForBrowserInCategory(testCase.Category.Id, dto.BrowserName);
-                var browserPatterns = this.browserPatternRepository.FindAll(browserPatterQUery);
-                UpdateScreenshotHashes(browserPatterns);
-                tx.Commit();
+                return;
             }
+            var browserPattern = this.browserPatternRepository.Get(dto.BrowserPatternId);
+            browserPattern.ReplaceLocalBlindRegionsSet(dto.LocalBlindRegions);
         }
 
-        public void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto)
+        private void SaveCategoryBlindregions(SaveCategoryBlindRegionsDTO dto)
         {
-            using (var tx = sessionContext.Session.BeginTransaction())
+            if (dto == null)
             {
-                var testCase = this.testCaseRepository.Get(dto.TestCaseId);
-                var globalRegionsForBrowser = GetGlobalBlindRegionsForBrowser(testCase.Project, dto.BrowserName);
-                globalRegionsForBrowser.ReplaceBlindRegionsSet(dto.BlindRegions);
-                var browserPatternQuery = new FindPatternsForBrowserInProject(testCase.Project.Id,dto.BrowserName);
-                var browserPatterns = this.browserPatternRepository.FindAll(browserPatternQuery);
-                UpdateScreenshotHashes(browserPatterns);
-                tx.Commit();
+                return;
             }
+            var testCase = this.testCaseRepository.Get(dto.TestCaseId);
+            var categoryRegionsForBrowser = GetGlobalBlindRegionsForBrowser(testCase.Category, dto.BrowserName);
+            categoryRegionsForBrowser.ReplaceBlindRegionsSet(dto.BlindRegions);
+            var browserPatterQUery = new FindPatternsForBrowserInCategory(testCase.Category.Id, dto.BrowserName);
+            var browserPatterns = this.browserPatternRepository.FindAll(browserPatterQUery);
+            UpdateScreenshotHashes(browserPatterns);
+        }
+
+        private void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto)
+        {
+            if (dto == null)
+            {
+                return;
+            }
+            var testCase = this.testCaseRepository.Get(dto.TestCaseId);
+            var globalRegionsForBrowser = GetGlobalBlindRegionsForBrowser(testCase.Project, dto.BrowserName);
+            globalRegionsForBrowser.ReplaceBlindRegionsSet(dto.BlindRegions);
+            var browserPatternQuery = new FindPatternsForBrowserInProject(testCase.Project.Id, dto.BrowserName);
+            var browserPatterns = this.browserPatternRepository.FindAll(browserPatternQuery);
+            UpdateScreenshotHashes(browserPatterns);
         }
 
         private static void UpdateScreenshotHashes(List<BrowserPattern> browserPatterns)
@@ -197,14 +208,12 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase
 
     public interface ITestCaseService
     {
-        void SaveLocalBlindregions(SaveLocalBlindRegionsDTO dto);
-        void SaveGlobalBlindregions(SaveGlobalBlindRegionsDTO dto);
-        void SaveCategoryBlindregions(SaveCategoryBlindRegionsDTO dto);
         List<TestCaseListItem> GetTestCasesFromCategory(long categoryId);
         BrowserPatternDTO GetTestCasePattern(long patternId);
         byte[] GetPatternScreenshot(long patternId);
         ProjectListViewModel GetProjectsList();
         TestCaseCategoriesListViewModel GetTestCaseCategories(long projectId);
         TestCaseListItem GetTestCase(long id);
+        void SaveBlindRegions(SaveBlindRegionsDTO dto);
     }
 }

@@ -46,23 +46,9 @@ namespace Tellurium.VisualAssertion.Dashboard.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveLocalBlindspots([FromBody]SaveLocalBlindRegionsDTO dto)
+        public ActionResult SaveBlindRegions([FromBody]SaveBlindRegionsDTO dto)
         {
-            this.testCaseService.SaveLocalBlindregions(dto);
-            return ActionResultFactory.AjaxSuccess();
-        }
-        
-        [HttpPost]
-        public ActionResult SaveCategoryBlindspots([FromBody]SaveCategoryBlindRegionsDTO dto)
-        {
-            this.testCaseService.SaveCategoryBlindregions(dto);
-            return ActionResultFactory.AjaxSuccess();
-        }
-
-        [HttpPost]
-        public ActionResult SaveGlobalBlindspots([FromBody]SaveGlobalBlindRegionsDTO dto)
-        {
-            this.testCaseService.SaveGlobalBlindregions(dto);
+            this.testCaseService.SaveBlindRegions(dto);
             return ActionResultFactory.AjaxSuccess();
         }
 

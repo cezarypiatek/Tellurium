@@ -1,4 +1,45 @@
-﻿$.widget("ui.testcase", {
+﻿
+function ChangeTracker(getGroupNameFunc) {
+    var changeInfo = { };
+    var newElements = [];
+
+    var getGroupName = getGroupNameFunc || function() { return "main"; };
+
+    this.elementChanged = function(element, operation) {
+        if (operation == "add") {
+            newElements.push(element);
+        } else {
+            
+            var isNewElement = newElements.some(function (el) {
+                return el == element;
+            });
+
+            if (isNewElement) {
+                if (operation == "delete") {
+                    newElements = newElements.filter(function(el) {
+                        return el != element;
+                    });
+                }
+            } else {
+                var elementGroupName = getGroupName(element);
+                changeInfo[elementGroupName] = true;
+            }
+        }
+    };
+
+    this.wasChange = function(group) {
+        return changeInfo[group] || newElements.some(function(el) {
+            return getGroupName(el) == group;
+        });
+    };
+
+    this.reset = function() {
+        changeInfo = {};
+        newElements = [];
+    };
+}
+
+$.widget("ui.testcase", {
     version: "1.0.0",
     _create: function () {
         var drawing = false;
@@ -8,6 +49,20 @@
         var currSquare;
         var locked = false;
         var scope = "local";
+        var changeTracker = new ChangeTracker(function (element) {
+            var $element = $(element);
+            if ($element.hasClass("local")) {
+                return "local";
+            } else if ($element.hasClass("category")) {
+                return "category";
+            }
+            if ($element.hasClass("global")) {
+                return "global";
+            }
+            throw Error("Unknow group");
+        });
+
+
         this.element.find("[data-testcase-element='scope']").on("click", ".btn", function() {
             $(this).siblings().removeClass("active");
             $(this).addClass("active");
@@ -44,39 +99,46 @@
                 }else {
                     globalSpots.push(spot);
                 }
-                
             });
             locked = true;
-            if ($(this).is(".local")) {
-                $.postJSON(that.options.actionSaveLocal, {
+
+
+            var saveInputModel = {};
+
+            if (changeTracker.wasChange("local")) {
+                saveInputModel.Local = {
                     BrowserPatternId: that.options.id,
                     TestCaseId: that.options.caseId,
                     LocalBlindRegions: localSpots
-                }).done(function() {
-                    locked = false;
-                });
-            }else  if ($(this).is(".category")) {
-                $.postJSON(that.options.actionSaveCategory, {
+                };
+            }
+
+            if (changeTracker.wasChange("category")) {
+                saveInputModel.Category = {
                     BlindRegions: categorySpots,
                     BrowserName: that.options.browser,
                     TestCaseId: that.options.caseId
-                }).done(function () {
-                    locked = false;
-                });
-            } else {
-                $.postJSON(that.options.actionSaveGlobal, {
+                };
+            }
+
+            if (changeTracker.wasChange("global")) {
+                saveInputModel.Global = {
                     BlindRegions: globalSpots,
                     BrowserName: that.options.browser,
                     TestCaseId: that.options.caseId
-                }).done(function () {
+                };
+            }
+
+            $.postJSON(that.options.actionSave, saveInputModel).done(function () {
+                    changeTracker.reset();
                     locked = false;
                 });
-            }
-            
         });
         $board.on("keyup", ".blind", function (e) {
             if (e.keyCode == 46) {
-                $board.find(".blind.active").remove();
+                var $elementToRemove = $board.find(".blind.active");
+                changeTracker.elementChanged($elementToRemove.get(0), "delete");
+                $elementToRemove.remove();
             }
         });
 
@@ -127,6 +189,7 @@
             moving = true;
             moveStartOffset = getOffset(e);
             $currentMovingSquare = $(this);
+            changeTracker.elementChanged($currentMovingSquare.get(0), "move");
             var offset = $currentMovingSquare.offset();
             currentMovingSquareOriginalOffset = getOffset({ pageX: offset.left, pageY: offset.top});
         });
@@ -136,12 +199,14 @@
             startPoint = getOffset(e);
             currSquare = $("<div></div>",{"class":"blind "+scope, tabindex:index++});
             $board.append(currSquare);
+            changeTracker.elementChanged(currSquare.get(0), "add");
         });
 
         $("body").on("mouseup", function () {
             if (drawing) {
                 drawing = false;
                 if (currSquare.width() < 5 || currSquare.height() < 5) {
+                    changeTracker.elementChanged(currSquare.get(0), "delete");
                     currSquare.remove();
                 }
                 currSquare.focus();
