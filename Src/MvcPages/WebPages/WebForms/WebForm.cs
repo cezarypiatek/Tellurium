@@ -33,22 +33,19 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         {
             var fieldWrapper = CreateFieldWrapper(fieldName);
 
-            if (fieldWrapper.FieldAdapter.SupportSetRetry())
-            {
-                var success = RetryHelper.Retry(numberOfSetRetries, () =>
-                {
-                    fieldWrapper.SetValue(value);
-                    return fieldWrapper.GetValue() == value;
-                });
-
-                if (success == false)
-                {
-                    throw new UnableToSetFieldValueException(fieldName, value);
-                }
-            }
-            else
+            var retryResult = RetryHelper.RetryWithExceptions(numberOfSetRetries, () =>
             {
                 fieldWrapper.SetValue(value);
+                if (fieldWrapper.FieldAdapter.SupportSetRetry())
+                {
+                    return fieldWrapper.GetValue() == value;
+                }
+                return true;
+            });
+
+            if (retryResult.Success == false)
+            {
+                throw new UnableToSetFieldValueException(fieldName, value, retryResult.LastException);
             }
 
             InvokeAfterFieldValueSet(fieldWrapper.FieldElement, customAction ?? afterFieldValueSet);

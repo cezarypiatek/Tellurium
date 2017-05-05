@@ -21,5 +21,34 @@ namespace Tellurium.MvcPages.Utils
 
             return success;
         }
+
+
+        public static RetryResult RetryWithExceptions(int numberOfRetries, Func<bool> action)
+        {
+            Exception lastException = null;
+            var success = Retry(numberOfRetries, () =>
+            {
+                try
+                {
+                    return action();
+                }
+                catch (Exception ex)
+                {
+                    lastException = ex;
+                    return false;
+                }
+            });
+            return new RetryResult
+            {
+                Success = success,
+                LastException = lastException
+            };
+        }
+    }
+
+    internal class RetryResult
+    {
+        public bool Success { get; set; }
+        public Exception LastException { get; set; }
     }
 }
