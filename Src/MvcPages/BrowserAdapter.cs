@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
-using System.Web.Mvc;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
@@ -101,7 +100,7 @@ namespace Tellurium.MvcPages
             }
         }
 
-        public void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller
+        public void NavigateTo<TController>(Expression<Action<TController>> action)
         {
             navigator.NavigateTo(action);
         }
@@ -363,7 +362,7 @@ namespace Tellurium.MvcPages
         /// Navigate to page represented by given controller's action
         /// </summary>
         /// <param name="action">Expression to given action></param>
-        void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
+        void NavigateTo<TController>(Expression<Action<TController>> action);
 
         /// <summary>
         /// Navigate to page related to root page

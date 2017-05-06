@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Web.Mvc;
+using System.Text.RegularExpressions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
@@ -57,9 +57,19 @@ namespace Tellurium.MvcPages.WebPages.WebForms
             base.AffectValueWith(fieldName, action);
         }
 
+        private static readonly Regex ArrayIndexerPattern = new Regex(@"\.?get_Item\(""?(.*?)""?\)", RegexOptions.Compiled);
+
         private static string GetFieldName<TFieldValue>(Expression<Func<TModel, TFieldValue>> field)
         {
-            return ExpressionHelper.GetExpressionText(field);
+            var text = field.Body.ToString();
+            var firstDotPosition = text.IndexOf('.');
+            if (firstDotPosition < 0)
+            {
+                return string.Empty;
+            }
+            text = text.Substring(firstDotPosition);
+            text = ArrayIndexerPattern.Replace(text, "[$1]");
+            return text.Trim('.');
         }
     }
 

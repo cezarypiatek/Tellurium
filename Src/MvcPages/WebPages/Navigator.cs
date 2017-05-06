@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using System.Web.Mvc;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.EndpointCoverage;
 
@@ -11,7 +10,7 @@ namespace Tellurium.MvcPages.WebPages
 {
     public interface INavigator
     {
-        void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller;
+        void NavigateTo<TController>(Expression<Action<TController>> action);
         void NavigateTo(string subpagePath);
         void OnPageReload();
         void RefreshPage();
@@ -38,7 +37,7 @@ namespace Tellurium.MvcPages.WebPages
             this.measureCoverage = measureCoverage;
         }
 
-        public void NavigateTo<TController>(Expression<Action<TController>> action) where TController : Controller
+        public void NavigateTo<TController>(Expression<Action<TController>> action)
         {
             var actionAddress = UrlHelper.BuildActionAddressFromExpression(action);
             NavigateTo(actionAddress);

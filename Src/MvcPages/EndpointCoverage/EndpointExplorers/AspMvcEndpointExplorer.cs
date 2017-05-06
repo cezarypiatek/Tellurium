@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Web.Mvc;
+using Tellurium.MvcPages.WebPages;
 
 namespace Tellurium.MvcPages.EndpointCoverage.EndpointExplorers
 {
     public class AspMvcEndpointExplorer:IEndpointExplorer
     {
         private readonly IReadOnlyList<Assembly> availableEndpointsAssemblies;
+        
 
         public AspMvcEndpointExplorer(IReadOnlyList<Assembly> availableEndpointsAssemblies)
         {
@@ -33,33 +34,35 @@ namespace Tellurium.MvcPages.EndpointCoverage.EndpointExplorers
                 .ToList().AsReadOnly();
         }
 
-        private static string GetAreaName(Type controller)
-        {
-            var areaAttribute = controller.GetCustomAttribute(typeof(ActionLinkAreaAttribute)) as ActionLinkAreaAttribute;
-            if (areaAttribute == null)
-            {
-                return string.Empty;
-            }
-            return areaAttribute.Area;
-        }
-
-        private static string GetControllerName(Type controller)
-        {
-            return controller.Name.Replace("Controller", "");
-        }
-
         private static string GetActionUrl(Type controller, MethodInfo action)
         {
-            var areaName = GetAreaName(controller);
-            var controllerName = GetControllerName(controller);
+            var areaName = UrlHelper.GetAreaName(controller);
+            var controllerName = UrlHelper.GetControllerName(controller);
             var actionName = action.Name;
             return String.Join("/", areaName, controllerName, actionName).TrimEnd('/');
         }
 
         static IReadOnlyList<Type> GetAllControllers(Assembly assembly)
         {
-            var controllerType = typeof(System.Web.Mvc.Controller);
-            return assembly.GetTypes().Where(t => controllerType.IsAssignableFrom(t)).ToList();
+            
+            return assembly.GetTypes().Where(InheritFromController).ToList();
+        }
+
+        const string AspControllerNamespace = "System.Web.Mvc.Controller";
+        private const string AspCoreControllerNamespace = "Microsoft.AspNetCore.Mvc";
+
+        private static bool InheritFromController(Type t)
+        {
+            if (t == typeof(object) || t.BaseType == null)
+            {
+                return false;
+            }
+            
+            if (t.BaseType.Namespace == AspControllerNamespace || t.BaseType.Namespace == AspCoreControllerNamespace)
+            {
+                return true;
+            }
+            return InheritFromController(t.BaseType);
         }
 
         private static IReadOnlyList<string> GetAllActionsUrlForController(Type controller)
