@@ -84,6 +84,7 @@
     <Compile Include="MvcEndpointsHelper.cs" />
     <Compile Include="Configuration\TelluriumConfigurationSection.cs" />
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
+    <Compile Include="SeleniumUtils\Exceptions\CannotFindElementByException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotReloadPageWithException.cs" />
     <Compile Include="SeleniumUtils\FileUploading\FileUploadException.cs" />
     <Compile Include="SeleniumUtils\FileUploading\FileUploadingExtensions.cs" />

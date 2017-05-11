@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
+using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 using Tellurium.MvcPages.Utils;
 using Tellurium.MvcPages.WebPages;
 
@@ -164,19 +165,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         /// <param name="timeout">Timout for element serch</param>
         public static IWebElement GetElementById(this RemoteWebDriver driver, string elementId, int timeout = SearchElementDefaultTimeout)
         {
-            try
-            {
-                return driver.GetElementBy(By.Id(elementId), timeout);
-            }
-            catch (WebDriverTimeoutException ex)
-            {
-                if (ex.InnerException is NoSuchElementException)
-                {
-                    var message = $"Cannot find element with id='{elementId}'";
-                    throw new WebElementNotFoundException(message, ex);
-                }
-                throw;
-            }
+            return driver.GetElementBy(By.Id(elementId), timeout);
         }
 
         /// <summary>
@@ -187,28 +176,47 @@ namespace Tellurium.MvcPages.SeleniumUtils
         /// <param name="timeout">Timout for element serch</param>
         private static IWebElement GetElementBy(this RemoteWebDriver driver, By by, int timeout = SearchElementDefaultTimeout)
         {
-            return GetElementByInScope(driver, by, driver, timeout);
+            return GetStableElementByInScope(driver, by, driver, timeout);
         }
 
-        internal static IWebElement GetElementByInScope(this RemoteWebDriver driver, By @by, ISearchContext scope, int timeout = SearchElementDefaultTimeout)
+        internal static IWebElement GetStableElementByInScope(this RemoteWebDriver driver, By @by, ISearchContext scope, int timeout = SearchElementDefaultTimeout)
         {
-            var foundElement = driver.WaitUntil(timeout, (a) =>
-            {
-                try
-                {
-                    var element = scope.FindElement(@by);
-                    if (element != null && element.Displayed && element.Enabled)
-                    {
-                        return element;
-                    }
-                    return null;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    return null;
-                }
-            });
+            var foundElement = GetElement(driver, @by, scope, timeout);
             return new StableWebElement(driver, foundElement, by);
+        }
+
+        internal static IStableWebElement FindStableWebElement(this RemoteWebDriver driver, IWebElement parent, By by, int timeout = 30)
+        {
+            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+            var foundElement = waiter.Until(d => parent.FindElement(@by));
+            return new StableWebElement(parent,foundElement,@by);
+        }
+
+        private static IWebElement GetElement(RemoteWebDriver driver, By @by, ISearchContext scope, int timeout)
+        {
+            try
+            {
+                return driver.WaitUntil(timeout, (a) =>
+                {
+                    try
+                    {
+                        var element = scope.FindElement(@by);
+                        if (element != null && element.Displayed  && element.Enabled)
+                        {
+                            return element;
+                        }
+                        return null;
+                    }
+                    catch (StaleElementReferenceException)
+                    {
+                        return null;
+                    }
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+              throw new CannotFindElementByException(by, ex);   
+            }
         }
 
         internal static TResult WaitUntil<TResult>(this RemoteWebDriver driver, int timeout,
@@ -216,13 +224,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
             return waiter.Until(waitPredictor);
-        }
-
-        internal static IStableWebElement FindStableWebElement(this RemoteWebDriver driver, IWebElement parent, By by, int timeout = 30)
-        {
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
-            var foundElement = waiter.Until(d => parent.FindElement(@by));
-            return new StableWebElement(parent,foundElement,by);
         }
 
         /// <summary>
@@ -306,7 +307,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 var by = isPartialText
                     ? By.XPath(string.Format(".//*[contains(text(), {0}) or ((@type='submit' or  @type='reset') and contains(@value,{0})) or contains(@title,{0})]", xpathLiteral))
                     : By.XPath(string.Format(".//*[((normalize-space(.) = {0}) and (count(*)=0) )or (normalize-space(text()) = {0}) or ((@type='submit' or  @type='reset') and @value={0}) or (@title={0})]", xpathLiteral));
-                return GetElementByInScope(driver, by, scope);
+                return GetStableElementByInScope(driver, by, scope);
             }
             catch (WebDriverTimeoutException ex)
             {
