@@ -309,14 +309,10 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     : By.XPath(string.Format(".//*[((normalize-space(.) = {0}) and (count(*)=0) )or (normalize-space(text()) = {0}) or ((@type='submit' or  @type='reset') and @value={0}) or (@title={0})]", xpathLiteral));
                 return GetStableElementByInScope(driver, by, scope);
             }
-            catch (WebDriverTimeoutException ex)
+            catch (CannotFindElementByException ex)
             {
-                if (ex.InnerException is NoSuchElementException)
-                {
-                    var message = $"Cannot find element with text='{linkText}'";
-                    throw new WebElementNotFoundException(message, ex);
-                }
-                throw;
+                var message = $"Cannot find element with text='{linkText}'";
+                throw new WebElementNotFoundException(message, ex);
             }
         }
 
