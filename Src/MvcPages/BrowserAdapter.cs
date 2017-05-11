@@ -296,7 +296,7 @@ namespace Tellurium.MvcPages
             return Driver.GetTableWithId(id);
         }
 
-        public WebTable ToWebTableList()
+        public WebTable ToWebTable()
         {
             var body = GetPageBody();
             return new WebTable(Driver, body);

@@ -52,7 +52,7 @@ namespace Tellurium.MvcPages.WebPages
             return Driver.GetTableWithId(id);
         }
 
-        public WebTable ToWebTableList()
+        public WebTable ToWebTable()
         {
             return new WebTable(Driver, WebElement);
         }
@@ -80,7 +80,7 @@ namespace Tellurium.MvcPages.WebPages
         WebList ToWebList();
 
         WebTable GetTableWithId(string id);
-        WebTable ToWebTableList();
+        WebTable ToWebTable();
         string Text { get; }
         void AffectWith(Action action);
     }
