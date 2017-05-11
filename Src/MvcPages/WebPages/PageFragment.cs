@@ -16,7 +16,12 @@ namespace Tellurium.MvcPages.WebPages
             this.Driver = driver;
             this.WebElement = webElement;
         }
-        
+
+        public void Click()
+        {
+            this.Driver.ClickOn(this.WebElement);
+        }
+
         public void ClickOnElementWithText(string text)
         {
             Driver.ClickOnElementWithText(WebElement, text, false);
@@ -25,6 +30,11 @@ namespace Tellurium.MvcPages.WebPages
         public void ClickOnElementWithPartialText(string text)
         {
             Driver.ClickOnElementWithText(WebElement, text, true);
+        }
+
+        public void Hover()
+        {
+            this.Driver.HoverOn(this.WebElement);
         }
 
         public void HoverOnElementWithText(string text)
@@ -72,8 +82,11 @@ namespace Tellurium.MvcPages.WebPages
 
     public interface IPageFragment:IWrapsElement
     {
+        void Click();
         void ClickOnElementWithText(string text);
         void ClickOnElementWithPartialText(string text);
+
+        void Hover();
         void HoverOnElementWithText(string tex);
         void HoverOnElementWithPartialText(string text);
         WebList GetListWithId(string id);

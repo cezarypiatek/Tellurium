@@ -254,6 +254,12 @@ namespace Tellurium.MvcPages
             Driver.Quit();
         }
 
+        public void Click()
+        {
+            var body = this.GetPageBody();
+            this.Driver.ClickOn(body);
+        }
+
         public void ClickOnElementWithText(string text)
         {
             Driver.ClickOnElementWithText(Driver, text, false);
@@ -262,6 +268,12 @@ namespace Tellurium.MvcPages
         public void ClickOnElementWithPartialText(string text)
         {
             Driver.ClickOnElementWithText(Driver, text, true);
+        }
+
+        public void Hover()
+        {
+            var body = this.GetPageBody();
+            this.Driver.HoverOn(body);
         }
 
         public void HoverOnElementWithText(string text)
