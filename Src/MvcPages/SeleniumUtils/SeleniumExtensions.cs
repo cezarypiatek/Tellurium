@@ -190,7 +190,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return GetElementByInScope(driver, by, driver, timeout);
         }
 
-        private static IWebElement GetElementByInScope(RemoteWebDriver driver, By @by, ISearchContext scope, int timeout = SearchElementDefaultTimeout)
+        internal static IWebElement GetElementByInScope(this RemoteWebDriver driver, By @by, ISearchContext scope, int timeout = SearchElementDefaultTimeout)
         {
             var foundElement = driver.WaitUntil(timeout, (a) =>
             {
@@ -346,6 +346,12 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             var listElement = driver.GetElementById(id);
             return new WebList(driver, listElement);
+        }
+
+        internal static WebTree GetTreeWithId(this RemoteWebDriver driver, string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        {
+            var listElement = driver.GetElementById(id);
+            return new WebTree(driver, listElement, isSelfItemsContainer, itemsContainerLocator);
         }
 
         internal static WebTable GetTableWithId(this RemoteWebDriver driver, string id)

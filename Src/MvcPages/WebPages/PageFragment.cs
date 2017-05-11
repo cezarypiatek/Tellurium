@@ -57,6 +57,16 @@ namespace Tellurium.MvcPages.WebPages
             return new WebList(Driver, WebElement);
         }
 
+        public WebTree GetTreeWithId(string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        {
+            return Driver.GetTreeWithId(id, isSelfItemsContainer, itemsContainerLocator);
+        }
+
+        public WebTree ToWebTree(bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        {
+            return new WebTree(Driver, WebElement,isSelfItemsContainer, itemsContainerLocator);
+        }
+
         public WebTable GetTableWithId(string id)
         {
             return Driver.GetTableWithId(id);
@@ -91,6 +101,9 @@ namespace Tellurium.MvcPages.WebPages
         void HoverOnElementWithPartialText(string text);
         WebList GetListWithId(string id);
         WebList ToWebList();
+
+        WebTree GetTreeWithId(string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null);
+        WebTree ToWebTree(bool isSelfItemsContainer = true, By itemsContainerLocator = null);
 
         WebTable GetTableWithId(string id);
         WebTable ToWebTable();

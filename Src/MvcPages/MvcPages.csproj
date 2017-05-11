@@ -133,6 +133,7 @@
     <Compile Include="WebPages\WebList.cs" />
     <Compile Include="WebPages\WebTable.cs" />
     <Compile Include="WebPages\WebTableRow.cs" />
+    <Compile Include="WebPages\WebTree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

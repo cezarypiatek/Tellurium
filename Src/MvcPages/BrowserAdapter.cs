@@ -298,6 +298,17 @@ namespace Tellurium.MvcPages
             return mainPageFragment.ToWebList();
         }
 
+        public WebTree GetTreeWithId(string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        {
+            return Driver.GetTreeWithId(id, isSelfItemsContainer, itemsContainerLocator);
+        }
+
+        public WebTree ToWebTree(bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        {
+            var body = GetPageBody();
+            return new WebTree(Driver, body, isSelfItemsContainer, itemsContainerLocator);
+        }
+
         private IWebElement GetPageBody()
         {
             return Driver.FindElementByTagName("body");

@@ -363,5 +363,49 @@ namespace Tellurium.Sample.UITests
                 });
             });
         }
+
+        [Test]
+        public void should_be_able_to_access_tree()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+
+            //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo<HomeController>(c => c.Index());
+
+
+                var list = browserAdapter.GetTreeWithId("SampleTree");
+
+                Assert.IsNotNull(list);
+                Assert.AreEqual(2, list.Count);
+                Assert.IsNotNull(list[0]);
+                Assert.IsNotNull(list[1]);
+                Assert.IsNotNull(list.First());
+                Assert.IsNotNull(list.Last());
+
+                var subTreeA = list[0];
+                Assert.IsNotNull(subTreeA);
+                Assert.AreEqual(3, subTreeA.Count);
+                Assert.IsNotNull(subTreeA[0]);
+                Assert.IsNotNull(subTreeA[1]);
+                Assert.IsNotNull(subTreeA[2]);
+
+                var subTreeB = list[1];
+                Assert.IsNotNull(subTreeB);
+                Assert.AreEqual(2, subTreeB.Count);
+                Assert.IsNotNull(subTreeB[0]);
+                Assert.IsNotNull(subTreeB[1]);
+
+                var subTreeAC = subTreeA[2];
+                Assert.IsNotNull(subTreeAC);
+                Assert.AreEqual(2, subTreeAC.Count);
+
+                var itemWithText = list.FindItemWithText("Level 1 item A");
+                Assert.IsNotNull(itemWithText);
+            }
+        }
     }
 }
