@@ -23,7 +23,7 @@ namespace Tellurium.MvcPages.WebPages
             {
                 return this.WebElement;
             }
-            return Driver.GetStableElementByInScope(ItemsContainerLocator, this.WebElement);
+            return Driver.GetStableAccessibleElementByInScope(ItemsContainerLocator, this.WebElement);
         }
 
         protected override WebTree MapToItem(IWebElement webElementItem)

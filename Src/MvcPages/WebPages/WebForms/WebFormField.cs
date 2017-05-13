@@ -40,7 +40,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
 
         private IStableWebElement FindFieldElement()
         {
-            return driver.FindStableWebElement(form, By.Name(FieldName), (int) InputSearchTimeout.TotalSeconds);
+            return driver.GetStableElementByInScope(form, By.Name(FieldName), (int) InputSearchTimeout.TotalSeconds);
         }
 
         public void SetValue(string value)

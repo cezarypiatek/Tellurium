@@ -1,10 +1,9 @@
-using System;
-using System.Diagnostics.Contracts;
-using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Support.UI;
+using System;
+using System.Diagnostics.Contracts;
+using System.Threading;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 using Tellurium.MvcPages.Utils;
 using Tellurium.MvcPages.WebPages;
@@ -13,7 +12,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
 {
     public static class SeleniumExtensions
     {
-        private const int SearchElementDefaultTimeout = 30;
         internal const int PageLoadTimeout = 120;
 
         /// <summary>
@@ -97,7 +95,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         
         internal static PageFragmentWatcher WatchForContentChanges(this RemoteWebDriver driver, string containerId)
         {
-            var element = driver.GetElementById(containerId);
+            var element = driver.GetStableElementById(containerId);
             var watcher = new PageFragmentWatcher(driver, element);
             watcher.StartWatching();
             return watcher;
@@ -158,75 +156,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
         }
 
         /// <summary>
-        /// Search for element with given id
-        /// </summary>
-        /// <param name="driver">Selenium driver</param>
-        /// <param name="elementId">Id of expected element</param>
-        /// <param name="timeout">Timout for element serch</param>
-        public static IWebElement GetElementById(this RemoteWebDriver driver, string elementId, int timeout = SearchElementDefaultTimeout)
-        {
-            return driver.GetElementBy(By.Id(elementId), timeout);
-        }
-
-        /// <summary>
-        /// Search for element using <see cref="By"/> criterion
-        /// </summary>
-        /// <param name="driver">Selenium driver</param>
-        /// <param name="by"><see cref="By"/> criterion for given element</param>
-        /// <param name="timeout">Timout for element serch</param>
-        private static IWebElement GetElementBy(this RemoteWebDriver driver, By by, int timeout = SearchElementDefaultTimeout)
-        {
-            return GetStableElementByInScope(driver, by, driver, timeout);
-        }
-
-        internal static IWebElement GetStableElementByInScope(this RemoteWebDriver driver, By @by, ISearchContext scope, int timeout = SearchElementDefaultTimeout)
-        {
-            var foundElement = GetElement(driver, @by, scope, timeout);
-            return new StableWebElement(driver, foundElement, by);
-        }
-
-        internal static IStableWebElement FindStableWebElement(this RemoteWebDriver driver, IWebElement parent, By by, int timeout = 30)
-        {
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
-            var foundElement = waiter.Until(d => parent.FindElement(@by));
-            return new StableWebElement(parent,foundElement,@by);
-        }
-
-        private static IWebElement GetElement(RemoteWebDriver driver, By @by, ISearchContext scope, int timeout)
-        {
-            try
-            {
-                return driver.WaitUntil(timeout, (a) =>
-                {
-                    try
-                    {
-                        var element = scope.FindElement(@by);
-                        if (element != null && element.Displayed  && element.Enabled)
-                        {
-                            return element;
-                        }
-                        return null;
-                    }
-                    catch (StaleElementReferenceException)
-                    {
-                        return null;
-                    }
-                });
-            }
-            catch (WebDriverTimeoutException ex)
-            {
-              throw new CannotFindElementByException(by, ex);   
-            }
-        }
-
-        internal static TResult WaitUntil<TResult>(this RemoteWebDriver driver, int timeout,
-            Func<IWebDriver, TResult> waitPredictor)
-        {
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
-            return waiter.Until(waitPredictor);
-        }
-
-        /// <summary>
         /// Return parent of given web element
         /// </summary>
         /// <param name="node">Child element</param>
@@ -253,13 +182,13 @@ namespace Tellurium.MvcPages.SeleniumUtils
         /// <param name="linkText">Element tekst</param>
         public static  void ClickOnElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText, bool isPartialText)
         {
-            var expectedElement = GetElementWithText(driver, scope, linkText, isPartialText);
+            var expectedElement = driver.GetElementWithText(scope, linkText, isPartialText);
             ClickOn(driver, expectedElement);
         }
 
         public static  void HoverOnElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText, bool isPartialText)
         {
-            var expectedElement = GetElementWithText(driver, scope, linkText, isPartialText);
+            var expectedElement = driver.GetElementWithText(scope, linkText, isPartialText);
             HoverOn(driver, expectedElement);
         }
 
@@ -284,7 +213,15 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     driver.ScrollToY(expectedElement.Location.Y + expectedElement.Size.Height);
                     Thread.Sleep(500);
                 }
-                driver.WaitUntil(SearchElementDefaultTimeout, (d) => driver.IsElementClickable(expectedElement));
+                try
+                {
+                    driver.WaitUntil(SeleniumFinderExtensions.SearchElementDefaultTimeout, (d) => driver.IsElementClickable(expectedElement));
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    throw new ElementIsNotClickableException();
+                }
+                
                 expectedElement.Click();
                 if (originalScrollPosition != null)
                 {
@@ -297,23 +234,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             var action  = new Actions(driver);
             action.MoveToElement(elementToHover).Perform();
-        }
-
-        public static IWebElement GetElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText, bool isPartialText)
-        {
-            try
-            {
-                var xpathLiteral = XPathHelpers.ToXPathLiteral(linkText.Trim());
-                var by = isPartialText
-                    ? By.XPath(string.Format(".//*[contains(text(), {0}) or ((@type='submit' or  @type='reset') and contains(@value,{0})) or contains(@title,{0})]", xpathLiteral))
-                    : By.XPath(string.Format(".//*[((normalize-space(.) = {0}) and (count(*)=0) )or (normalize-space(text()) = {0}) or ((@type='submit' or  @type='reset') and @value={0}) or (@title={0})]", xpathLiteral));
-                return GetStableElementByInScope(driver, by, scope);
-            }
-            catch (CannotFindElementByException ex)
-            {
-                var message = $"Cannot find element with text='{linkText}'";
-                throw new WebElementNotFoundException(message, ex);
-            }
         }
 
         internal static void AppendHtml(this RemoteWebDriver driver, IWebElement element, string html)
@@ -341,31 +261,25 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         internal static WebList GetListWithId(this RemoteWebDriver driver, string id)
         {
-            var listElement = driver.GetElementById(id);
+            var listElement = driver.GetStableAccessibleElementById(id);
             return new WebList(driver, listElement);
         }
 
         internal static WebTree GetTreeWithId(this RemoteWebDriver driver, string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null)
         {
-            var listElement = driver.GetElementById(id);
+            var listElement = driver.GetStableAccessibleElementById(id);
             return new WebTree(driver, listElement, isSelfItemsContainer, itemsContainerLocator);
         }
 
         internal static WebTable GetTableWithId(this RemoteWebDriver driver, string id)
         {
-            var listElement = driver.GetElementById(id);
+            var listElement = driver.GetStableAccessibleElementById(id);
             return new WebTable(driver, listElement);
         }
 
         internal static IWebElement GetActiveElement(this RemoteWebDriver driver)
         {
             return (IWebElement) driver.ExecuteScript("return document.activeElement;");
-        }
-
-
-        internal static IWebElement TryFindElement(this ISearchContext context, By by)
-        {
-            return ExceptionHelper.SwallowException(() => context.FindElement(by), null);
         }
     }
 }

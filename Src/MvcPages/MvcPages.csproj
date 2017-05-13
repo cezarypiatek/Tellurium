@@ -85,13 +85,16 @@
     <Compile Include="Configuration\TelluriumConfigurationSection.cs" />
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotFindElementByException.cs" />
+    <Compile Include="SeleniumUtils\Exceptions\CannotInteractWithElementException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotReloadPageWithException.cs" />
+    <Compile Include="SeleniumUtils\Exceptions\ElementIsNotClickableException.cs" />
     <Compile Include="SeleniumUtils\FileUploading\FileUploadException.cs" />
     <Compile Include="SeleniumUtils\FileUploading\FileUploadingExtensions.cs" />
     <Compile Include="SeleniumUtils\FileUploading\Robot.cs" />
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\WindowsMethods.cs" />
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\ControlHandle.cs" />
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\WindowLocator.cs" />
+    <Compile Include="SeleniumUtils\SeleniumFinderExtensions.cs" />
     <Compile Include="SeleniumUtils\StableWebElement.cs" />
     <Compile Include="SeleniumUtils\WebElementNotFoundException.cs" />
     <Compile Include="Utils\ExceptionHelper.cs" />

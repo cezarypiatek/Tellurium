@@ -141,31 +141,31 @@ namespace Tellurium.MvcPages
 
         public  MvcWebForm<TModel> GetForm<TModel>(string formId)
         {
-            var formElement = this.Driver.GetElementById(formId);
+            var formElement = this.Driver.GetStableAccessibleElementById(formId);
             return new MvcWebForm<TModel>(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
         }
 
         public WebForm GetForm(string formId)
         {
-            var formElement = this.Driver.GetElementById(formId);
+            var formElement = this.Driver.GetStableAccessibleElementById(formId);
             return new WebForm(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
         }
 
         public  void ClickOn(string elementId)
         {
-            var elementToClick = this.Driver.GetElementById(elementId);
+            var elementToClick = this.Driver.GetStableAccessibleElementById(elementId);
             Driver.ClickOn(elementToClick);
         }
 
         public void HoverOn(string elementId)
         {
-            var elementToHover = this.Driver.GetElementById(elementId);
+            var elementToHover = this.Driver.GetStableAccessibleElementById(elementId);
             Driver.HoverOn(elementToHover);
         }
 
         public IPageFragment GetPageFragmentById(string elementId)
         {
-            var pageFragment = Driver.GetElementById(elementId);
+            var pageFragment = Driver.GetStableAccessibleElementById(elementId);
             return new PageFragment(Driver, pageFragment);
         }
 
@@ -176,7 +176,7 @@ namespace Tellurium.MvcPages
         
         public void WaitForElementWithId(string elementId, int timeOut = 30)
         {
-            Driver.GetElementById(elementId, timeOut);
+            Driver.GetStableAccessibleElementById(elementId, timeOut);
         }
 
         public void Wait(int seconds)
