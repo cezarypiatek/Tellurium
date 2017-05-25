@@ -74,7 +74,7 @@ function New-DriversDirectory{
 function Get-ChromeDriverVersions{
 	[CmdletBinding()]
     param([string]$Platform)
-    Get-VersionsFromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform | Sort-Object -Descending VersionNumber, Platform | Select-Object Version, Platform
+    Get-VersionsFromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform | Sort-Object -Descending VersionNumber, Platform | Select-Object -Property @{n="Driver";e={"Chrome"}}, Version, Platform 
 }
 
 
@@ -118,7 +118,7 @@ function Install-ChromeDriver{
 
 function Get-IEDriverVersions{
 	param([string]$Platform)
-	Get-VersionsFromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform | Sort-Object -Descending VersionNumber | Select-Object Version, Platform
+	Get-VersionsFromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform | Sort-Object -Descending VersionNumber | Select-Object -Property @{n="Driver";e={"InternetExplorer"}}, Version, Platform
 }
 
 function Install-IEDriver{
@@ -129,17 +129,24 @@ function Install-IEDriver{
 
 
 function Get-PahntomJSDriverAvailabeFiles{
+    param([string]$Platform)    
     $data = Invoke-RestMethod -Method Get -Uri https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads
-    $data.values |%{ 
-        if($_.name -match "phantomjs-([\d\.]+)-(.*?)\.(.*)")
+    foreach($item in $data.values){ 
+        if($item.name -match "phantomjs-([\d\.]+)-(.*?)\.(.*)")
         {
-            [PsCustomObject]@{Version=$Matches[1]; Url=$_.links.self.href; Platform=$Matches[2] ; }
+            $filePlatform = $Matches[2]
+            if(([String]::IsNullOrWhiteSpace($Platform) -ne $true) -and ($Platform -ne $fileplatform))
+            {
+                continue
+            }
+            [PsCustomObject]@{Version=$Matches[1]; Url=$item.links.self.href; Platform=$filePlatform  ; }
         }
     }
 }
 
 function Get-PhantomJSDriverVersions{ 
-    Get-PahntomJSDriverAvailabeFiles | Sort-Object Version -Descending | Select-Object Version, Platform
+    param([string]$Platform)    
+    Get-PahntomJSDriverAvailabeFiles -Platform $Platform| Sort-Object Version -Descending | Select-Object -Property @{n="Driver";e={"Phantom"}}, Version, Platform
 }
 
 function Install-PhantomJSDriver{
@@ -158,7 +165,7 @@ function Get-EdgeDriverAvailableFiles{
 }
 
 function Get-EdgeDriverVersions{
-    Get-EdgeDriverAvailableFiles | Sort-Object version -Descending | Select-Object version
+    Get-EdgeDriverAvailableFiles | Sort-Object version -Descending | Select-Object -Property @{n="Driver";e={"Edge"}}, version, @{n="Platform";e={"windows"}}
 }
 
 function Install-EdgeDriver{    
@@ -171,6 +178,7 @@ function Install-EdgeDriver{
 }
 
 function Get-OperaDriverAvailableFiles{
+     param([string]$Platform)    
      $relases = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/operasoftware/operachromiumdriver/releases
      foreach($release in $relases)     
      {        
@@ -180,6 +188,11 @@ function Get-OperaDriverAvailableFiles{
             $nameParts = $asset.name -split "[_\.]"
             if($nameParts.length -eq 3)
             {
+                $filePlatform = $nameParts[1]
+                if(([String]::IsNullOrWhiteSpace($Platform) -ne $true) -and ($Platform -ne $filePlatform))
+                {
+                    continue
+                }
                 [pscustomobject](@{Version = $version; Platform=$nameParts[1]; Url=$asset.browser_download_url })
             }
         }
@@ -187,7 +200,8 @@ function Get-OperaDriverAvailableFiles{
 }
 
 function Get-OperaDriverVersions{
-    Get-OperaDriverAvailableFiles | Select-Object Version, Platform
+    param([string]$Platform)    
+    Get-OperaDriverAvailableFiles -Platform $Platform | Select-Object -Property @{n="Driver";e={"Opera"}}, Version, Platform
 }
 
 function Install-OperaDriver{
@@ -222,20 +236,24 @@ function Install-SeleniumWebDriver{
 function Get-SeleniumWebDriverVersions{
 	[CmdletBinding()]
     param(
-    [Parameter(Mandatory=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox", "Opera")][string]$Browser,
-    [ValidateSet("win32","win64")]$Platform="win32"
+    [Parameter(Mandatory=$true, ValueFromPipeline=$true)][ValidateSet("Chrome","PhantomJs","InternetExplorer","Edge","Firefox", "Opera")][string]$Browser,
+    [ValidateSet("win32","win64")]$Platform
     )
-	
-	switch($Browser)
-    {
-        "Chrome" {Get-ChromeDriverVersions -Platform $Platform; break}
-        "PhantomJs" {Get-PhantomJSDriverVersions; break}
-        "InternetExplorer" {Get-IEDriverVersions -Platform $Platform; break}
-        "Edge" {Get-EdgeDriverVersions; break}
-        "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
-        "Opera" {Get-OperaDriverVersions -Platform $Platform; break}
-        default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
-    }
+    process{
+        foreach($currentBrowser in $Browser)
+        {
+            switch($currentBrowser)
+            {
+                "Chrome" {Get-ChromeDriverVersions -Platform $Platform; break}
+                "PhantomJs" {Get-PhantomJSDriverVersions -Platform $Platform; break}
+                "InternetExplorer" {Get-IEDriverVersions -Platform $Platform; break}
+                "Edge" {Get-EdgeDriverVersions; break}
+                "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
+                "Opera" {Get-OperaDriverVersions -Platform $Platform; break}
+                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+            }
+        }    
+    }		
 }
 
 Export-ModuleMember -Function Install-SeleniumWebDriver, Get-SeleniumWebDriverVersions
