@@ -325,6 +325,11 @@ namespace Tellurium.MvcPages
             return new WebTable(Driver, body);
         }
 
+        public void AcceptAlert()
+        {
+            Driver.SwitchTo().Alert().Accept();
+        }
+
         public string Text => GetPageBody().Text;
 
         public IWebDriver WrappedDriver => Driver;
@@ -429,5 +434,10 @@ namespace Tellurium.MvcPages
         /// Restore animations on page
         /// </summary>
         void EnableAnimations();
+
+        /// <summary>
+        /// Accept alert dialog
+        /// </summary>
+        void AcceptAlert();
     }
 }
