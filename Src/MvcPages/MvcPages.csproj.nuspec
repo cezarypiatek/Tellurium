@@ -14,7 +14,7 @@
     <copyright>Copyright 2016</copyright>
     <tags>UITest Selenium ASP.NET MVC</tags>
     <dependencies>
-	  <dependency id="Selenium.Support" version="2.53.0" />
+	  <dependency id="Selenium.Support" version="2.53.1" />
     </dependencies>	
   </metadata>
   <files>
