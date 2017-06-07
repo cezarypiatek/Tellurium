@@ -6,6 +6,8 @@
     <AssemblyName>TelluriumDashboard</AssemblyName>
     <RootNamespace>Tellurium.VisualAssertion.Dashboard</RootNamespace>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <ItemGroup>
     <Content Remove="wwwroot\js\**" />	
     <Content Remove="wwwroot\widgets\**" />	
