@@ -46,6 +46,11 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return new FirefoxDriver(firefoxGeckoSerice, firefoxGeckoOptions, BrowserLoadTimeout);
                 case BrowserType.Chrome:
                     return new ChromeDriver(driversPath);
+                case BrowserType.ChromeHeadless:
+                    var chromeOptions = new ChromeOptions();
+                    chromeOptions.AddArguments("headless");
+                    chromeOptions.AddArgument("disable-gpu");
+                    return new ChromeDriver(driversPath, chromeOptions);
                 case BrowserType.InternetExplorer:
                     return new InternetExplorerDriver(driversPath);
                 case BrowserType.Opera:
@@ -94,6 +99,11 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return DesiredCapabilities.PhantomJS();
                 case BrowserType.Edge:
                     return DesiredCapabilities.Edge();
+                case BrowserType.ChromeHeadless:
+                    var chromeOptions = new ChromeOptions();
+                    chromeOptions.AddArguments("headless");
+                    chromeOptions.AddArgument("disable-gpu");
+                    return chromeOptions.ToCapabilities();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(driverType), driverType, null);
             }
@@ -105,6 +115,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         Firefox = 1,
         FirefoxGecko,
         Chrome,
+        ChromeHeadless,
         InternetExplorer,
         Opera,
         Safari,
