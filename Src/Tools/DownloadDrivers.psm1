@@ -159,9 +159,33 @@ function Install-PhantomJSDriver{
     Remove-Item $tmpDir -Force -Recurse
 }
 
-function Get-EdgeDriverAvailableFiles{
-    $page = Invoke-WebRequest -Uri https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/#downloads
-    $page.Links |? {$_.innerText -like "*Release*"} |% { [PsCustomObject]@{version = $_.innerText; path=$_.href } }
+
+function Find-Matches{
+    [CmdletBinding()]
+    param(
+            [Parameter(ValueFromPipeline=$true, Mandatory=$true)][string]$Text, 
+            [string]$Pattern
+        )
+    process{
+        foreach($t in $Text){
+           [regex]::Matches($t, $Pattern) | Where-Object {$_.Length -gt 0}
+        }        
+    }    
+}
+
+function Get-EdgeDriverAvailableFiles {
+    $page = Invoke-WebRequest -Uri https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/#downloads    
+    $versions =  $page.Content | Find-Matches -Pattern "Version: (.*?) \| Edge version supported: (.*?) \|" |  ForEach-Object { @{Driver=$_.Groups[1].Value; Edge=$_.Groups[2].Value} }
+    $page.Links |Where-Object {$_.innerText -like "*Release*"} |ForEach-Object { 
+        foreach($v in $versions)
+        {
+            $releaseVersion = $_.innerText -replace "Release ",""
+            if($v.Edge -like "*$($releaseVersion)*" )
+            {
+                [PsCustomObject]@{version = $v.Driver; path = $_.href } 
+            }
+        }
+    }
 }
 
 function Get-EdgeDriverVersions{
