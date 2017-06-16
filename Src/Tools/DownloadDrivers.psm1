@@ -309,8 +309,6 @@ function Install-OperaDriver {
         Remove-Item -Path $tmpDir -Force -Recurse
     }
 }
-
-##################################
 function Get-FirefoxDriverAvailableFiles {
     param([string]$Platform)
     $relases = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/mozilla/geckodriver/releases
