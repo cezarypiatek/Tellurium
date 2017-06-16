@@ -323,14 +323,27 @@ function Install-SeleniumWebDriver {
     process {
         $version = $PsBoundParameters["Version"]
         $driverOutputPath = New-DriversDirectory -Directory $OutputDir
-        switch ($Browser) {
-            "Chrome" {Install-ChromeDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
-            "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
-            "InternetExplorer" {Install-IEDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
-            "Edge" {Install-EdgeDriver -Platform $Platform  -Version $version -OutputDir $driverOutputPathk}
-            "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
-            "Opera" {Install-OperaDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath;  break}
-            default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+        if([string]::IsNullOrWhiteSpace($version))
+        {
+            switch ($Browser) {
+                "Chrome" {Install-ChromeDriver -Platform $Platform -OutputDir $driverOutputPath; break}
+                "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -OutputDir $driverOutputPath; break}
+                "InternetExplorer" {Install-IEDriver -Platform $Platform -OutputDir $driverOutputPath; break}
+                "Edge" {Install-EdgeDriver -Platform $Platform -OutputDir $driverOutputPathk}
+                "Firefox" {Write-Host "No need to download any ort Firefox out of the box."; break}
+                "Opera" {Install-OperaDriver -Platform $Platform -OutputDir $driverOutputPath;  break}
+                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+            }
+        }else{
+            switch ($Browser) {
+                "Chrome" {Install-ChromeDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
+                "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
+                "InternetExplorer" {Install-IEDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
+                "Edge" {Install-EdgeDriver -Platform $Platform  -Version $version -OutputDir $driverOutputPathk}
+                "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
+                "Opera" {Install-OperaDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath;  break}
+                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+            }
         }
     }
 }
