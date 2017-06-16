@@ -74,6 +74,9 @@ function Add-FileToProject {
 }
 function New-DriversDirectory {
     param([string]$Directory="Drivers")
+    if([string]::IsNullOrWhiteSpace($Directory)){
+        $Directory = "Drivers"
+    }
     if (Test-VSContext) {
         Add-ProjectDirectoryIfNotExist -DirPath $Directory
     }
@@ -307,6 +310,56 @@ function Install-OperaDriver {
     }
 }
 
+##################################
+function Get-FirefoxDriverAvailableFiles {
+    param([string]$Platform)
+    $relases = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/mozilla/geckodriver/releases
+    foreach ($release in $relases) {
+        $version = $release.name
+        foreach ($asset in $release.assets) {
+            $nameParts = $asset.name -split "[-]"
+            if ($nameParts.length -eq 3) {
+                $filePlatform = $nameParts[2] -split "\." | Select-Object -First 1
+                if (([String]::IsNullOrWhiteSpace($Platform) -ne $true) -and ($Platform -ne $filePlatform)) {
+                    continue
+                }
+                $fileVersion = if([string]::IsNullOrWhiteSpace($version)){$nameParts[1]}else {$version}
+                [pscustomobject](@{Version = $fileVersion; Platform = $filePlatform; Url = $asset.browser_download_url })
+            }
+        }
+    }
+}
+
+function Get-FirefoxDriverVersions {
+    param([string]$Platform = "win32")
+    Get-FirefoxDriverAvailableFiles -Platform $Platform | Select-Object -Property @{n = "Driver"; e = {"Firefox"}}, Version, Platform
+}
+
+function Install-FirefoxDriver {
+    [CmdletBinding()]
+    param(
+            [string]$Platform = "win32",
+            [string]$OutputDir
+        )  
+    DynamicParam {
+        New-ParameterSet -Params {
+            $availableVersions = Get-FirefoxDriverVersions | Select-Object -ExpandProperty Version
+            New-Parameter -Name "Version" -Position 1 -ValidateSet $availableVersions
+        }
+    }
+    process {
+        $version = $PsBoundParameters["Version"]
+        $allVersions = Get-FirefoxDriverAvailableFiles -Platform $Platform
+        $selectedDriver = Select-DriverVersion -AvailableDrivers $allVersions -Version $version
+        $tmpDir = New-TempDirectory
+        $driverArchiveFile = "$tmpDir\gecko.zip"
+        Invoke-RestMethod -Method Get -Uri $selectedDriver.Url -OutFile $driverArchiveFile
+        Expand-Archive -Path $driverArchiveFile -DestinationPath $tmpDir -Force
+        Copy-Item "$tmpDir\geckodriver.exe" -Destination $OutputDir -PassThru | Add-FileToProject
+        Remove-Item -Path $tmpDir -Force -Recurse
+    }
+}
+
 function Install-SeleniumWebDriver {
     [CmdletBinding()]
     param(
@@ -323,14 +376,27 @@ function Install-SeleniumWebDriver {
     process {
         $version = $PsBoundParameters["Version"]
         $driverOutputPath = New-DriversDirectory -Directory $OutputDir
-        switch ($Browser) {
-            "Chrome" {Install-ChromeDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
-            "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
-            "InternetExplorer" {Install-IEDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
-            "Edge" {Install-EdgeDriver -Platform $Platform  -Version $version -OutputDir $driverOutputPathk}
-            "Firefox" {Write-Host "No need to download anything. Selenium support Firefox out of the box."; break}
-            "Opera" {Install-OperaDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath;  break}
-            default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+        if([string]::IsNullOrWhiteSpace($version))
+        {
+            switch ($Browser) {
+                "Chrome" {Install-ChromeDriver -Platform $Platform -OutputDir $driverOutputPath; break}
+                "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -OutputDir $driverOutputPath; break}
+                "InternetExplorer" {Install-IEDriver -Platform $Platform -OutputDir $driverOutputPath; break}
+                "Edge" {Install-EdgeDriver -Platform $Platform -OutputDir $driverOutputPathk}
+                "Firefox" {Install-FirefoxDriver -Platform $Platform -OutputDir $driverOutputPathk; break}
+                "Opera" {Install-OperaDriver -Platform $Platform -OutputDir $driverOutputPath;  break}
+                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+            }
+        }else{
+            switch ($Browser) {
+                "Chrome" {Install-ChromeDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
+                "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
+                "InternetExplorer" {Install-IEDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
+                "Edge" {Install-EdgeDriver -Platform $Platform  -Version $version -OutputDir $driverOutputPathk}
+                "Firefox" {Install-FirefoxDriver -Platform $Platform -Version $version -OutputDir $driverOutputPathk; break}
+                "Opera" {Install-OperaDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath;  break}
+                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+            }
         }
     }
 }
@@ -348,7 +414,7 @@ function Get-SeleniumWebDriverVersions {
                 "PhantomJs" {Get-PhantomJSDriverVersions -Platform $Platform; break}
                 "InternetExplorer" {Get-IEDriverVersions -Platform $Platform; break}
                 "Edge" {Get-EdgeDriverVersions; break}
-                "Firefox" {Write-Host "No need to download anything. Selenium supports Firefox out of the box."; break}
+                "Firefox" {Get-FirefoxDriverVersions -Platform $Platform ; break}
                 "Opera" {Get-OperaDriverVersions -Platform $Platform; break}
                 default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
             }
