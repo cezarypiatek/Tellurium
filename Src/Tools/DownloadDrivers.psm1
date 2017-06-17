@@ -87,6 +87,15 @@ function New-DriversDirectory {
         Get-Item $Directory | Select-Object -ExpandProperty FullName
     }
 }
+function Get-SelectedOrDefault{
+    param([string]$Selected, [string]$Default)
+    if([string]::IsNullOrWhiteSpace($Selected))
+    {
+        $Default
+    }else{
+        $Selected
+    }
+}
 
 function New-TempDirectory {
     $tempDirectoryPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), [System.IO.Path]::GetRandomFileName()) 
@@ -105,7 +114,7 @@ function Select-DriverVersion {
     $AvailableDrivers | Where-Object {$_.Version -eq $selectedVersion}
 }
 function Get-VersionsFromGoogleapis {
-    param($BaseUrl, $DriverName, $Platform = "win32")
+    param($BaseUrl, $DriverName, $Platform)
     $p = Invoke-WebRequest "$BaseUrl/?prefix=" -Headers @{"Accept-Encoding" = "gzip"}
     $o = [xml]$p.Content 
     ($o.ListBucketResult.Contents) |? { $_.Key -like "*$DriverName*" }  | % {
@@ -121,9 +130,11 @@ function Get-VersionsFromGoogleapis {
 }
 
 function Get-FromGoogleapis {
-    param($BaseUrl, $DriverName, $DestinationPath, $Platform = "win32", $Version)
+    [CmdletBinding()]
+    param($BaseUrl, $DriverName, $DestinationPath, $Platform, $Version)
     $allVersions = Get-VersionsFromGoogleapis -BaseUrl $BaseUrl -DriverName $DriverName -Platform $Platform	
     $newestFile = Select-DriverVersion -AvailableDrivers $allVersions -Version $Version
+    Write-Verbose "Install version '$($newestFile.Version)' for platform '$($newestFile.Platform)'"
     $tempDir = New-TempDirectory
     $driverTmpPath = "$tempDir\$DriverName.zip"
     Start-BitsTransfer -Source $newestFile.File -Destination $driverTmpPath    
@@ -134,7 +145,7 @@ function Get-FromGoogleapis {
 
 function Get-ChromeDriverVersions {
     [CmdletBinding()]
-    param([string]$Platform = "win32")
+    param([string]$Platform)
     Get-VersionsFromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform | Sort-Object -Descending VersionNumber, Platform | Select-Object -Property @{n = "Driver"; e = {"Chrome"}}, Version, Platform 
 }
 
@@ -152,12 +163,13 @@ function Install-ChromeDriver {
     }
     process {
         $version = $PsBoundParameters["Version"]
+        $Platform = Get-SelectedOrDefault -Selected $Platform -Default "win32"
         Get-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform -Version $version -DestinationPath $OutputDir
     }
 }
 
 function Get-IEDriverVersions {
-    param([string]$Platform = "Win32")
+    param([string]$Platform)
     Get-VersionsFromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform | Sort-Object -Descending VersionNumber | Select-Object -Property @{n = "Driver"; e = {"InternetExplorer"}}, Version, Platform
 }
 
@@ -175,6 +187,7 @@ function Install-IEDriver {
     }
     process {
         $version = $PsBoundParameters["Version"]
+        $Platform = Get-SelectedOrDefault -Selected $Platform -Default "Win32"
         Get-FromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform -Version $version -DestinationPath  $OutputDir
     }
 }
@@ -195,7 +208,7 @@ function Get-PahntomJSDriverAvailabeFiles {
 }
 
 function Get-PhantomJSDriverVersions { 
-    param([string]$Platform = "beta-windows")    
+    param([string]$Platform)    
     Get-PahntomJSDriverAvailabeFiles -Platform $Platform| Sort-Object Version -Descending | Select-Object -Property @{n = "Driver"; e = {"Phantom"}}, Version, Platform
 }
 
@@ -212,9 +225,11 @@ function Install-PhantomJSDriver {
         }
     }
     process {
+        $Platform = Get-SelectedOrDefault -Selected $Platform -Default "beta-windows"
         $version = $PsBoundParameters["Version"]
         $allVersions = Get-PahntomJSDriverAvailabeFiles -Platform $Platform
         $newestPhantom = Select-DriverVersion -AvailableDrivers $allVersions -Version $version
+        Write-Verbose "Install version '$($newestPhantom.Version)' for platform '$($newestPhantom.Platform)'"
         $tmpDir = New-TempDirectory    
         Invoke-RestMethod -Method Get -Uri $newestPhantom.Url -OutFile "$tmpDir\phantom.zip"    
         Expand-Archive -Path "$tmpDir\phantom.zip"  -DestinationPath $tmpDir       
@@ -230,14 +245,14 @@ function Get-EdgeDriverAvailableFiles {
         foreach ($v in $versions) {
             $releaseVersion = $_.innerText -replace "Release ", ""
             if ($v.Edge -like "*$($releaseVersion)*" ) {
-                [PsCustomObject]@{version = $v.Driver; path = $_.href } 
+                [PsCustomObject]@{version = $v.Driver; path = $_.href; platform="windows" } 
             }
         }
     }
 }
 
 function Get-EdgeDriverVersions {
-    Get-EdgeDriverAvailableFiles | Sort-Object version -Descending | Select-Object -Property @{n = "Driver"; e = {"Edge"}}, version, @{n = "Platform"; e = {"windows"}}
+    Get-EdgeDriverAvailableFiles | Sort-Object version -Descending | Select-Object -Property @{n = "Driver"; e = {"Edge"}}, version, platform
 }
 
 function Install-EdgeDriver {
@@ -256,6 +271,7 @@ function Install-EdgeDriver {
         $version = $PsBoundParameters["Version"]
         $allVersions = Get-EdgeDriverAvailableFiles
         $newestEdge = Select-DriverVersion -AvailableDrivers $allVersions -Version $version
+        Write-Verbose "Install version '$($newestEdge.Version)' for platform '$($newestEdge.Platform)'"
         $tmpDir = New-TempDirectory
         Start-BitsTransfer -Source $newestEdge.path -Destination $tmpDir
         Get-ChildItem $tmpDir | Copy-Item -Destination $OutputDir -PassThru | Add-FileToProject
@@ -282,7 +298,7 @@ function Get-OperaDriverAvailableFiles {
 }
 
 function Get-OperaDriverVersions {
-    param([string]$Platform = "win32")
+    param([string]$Platform)
     Get-OperaDriverAvailableFiles -Platform $Platform | Select-Object -Property @{n = "Driver"; e = {"Opera"}}, Version, Platform
 }
 
@@ -300,8 +316,10 @@ function Install-OperaDriver {
     }
     process {
         $version = $PsBoundParameters["Version"]
+        $Platform = Get-SelectedOrDefault -Selected $Platform -Default "win32"
         $allVersions = Get-OperaDriverAvailableFiles -Platform $Platform
         $selectedDriver = Select-DriverVersion -AvailableDrivers $allVersions -Version $version
+        Write-Verbose "Install version '$($selectedDriver.Version)' for platform '$($selectedDriver.Platform)'"
         $tmpDir = New-TempDirectory
         Invoke-RestMethod -Method Get -Uri $selectedDriver.Url -OutFile "$tmpDir\opera.zip"
         Expand-Archive -Path "$tmpDir\opera.zip" -DestinationPath $tmpDir -Force
@@ -329,7 +347,7 @@ function Get-FirefoxDriverAvailableFiles {
 }
 
 function Get-FirefoxDriverVersions {
-    param([string]$Platform = "win32")
+    param([string]$Platform)
     Get-FirefoxDriverAvailableFiles -Platform $Platform | Select-Object -Property @{n = "Driver"; e = {"Firefox"}}, Version, Platform
 }
 
@@ -347,8 +365,10 @@ function Install-FirefoxDriver {
     }
     process {
         $version = $PsBoundParameters["Version"]
+        $Platform = Get-SelectedOrDefault -Selected $Platform -Default "win32"
         $allVersions = Get-FirefoxDriverAvailableFiles -Platform $Platform
         $selectedDriver = Select-DriverVersion -AvailableDrivers $allVersions -Version $version
+        Write-Verbose "Install version '$($selectedDriver.Version)' for platform '$($selectedDriver.Platform)'"
         $tmpDir = New-TempDirectory
         $driverArchiveFile = "$tmpDir\gecko.zip"
         Invoke-RestMethod -Method Get -Uri $selectedDriver.Url -OutFile $driverArchiveFile
@@ -374,14 +394,15 @@ function Install-SeleniumWebDriver {
     process {
         $version = $PsBoundParameters["Version"]
         $driverOutputPath = New-DriversDirectory -Directory $OutputDir
+        Write-Verbose "Install driver in  '$driverOutputPath'"
         if([string]::IsNullOrWhiteSpace($version))
         {
             switch ($Browser) {
                 "Chrome" {Install-ChromeDriver -Platform $Platform -OutputDir $driverOutputPath; break}
                 "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -OutputDir $driverOutputPath; break}
                 "InternetExplorer" {Install-IEDriver -Platform $Platform -OutputDir $driverOutputPath; break}
-                "Edge" {Install-EdgeDriver -Platform $Platform -OutputDir $driverOutputPathk}
-                "Firefox" {Install-FirefoxDriver -Platform $Platform -OutputDir $driverOutputPathk; break}
+                "Edge" {Install-EdgeDriver -Platform $Platform -OutputDir $driverOutputPath}
+                "Firefox" {Install-FirefoxDriver -Platform $Platform -OutputDir $driverOutputPath; break}
                 "Opera" {Install-OperaDriver -Platform $Platform -OutputDir $driverOutputPath;  break}
                 default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
             }
@@ -390,8 +411,8 @@ function Install-SeleniumWebDriver {
                 "Chrome" {Install-ChromeDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
                 "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
                 "InternetExplorer" {Install-IEDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
-                "Edge" {Install-EdgeDriver -Platform $Platform  -Version $version -OutputDir $driverOutputPathk}
-                "Firefox" {Install-FirefoxDriver -Platform $Platform -Version $version -OutputDir $driverOutputPathk; break}
+                "Edge" {Install-EdgeDriver -Platform $Platform  -Version $version -OutputDir $driverOutputPath}
+                "Firefox" {Install-FirefoxDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
                 "Opera" {Install-OperaDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath;  break}
                 default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
             }
@@ -414,7 +435,7 @@ function Get-SeleniumWebDriverVersions {
                 "Edge" {Get-EdgeDriverVersions; break}
                 "Firefox" {Get-FirefoxDriverVersions -Platform $Platform ; break}
                 "Opera" {Get-OperaDriverVersions -Platform $Platform; break}
-                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+                default { throw "Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
             }
         }    
     }		
