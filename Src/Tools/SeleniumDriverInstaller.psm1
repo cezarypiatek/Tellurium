@@ -321,7 +321,7 @@ function Install-OperaDriver {
         $tmpDir = New-TempDirectory
         Invoke-RestMethod -Method Get -Uri $selectedDriver.Url -OutFile "$tmpDir\opera.zip"
         Expand-Archive -Path "$tmpDir\opera.zip" -DestinationPath $tmpDir -Force
-        Copy-Item "$tmpDir\operadriver.exe" -Destination $OutputDir -PassThru | Add-FileToProject
+        Get-ChildItem -Path $tmpDir -Recurse -Filter "operadriver.exe" | Copy-Item -Destination $OutputDir -PassThru | Add-FileToProject
         Remove-Item -Path $tmpDir -Force -Recurse
     }
 }
@@ -371,7 +371,7 @@ function Install-FirefoxDriver {
         $driverArchiveFile = "$tmpDir\gecko.zip"
         Invoke-RestMethod -Method Get -Uri $selectedDriver.Url -OutFile $driverArchiveFile
         Expand-Archive -Path $driverArchiveFile -DestinationPath $tmpDir -Force
-        Copy-Item "$tmpDir\geckodriver.exe" -Destination $OutputDir -PassThru | Add-FileToProject
+        Get-ChildItem -Path $tmpDir -Recurse -Filter "geckodriver.exe" | Copy-Item -Destination $OutputDir -PassThru | Add-FileToProject        
         Remove-Item -Path $tmpDir -Force -Recurse
     }
 }
@@ -436,7 +436,7 @@ function Get-SeleniumWebDriverVersions {
                 default { throw "Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
             }
         }    
-    }		
+    }
 }
 
 Export-ModuleMember -Function Install-SeleniumWebDriver, Get-SeleniumWebDriverVersions
