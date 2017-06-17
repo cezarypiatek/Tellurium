@@ -1,6 +1,4 @@
-﻿param($installPath, $toolsPath, $package)
-
-function New-ParameterSet {
+﻿function New-ParameterSet {
     param([scriptblock]$Params)
     $runtimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
     $parameters = . $Params
@@ -41,15 +39,15 @@ function Test-VSContext {
 function Add-ProjectDirectoryIfNotExist($DirPath) {	
     $project = Get-Project
     $projectPath = Split-Path $project.FileName -Parent
-    $fullPathToNewDire = "$projectPath\$DirPath"
-    if ((Test-Path $fullPathToNewDire) -ne $true) {
-        [void](New-Item -ItemType Directory -Force -Path  $fullPathToNewDire)
+    $fullPathToNewDirectory = "$projectPath\$DirPath"
+    if ((Test-Path $fullPathToNewDirectory) -ne $true) {
+        [void](New-Item -ItemType Directory -Force -Path  $fullPathToNewDirectory)
         $outRoot = ($DirPath -split "\\")[0]
         if ([string]::IsNullOrWhiteSpace($outRoot) -ne $true) {
             [void]$project.ProjectItems.AddFromDirectory("$projectPath\$outRoot")
         }
     }
-    $fullPathToNewDire
+    $fullPathToNewDirectory
 }
 
 function Add-FileToProject {
@@ -73,8 +71,8 @@ function Add-FileToProject {
     }
 }
 function New-DriversDirectory {
-    param([string]$Directory="Drivers")
-    if([string]::IsNullOrWhiteSpace($Directory)){
+    param([string]$Directory = "Drivers")
+    if ([string]::IsNullOrWhiteSpace($Directory)) {
         $Directory = "Drivers"
     }
     if (Test-VSContext) {
@@ -87,12 +85,12 @@ function New-DriversDirectory {
         Get-Item $Directory | Select-Object -ExpandProperty FullName
     }
 }
-function Get-SelectedOrDefault{
+function Get-SelectedOrDefault {
     param([string]$Selected, [string]$Default)
-    if([string]::IsNullOrWhiteSpace($Selected))
-    {
+    if ([string]::IsNullOrWhiteSpace($Selected)) {
         $Default
-    }else{
+    }
+    else {
         $Selected
     }
 }
@@ -152,9 +150,9 @@ function Get-ChromeDriverVersions {
 function Install-ChromeDriver {
     [CmdletBinding()]
     param(
-         [string]$Platform = "win32",
-         [string]$OutputDir
-        )
+        [string]$Platform = "win32",
+        [string]$OutputDir
+    )
     DynamicParam {
         New-ParameterSet -Params {
             $availableVersions = Get-ChromeDriverVersions -Platform $Platform | Select-Object -ExpandProperty Version
@@ -176,9 +174,9 @@ function Get-IEDriverVersions {
 function Install-IEDriver {
     [CmdletBinding()]
     param(
-            [string]$Platform = "Win32",
-            [string]$OutputDir
-        )
+        [string]$Platform = "Win32",
+        [string]$OutputDir
+    )
     DynamicParam {
         New-ParameterSet -Params {
             $availableVersions = Get-IEDriverVersions -Platform $Platform | Select-Object -ExpandProperty Version
@@ -217,7 +215,7 @@ function Install-PhantomJSDriver {
     param(
         [string]$Platform = "beta-windows",
         [string]$OutputDir
-        )
+    )
     DynamicParam {
         New-ParameterSet -Params {
             $availableVersions = Get-PhantomJSDriverVersions -Platform $Platform | Select-Object -ExpandProperty Version
@@ -245,7 +243,7 @@ function Get-EdgeDriverAvailableFiles {
         foreach ($v in $versions) {
             $releaseVersion = $_.innerText -replace "Release ", ""
             if ($v.Edge -like "*$($releaseVersion)*" ) {
-                [PsCustomObject]@{version = $v.Driver; path = $_.href; platform="windows" } 
+                [PsCustomObject]@{version = $v.Driver; path = $_.href; platform = "windows" } 
             }
         }
     }
@@ -260,7 +258,7 @@ function Install-EdgeDriver {
     param(
         [string]$Platform,
         [string]$OutputDir
-        )
+    )
     DynamicParam {
         New-ParameterSet -Params {
             $availableVersions = Get-EdgeDriverVersions | Select-Object -ExpandProperty Version
@@ -305,9 +303,9 @@ function Get-OperaDriverVersions {
 function Install-OperaDriver {
     [CmdletBinding()]
     param(
-            [string]$Platform = "win32",
-            [string]$OutputDir
-        )  
+        [string]$Platform = "win32",
+        [string]$OutputDir
+    )  
     DynamicParam {
         New-ParameterSet -Params {
             $availableVersions = Get-OperaDriverVersions | Select-Object -ExpandProperty Version
@@ -339,7 +337,7 @@ function Get-FirefoxDriverAvailableFiles {
                 if (([String]::IsNullOrWhiteSpace($Platform) -ne $true) -and ($Platform -ne $filePlatform)) {
                     continue
                 }
-                $fileVersion = if([string]::IsNullOrWhiteSpace($version)){$nameParts[1]}else {$version}
+                $fileVersion = if ([string]::IsNullOrWhiteSpace($version)) {$nameParts[1]}else {$version}
                 [pscustomobject](@{Version = $fileVersion; Platform = $filePlatform; Url = $asset.browser_download_url })
             }
         }
@@ -354,9 +352,9 @@ function Get-FirefoxDriverVersions {
 function Install-FirefoxDriver {
     [CmdletBinding()]
     param(
-            [string]$Platform = "win32",
-            [string]$OutputDir
-        )  
+        [string]$Platform = "win32",
+        [string]$OutputDir
+    )  
     DynamicParam {
         New-ParameterSet -Params {
             $availableVersions = Get-FirefoxDriverVersions | Select-Object -ExpandProperty Version
@@ -395,25 +393,25 @@ function Install-SeleniumWebDriver {
         $version = $PsBoundParameters["Version"]
         $driverOutputPath = New-DriversDirectory -Directory $OutputDir
         Write-Verbose "Install driver in  '$driverOutputPath'"
-        if([string]::IsNullOrWhiteSpace($version))
-        {
+        if ([string]::IsNullOrWhiteSpace($version)) {
             switch ($Browser) {
                 "Chrome" {Install-ChromeDriver -Platform $Platform -OutputDir $driverOutputPath; break}
                 "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -OutputDir $driverOutputPath; break}
                 "InternetExplorer" {Install-IEDriver -Platform $Platform -OutputDir $driverOutputPath; break}
                 "Edge" {Install-EdgeDriver -Platform $Platform -OutputDir $driverOutputPath}
                 "Firefox" {Install-FirefoxDriver -Platform $Platform -OutputDir $driverOutputPath; break}
-                "Opera" {Install-OperaDriver -Platform $Platform -OutputDir $driverOutputPath;  break}
+                "Opera" {Install-OperaDriver -Platform $Platform -OutputDir $driverOutputPath; break}
                 default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
             }
-        }else{
+        }
+        else {
             switch ($Browser) {
                 "Chrome" {Install-ChromeDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
                 "PhantomJs" {Install-PhantomJSDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
                 "InternetExplorer" {Install-IEDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
                 "Edge" {Install-EdgeDriver -Platform $Platform  -Version $version -OutputDir $driverOutputPath}
                 "Firefox" {Install-FirefoxDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
-                "Opera" {Install-OperaDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath;  break}
+                "Opera" {Install-OperaDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
                 default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
             }
         }
