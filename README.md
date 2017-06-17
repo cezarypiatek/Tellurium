@@ -7,15 +7,15 @@ A utility pack to create maintainanble UI tests for ASP.NET MVC projects using S
 To get know how to use **Tellurium** check project's [Wiki page](https://github.com/cezarypiatek/Tellurium/wiki)
 
 ## Nuget package
-- MvcPages
+- MvcPages - Create highly maintainable, user oriented UI tests.
 
   https://www.nuget.org/packages/Tellurium.MvcPages
 
-- Visual Assertions
+- Visual Assertions - Create assertion based on screenshot comparision.
 
   https://www.nuget.org/packages/Tellurium.VisualAssertions  
 
-- Selenium Driver Installer
+- Selenium Driver Installer - Download selenium webdrivers with single command
 
   https://www.nuget.org/packages/Tellurium.SeleniumDriverInstaller/
 
