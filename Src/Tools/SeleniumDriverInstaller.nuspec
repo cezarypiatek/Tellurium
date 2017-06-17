@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Tellurium.SeleniumDriverInstaller</id>
+    <version>$version$</version>
+    <authors>Cezary Piatek</authors>
+    <owners>Cezary Piatek</owners>
+    <licenseUrl>https://github.com/cezarypiatek/Tellurium/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/cezarypiatek/Tellurium/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/cezarypiatek/Tellurium/master/Doc/TelluriumLogo128x128.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Powershell module for downloading Selenium WebDrivers</description>
+    <releaseNotes>Prerelase version</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>UITest Selenium WebDriver Chrome Firefox Opera Edge InternetExplorer PhantomJS</tags>
+    <dependencies>  
+    </dependencies>	
+  </metadata>
+  <files>
+    <file src="init.ps1" target="tools" />
+    <file src="SeleniumDriverInstaller.psm1" target="tools" />
+  </files>
+</package>
