@@ -31,6 +31,12 @@ namespace Tellurium.MvcPages.BrowserCamera.Storage
             {
                 throw new ArgumentException("Screenshot name cannot be empty", nameof(screenshotName));
             }
+
+            if (Directory.Exists(screenshotDirectoryPath) == false)
+            {
+                Directory.CreateDirectory(screenshotDirectoryPath);
+            }
+
             var fileName = $"{screenshotName}.jpg";
             return Path.Combine(screenshotDirectoryPath, fileName);
         }
