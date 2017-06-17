@@ -89,9 +89,9 @@ window.location = ""{visaulAssertionsDashboardUrl}/Home/GetTestsFromSessionSessi
 </script>
 </head><body></body>
 </html> ";
-
-            File.WriteAllText("VisualAssertions.html", reportContent);
-            serviceMessage.PublishArtifact("VisualAssertions.html");
+            var fullFilePath = Path.Combine(Environment.CurrentDirectory, "VisualAssertions.html");
+            File.WriteAllText(fullFilePath, reportContent);
+            serviceMessage.PublishArtifact(fullFilePath);
             reportUploaded = true;
         }
     }
