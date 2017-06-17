@@ -7,7 +7,7 @@ A utility pack to create maintainanble UI tests for ASP.NET MVC projects using S
 To get know how to use **Tellurium** check project's [Wiki page](https://github.com/cezarypiatek/Tellurium/wiki)
 
 ## Nuget package
-- MvcPages - Create highly maintainable, user oriented UI tests.
+- MvcPages - Create stable, highly maintainable and user oriented UI tests.
 
   https://www.nuget.org/packages/Tellurium.MvcPages
 
