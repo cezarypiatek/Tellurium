@@ -8,12 +8,15 @@ To get know how to use **Tellurium** check project's [Wiki page](https://github.
 
 ## Nuget package
 - MvcPages
+
   https://www.nuget.org/packages/Tellurium.MvcPages
 
 - Visual Assertions
+
   https://www.nuget.org/packages/Tellurium.VisualAssertions  
 
 - Selenium Driver Installer
+
   https://www.nuget.org/packages/Tellurium.SeleniumDriverInstaller/
 
 
