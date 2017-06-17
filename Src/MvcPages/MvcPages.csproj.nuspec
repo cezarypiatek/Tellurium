@@ -21,6 +21,6 @@
 		<file src="bin\$configuration$\Tellurium.MvcPages.dll" target="lib" />
 		<file src="bin\$configuration$\Tellurium.MvcPages.pdb" target="lib" />
 		<file src="..\Tools\init.ps1" target="tools" />
-		<file src="..\Tools\DownloadDrivers.psm1" target="tools" />
+		<file src="..\Tools\SeleniumDriverInstaller.psm1" target="tools" />
 	</files>
 </package>
