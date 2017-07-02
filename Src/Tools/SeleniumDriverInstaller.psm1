@@ -100,6 +100,42 @@ function New-TempDirectory {
     [System.IO.Directory]::CreateDirectory($tempDirectoryPath) | Out-Null  
     $tempDirectoryPath
 }
+function  Save-InstalledDriverInfo {
+    param($Browser, $DriverVersionInfo, $OutputDir, $DriverFileName)
+    $configFile = "SeleniumWebdrivers.json"
+    $config = if(Test-Path $configFile)
+                {
+                    Get-Content $configFile -Raw | ConvertFrom-Json
+                }else{
+                    @{drivers= @(); autoRestore=$true}
+                }
+
+    $driverDetails = @{
+        browser= $Browser;
+        version = $DriverVersionInfo.Version;
+        platform = $DriverVersionInfo.Platform;
+        outputDir = $OutputDir | Resolve-Path -Relative;
+        file = $DriverFileName
+    }
+    $wasDriverDetailsFound = $false
+    for($i=0; $i -lt $config.drivers.length; $i++ )
+    {
+        if($config.drivers[$i].browser -eq $Browser)
+        {
+            $config.drivers[$i] = $driverDetails
+            $wasDriverDetailsFound = $true
+            break
+        }
+    }
+
+    if($wasDriverDetailsFound -eq $false)
+    {
+        $config.drivers+=$driverDetails
+    }
+
+    $config | ConvertTo-Json | Out-File -FilePath $configFile
+}
+
 
 function Select-DriverVersion {
     param($AvailableDrivers, $Version)
@@ -129,16 +165,17 @@ function Get-VersionsFromGoogleapis {
 
 function Get-FromGoogleapis {
     [CmdletBinding()]
-    param($BaseUrl, $DriverName, $DestinationPath, $Platform, $Version)
-    $allVersions = Get-VersionsFromGoogleapis -BaseUrl $BaseUrl -DriverName $DriverName -Platform $Platform	
+    param($Browser, $BaseUrl, $DriverName, $DestinationPath, $Platform, $Version)
+    $allVersions = Get-VersionsFromGoogleapis -BaseUrl $BaseUrl -DriverName $DriverName -Platform $Platform
     $newestFile = Select-DriverVersion -AvailableDrivers $allVersions -Version $Version
     Write-Verbose "Install version '$($newestFile.Version)' for platform '$($newestFile.Platform)'"
     $tempDir = New-TempDirectory
     $driverTmpPath = "$tempDir\$DriverName.zip"
-    Start-BitsTransfer -Source $newestFile.File -Destination $driverTmpPath    
-    Expand-Archive -Path $driverTmpPath -DestinationPath $DestinationPath -Force 
+    Start-BitsTransfer -Source $newestFile.File -Destination $driverTmpPath
+    Expand-Archive -Path $driverTmpPath -DestinationPath $DestinationPath -Force
     Add-FileToProject -Files "$DestinationPath\$DriverName.exe"
-    Remove-Item -Path $driverTmpPath -Force -Recurse    
+    Remove-Item -Path $driverTmpPath -Force -Recurse
+    Save-InstalledDriverInfo -Browser $Browser -DriverVersionInfo $newestFile -OutputDir $DestinationPath -DriverFileName "$DriverName.exe"
 }
 
 function Get-ChromeDriverVersions {
@@ -162,7 +199,7 @@ function Install-ChromeDriver {
     process {
         $version = $PsBoundParameters["Version"]
         $Platform = Get-SelectedOrDefault -Selected $Platform -Default "win32"
-        Get-FromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform -Version $version -DestinationPath $OutputDir
+        Get-FromGoogleapis -Browser "Chrome" -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform -Version $version -DestinationPath $OutputDir
     }
 }
 
@@ -186,7 +223,7 @@ function Install-IEDriver {
     process {
         $version = $PsBoundParameters["Version"]
         $Platform = Get-SelectedOrDefault -Selected $Platform -Default "Win32"
-        Get-FromGoogleapis -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform -Version $version -DestinationPath  $OutputDir
+        Get-FromGoogleapis -Browser "InternetExplorer" -BaseUrl "http://selenium-release.storage.googleapis.com" -DriverName "IEDriverServer" -Platform $Platform -Version $version -DestinationPath  $OutputDir
     }
 }
 
@@ -228,11 +265,12 @@ function Install-PhantomJSDriver {
         $allVersions = Get-PahntomJSDriverAvailabeFiles -Platform $Platform
         $newestPhantom = Select-DriverVersion -AvailableDrivers $allVersions -Version $version
         Write-Verbose "Install version '$($newestPhantom.Version)' for platform '$($newestPhantom.Platform)'"
-        $tmpDir = New-TempDirectory    
-        Invoke-RestMethod -Method Get -Uri $newestPhantom.Url -OutFile "$tmpDir\phantom.zip"    
-        Expand-Archive -Path "$tmpDir\phantom.zip"  -DestinationPath $tmpDir       
+        $tmpDir = New-TempDirectory
+        Invoke-RestMethod -Method Get -Uri $newestPhantom.Url -OutFile "$tmpDir\phantom.zip"
+        Expand-Archive -Path "$tmpDir\phantom.zip"  -DestinationPath $tmpDir
         Get-ChildItem -Filter "phantomjs.exe" -Recurse -Path $tmpDir |  Copy-Item -Destination $OutputDir -PassThru | Add-FileToProject
         Remove-Item $tmpDir -Force -Recurse
+        Save-InstalledDriverInfo -Browser "PhantomJs" -DriverVersionInfo $newestPhantom -OutputDir $OutputDir -DriverFileName "phantomjs.exe"
     }
 }
 
@@ -273,8 +311,9 @@ function Install-EdgeDriver {
         $tmpDir = New-TempDirectory
         Start-BitsTransfer -Source $newestEdge.path -Destination $tmpDir
         Get-ChildItem $tmpDir | Copy-Item -Destination $OutputDir -PassThru | Add-FileToProject
-        Remove-Item $tmpDir -Force -Recurse 
-    }      
+        Remove-Item $tmpDir -Force -Recurse
+        Save-InstalledDriverInfo -Browser "Edge" -DriverVersionInfo $newestEdge -OutputDir $OutputDir -DriverFileName "Edge.exe"
+    }
 }
 
 function Get-OperaDriverAvailableFiles {
@@ -318,11 +357,13 @@ function Install-OperaDriver {
         $allVersions = Get-OperaDriverAvailableFiles -Platform $Platform
         $selectedDriver = Select-DriverVersion -AvailableDrivers $allVersions -Version $version
         Write-Verbose "Install version '$($selectedDriver.Version)' for platform '$($selectedDriver.Platform)'"
+        $driverFileName = "operadriver.exe"
         $tmpDir = New-TempDirectory
         Invoke-RestMethod -Method Get -Uri $selectedDriver.Url -OutFile "$tmpDir\opera.zip"
         Expand-Archive -Path "$tmpDir\opera.zip" -DestinationPath $tmpDir -Force
-        Get-ChildItem -Path $tmpDir -Recurse -Filter "operadriver.exe" | Copy-Item -Destination $OutputDir -PassThru | Add-FileToProject
+        Get-ChildItem -Path $tmpDir -Recurse -Filter $driverFileName  | Copy-Item -Destination $OutputDir -PassThru | Add-FileToProject
         Remove-Item -Path $tmpDir -Force -Recurse
+        Save-InstalledDriverInfo -Browser "Opera" -DriverVersionInfo $selectedDriver -OutputDir $OutputDir -DriverFileName $driverFileName
     }
 }
 function Get-FirefoxDriverAvailableFiles {
@@ -369,10 +410,12 @@ function Install-FirefoxDriver {
         Write-Verbose "Install version '$($selectedDriver.Version)' for platform '$($selectedDriver.Platform)'"
         $tmpDir = New-TempDirectory
         $driverArchiveFile = "$tmpDir\gecko.zip"
+        $driverFileName = "geckodriver.exe"
         Invoke-RestMethod -Method Get -Uri $selectedDriver.Url -OutFile $driverArchiveFile
         Expand-Archive -Path $driverArchiveFile -DestinationPath $tmpDir -Force
-        Get-ChildItem -Path $tmpDir -Recurse -Filter "geckodriver.exe" | Copy-Item -Destination $OutputDir -PassThru | Add-FileToProject        
+        Get-ChildItem -Path $tmpDir -Recurse -Filter $driverFileName | Copy-Item -Destination $OutputDir -PassThru | Add-FileToProject
         Remove-Item -Path $tmpDir -Force -Recurse
+        Save-InstalledDriverInfo -Browser "Firefox" -DriverVersionInfo $selectedDriver -OutputDir $OutputDir -DriverFileName $driverFileName
     }
 }
 
@@ -438,5 +481,20 @@ function Get-SeleniumWebDriverVersions {
         }    
     }
 }
-
-Export-ModuleMember -Function Install-SeleniumWebDriver, Get-SeleniumWebDriverVersions
+function Restore-SeleniumWebDriver{
+    [CmdletBinding()]
+    param($CheckAutoRestore=$false)
+    $configFile = "SeleniumWebdrivers.json"
+    if((Test-Path $configFile) -eq $false)
+    {
+        return
+    }   
+    $config =  Get-Content -Path $configFile -Raw | ConvertFrom-Json
+    if($CheckAutoRestore -and ($config.autoRestore -eq $false))
+    {
+        return
+    }
+    $config.drivers | Where-Object { (Test-Path "$($_.outputDir)\$($_.file)") -eq  $false }  `
+        | ForEach-Object { Install-SeleniumWebDriver -Browser $_.browser -Platform $_.platform -Version $_.version -OutputDir $_.outputDir }
+}
+Export-ModuleMember -Function Install-SeleniumWebDriver, Get-SeleniumWebDriverVersions, Restore-SeleniumWebDriver
