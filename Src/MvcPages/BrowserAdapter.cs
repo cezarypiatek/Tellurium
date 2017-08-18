@@ -210,6 +210,22 @@ namespace Tellurium.MvcPages
             return null;
         }
 
+        public IPageFragment GetElementWithText(string text)
+        {
+            return GetElementWithText(text, false);
+        }
+
+        public IPageFragment GetElementWithPartialText(string text)
+        {
+            return GetElementWithText(text, true);
+        }
+
+        private IPageFragment GetElementWithText(string text, bool isPartialText)
+        {
+            var element = this.Driver.GetStableElementWithText(this.Driver, text, isPartialText);
+            return new PageFragment(this.Driver, element);
+        }
+
         public void ReloadPageWith(Action action)
         {
             MarkPageAsVisited();

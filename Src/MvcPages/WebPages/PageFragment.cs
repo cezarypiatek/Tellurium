@@ -93,6 +93,22 @@ namespace Tellurium.MvcPages.WebPages
             return new PageFragment(this.Driver, parent);
         }
 
+        public IPageFragment GetElementWithText(string text)
+        {
+            return FindElementWithText(text, false);
+        }
+
+        public IPageFragment GetElementWithPartialText(string text)
+        {
+            return FindElementWithText(text, true);
+        }
+
+        private IPageFragment FindElementWithText(string text, bool isPartialText)
+        {
+            var element = this.Driver.GetStableElementWithText(this.WebElement, text, isPartialText);
+            return new PageFragment(this.Driver, element);
+        }
+
         public IWebElement WrappedElement => WebElement;
     }
 
@@ -117,5 +133,7 @@ namespace Tellurium.MvcPages.WebPages
         void AffectWith(Action action);
 
         IPageFragment GetParent();
+        IPageFragment GetElementWithText(string text);
+        IPageFragment GetElementWithPartialText(string text);
     }
 }

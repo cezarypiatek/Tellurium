@@ -184,13 +184,13 @@ namespace Tellurium.MvcPages.SeleniumUtils
         /// <param name="linkText">Element tekst</param>
         public static  void ClickOnElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText, bool isPartialText)
         {
-            var expectedElement = driver.GetElementWithText(scope, linkText, isPartialText);
+            var expectedElement = driver.GetStableElementWithText(scope, linkText, isPartialText);
             ClickOn(driver, expectedElement);
         }
 
         public static  void HoverOnElementWithText(this RemoteWebDriver driver, ISearchContext scope, string linkText, bool isPartialText)
         {
-            var expectedElement = driver.GetElementWithText(scope, linkText, isPartialText);
+            var expectedElement = driver.GetStableElementWithText(scope, linkText, isPartialText);
             HoverOn(driver, expectedElement);
         }
 
