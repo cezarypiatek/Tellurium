@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Tellurium.MvcPages.Utils;
 
 namespace Tellurium.MvcPages.Reports.ErrorReport
 {
@@ -23,7 +24,7 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
         {
             var storage = new TelluriumErrorReportScreenshotStorage(reportOutputDir, ciAdapter);
             var imgPath = storage.PersistErrorScreenshot(errorScreenShot, screnshotName);
-            AppendImageToReport(imgPath, $"{exception.Message}\r\n{exception.StackTrace}");
+            AppendImageToReport(imgPath, $"{exception.GetFullExceptionMessage()}\r\n{exception.StackTrace}");
         }
 
         public void ReportException(Exception exception)
