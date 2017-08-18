@@ -70,20 +70,22 @@ namespace Tellurium.VisualAssertions.Screenshots
                 {
                     var project = this.GetProject(screenshotIdentity.ProjectName);
                     var testCase = GetTestCase(project, screenshotIdentity);
-                    var browserPattern = testCase.GetActivePatternForBrowser(screenshotIdentity.BrowserName);
+                    var activePattern = testCase.GetActivePatternForBrowser(screenshotIdentity.BrowserName);
+                    
+                    var newPattern = activePattern == null ? testCase.AddNewPattern(image, screenshotIdentity.BrowserName) : null;
+                    var testResult = GetTestResult(image, screenshotIdentity, activePattern, newPattern);
+
                     var testSession = GetCurrentTestSession(project);
-                    var newPattern = browserPattern == null ? testCase.AddNewPattern(image, screenshotIdentity.BrowserName) : null;
-                    var testResult = GetTestResult(image, screenshotIdentity, browserPattern, newPattern);
                     testSession.AddTestResult(testResult);
                     finishNotification = () =>
                     {
                         switch (testResult.Status)
                         {
                             case TestResultStatus.Failed:
-                                testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName, testSession, browserPattern);
+                                testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName, testSession, activePattern);
                                 break;
                             case TestResultStatus.Passed:
-                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, browserPattern);
+                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, activePattern);
                                 break;
                             case TestResultStatus.NewPattern:
                                 testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, newPattern);
