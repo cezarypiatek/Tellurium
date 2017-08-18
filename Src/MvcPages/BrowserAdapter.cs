@@ -205,6 +205,11 @@ namespace Tellurium.MvcPages
             watcher.WaitForChange();
         }
 
+        public IPageFragment GetParent()
+        {
+            return null;
+        }
+
         public void ReloadPageWith(Action action)
         {
             MarkPageAsVisited();

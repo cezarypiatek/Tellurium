@@ -155,13 +155,15 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return (bool) driver.ExecuteScript("return document.querySelector(':focus')!=undefined;");
         }
 
+        internal static readonly By ParentSelector = By.XPath("..");
+
         /// <summary>
         /// Return parent of given web element
         /// </summary>
         /// <param name="node">Child element</param>
         public static IWebElement GetParent(this IWebElement node)
         {
-            return node.FindElement(By.XPath(".."));
+            return node.FindElement(ParentSelector);
         }
 
         /// <summary>

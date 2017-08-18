@@ -87,6 +87,12 @@ namespace Tellurium.MvcPages.WebPages
             watcher.WaitForChange();
         }
 
+        public IPageFragment GetParent()
+        {
+            var parent = this.Driver.GetStableElementByInScope(this.WebElement, SeleniumExtensions.ParentSelector);
+            return new PageFragment(this.Driver, parent);
+        }
+
         public IWebElement WrappedElement => WebElement;
     }
 
@@ -109,5 +115,7 @@ namespace Tellurium.MvcPages.WebPages
         WebTable ToWebTable();
         string Text { get; }
         void AffectWith(Action action);
+
+        IPageFragment GetParent();
     }
 }
