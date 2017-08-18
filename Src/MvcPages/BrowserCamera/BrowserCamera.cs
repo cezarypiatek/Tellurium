@@ -1,4 +1,5 @@
 using System;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.BrowserCamera.Lens;
@@ -25,9 +26,15 @@ namespace Tellurium.MvcPages.BrowserCamera
         {
             try
             {
-                driver.Blur();
-                var currentActiveElement = driver.GetActiveElement();
-                MoveMouseOffTheScreen();
+                IWebElement currentActiveElement = null;
+
+                ExceptionHelper.SwallowException(() =>
+                {
+                    driver.Blur();
+                    currentActiveElement = driver.GetActiveElement();
+                    driver.MoveMouseOffTheScreen();
+                });
+                
                 var screenshot = this.lens.TakeScreenshot();
                 ExceptionHelper.SwallowException(() =>
                 {
@@ -44,17 +51,6 @@ namespace Tellurium.MvcPages.BrowserCamera
                 Console.WriteLine(ex.GetFullExceptionMessage());
                 throw;
             }
-        }
-
-        private void MoveMouseOffTheScreen()
-        {
-            try
-            {
-                var body = driver.FindElementByTagName("body");
-                var scrollY = driver.GetScrollY();
-                new Actions(driver).MoveToElement(body, 0, scrollY + 1).Perform();
-           }
-           catch {}
         }
     }
 }

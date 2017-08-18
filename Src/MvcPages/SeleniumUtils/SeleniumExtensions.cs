@@ -40,6 +40,13 @@ namespace Tellurium.MvcPages.SeleniumUtils
                        })();");
         }
 
+        public static void MoveMouseOffTheScreen(this RemoteWebDriver driver)
+        {
+            var body = driver.FindElementByTagName("body");
+            var scrollY = driver.GetScrollY();
+            new Actions(driver).MoveToElement(body, 0, scrollY + 1).Perform();
+        }
+
         /// <summary>
         /// Tyoe text into field
         /// </summary>
