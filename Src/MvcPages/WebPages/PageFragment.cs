@@ -79,10 +79,10 @@ namespace Tellurium.MvcPages.WebPages
 
         public string Text => WebElement.Text;
 
-        public void AffectWith(Action action)
+        public void AffectWith(Action action, bool watchSubtree=true)
         {
             var watcher = new PageFragmentWatcher(Driver, WebElement);
-            watcher.StartWatching();
+            watcher.StartWatching(watchSubtree);
             action();
             watcher.WaitForChange();
         }
@@ -112,7 +112,7 @@ namespace Tellurium.MvcPages.WebPages
         public IWebElement WrappedElement => WebElement;
     }
 
-    public interface IPageFragment:IWrapsElement
+    public interface IPageFragment: IWrapsElement
     {
         void Click();
         void ClickOnElementWithText(string text);
@@ -130,7 +130,7 @@ namespace Tellurium.MvcPages.WebPages
         WebTable GetTableWithId(string id);
         WebTable ToWebTable();
         string Text { get; }
-        void AffectWith(Action action);
+        void AffectWith(Action action, bool watchSubtree=true);
 
         IPageFragment GetParent();
         IPageFragment GetElementWithText(string text);

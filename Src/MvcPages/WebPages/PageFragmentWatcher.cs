@@ -18,10 +18,10 @@ namespace Tellurium.MvcPages.WebPages
             this.watcherId = Guid.NewGuid().ToString();
         }
 
-        public void StartWatching()
+        public void StartWatching(bool watchSubtree=true)
         {
             driver.ExecuteScript(@"
-(function(target, watcherId){
+(function(target, watcherId, watchSubtree){
         window.__selenium_observers__ =  window.__selenium_observers__ || {};
         window.__selenium_observers__[watcherId] = {
                 observer: new MutationObserver(function(mutations) {
@@ -30,9 +30,9 @@ namespace Tellurium.MvcPages.WebPages
                 }),
                 occured:false
         };
-        var config = { attributes: true, childList: true, characterData: true, subtree: true };
+        var config = { attributes: true, childList: true, characterData: true, subtree: watchSubtree };
         window.__selenium_observers__[watcherId].observer.observe(target, config);
-})(arguments[0],arguments[1]);", element, watcherId);
+})(arguments[0],arguments[1], arguments[2]);", element, watcherId, watchSubtree);
         }
 
         public void WaitForChange(int timeout = 30)

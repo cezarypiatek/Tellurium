@@ -184,23 +184,23 @@ namespace Tellurium.MvcPages
             Thread.Sleep(seconds * 1000);
         }
 
-        public PageFragmentWatcher WatchForContentChange(string containerId)
+        public PageFragmentWatcher WatchForContentChange(string containerId, bool watchSubtree=true)
         {
-            return Driver.WatchForContentChanges(containerId);
+            return Driver.WatchForContentChanges(containerId, watchSubtree);
         }
 
-        public void AffectElementWith(string elementId, Action action)
+        public void AffectElementWith(string elementId, Action action, bool watchSubtree=true)
         {
-            var watcher = WatchForContentChange(elementId);
+            var watcher = WatchForContentChange(elementId, watchSubtree);
             action();
             watcher.WaitForChange();
         }
 
-        public void AffectWith(Action action)
+        public void AffectWith(Action action, bool watchSubtree=true)
         {
             var body = GetPageBody();
             var watcher = new PageFragmentWatcher(Driver, body);
-            watcher.StartWatching();
+            watcher.StartWatching(watchSubtree);
             action();
             watcher.WaitForChange();
         }
@@ -431,14 +431,16 @@ namespace Tellurium.MvcPages
         /// Start obserwing container with given id for contnet change
         /// </summary>
         /// <param name="containerId">Container id</param>
-        PageFragmentWatcher WatchForContentChange(string containerId);
+        /// <param name="watchSubtree">Set true if changes in subtree shuld also be observed</param>
+        PageFragmentWatcher WatchForContentChange(string containerId, bool watchSubtree=true);
 
         /// <summary>
         /// Perform action and wait until element with given id will change.
         /// </summary>
         /// <param name="elementId">Id of observed element</param>
         /// <param name="action">Action that should have impact on observed element</param>
-        void AffectElementWith(string elementId, Action action);
+        /// <param name="watchSubtree">Set true if changes in subtree shuld also be observed</param>
+        void AffectElementWith(string elementId, Action action, bool watchSubtree=true);
 
         /// <summary>
         /// Perform action and wait until page will reaload

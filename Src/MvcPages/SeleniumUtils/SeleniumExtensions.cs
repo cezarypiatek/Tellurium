@@ -100,11 +100,11 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return (int)(long)driver.ExecuteScript("return window.innerHeight");
         } 
         
-        internal static PageFragmentWatcher WatchForContentChanges(this RemoteWebDriver driver, string containerId)
+        internal static PageFragmentWatcher WatchForContentChanges(this RemoteWebDriver driver, string containerId, bool watchSubtree=true)
         {
             var element = driver.GetStableElementById(containerId);
             var watcher = new PageFragmentWatcher(driver, element);
-            watcher.StartWatching();
+            watcher.StartWatching(watchSubtree);
             return watcher;
         }
 
