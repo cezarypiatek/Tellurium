@@ -404,9 +404,6 @@ namespace Tellurium.MvcPages
         /// <param name="timeOut">Max time in seconds to wait</param>
         void WaitForElementWithId(string elementId, int timeOut = 30);
 
-        byte [] TakeScreenshot();
-
-
         /// <summary>
         /// Navigate to page represented by given controller's action
         /// </summary>
