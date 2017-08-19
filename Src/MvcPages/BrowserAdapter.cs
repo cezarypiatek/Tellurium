@@ -354,7 +354,7 @@ namespace Tellurium.MvcPages
         public string Text => GetPageBody().Text;
 
         public IWebDriver WrappedDriver => Driver;
-        public IWebElement WrappedElement { get; }
+        public IWebElement WrappedElement => GetPageBody();
     }
 
     public interface IBrowserAdapter : IPageFragment, IBrowserCamera,  IDisposable, IWrapsDriver
