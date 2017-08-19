@@ -114,26 +114,105 @@ namespace Tellurium.MvcPages.WebPages
 
     public interface IPageFragment: IWrapsElement
     {
+        /// <summary>
+        /// Perform click action
+        /// </summary> 
         void Click();
+
+        /// <summary>
+        /// Find element with given text and perform click action
+        /// </summary>
+        /// <param name="text">Text inside element</param>
         void ClickOnElementWithText(string text);
+
+        /// <summary>
+        /// Find element with given partial text and perform click action
+        /// </summary>
+        /// <param name="text">Partial text inside element</param>
         void ClickOnElementWithPartialText(string text);
 
+        /// <summary>
+        /// Perform hover action
+        /// </summary>
         void Hover();
+       
+        /// <summary>
+        /// Find element with given text and perform hover action
+        /// </summary>
+        /// <param name="tex">Text inside element</param>
         void HoverOnElementWithText(string tex);
+        
+        /// <summary>
+        /// Find element with given partial text and perform hover action
+        /// </summary>
+        /// <param name="text">Partial text inside element</param>
         void HoverOnElementWithPartialText(string text);
+        
+        /// <summary>
+        /// Find list like structure with given Id
+        /// </summary>
+        /// <param name="id">Value of id attribute</param>
         WebList GetListWithId(string id);
+
+        /// <summary>
+        /// Convert current element to <see cref="WebList"/> wrapper
+        /// </summary>
         WebList ToWebList();
 
+        /// <summary>
+        /// Find tree like structure with given Id
+        /// </summary>
+        /// <param name="id">Value of id attribute</param>
+        /// <param name="isSelfItemsContainer">Set to true if given element is a direct container for tree nodes, otherwise set <paramref name="itemsContainerLocator"/></param>
+        /// <param name="itemsContainerLocator">Locator for direct tree (as also subtree) nodes container</param>
+        /// <returns></returns>
         WebTree GetTreeWithId(string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null);
+        
+        /// <summary>
+        /// Convert current element to <see cref="WebTree"/> wrapper
+        /// </summary>
+        /// <param name="isSelfItemsContainer">Set to true if current element is a direct container for tree nodes, otherwise set <paramref name="itemsContainerLocator"/></param>
+        /// <param name="itemsContainerLocator">Locator for direct tree (as also subtree) nodes container</param>
         WebTree ToWebTree(bool isSelfItemsContainer = true, By itemsContainerLocator = null);
 
+        /// <summary>
+        /// Find table like structure with given Id
+        /// </summary>
+        /// <param name="id">Value of id attribute</param>
         WebTable GetTableWithId(string id);
+
+        /// <summary>
+        /// Convert current element to <see cref="WebTable"/> wrapper
+        /// </summary>
         WebTable ToWebTable();
+        
+        /// <summary>
+        /// Returns value of <see cref="IWebElement.Text"/> of underlying element
+        /// </summary>
         string Text { get; }
+        
+        /// <summary>
+        /// Perform given action and wait until current element changes
+        /// </summary>
+        /// <param name="action">Action to perform</param>
+        /// <param name="watchSubtree">Set true if changes in subtree shuld also be observed</param>
         void AffectWith(Action action, bool watchSubtree=true);
 
+        /// <summary>
+        /// Get parent of current element
+        /// </summary>
         IPageFragment GetParent();
+
+        /// <summary>
+        /// Find element with given text
+        /// </summary>
+        /// <param name="text">Text inside element</param>
         IPageFragment GetElementWithText(string text);
+        
+        /// <summary>
+        /// Find element with given partial text
+        /// </summary>
+        /// <param name="text">Partial text inside element</param>
         IPageFragment GetElementWithPartialText(string text);
     }
 }
