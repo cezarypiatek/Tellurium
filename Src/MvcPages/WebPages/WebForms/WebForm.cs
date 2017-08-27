@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.Utils;
+using Tellurium.MvcPages.WebPages.WebForms.FieldLocators;
 
 namespace Tellurium.MvcPages.WebPages.WebForms
 {
@@ -31,7 +32,25 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         /// <param name="customAction">Action to perform after field value has been set</param>
         public void SetFieldValue(string fieldName, string value, AfterFieldValueSet? customAction = null)
         {
-            var fieldWrapper = CreateFieldWrapper(fieldName);
+            var fieldLocator = new ByFieldNameLocator(fieldName);
+            SetFieldValue(fieldLocator, value, customAction);
+        }
+        
+        /// <summary>
+        /// Set value for field with given label's text
+        /// </summary>
+        /// <param name="labelText">Label text</param>
+        /// <param name="value">Value to set for field</param>
+        /// <param name="customAction">Action to perform after field value has been set</param>
+        public void SetFieldValueByLabel(string labelText, string value, AfterFieldValueSet? customAction = null)
+        {
+            var fieldLocator = new ByLabelTextLocator(labelText);
+            SetFieldValue(fieldLocator, value, customAction);
+        }
+
+        private void SetFieldValue(IWebFormFieldLocator fieldLocator, string value, AfterFieldValueSet? customAction)
+        {
+            var fieldWrapper = CreateFieldWrapper(fieldLocator);
 
             var retryResult = RetryHelper.RetryWithExceptions(numberOfSetRetries, () =>
             {
@@ -45,25 +64,42 @@ namespace Tellurium.MvcPages.WebPages.WebForms
 
             if (retryResult.Success == false)
             {
-                throw new UnableToSetFieldValueException(fieldName, value, retryResult.LastException);
+                throw new UnableToSetFieldValueException(fieldLocator.GetFieldDescription(), value, retryResult.LastException);
             }
 
             InvokeAfterFieldValueSet(fieldWrapper.FieldElement, customAction ?? afterFieldValueSet);
         }
 
         /// <summary>
+        /// Get value of field with given label's text
+        /// </summary>
+        /// <param name="labelText">Field name</param>
+        public string GetFieldValue(string labelText)
+        {
+            var fieldLocator = new ByFieldNameLocator(labelText);
+            return GetFieldValue(fieldLocator);
+        }
+        
+        /// <summary>
         /// Get value of field indicated by field name
         /// </summary>
         /// <param name="fieldName">Field name</param>
-        public string GetFieldValue(string fieldName)
+        public string GetFieldValueByLabel(string fieldName)
         {
-            var fieldWrapper = CreateFieldWrapper(fieldName);
+            var fieldLocator = new ByLabelTextLocator(fieldName);
+            return GetFieldValue(fieldLocator);
+        }
+
+        private string GetFieldValue(IWebFormFieldLocator fieldLocator)
+        {
+            var fieldWrapper = CreateFieldWrapper(fieldLocator);
             return fieldWrapper.GetValue();
         }
 
         public FieldValueWatcher GetFieldValueWatcher(string fieldName)
         {
-            var fieldWrapper = CreateFieldWrapper(fieldName);
+            var fieldLocator = new ByFieldNameLocator(fieldName);
+            var fieldWrapper = CreateFieldWrapper(fieldLocator);
             return new FieldValueWatcher(Driver, fieldWrapper);
         }
 
@@ -96,9 +132,9 @@ namespace Tellurium.MvcPages.WebPages.WebForms
             }
         }
 
-        private WebFormField CreateFieldWrapper(string fieldName)
+        private WebFormField CreateFieldWrapper(IWebFormFieldLocator fieldLocator)
         {
-            return new WebFormField(WebElement, fieldName, SupportedInputs, Driver);
+            return new WebFormField(WebElement, fieldLocator, SupportedInputs, Driver);
         }
     }
 }
