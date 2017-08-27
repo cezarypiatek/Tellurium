@@ -152,6 +152,7 @@
     </Compile>
     <Compile Include="WebPages\WebForms\WebForm.cs" />
     <Compile Include="WebPages\WebForms\WebFormField.cs" />
+    <Compile Include="WebPages\WebForms\FieldLocators\WebFormFieldLocator.cs" />
     <Compile Include="WebPages\WebList.cs" />
     <Compile Include="WebPages\WebTable.cs" />
     <Compile Include="WebPages\WebTableRow.cs" />

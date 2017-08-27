@@ -4,25 +4,31 @@ using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.WebPages.WebForms.FieldLocators;
 
 namespace Tellurium.MvcPages.WebPages.WebForms
 {
+   
+
     public class WebFormField
     {
         private readonly IWebElement form;
-        public string FieldName { get; }
+
+        private readonly IWebFormFieldLocator fieldLocator;
+
+        public string FieldName => this.FieldElement.GetAttribute("name");
+
         public IStableWebElement FieldElement { get; private set; }
         public IFormInputAdapter FieldAdapter { get; private set; }
 
         private readonly List<IFormInputAdapter> supportedImputAdapters;
         private readonly RemoteWebDriver driver;
-        private static readonly TimeSpan InputSearchTimeout = TimeSpan.FromSeconds(30);
         
 
-        public WebFormField(IWebElement form, string fieldName, List<IFormInputAdapter> supportedImputAdapters, RemoteWebDriver driver)
+        public WebFormField(IWebElement form, IWebFormFieldLocator fieldLocator, List<IFormInputAdapter> supportedImputAdapters, RemoteWebDriver driver)
         {
             this.form = form;
-            this.FieldName = fieldName;
+            this.fieldLocator = fieldLocator;
             this.supportedImputAdapters = supportedImputAdapters;
             this.driver = driver;
             BuildFieldAccessFacility();
@@ -30,17 +36,17 @@ namespace Tellurium.MvcPages.WebPages.WebForms
 
         private IFormInputAdapter GetFieldAdapter(IWebElement fieldElement)
         {
-            var adpter = supportedImputAdapters.FirstOrDefault(x => x.CanHandle(fieldElement));
-            if (adpter == null)
+            var adapter = supportedImputAdapters.FirstOrDefault(x => x.CanHandle(fieldElement));
+            if (adapter == null)
             {
                 throw new NotSupportedException("Not supported form element");
             }
-            return adpter;
+            return adapter;
         }
 
         private IStableWebElement FindFieldElement()
         {
-            return driver.GetStableElementByInScope(form, By.Name(FieldName), (int) InputSearchTimeout.TotalSeconds);
+            return fieldLocator.FindFieldElement(driver, form);
         }
 
         public void SetValue(string value)
