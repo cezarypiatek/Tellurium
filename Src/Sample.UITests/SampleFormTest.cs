@@ -130,6 +130,52 @@ namespace Tellurium.Sample.UITests
         }
 
         [Test]
+        public void should_be_able_to_run_test_with_configuration_from_file_and_use_label_text_to_access_fields()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+
+            //Initialize VisualAssertions
+            AssertView.Init(new VisualAssertionsConfig
+            {
+                BrowserName = browserAdapterConfig.BrowserType.ToString(),
+                ProjectName = "Sample Project",
+                ScreenshotCategory = "Sample Form",
+                TestOutputWriter = TestContext.Progress.WriteLine
+            });
+
+
+            //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo("TestForms/Index/");
+                AssertView.EqualsToPattern(browserAdapter, "Sample21");
+                
+                var detinationForm = browserAdapter.GetForm(FormsIds.TestFormDst);
+                var sourcenForm = browserAdapter.GetForm(FormsIds.TestFormSrc);
+
+                var textInputValue = sourcenForm.GetFieldValueByLabel("Text input");
+                detinationForm.SetFieldValueByLabel("Text input", textInputValue);
+
+                var textAreaValue = sourcenForm.GetFieldValueByLabel("Multiline input");
+                detinationForm.SetFieldValueByLabel("Multiline input", textAreaValue);
+
+                var passwordValue = sourcenForm.GetFieldValueByLabel("Password input");
+                detinationForm.SetFieldValueByLabel("Password input", passwordValue);
+
+
+                var checkboxValue = sourcenForm.GetFieldValueByLabel("Checkbox input");
+                detinationForm.SetFieldValueByLabel("Checkbox input", checkboxValue);
+
+                var selectListValue = sourcenForm.GetFieldValueByLabel("Select input");
+                detinationForm.SetFieldValueByLabel("Select input", selectListValue);
+
+                AssertView.EqualsToPattern(browserAdapter, "Sample33");
+            }
+        }
+
+        [Test]
         public void should_be_able_to_access_list()
         {
             //Initialize MvcPages
