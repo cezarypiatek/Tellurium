@@ -107,8 +107,13 @@
     <Compile Include="Infrastructure\Persistence\Repository.cs" />
     <Compile Include="Infrastructure\SessionContext.cs" />
     <Compile Include="Screenshots\Domain\ScreenshotIdentity.cs" />
+    <Compile Include="Screenshots\Utils\TaskProcessing\AsynchronousTaskProcessor.cs" />
+    <Compile Include="Screenshots\Utils\TaskProcessing\ITaskProcessor.cs" />
+    <Compile Include="Screenshots\Utils\TaskProcessing\ProducerSingleThreadConsumer.cs" />
     <Compile Include="Screenshots\Queries\FindtActivePatternForBrowser.cs" />
     <Compile Include="Screenshots\TestSessionContext.cs" />
+    <Compile Include="Screenshots\Utils\TaskProcessing\SynchronousTaskProcess.cs" />
+    <Compile Include="Screenshots\Utils\TaskProcessing\TaskProcessorFactory.cs" />
     <Compile Include="Screenshots\VisualAssertionsConfig.cs" />
     <Compile Include="TestRunersAdapters\ITestRunnerAdapter.cs" />
     <Compile Include="TestRunersAdapters\Providers\ConsoleTestRunnerAdapter.cs" />

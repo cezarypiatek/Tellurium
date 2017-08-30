@@ -16,8 +16,8 @@ namespace Tellurium.VisualAssertions.Screenshots
             var testRunnerAdapter = TestRunnerAdapterFactory.CreateForCurrentEnvironment(testOutputWriter);
             var sessionContext = PersistanceEngine.GetSessionContext();
             var projectRepository = new Repository<Project>(sessionContext);
-            var browserPatterRepository = new Repository<BrowserPattern>(sessionContext);
-            visualAssertionsService = new VisualAssertionsService(projectRepository,testRunnerAdapter, browserPatterRepository)
+            visualAssertionsService?.Dispose();
+            visualAssertionsService = new VisualAssertionsService(projectRepository,testRunnerAdapter, config.ProcessScreenshotsAsynchronously)
             {
                 ProjectName = config.ProjectName,
                 ScreenshotCategory = config.ScreenshotCategory,

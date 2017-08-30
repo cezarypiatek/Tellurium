@@ -6,28 +6,36 @@ using Tellurium.VisualAssertions.Infrastructure;
 using Tellurium.VisualAssertions.Infrastructure.Persistence;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 using Tellurium.VisualAssertions.Screenshots.Queries;
+using Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing;
 using Tellurium.VisualAssertions.TestRunersAdapters;
 
 namespace Tellurium.VisualAssertions.Screenshots
 {
-    public class VisualAssertionsService 
+    public class VisualAssertionsService:IDisposable
     {
         private readonly IRepository<Project> projectRepository;
         private readonly ITestRunnerAdapter testRunnerAdapter;
-        private readonly IRepository<BrowserPattern> browserPatternRepository;
         private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
         public string ProjectName { get; set; }
         public string ScreenshotCategory { get; set; }
         public string BrowserName { get; set; }
 
+        private ITaskProcessor<Screenshot> ScreenshotProcessor; 
+
         public VisualAssertionsService(
             IRepository<Project> projectRepository, 
             ITestRunnerAdapter testRunnerAdapter,
-            IRepository<BrowserPattern> browserPatternRepository) 
+            bool processAsynchronously) 
         {
             this.projectRepository = projectRepository;
             this.testRunnerAdapter = testRunnerAdapter;
-            this.browserPatternRepository = browserPatternRepository;
+            InitScreenshotProcessor(processAsynchronously);
+        }
+
+        private void InitScreenshotProcessor(bool processAsynchronously)
+        {
+            var processorType = processAsynchronously ? TaskProcessorType.Async : TaskProcessorType.Sync;
+            this.ScreenshotProcessor = TaskProcessorFactory.Create<Screenshot>(processorType, this.CheckScreenshotWithPattern);
         }
 
         private TestSession GetCurrentTestSession(Project project)
@@ -58,11 +66,23 @@ namespace Tellurium.VisualAssertions.Screenshots
             }
             var screenshot = browserCamera.TakeScreenshot();
             takenScreenshots.Add(screenshotIdentity);
-            CheckScreenshotWithPattern(screenshot, screenshotIdentity);
+            ScreenshotProcessor.Post(new Screenshot
+            {
+                Identity = screenshotIdentity,
+                Data = screenshot
+            });
         }
 
-        private void CheckScreenshotWithPattern(byte[] image, ScreenshotIdentity screenshotIdentity)
+        public class Screenshot
         {
+            public ScreenshotIdentity Identity { get; set; }
+            public byte[] Data { get; set; }
+        }
+
+        private void CheckScreenshotWithPattern(Screenshot screenshot)
+        {
+            byte[] image = screenshot.Data;
+            ScreenshotIdentity screenshotIdentity = screenshot.Identity;
             try
             {
                 Action finishNotification;
@@ -103,12 +123,6 @@ namespace Tellurium.VisualAssertions.Screenshots
             {
                 testRunnerAdapter.NotifyAboutError(ex);
             }
-        }
-
-        private BrowserPattern GetActivePatternForBrowser(ScreenshotIdentity screenshotIdentity, TestCase testCase)
-        {
-            var query = new FindtActivePatternForBrowser(testCase.Id, screenshotIdentity.BrowserName);
-            return this.browserPatternRepository.FindOne(query);
         }
 
         private TestResult GetTestResult(byte[] image, ScreenshotIdentity screenshotIdentity, BrowserPattern browserPattern, BrowserPattern newPattern)
@@ -174,6 +188,11 @@ namespace Tellurium.VisualAssertions.Screenshots
             }
             ProjectNameIdCache[projectName] = project.Id;
             return project;
+        }
+
+        public void Dispose()
+        {
+            ScreenshotProcessor?.Dispose();
         }
     }
 }

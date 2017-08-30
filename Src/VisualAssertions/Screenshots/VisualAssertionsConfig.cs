@@ -8,5 +8,6 @@ namespace Tellurium.VisualAssertions.Screenshots
         public string ProjectName { get; set; }
         public string ScreenshotCategory { get; set; }
         public Action<string> TestOutputWriter { get; set; }
+        public bool ProcessScreenshotsAsynchronously { get; set; }
     }
 }
