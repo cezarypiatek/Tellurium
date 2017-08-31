@@ -1,4 +1,5 @@
 ﻿using System;
+using Tellurium.VisualAssertions.Screenshots.Utils;
 
 namespace Tellurium.VisualAssertions.Screenshots
 {
@@ -14,14 +15,14 @@ namespace Tellurium.VisualAssertions.Screenshots
                 {
                     current = new TestSessionContext()
                     {
-                        StartDate = DateTime.Now
+                        StartDate = DateTime.Now.TrimToMiliseconds()
                     };
                 }
                 return current;
             }
-            set { current = value; }
+            set => current = value;
         }
 
-        public DateTime StartDate { get; set; }
+        public DateTime StartDate { get; private set; }
     }
 }
