@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing
@@ -8,6 +9,8 @@ namespace Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing
     {
         readonly BlockingCollection<T> dataToProcess = new BlockingCollection<T>();
         
+        private static AutoResetEvent finishEvent = new AutoResetEvent(false);
+
         public ProducerSingleThreadConsumer(Action<T> action)
         {
             Task.Factory.StartNew(() =>
@@ -16,6 +19,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing
                 {
                     action(data);
                 }
+                finishEvent.Set();
             });
 
             AppDomain.CurrentDomain.DomainUnload += OnCurrentDomainOnDomainUnload;
@@ -40,6 +44,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing
             {
                 dataToProcess.CompleteAdding();
                 isDisposed = true;
+                finishEvent.WaitOne();
             }
         }
     }

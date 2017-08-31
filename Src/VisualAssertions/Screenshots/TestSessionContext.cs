@@ -6,6 +6,7 @@ namespace Tellurium.VisualAssertions.Screenshots
     public class TestSessionContext
     {
         private static TestSessionContext current;
+        private static object contextLockObject = new object();
 
         public static TestSessionContext Current
         {
@@ -13,10 +14,16 @@ namespace Tellurium.VisualAssertions.Screenshots
             {
                 if (current == null)
                 {
-                    current = new TestSessionContext()
+                    lock (contextLockObject)
                     {
-                        StartDate = DateTime.Now.TrimToMiliseconds()
-                    };
+                        if (current == null)
+                        {
+                            current = new TestSessionContext()
+                            {
+                                StartDate = DateTime.Now.TrimToSeconds()
+                            };
+                        }
+                    }
                 }
                 return current;
             }

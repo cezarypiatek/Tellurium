@@ -4,9 +4,9 @@ namespace Tellurium.VisualAssertions.Screenshots.Utils
 {
     static class DateTimeExtensions
     {
-        public static DateTime TrimToMiliseconds(this DateTime dateTime)
+        public static DateTime TrimToSeconds(this DateTime dateTime)
         {
-            return Trim(dateTime, TimeSpan.TicksPerMillisecond);
+            return Trim(dateTime, TimeSpan.TicksPerSecond);
         }
 
         static DateTime Trim(DateTime date, long roundTicks)
