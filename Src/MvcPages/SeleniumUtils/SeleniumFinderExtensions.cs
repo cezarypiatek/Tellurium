@@ -27,7 +27,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         internal static IStableWebElement GetStableAccessibleElementByInScope(this RemoteWebDriver driver, By @by, ISearchContext scope, int timeout = SearchElementDefaultTimeout)
         {
             var foundElement = GetFirstAccessibleElement(driver, @by, scope, timeout);
-            return new StableWebElement(driver, foundElement, @by);
+            return new StableWebElement(scope, foundElement, @by);
         }
 
         private static IWebElement GetFirstAccessibleElement(RemoteWebDriver driver, By @by, ISearchContext scope, int timeout)
