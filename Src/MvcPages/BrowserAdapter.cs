@@ -355,6 +355,13 @@ namespace Tellurium.MvcPages
 
         public IWebDriver WrappedDriver => Driver;
         public IWebElement WrappedElement => GetPageBody();
+
+        public void Reset()
+        {
+            this.Driver.Manage().Cookies.DeleteAllCookies();
+            this.Driver.WebStorage.LocalStorage.Clear();
+            this.Driver.WebStorage.SessionStorage.Clear();
+        }
     }
 
     public interface IBrowserAdapter : IPageFragment, IBrowserCamera,  IDisposable, IWrapsDriver
@@ -459,5 +466,10 @@ namespace Tellurium.MvcPages
         /// Accept alert dialog
         /// </summary>
         void AcceptAlert();
+
+        /// <summary>
+        /// Reset browser state and go back to home page
+        /// </summary>
+        void Reset();
     }
 }
