@@ -131,11 +131,11 @@ namespace Tellurium.MvcPages
             if (screenshotRawData != null)
             {
                 storage?.Persist(screenshotRawData, screenshotName);
-                errorReportBuilder.ReportException(exception, screenshotRawData, screenshotName);
+                errorReportBuilder.ReportException(exception, screenshotRawData, screenshotName, this.Driver.Url);
             }
             else
             {
-                errorReportBuilder.ReportException(exception);
+                errorReportBuilder.ReportException(exception, this.Driver.Url);
             }
         }
 

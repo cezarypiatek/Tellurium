@@ -20,16 +20,16 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
             this.ciAdapter = ciAdapter;
         }
 
-        public void ReportException(Exception exception, byte[] errorScreenShot, string screnshotName)
+        public void ReportException(Exception exception, byte[] errorScreenShot, string screnshotName, string url)
         {
             var storage = new TelluriumErrorReportScreenshotStorage(reportOutputDir, ciAdapter);
             var imgPath = storage.PersistErrorScreenshot(errorScreenShot, screnshotName);
-            AppendImageToReport(imgPath, $"{exception.GetFullExceptionMessage()}\r\n{exception.StackTrace}");
+            AppendImageToReport(imgPath, $"Error or page {url}\r\n{exception.GetFullExceptionMessage()}\r\n{exception.StackTrace}");
         }
 
-        public void ReportException(Exception exception)
+        public void ReportException(Exception exception, string url)
         {
-            AppendImageToReport("", $"{exception.Message}\r\n{exception.StackTrace}");
+            AppendImageToReport("", $"Error or page {url}\r\n{exception.GetFullExceptionMessage()}\r\n{exception.StackTrace}");
         }
 
         private void AppendImageToReport(string imagePath, string description)
