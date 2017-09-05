@@ -12,13 +12,13 @@ namespace Tellurium.MvcPages.SeleniumUtils
     {
         private readonly ISearchContext parent;
         private IWebElement element;
-        private readonly By elementByIdentifier;
+        private readonly By locator;
 
-        public StableWebElement(ISearchContext parent, IWebElement element, By elementByIdentifier)
+        public StableWebElement(ISearchContext parent, IWebElement element, By locator)
         {
             this.parent = parent;
             this.element = element;
-            this.elementByIdentifier = elementByIdentifier;
+            this.locator = locator;
         }
 
         public void RegenerateElement()
@@ -28,7 +28,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             {
                 stableParent.RegenerateElement();
             }
-            this.element = this.parent.FindElement(elementByIdentifier);
+            this.element = this.parent.FindElement(locator);
         }
 
         public bool IsStale()
@@ -44,6 +44,14 @@ namespace Tellurium.MvcPages.SeleniumUtils
             {
                 return true;
             }
+        }
+
+        public string GetDescription()
+        {
+            var stableParent = parent as IStableWebElement;
+            var parentDescription = stableParent != null ? stableParent.GetDescription() : null;
+            var thisDescription = $"'{this.locator}'";
+            return parentDescription == null ? thisDescription : $"{thisDescription} inside {parentDescription}";
         }
 
         public IWebElement Unwrap()
@@ -153,6 +161,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
     {
         void RegenerateElement();
         bool IsStale();
+        string GetDescription();
     }
 
     internal static class GenericHelpers
@@ -162,7 +171,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             var typed = element as TInterface;
             if (typed == null)
             {
-                var errorMessage = $"Underlying element does not support this opperation. It should ilement {typeof(TInterface).FullName} interface";
+                var errorMessage = $"Underlying element does not support this opperation. It should implement {typeof(TInterface).FullName} interface";
                 throw new NotSupportedException(errorMessage);
             }
             return typed;

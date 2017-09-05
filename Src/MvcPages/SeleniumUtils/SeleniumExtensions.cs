@@ -201,7 +201,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             HoverOn(driver, expectedElement);
         }
 
-        public static void ClickOn(this RemoteWebDriver driver, IWebElement expectedElement)
+        internal static void ClickOn(this RemoteWebDriver driver, IWebElement expectedElement)
         {
             try
             {
@@ -228,7 +228,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 }
                 catch (WebDriverTimeoutException)
                 {
-                    throw new ElementIsNotClickableException();
+                    throw new ElementIsNotClickableException(expectedElement);
                 }
                 
                 expectedElement.Click();
@@ -289,6 +289,13 @@ namespace Tellurium.MvcPages.SeleniumUtils
         internal static IWebElement GetActiveElement(this RemoteWebDriver driver)
         {
             return (IWebElement) driver.ExecuteScript("return document.activeElement;");
+        }
+
+
+        internal static string GetElementDescription(this IWebElement element)
+        {
+            var stableElement = element as IStableWebElement;
+            return stableElement?.GetDescription() ?? string.Empty;
         }
     }
 }

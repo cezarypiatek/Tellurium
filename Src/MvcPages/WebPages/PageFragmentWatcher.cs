@@ -59,7 +59,7 @@ namespace Tellurium.MvcPages.WebPages
         public IWebElement ObservedElement { get; private set; }
 
         public CannotObserveAnyChanges(IWebElement observedElement, Exception innerException)
-            :base($"No changes has been obverved for given element'", innerException)
+            :base($"No changes has been obverved for element {observedElement.GetElementDescription()}", innerException)
         {
             this.ObservedElement = observedElement;
         }
