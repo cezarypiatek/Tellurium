@@ -33,6 +33,7 @@ namespace Tellurium.MvcPages
         private AfterFieldValueSet AfterFieldValueSetAction { get; set; }
         private TelluriumErrorReportBuilder errorReportBuilder;
         private EndpointCoverageReportBuilder endpointCoverageReportBuilder;
+        private IScreenshotStorage errorScreenshotStorage;
 
         public BrowserAdapter()
         {
@@ -60,6 +61,7 @@ namespace Tellurium.MvcPages
             browserAdapter.AfterFieldValueSetAction = config.AfterFieldValueSetAction;
             browserAdapter.errorReportBuilder = TelluriumErrorReportBuilderFactory.Create(config);
             browserAdapter.endpointCoverageReportBuilder = EndpointCoverageReportBuilderFactory.Create(config, navigator);
+            browserAdapter.errorScreenshotStorage = ScreenshotStorageFactory.CreateForErrorScreenshot(config);
             if (config.AnimationsDisabled)
             {
                 browserAdapter.navigator.PageReload += (sender, args) => browserAdapter.Driver.DisableAnimations();
@@ -77,7 +79,7 @@ namespace Tellurium.MvcPages
                 }
                 catch (Exception ex)
                 {
-                    browserAdapter.ReportError(config, ex);
+                    browserAdapter.ReportError(ex);
                     throw;
                 }
             }
@@ -123,14 +125,14 @@ namespace Tellurium.MvcPages
             storage.Persist(screenshotRawData, fullScreenshotName);
         }
 
-        private  void ReportError(BrowserAdapterConfig config, Exception exception)
+        public void ReportError(Exception exception)
         {
             string screenshotName = $"{BrowserName}_Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
             var screenshotRawData = errorBrowserCamera.TakeScreenshot();
-            var storage = ScreenshotStorageFactory.CreateForErrorScreenshot(config);
+           
             if (screenshotRawData != null)
             {
-                storage?.Persist(screenshotRawData, screenshotName);
+                errorScreenshotStorage?.Persist(screenshotRawData, screenshotName);
                 errorReportBuilder.ReportException(exception, screenshotRawData, screenshotName, this.Driver.Url);
             }
             else
@@ -471,5 +473,11 @@ namespace Tellurium.MvcPages
         /// Reset browser state and go back to home page
         /// </summary>
         void Reset();
+
+        /// <summary>
+        /// Add exception to errors report
+        /// </summary>
+        /// <param name="exception"></param>
+        void ReportError(Exception exception);
     }
 }
