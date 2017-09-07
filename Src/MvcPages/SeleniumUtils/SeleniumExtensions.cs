@@ -292,7 +292,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         }
 
 
-        internal static string GetElementDescription(this IWebElement element)
+        internal static string GetElementDescription(this ISearchContext element)
         {
             var stableElement = element as IStableWebElement;
             return stableElement?.GetDescription() ?? string.Empty;
