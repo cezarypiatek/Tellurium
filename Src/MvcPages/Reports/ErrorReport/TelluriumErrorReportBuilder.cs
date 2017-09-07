@@ -24,20 +24,21 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
         {
             var storage = new TelluriumErrorReportScreenshotStorage(reportOutputDir, ciAdapter);
             var imgPath = storage.PersistErrorScreenshot(errorScreenShot, screnshotName);
-            AppendImageToReport(imgPath, $"Error or page {url}\r\n{exception.GetFullExceptionMessage()}\r\n{exception.StackTrace}");
+            AppendEntryToReport(exception, url, imgPath);
         }
 
         public void ReportException(Exception exception, string url)
         {
-            AppendImageToReport("", $"Error or page {url}\r\n{exception.GetFullExceptionMessage()}\r\n{exception.StackTrace}");
+            AppendEntryToReport(exception, url);
         }
 
-        private void AppendImageToReport(string imagePath, string description)
+        private void AppendEntryToReport(Exception exception, string url, string imagePath="")
         {
+            string description = $"{exception.GetFullExceptionMessage()}\r\n{exception.StackTrace}";
             CreateReportIfNotExists();
             var reportContent = File.ReadAllText(ReportFilePath);
             var newEntry =
-                $"<figure><image src=\"{imagePath}\"/><figcaption><pre>{description}</pre></figcaption></figure>";
+                $"<figure><image src=\"{imagePath}\"/><figcaption><p>Error or page <a href=\"{url}\">{url}</a></p><pre>{description}</pre></figcaption></figure>";
             var newReportContent = reportContent.Replace(ImagePlaceholder, newEntry + ImagePlaceholder);
             File.WriteAllText(ReportFilePath, newReportContent);
             if (ciAdapter.IsAvailable())
