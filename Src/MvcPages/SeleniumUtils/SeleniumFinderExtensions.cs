@@ -86,24 +86,13 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         internal static IStableWebElement GetStableElementWithText(this RemoteWebDriver driver, ISearchContext scope, string text, bool isPartialText)
         {
-            try
-            {
-                var by = BuildLocatorByContainedText(text, isPartialText);
-                return GetStableAccessibleElementByInScope(driver, @by, scope);
-            }
-            catch (CannotFindElementByException ex)
-            {
-                throw new WebElementNotFoundException($"Cannot find element with text='{text}'", ex);
-            }
+            var by = BuildLocatorByContainedText(text, isPartialText);
+            return GetStableAccessibleElementByInScope(driver, by, scope);
         }
 
         private static By BuildLocatorByContainedText(string text, bool isPartialText)
         {
-            var xpathLiteral = XPathHelpers.ToXPathLiteral(text.Trim());
-            var by = isPartialText
-                ? By.XPath(string.Format(".//*[contains(text(), {0}) or ((@type='submit' or  @type='reset') and contains(@value,{0})) or contains(@title,{0})]", xpathLiteral))
-                : By.XPath(string.Format(".//*[((normalize-space(.) = {0}) and (count(*)=0) ) or (normalize-space(text()) = {0}) or ((@type='submit' or  @type='reset') and @value={0}) or (@title={0})]",xpathLiteral));
-            return by;
+            return isPartialText ? ByText.FromPartial(text) : ByText.From(text);
         }
 
         internal static IWebElement FindElementBy(this ISearchContext context, By by)

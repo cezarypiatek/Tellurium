@@ -19,9 +19,9 @@ namespace Tellurium.Sample.UITests
     [TestFixture, Explicit]
     public class SampleFormTest
     {
-        [TestCase(BrowserType.Firefox)]
+      //  [TestCase(BrowserType.Firefox)]
         [TestCase(BrowserType.Chrome)]
-        [TestCase(BrowserType.InternetExplorer)]
+        //[TestCase(BrowserType.InternetExplorer)]
         public void should_be_able_to_fill_sample_form(BrowserType driverType)
         {
             //Initialize MvcPages
@@ -48,6 +48,7 @@ namespace Tellurium.Sample.UITests
                 BrowserName = driverType.ToString(),
                 ProjectName = "Sample Project",
                 ScreenshotCategory = "Sample Form",
+                ProcessScreenshotsAsynchronously = true
             });
 
 
@@ -56,7 +57,7 @@ namespace Tellurium.Sample.UITests
             {
                 //Test
                 browserAdapter.NavigateTo<TestFormsController>(c => c.Index());
-                AssertView.EqualsToPattern(browserAdapter, "Sample1");
+                AssertView.EqualsToPattern(browserAdapter, "Sample11");
                 
                 var detinationForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormDst);
                 var sourcenForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormSrc);
@@ -77,7 +78,7 @@ namespace Tellurium.Sample.UITests
                 var selectListValue = sourcenForm.GetFieldValue(x=>x.SelectListValue);
                 detinationForm.SetFieldValue(x=>x.SelectListValue, selectListValue);
 
-                AssertView.EqualsToPattern(browserAdapter, "Sample2");
+                AssertView.EqualsToPattern(browserAdapter, "Sample12");
                 
                 detinationForm.SetFieldValue("SingleFile", "SampleFileToUpload.docx");
             }
@@ -95,7 +96,8 @@ namespace Tellurium.Sample.UITests
                 BrowserName = browserAdapterConfig.BrowserType.ToString(),
                 ProjectName = "Sample Project",
                 ScreenshotCategory = "Sample Form",
-                TestOutputWriter = TestContext.Progress.WriteLine
+                TestOutputWriter = TestContext.Progress.WriteLine,
+                ProcessScreenshotsAsynchronously = true
             });
 
 
@@ -141,7 +143,8 @@ namespace Tellurium.Sample.UITests
                 BrowserName = browserAdapterConfig.BrowserType.ToString(),
                 ProjectName = "Sample Project",
                 ScreenshotCategory = "Sample Form",
-                TestOutputWriter = TestContext.Progress.WriteLine
+                TestOutputWriter = TestContext.Progress.WriteLine,
+                ProcessScreenshotsAsynchronously = true
             });
 
 
@@ -150,7 +153,7 @@ namespace Tellurium.Sample.UITests
             {
                 //Test
                 browserAdapter.NavigateTo("TestForms/Index/");
-                AssertView.EqualsToPattern(browserAdapter, "Sample21");
+                AssertView.EqualsToPattern(browserAdapter, "Sample31");
                 
                 var detinationForm = browserAdapter.GetForm(FormsIds.TestFormDst);
                 var sourcenForm = browserAdapter.GetForm(FormsIds.TestFormSrc);
@@ -346,6 +349,24 @@ namespace Tellurium.Sample.UITests
                 var registerForm = browserAdapter.GetForm<RegisterViewModel>("RegisterForm");
                 registerForm.ClickOnElementWithText("Więcej");
                 Assert.DoesNotThrow(()=> registerForm.ClickOnElementWithText("Register"));
+            }
+        }
+
+
+        [Test]
+        public void should_be_able_to_click_on_elements_with_partialtext()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+            //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo<HomeController>(c => c.Index());
+
+
+                var jumbo = browserAdapter.GetPageFragmentById("Jumbo");
+                browserAdapter.ReloadPageWith(()=> jumbo.ClickOnElementWithPartialText("Learn"));
             }
         }
 
