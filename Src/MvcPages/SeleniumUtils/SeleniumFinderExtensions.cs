@@ -49,7 +49,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             }
             catch (WebDriverTimeoutException ex)
             {
-                throw new CannotFindElementByException(@by, ex);   
+                throw new CannotFindElementByException(@by, scope, ex);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             }
             catch (WebDriverTimeoutException ex)
             {
-                throw new CannotFindElementByException(@by, ex);
+                throw new CannotFindElementByException(@by, scope, ex);
             }
         }
 

@@ -47,7 +47,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             }
             catch(Exception ex)
             {
-                throw new CannotFindElementByException(locator, ex);  
+                throw new CannotFindElementByException(locator, parent, ex);  
             }
         }
 
