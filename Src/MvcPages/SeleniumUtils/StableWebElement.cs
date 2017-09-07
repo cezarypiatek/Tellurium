@@ -4,6 +4,7 @@ using System.Drawing;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 using Tellurium.MvcPages.Utils;
 
 namespace Tellurium.MvcPages.SeleniumUtils
@@ -13,12 +14,14 @@ namespace Tellurium.MvcPages.SeleniumUtils
         private readonly ISearchContext parent;
         private IWebElement element;
         private readonly By locator;
+        private readonly SearchApproachType searchApproach;
 
-        public StableWebElement(ISearchContext parent, IWebElement element, By locator)
+        public StableWebElement(ISearchContext parent, IWebElement element, By locator, SearchApproachType searchApproach)
         {
             this.parent = parent;
             this.element = element;
             this.locator = locator;
+            this.searchApproach = searchApproach;
         }
 
         public void RegenerateElement()
@@ -28,7 +31,24 @@ namespace Tellurium.MvcPages.SeleniumUtils
             {
                 stableParent.RegenerateElement();
             }
-            this.element = this.parent.FindElement(locator);
+            try
+            {
+                switch (searchApproach)
+                {
+                    case SearchApproachType.First:
+                        this.element = this.parent.FindElement(locator);
+                        break;
+                    case SearchApproachType.FirstAccessible:
+                        this.element = this.parent.FindFirstAccessibleElement(locator);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(searchApproach));
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new CannotFindElementByException(locator, ex);  
+            }
         }
 
         public bool IsStale()
@@ -177,5 +197,11 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return typed;
         }
 
+    }
+
+    public enum SearchApproachType
+    {
+        First,
+        FirstAccessible
     }
 }

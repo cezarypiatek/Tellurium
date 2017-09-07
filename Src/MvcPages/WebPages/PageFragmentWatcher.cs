@@ -22,11 +22,15 @@ namespace Tellurium.MvcPages.WebPages
         {
             driver.ExecuteScript(@"
 (function(target, watcherId, watchSubtree){
+        var launchTicket = null;
         window.__selenium_observers__ =  window.__selenium_observers__ || {};
         window.__selenium_observers__[watcherId] = {
-                observer: new MutationObserver(function(mutations) {
-                        window.__selenium_observers__[watcherId].occured = true;
-                        window.__selenium_observers__[watcherId].observer.disconnect();
+                observer: new MutationObserver(function() {
+                        clearTimeout(launchTicket);
+                        launchTicket = setTimeout(function(){
+                            window.__selenium_observers__[watcherId].occured = true;
+                            window.__selenium_observers__[watcherId].observer.disconnect();
+                        }, 250);
                 }),
                 occured:false
         };

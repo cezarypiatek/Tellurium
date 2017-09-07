@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
@@ -27,31 +28,49 @@ namespace Tellurium.MvcPages.SeleniumUtils
         internal static IStableWebElement GetStableAccessibleElementByInScope(this RemoteWebDriver driver, By @by, ISearchContext scope, int timeout = SearchElementDefaultTimeout)
         {
             var foundElement = GetFirstAccessibleElement(driver, @by, scope, timeout);
-            return new StableWebElement(scope, foundElement, @by);
+            return new StableWebElement(scope, foundElement, @by, SearchApproachType.FirstAccessible);
+        }
+
+        internal static IWebElement FindFirstAccessibleElement(this ISearchContext scope, By locator)
+        {
+            var foundElement = scope.FindElements(locator).FirstAccessibleOrDefault();
+            if (foundElement == null)
+            {
+                throw new NoSuchElementException();
+            }
+            return foundElement;
         }
 
         private static IWebElement GetFirstAccessibleElement(RemoteWebDriver driver, By @by, ISearchContext scope, int timeout)
         {
             try
             {
-                return driver.WaitUntil(timeout, (a) =>
-                {
-                    var elements = scope.FindElements(@by);
-
-                    try
-                    {
-                        return elements.FirstOrDefault(element => element != null && element.Displayed && element.Enabled);
-                    }
-                    catch (StaleElementReferenceException)
-                    {
-                        return null;
-                    }
-                });
+                return driver.WaitUntil(timeout, (a) => scope.FindFirstAccessibleElement(by));
             }
             catch (WebDriverTimeoutException ex)
             {
                 throw new CannotFindElementByException(@by, ex);   
             }
+        }
+
+        private static bool IsElementAccessible(this IWebElement element)
+        {
+            return element != null && element.Displayed && element.Enabled;
+        }
+
+        private static IWebElement FirstAccessibleOrDefault(this ReadOnlyCollection<IWebElement> elements)
+        {
+            return elements.FirstOrDefault(element =>
+            {
+                try
+                {
+                    return element.IsElementAccessible();
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return false;
+                }
+            });
         }
 
         public static IStableWebElement GetStableElementById(this RemoteWebDriver driver, string elementId, int timeout = SearchElementDefaultTimeout)
@@ -63,7 +82,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         public static IStableWebElement GetStableElementByInScope(this RemoteWebDriver driver, ISearchContext scope, By by, int timeout = 30)
         {
             var foundElement = GetFirstElement(driver, scope, @by, timeout);
-            return new StableWebElement(scope,foundElement,@by);
+            return new StableWebElement(scope,foundElement,@by, SearchApproachType.First);
         }
 
         private static IWebElement GetFirstElement(RemoteWebDriver driver, ISearchContext scope, By @by, int timeout)
