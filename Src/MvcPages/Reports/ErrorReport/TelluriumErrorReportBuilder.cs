@@ -34,11 +34,10 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
 
         private void AppendEntryToReport(Exception exception, string url, string imagePath="")
         {
-            string description = $"{exception.GetFullExceptionMessage()}\r\n{exception.StackTrace}";
             CreateReportIfNotExists();
             var reportContent = File.ReadAllText(ReportFilePath);
             var newEntry =
-                $"<figure><image src=\"{imagePath}\"/><figcaption><p>Error or page <a href=\"{url}\">{url}</a></p><pre>{description}</pre></figcaption></figure>";
+                $"<figure><image src=\"{imagePath}\"/><figcaption><p>Error or page <a href=\"{url}\">{url}</a></p><pre>{exception}</pre></figcaption></figure>";
             var newReportContent = reportContent.Replace(ImagePlaceholder, newEntry + ImagePlaceholder);
             File.WriteAllText(ReportFilePath, newReportContent);
             if (ciAdapter.IsAvailable())
