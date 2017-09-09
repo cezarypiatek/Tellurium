@@ -39,29 +39,42 @@ namespace Tellurium.MvcPages.WebPages
         {
             try
             {
-                driver.WaitUntil(timeout,
-                    d =>
-                        (bool)
-                        driver.ExecuteScript(
-                            "return window.__selenium_observers__ && window.__selenium_observers__[arguments[0]].occured;",
-                            watcherId));
+                driver.WaitUntil(timeout, d =>
+                {
+                    try
+                    {
+                        return (bool) driver.ExecuteScript("return window.__selenium_observers__[arguments[0]].occured;", watcherId);
+                    }
+                    catch (NullReferenceException)
+                    {
+                        throw NoChangesException.BecausePageReloaded(element);
+                    }
+                });
+
             }
-            catch (WebDriverTimeoutException ex)
+            catch (WebDriverTimeoutException)
             {
-                throw new CannotObserveAnyChanges(element, ex);
+                throw NoChangesException.BecauseTimeout(element, timeout);
             }
             
         }
     }
 
-    public class CannotObserveAnyChanges:ApplicationException
+    public class NoChangesException:ApplicationException
     {
-        public IWebElement ObservedElement { get; private set; }
-
-        public CannotObserveAnyChanges(IWebElement observedElement, Exception innerException)
-            :base($"No changes has been obverved for element {observedElement.GetElementDescription()}", innerException)
+        public static NoChangesException BecausePageReloaded(IWebElement observedElement)
         {
-            this.ObservedElement = observedElement;
+            return  new NoChangesException($"Cannot observer any changes for the element {observedElement.GetElementDescription()} because page was reloaded in the meantime");
+        }
+
+        public static NoChangesException BecauseTimeout(IWebElement observedElement, int timeoutInSeconds)
+        {
+            return new NoChangesException($"No changes has been obverved for the element {observedElement.GetElementDescription()} within {timeoutInSeconds}s");
+        }
+
+        private NoChangesException(string message) : base(message)
+        {
+
         }
     }
 }
