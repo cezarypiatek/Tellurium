@@ -62,6 +62,9 @@ namespace Tellurium.Sample.UITests
                 var detinationForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormDst);
                 var sourcenForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormSrc);
 
+                AssertView.EqualsToPattern(detinationForm, "Destination form");
+                AssertView.EqualsToPattern(sourcenForm, "Source form");
+
                 var textInputValue = sourcenForm.GetFieldValue(x=>x.TextInput);
                 detinationForm.SetFieldValue(x => x.TextInput, textInputValue);
 

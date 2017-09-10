@@ -1,8 +1,12 @@
 using System;
+using System.Drawing;
+using System.IO;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.Utils;
 
 namespace Tellurium.MvcPages.WebPages
 {
@@ -110,9 +114,39 @@ namespace Tellurium.MvcPages.WebPages
         }
 
         public IWebElement WrappedElement => WebElement;
+
+        private static bool IsPartialScreenshotNativelySupported = true;
+
+        public byte[] TakeScreenshot()
+        {
+            if (WebElement is ITakesScreenshot == false || IsPartialScreenshotNativelySupported == false)
+            {
+                return TakeSceenshotManually();
+            }
+            
+            try
+            {
+                var screenshot = ((ITakesScreenshot) WebElement).GetScreenshot();
+                return screenshot.AsByteArray;
+            }
+            catch (WebDriverException)
+            {
+                IsPartialScreenshotNativelySupported = false;
+                return TakeSceenshotManually();
+            }
+            
+        }
+
+        private byte[] TakeSceenshotManually()
+        {
+            var wholePageScreenshot = Driver.GetScreenshot();
+            var imageScreen = wholePageScreenshot.AsByteArray.ToBitmap();
+            var webElementArea = new Rectangle(this.WebElement.Location, this.WebElement.Size);
+            return imageScreen.Clone(webElementArea, imageScreen.PixelFormat).ToBytes();
+        }
     }
 
-    public interface IPageFragment: IWrapsElement
+    public interface IPageFragment: IWrapsElement, IBrowserCamera
     {
         /// <summary>
         /// Perform click action
