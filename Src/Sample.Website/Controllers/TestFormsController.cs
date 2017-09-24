@@ -23,6 +23,8 @@ namespace Tellurium.Sample.Website.Controllers
                     SelectListValue = "x"
                 }
             };
+            viewModel.SourceForm.MultiSelectListOptions[1].Selected = true;
+            viewModel.SourceForm.MultiSelectListOptions[2].Selected = true;
             return View(viewModel);
         }
 

@@ -79,7 +79,10 @@ namespace Tellurium.Sample.UITests
                 detinationForm.SetFieldValue(x => x.CheckboxInput, checkboxValue);
 
                 var selectListValue = sourcenForm.GetFieldValue(x=>x.SelectListValue);
-                detinationForm.SetFieldValue(x=>x.SelectListValue, selectListValue);
+                detinationForm.SetFieldValue(x=>x.SelectListValue, selectListValue); 
+                
+                var multiselectListValue = sourcenForm.GetFieldValue(x=>x.MultiSelectListValue);
+                detinationForm.SetFieldValue(x=>x.MultiSelectListValue, multiselectListValue);
 
                 AssertView.EqualsToPattern(browserAdapter, "Sample12");
                 
@@ -128,7 +131,10 @@ namespace Tellurium.Sample.UITests
                 detinationForm.SetFieldValue("CheckboxInput", checkboxValue);
 
                 var selectListValue = sourcenForm.GetFieldValue("SelectListValue");
-                detinationForm.SetFieldValue("SelectListValue", selectListValue);
+                detinationForm.SetFieldValue("SelectListValue", selectListValue);     
+                
+                var multiselectListValue = sourcenForm.GetFieldValue("MultiSelectListValue");
+                detinationForm.SetFieldValue("MultiSelectListValue", multiselectListValue);
 
                 AssertView.EqualsToPattern(browserAdapter, "Sample22");
             }
@@ -175,7 +181,10 @@ namespace Tellurium.Sample.UITests
                 detinationForm.SetFieldValueByLabel("Checkbox input", checkboxValue);
 
                 var selectListValue = sourcenForm.GetFieldValueByLabel("Select input");
-                detinationForm.SetFieldValueByLabel("Select input", selectListValue);
+                detinationForm.SetFieldValueByLabel("Select input", selectListValue);  
+                
+                var multiselectListValue = sourcenForm.GetFieldValueByLabel("MultiSelect input");
+                detinationForm.SetFieldValueByLabel("MultiSelect input", multiselectListValue);
 
                 AssertView.EqualsToPattern(browserAdapter, "Sample33");
             }

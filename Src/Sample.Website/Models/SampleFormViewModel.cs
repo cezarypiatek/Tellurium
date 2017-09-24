@@ -6,7 +6,7 @@ namespace Tellurium.Sample.Website.Models
 {
     public class SampleFormViewModel
     {
-        public static readonly List<SelectListItem> SelectListOptions = new List<SelectListItem>()
+        public readonly IReadOnlyList<SelectListItem> SelectListOptions = new List<SelectListItem>()
         {
              new SelectListItem()
             {
@@ -18,6 +18,32 @@ namespace Tellurium.Sample.Website.Models
             {
                 Text = "Option1",
                 Value = "Option1Value"
+            },
+            new SelectListItem()
+            {
+                Text = "Option2",
+                Value = "Option2Value"
+            },
+            new SelectListItem()
+            {
+                Text = "Option3",
+                Value = "Option3Value"
+            }
+        };
+        
+        public readonly IReadOnlyList<SelectListItem> MultiSelectListOptions = new List<SelectListItem>()
+        {
+             new SelectListItem()
+            {
+                Text = "----Select option---",
+                Value = "x"
+            },
+
+            new SelectListItem()
+            {
+                Text = "Option1",
+                Value = "Option1Value"
+
             },
             new SelectListItem()
             {
@@ -44,7 +70,10 @@ namespace Tellurium.Sample.Website.Models
         public bool CheckboxInput { get; set; }
 
         [Display(Name = "Select input")]
-        public string SelectListValue { get; set; }
+        public string SelectListValue { get; set; }     
+        
+        [Display(Name = "MultiSelect input")]
+        public string MultiSelectListValue { get; set; }
     }
 
 
