@@ -141,8 +141,19 @@ namespace Tellurium.MvcPages.WebPages
         {
             var wholePageScreenshot = Driver.GetScreenshot();
             var imageScreen = wholePageScreenshot.AsByteArray.ToBitmap();
-            var webElementArea = new Rectangle(this.WebElement.Location, this.WebElement.Size);
+            var webElementArea = GetWebElementAreaContrainedTo(imageScreen);
             return imageScreen.Clone(webElementArea, imageScreen.PixelFormat).ToBytes();
+        }
+
+        private Rectangle GetWebElementAreaContrainedTo(Bitmap imageScreen)
+        {
+            var originalLocation = this.WebElement.Location;
+            var originalSize = this.WebElement.Size;
+            var x = Math.Min(originalLocation.X, imageScreen.Width);
+            var y = Math.Min(originalLocation.Y, imageScreen.Height);
+            var w = Math.Min(originalSize.Width, imageScreen.Width-x);
+            var h = Math.Min(originalSize.Height, imageScreen.Height-y);
+            return new Rectangle(x,y,w,h);
         }
     }
 
