@@ -35,6 +35,10 @@ namespace Tellurium.MvcPages.WebPages
                 {
                     throw new ArgumentException("Column name cannot be empty", nameof(columnName));
                 }
+                if (columnsMap.ContainsKey(columnName) == false)
+                {
+                    throw new ArgumentException($"There is no column with header {columnName}", nameof(columnName));
+                }
                 var index = columnsMap[columnName];
                 return this[index];
             }
