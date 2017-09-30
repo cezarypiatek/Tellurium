@@ -46,7 +46,20 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
 
         public virtual BrowserPattern GetActivePatternForBrowser(string browserName)
         {
-            return Patterns.SingleOrDefault(x => x.BrowserName == browserName && x.IsActive);
+            var activePatterns = Patterns.Where(x => x.BrowserName == browserName && x.IsActive).ToList();
+            if (activePatterns.Count > 1)
+            {
+                throw new DuplicatedActivePattern(Project.Name, Category.Name, PatternScreenshotName, browserName);
+            }
+            return activePatterns.FirstOrDefault();
+        }
+    }
+
+    public class DuplicatedActivePattern:ApplicationException
+    {
+        public DuplicatedActivePattern(string project, string category, string test, string browser) 
+            : base($"Duplicated active patter {project} / {category} / {test} for browser {browser}")
+        {
         }
     }
 }
