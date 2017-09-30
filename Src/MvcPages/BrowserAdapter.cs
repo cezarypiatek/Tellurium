@@ -73,15 +73,21 @@ namespace Tellurium.MvcPages
         {
             using (var browserAdapter = Create(config))
             {
-                try
-                {
-                    action(browserAdapter);
-                }
-                catch (Exception ex)
-                {
-                    browserAdapter.ReportError(ex);
-                    throw;
-                }
+               browserAdapter.Execute(action);
+            }
+        }
+
+
+        public void Execute(Action<BrowserAdapter> action)
+        {
+            try
+            {
+                action(this);
+            }
+            catch (Exception ex)
+            {
+                this.ReportError(ex);
+                throw;
             }
         }
 
