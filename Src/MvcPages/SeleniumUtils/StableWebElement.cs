@@ -196,7 +196,15 @@ namespace Tellurium.MvcPages.SeleniumUtils
             }
             return typed;
         }
+    }
 
+    internal static class StableElementExtensions
+    {
+        public static IStableWebElement FindStableElement(this ISearchContext context, By by)
+        {
+            var element = context.FindElement(by);
+            return new StableWebElement(context, element, by, SearchApproachType.First);
+        }
     }
 
     public enum SearchApproachType

@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.Utils;
 
 namespace Tellurium.MvcPages.WebPages
@@ -22,16 +24,8 @@ namespace Tellurium.MvcPages.WebPages
         {
             get
             {
-                try
-                {
-                    var selectorToFind = $"*[{index + 1}]";
-                    return GetPageFragmentByXPath(selectorToFind);
-                }
-                catch (NoSuchElementException ex)
-                {
-                    var exceptionMessage = $"Unable to locate child element on index {index}";
-                    throw new IndexOutOfRangeException(exceptionMessage, ex);
-                }
+                var byIndex = ByIndex.FromIndex(index);
+                return GetElementByXPath(byIndex);
             }
         }
 
@@ -64,7 +58,7 @@ namespace Tellurium.MvcPages.WebPages
         {
             try
             {
-                return GetPageFragmentByXPath("*[last()]");
+                return GetElementByXPath(ByIndex.FromLast());
             }
             catch (NoSuchElementException)
             {
@@ -76,7 +70,8 @@ namespace Tellurium.MvcPages.WebPages
         {
             try
             {
-                return GetPageFragmentByXPath("*[1]");
+                var byIndex =  ByIndex.FromIndex(0);
+                return GetElementByXPath(byIndex);
             }
             catch (NoSuchElementException)
             {
@@ -84,17 +79,44 @@ namespace Tellurium.MvcPages.WebPages
             }
         }
 
-        private TItem GetPageFragmentByXPath(string selector)
+        private TItem GetElementByXPath(By xpath)
         {
-            var childElement = GetItemsContainer().FindElement(By.XPath(selector));
+            var container = GetItemsContainer();
+            var childElement = container.FindStableElement(xpath);
             return MapToItem(childElement);
         }
 
         public TItem FindItemWithText(string text)
         {
-            var xpathLiteral = XPathHelpers.ToXPathLiteral(text);
-            var selector = $"*[contains(string(), {xpathLiteral})]";
-            return GetPageFragmentByXPath(selector);
+            var selector = ByIndex.FromItemText(text);
+            return GetElementByXPath(selector);
+        }
+    }
+
+    internal class ByIndex : By
+    {
+        public static ByIndex FromIndex(int index)
+        {
+            return new ByIndex($"*[{index + 1}]" ,$"At index {index}" );
+        }
+
+        public static ByIndex FromLast()
+        {
+            return new ByIndex("*[last()]", "At last index");
+        }
+
+        public static ByIndex FromItemText(string text)
+        {
+            var xpathLiteral = XPathHelpers.ToXPathLiteral(text.Trim());
+            var xpathToFind = $"*[contains(string(), {xpathLiteral})]";
+            return new ByIndex(xpathToFind, $"containing partial text: '{text}'");
+        }
+
+        private ByIndex(string xpathToFind, string description)
+        {
+            FindElementMethod = context => ((IFindsByXPath) context).FindElementByXPath(xpathToFind);
+            FindElementsMethod = context => ((IFindsByXPath) context).FindElementsByXPath(xpathToFind);
+            Description = description;
         }
     }
 }
