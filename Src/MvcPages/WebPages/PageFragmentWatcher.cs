@@ -45,7 +45,7 @@ namespace Tellurium.MvcPages.WebPages
                     {
                         return (bool) driver.ExecuteScript("return window.__selenium_observers__[arguments[0]].occured;", watcherId);
                     }
-                    catch (NullReferenceException)
+                    catch (InvalidOperationException)
                     {
                         throw NoChangesException.BecausePageReloaded(element);
                     }
