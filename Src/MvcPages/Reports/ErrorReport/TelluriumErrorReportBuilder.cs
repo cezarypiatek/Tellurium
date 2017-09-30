@@ -37,7 +37,7 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
             CreateReportIfNotExists();
             var reportContent = File.ReadAllText(ReportFilePath);
             var newEntry =
-                $"<figure><image src=\"{imagePath}\"/><figcaption><p>Error or page <a href=\"{url}\">{url}</a></p><pre>{exception}</pre></figcaption></figure>";
+                $"<figure><image src=\"{imagePath}\"/><figcaption><p>Error or page <a href=\"{url}\">{url}</a><br/>Reported on <b>{DateTime.Now:G}</b></p><pre>{exception}</pre></figcaption></figure>";
             var newReportContent = reportContent.Replace(ImagePlaceholder, newEntry + ImagePlaceholder);
             File.WriteAllText(ReportFilePath, newReportContent);
             if (ciAdapter.IsAvailable())
