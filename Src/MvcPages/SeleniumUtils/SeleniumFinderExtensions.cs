@@ -114,7 +114,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return isPartialText ? ByText.FromPartial(text) : ByText.From(text);
         }
 
-        internal static IWebElement FindElementBy(this ISearchContext context, By by)
+        internal static IWebElement TryFindElement(this ISearchContext context, By by)
         {
             return ExceptionHelper.SwallowException(() => context.FindElement(@by), null);
         }

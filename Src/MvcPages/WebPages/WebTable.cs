@@ -16,13 +16,13 @@ namespace Tellurium.MvcPages.WebPages
 
         private IWebElement GetBody()
         {
-            return WebElement.FindElementBy(By.TagName("tbody")) ?? WebElement;
+            return WebElement.TryFindStableElement(By.TagName("tbody")) ?? WebElement;
         }
 
         private Dictionary<string, int> GetColumnsMap()
         {
             var result = new Dictionary<string, int>();
-            var header = WebElement.FindElementBy(By.TagName("thead"));
+            var header = WebElement.TryFindStableElement(By.TagName("thead"));
             if (header == null)
             {
                 return result;

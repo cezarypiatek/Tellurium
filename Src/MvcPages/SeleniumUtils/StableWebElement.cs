@@ -204,6 +204,16 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             var element = context.FindElement(by);
             return new StableWebElement(context, element, by, SearchApproachType.First);
+        } 
+        
+        public static IStableWebElement TryFindStableElement(this ISearchContext context, By by)
+        {
+            var element = context.TryFindElement(by);
+            if (element == null)
+            {
+                return null;
+            }
+            return new StableWebElement(context, element, by, SearchApproachType.First);
         }
     }
 
