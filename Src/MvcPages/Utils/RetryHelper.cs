@@ -25,6 +25,11 @@ namespace Tellurium.MvcPages.Utils
 
         public static RetryResult RetryWithExceptions(int numberOfRetries, Func<bool> action)
         {
+            return RetryWithExceptions<Exception>(numberOfRetries, action);
+        }  
+        
+        public static RetryResult RetryWithExceptions<T>(int numberOfRetries, Func<bool> action) where T:Exception
+        {
             Exception lastException = null;
             var success = Retry(numberOfRetries, () =>
             {
@@ -32,7 +37,7 @@ namespace Tellurium.MvcPages.Utils
                 {
                     return action();
                 }
-                catch (Exception ex)
+                catch (T ex)
                 {
                     lastException = ex;
                     return false;

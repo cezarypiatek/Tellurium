@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.Utils;
 
 namespace Tellurium.MvcPages.WebPages
 {
@@ -27,15 +29,25 @@ namespace Tellurium.MvcPages.WebPages
             {
                 return result;
             }
-            var columns = header.FindElements(By.TagName("th"));
-            
-            for (int i = 0; i < columns.Count; i++)
+
+            var retryResult = RetryHelper.RetryWithExceptions<StaleElementReferenceException>(3, () =>
             {
-                var columnHeader = columns[i].Text?? string.Empty;
-                if (string.IsNullOrWhiteSpace(columnHeader) == false && result.ContainsKey(columnHeader) == false)
+                result.Clear();
+                var columns = header.FindElements(By.TagName("th"));
+                for (int i = 0; i < columns.Count; i++)
                 {
-                    result.Add(columnHeader, i);
+                    var columnHeader = columns[i].Text ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(columnHeader) == false && result.ContainsKey(columnHeader) == false)
+                    {
+                        result.Add(columnHeader, i);
+                    }
                 }
+                return true;
+            });
+
+            if (retryResult.Success == false)
+            {
+                throw new ApplicationException("Unable to collect table headers", retryResult.LastException);
             }
             return result;
         }
