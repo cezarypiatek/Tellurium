@@ -51,7 +51,12 @@ namespace Tellurium.MvcPages.WebPages
 
         private ReadOnlyCollection<IWebElement> GetChildElements()
         {
-            return GetItemsContainer().FindElements(By.XPath("*"));
+            var itemsContainer = GetItemsContainer();
+            if (itemsContainer == null)
+            {
+                return new ReadOnlyCollection<IWebElement>(new List<IWebElement>(0));
+            }
+            return itemsContainer.FindElements(By.XPath("*"));
         }
 
         public TItem Last()
@@ -82,6 +87,10 @@ namespace Tellurium.MvcPages.WebPages
         private TItem GetElementByXPath(By xpath)
         {
             var container = GetItemsContainer();
+            if (container == null)
+            {
+                throw new ApplicationException("Collection is empty");
+            }
             var childElement = container.FindStableElement(xpath);
             return MapToItem(childElement);
         }

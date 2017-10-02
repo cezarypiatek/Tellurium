@@ -8,6 +8,7 @@ using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.MvcPages.BrowserCamera.Lens;
 using Tellurium.MvcPages.Configuration;
 using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.WebPages;
 using Tellurium.Sample.Website.Controllers;
 using Tellurium.Sample.Website.Models;
 using Tellurium.Sample.Website.Mvc;
@@ -456,23 +457,23 @@ namespace Tellurium.Sample.UITests
                 browserAdapter.NavigateTo<HomeController>(c => c.Index());
 
 
-                var list = browserAdapter.GetTreeWithId("SampleTree");
+                var sampleTree = browserAdapter.GetTreeWithId("SampleTree");
 
-                Assert.IsNotNull(list);
-                Assert.AreEqual(2, list.Count);
-                Assert.IsNotNull(list[0]);
-                Assert.IsNotNull(list[1]);
-                Assert.IsNotNull(list.First());
-                Assert.IsNotNull(list.Last());
+                Assert.IsNotNull(sampleTree);
+                Assert.AreEqual(2, sampleTree.Count);
+                Assert.IsNotNull(sampleTree[0]);
+                Assert.IsNotNull(sampleTree[1]);
+                Assert.IsNotNull(sampleTree.First());
+                Assert.IsNotNull(sampleTree.Last());
 
-                var subTreeA = list[0];
+                var subTreeA = sampleTree[0];
                 Assert.IsNotNull(subTreeA);
                 Assert.AreEqual(3, subTreeA.Count);
                 Assert.IsNotNull(subTreeA[0]);
                 Assert.IsNotNull(subTreeA[1]);
                 Assert.IsNotNull(subTreeA[2]);
 
-                var subTreeB = list[1];
+                var subTreeB = sampleTree[1];
                 Assert.IsNotNull(subTreeB);
                 Assert.AreEqual(2, subTreeB.Count);
                 Assert.IsNotNull(subTreeB[0]);
@@ -482,8 +483,18 @@ namespace Tellurium.Sample.UITests
                 Assert.IsNotNull(subTreeAC);
                 Assert.AreEqual(2, subTreeAC.Count);
 
-                var itemWithText = list.FindItemWithText("Level 1 item A");
+                var itemWithText = sampleTree.FindItemWithText("Level 1 item A");
                 Assert.IsNotNull(itemWithText);
+
+                void VisitTree(WebTree tree)
+                {
+                    foreach (var node in tree)
+                    {
+                        VisitTree(node);
+                    }
+                }
+
+                Assert.DoesNotThrow(()=> VisitTree(sampleTree));
             }
         }
     }
