@@ -4,7 +4,7 @@
     $parameters = . $Params
     foreach ($parameter in $parameters) {
         $runtimeParameterDictionary.Add($parameter.Name, $parameter)
-    }    
+    }
     $runtimeParameterDictionary
 }
 
@@ -14,7 +14,7 @@ function New-Parameter {
     $parameterAttribute = New-Object System.Management.Automation.ParameterAttribute
     $parameterAttribute.Mandatory = $Mandatory
     $parameterAttribute.Position = $Position
-    $attributeCollection.Add($parameterAttribute)   
+    $attributeCollection.Add($parameterAttribute)
     $validateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute -ArgumentList $ValidateSet
     $attributeCollection.Add($validateSetAttribute)
     New-Object System.Management.Automation.RuntimeDefinedParameter($Name, [string], $attributeCollection)
@@ -23,20 +23,20 @@ function New-Parameter {
 function Find-Matches {
     [CmdletBinding()]
     param(
-        [Parameter(ValueFromPipeline = $true, Mandatory = $true)][string]$Text, 
+        [Parameter(ValueFromPipeline = $true, Mandatory = $true)][string]$Text,
         [string]$Pattern
     )
     process {
         foreach ($t in $Text) {
             [regex]::Matches($t, $Pattern) | Where-Object {$_.Length -gt 0}
-        }        
-    }    
+        }
+    }
 }
 
 function Test-VSContext {
     [bool] (Get-Command "Get-Project" -ErrorAction SilentlyContinue)
 }
-function Add-ProjectDirectoryIfNotExist($DirPath) {	
+function Add-ProjectDirectoryIfNotExist($DirPath) {
     $project = Get-Project
     $projectPath = Split-Path $project.FileName -Parent
     $fullPathToNewDirectory = "$projectPath\$DirPath"
@@ -57,7 +57,7 @@ function Add-FileToProject {
         if (Test-VSContext) {
             $project = Get-Project
         }
-		
+
     }
     process {
         foreach ($file in $Files) {
@@ -96,8 +96,8 @@ function Get-SelectedOrDefault {
 }
 
 function New-TempDirectory {
-    $tempDirectoryPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), [System.IO.Path]::GetRandomFileName()) 
-    [System.IO.Directory]::CreateDirectory($tempDirectoryPath) | Out-Null  
+    $tempDirectoryPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), [System.IO.Path]::GetRandomFileName())
+    [System.IO.Directory]::CreateDirectory($tempDirectoryPath) | Out-Null
     $tempDirectoryPath
 }
 function  Save-InstalledDriverInfo {
@@ -150,9 +150,9 @@ function Select-DriverVersion {
 function Get-VersionsFromGoogleapis {
     param($BaseUrl, $DriverName, $Platform)
     $p = Invoke-WebRequest "$BaseUrl/?prefix=" -Headers @{"Accept-Encoding" = "gzip"}
-    $o = [xml]$p.Content 
+    $o = [xml]$p.Content
     ($o.ListBucketResult.Contents) |? { $_.Key -like "*$DriverName*" }  | % {
-        $parts = $_.Key -split "/"; 
+        $parts = $_.Key -split "/";
         if (($parts.Length -eq 2) -and ($parts[1].EndsWith(".zip"))) {
             $versionParts = $parts[0] -split "\."
             $major = $versionParts[0] -replace "[^\d]", ""
@@ -181,7 +181,7 @@ function Get-FromGoogleapis {
 function Get-ChromeDriverVersions {
     [CmdletBinding()]
     param([string]$Platform)
-    Get-VersionsFromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform | Sort-Object -Descending VersionNumber, Platform | Select-Object -Property @{n = "Driver"; e = {"Chrome"}}, Version, Platform 
+    Get-VersionsFromGoogleapis -BaseUrl "http://chromedriver.storage.googleapis.com" -DriverName "chromedriver" -Platform $Platform | Sort-Object -Descending VersionNumber, Platform | Select-Object -Property @{n = "Driver"; e = {"Chrome"}}, Version, Platform
 }
 
 function Install-ChromeDriver {
@@ -229,9 +229,9 @@ function Install-IEDriver {
 
 
 function Get-PahntomJSDriverAvailabeFiles {
-    param([string]$Platform)    
+    param([string]$Platform)
     $data = Invoke-RestMethod -Method Get -Uri https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads
-    foreach ($item in $data.values) { 
+    foreach ($item in $data.values) {
         if ($item.name -match "phantomjs-([\d\.]+)-(.*?)\.(.*)") {
             $filePlatform = $Matches[2]
             if (([String]::IsNullOrWhiteSpace($Platform) -ne $true) -and ($Platform -ne $fileplatform)) {
@@ -242,8 +242,8 @@ function Get-PahntomJSDriverAvailabeFiles {
     }
 }
 
-function Get-PhantomJSDriverVersions { 
-    param([string]$Platform)    
+function Get-PhantomJSDriverVersions {
+    param([string]$Platform)
     Get-PahntomJSDriverAvailabeFiles -Platform $Platform| Sort-Object Version -Descending | Select-Object -Property @{n = "Driver"; e = {"Phantom"}}, Version, Platform
 }
 
@@ -275,13 +275,13 @@ function Install-PhantomJSDriver {
 }
 
 function Get-EdgeDriverAvailableFiles {
-    $page = Invoke-WebRequest -Uri https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/#downloads    
+    $page = Invoke-WebRequest -Uri https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/#downloads
     $versions = $page.Content | Find-Matches -Pattern "Version: (.*?) \| Edge version supported: (.*?) \|" |  ForEach-Object { @{Driver = $_.Groups[1].Value; Edge = $_.Groups[2].Value} }
-    $page.Links |Where-Object {$_.innerText -like "*Release*"} |ForEach-Object { 
+    $page.Links |Where-Object {$_.innerText -like "*Release*"} |ForEach-Object {
         foreach ($v in $versions) {
             $releaseVersion = $_.innerText -replace "Release ", ""
             if ($v.Edge -like "*$($releaseVersion)*" ) {
-                [PsCustomObject]@{version = $v.Driver; path = $_.href; platform = "windows" } 
+                [PsCustomObject]@{version = $v.Driver; path = $_.href; platform = "windows" }
             }
         }
     }
@@ -344,7 +344,7 @@ function Install-OperaDriver {
     param(
         [string]$Platform = "win32",
         [string]$OutputDir
-    )  
+    )
     DynamicParam {
         New-ParameterSet -Params {
             $availableVersions = Get-OperaDriverVersions | Select-Object -ExpandProperty Version
@@ -395,7 +395,7 @@ function Install-FirefoxDriver {
     param(
         [string]$Platform = "win32",
         [string]$OutputDir
-    )  
+    )
     DynamicParam {
         New-ParameterSet -Params {
             $availableVersions = Get-FirefoxDriverVersions | Select-Object -ExpandProperty Version
@@ -444,7 +444,7 @@ function Install-SeleniumWebDriver {
                 "Edge" {Install-EdgeDriver -Platform $Platform -OutputDir $driverOutputPath}
                 "Firefox" {Install-FirefoxDriver -Platform $Platform -OutputDir $driverOutputPath; break}
                 "Opera" {Install-OperaDriver -Platform $Platform -OutputDir $driverOutputPath; break}
-                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}
             }
         }
         else {
@@ -455,7 +455,7 @@ function Install-SeleniumWebDriver {
                 "Edge" {Install-EdgeDriver -Platform $Platform  -Version $version -OutputDir $driverOutputPath}
                 "Firefox" {Install-FirefoxDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
                 "Opera" {Install-OperaDriver -Platform $Platform -Version $version -OutputDir $driverOutputPath; break}
-                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+                default {"Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}
             }
         }
     }
@@ -476,9 +476,9 @@ function Get-SeleniumWebDriverVersions {
                 "Edge" {Get-EdgeDriverVersions; break}
                 "Firefox" {Get-FirefoxDriverVersions -Platform $Platform ; break}
                 "Opera" {Get-OperaDriverVersions -Platform $Platform; break}
-                default { throw "Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}    
+                default { throw "Unsupported browser type. Please select browser from the follwing list: Chrome, PhantomJs, InternetExplorer, Edge, Firefox, Opera"}
             }
-        }    
+        }
     }
 }
 function Restore-SeleniumWebDriver{
@@ -488,13 +488,16 @@ function Restore-SeleniumWebDriver{
     if((Test-Path $configFile) -eq $false)
     {
         return
-    }   
+    }
     $config =  Get-Content -Path $configFile -Raw | ConvertFrom-Json
     if($CheckAutoRestore -and ($config.autoRestore -eq $false))
     {
         return
     }
     $config.drivers | Where-Object { (Test-Path "$($_.outputDir)\$($_.file)") -eq  $false }  `
-        | ForEach-Object { Install-SeleniumWebDriver -Browser $_.browser -Platform $_.platform -Version $_.version -OutputDir $_.outputDir }
+        | ForEach-Object {
+           $driverOutputPath = New-DriversDirectory -Directory $OutputDir
+           Install-SeleniumWebDriver -Browser $_.browser -Platform $_.platform -Version $_.version -OutputDir $_.driverOutputPath
+         }
 }
 Export-ModuleMember -Function Install-SeleniumWebDriver, Get-SeleniumWebDriverVersions, Restore-SeleniumWebDriver
