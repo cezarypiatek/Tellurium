@@ -23,13 +23,27 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return CreateLocalDriver(config.BrowserType, config.SeleniumDriversPath);
         }
 
+        private static readonly TimeSpan BrowserLoadTimeout = TimeSpan.FromSeconds(60.0);
+
         public static RemoteWebDriver CreateLocalDriver(BrowserType driverType, string driversPath)
         {
             switch (driverType)
             {
                 case BrowserType.Firefox:
-                    var profile = new FirefoxProfile {DeleteAfterUse = true};
-                    return new FirefoxDriver(profile);
+                    var firefoxOptions = new FirefoxOptions
+                    {
+                        Profile = new FirefoxProfile {DeleteAfterUse = true},
+                        UseLegacyImplementation = true
+                    };
+                    var firefoxService = FirefoxDriverService.CreateDefaultService(driversPath);
+                    return new FirefoxDriver(firefoxService, firefoxOptions, BrowserLoadTimeout);
+                case BrowserType.FirefoxGecko:
+                    var firefoxGeckoOptions = new FirefoxOptions
+                    {
+                        Profile = new FirefoxProfile {DeleteAfterUse = true}
+                    };
+                    var firefoxGeckoSerice = FirefoxDriverService.CreateDefaultService(driversPath);
+                    return new FirefoxDriver(firefoxGeckoSerice, firefoxGeckoOptions, BrowserLoadTimeout);
                 case BrowserType.Chrome:
                     return new ChromeDriver(driversPath);
                 case BrowserType.InternetExplorer:
@@ -37,7 +51,8 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 case BrowserType.Opera:
                     return new OperaDriver(driversPath);
                 case BrowserType.Safari:
-                    return new SafariDriver(new SafariOptions() { SafariLocation = driversPath });
+                    var safariService = SafariDriverService.CreateDefaultService(driversPath);
+                    return new SafariDriver(safariService);
                 case BrowserType.Phantom:
                     return new PhantomJSDriver(driversPath);
                 case BrowserType.Edge:
@@ -62,6 +77,10 @@ namespace Tellurium.MvcPages.SeleniumUtils
             switch (driverType)
             {
                 case BrowserType.Firefox:
+                    var desiredCapabilities = DesiredCapabilities.Firefox();
+                    desiredCapabilities.SetCapability("marionette", false);
+                    return desiredCapabilities;
+                case BrowserType.FirefoxGecko:
                     return DesiredCapabilities.Firefox();
                 case BrowserType.Chrome:
                     return DesiredCapabilities.Chrome();
@@ -84,6 +103,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
     public enum BrowserType
     {
         Firefox = 1,
+        FirefoxGecko,
         Chrome,
         InternetExplorer,
         Opera,

@@ -146,6 +146,11 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return Execute(() => element.GetAttribute(attributeName));
         }
 
+        public string GetProperty(string propertyName)
+        {
+            return Execute(() => element.GetProperty(propertyName));
+        }
+
         public string GetCssValue(string propertyName)
         {
             return Execute(() => element.GetCssValue(propertyName));
