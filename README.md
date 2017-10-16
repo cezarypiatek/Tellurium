@@ -2,7 +2,7 @@
 # Tellurium (aka Maintainable Selenium)
 [![Build status](https://ci.appveyor.com/api/projects/status/t0jlwy833c7sqyte?svg=true)](https://ci.appveyor.com/project/cezarypiatek/maintainableselenium)
 
-A utility pack to create maintainanble UI tests for ASP.NET MVC projects using Selenium
+A utility pack to create maintainanble UI tests using Selenium with additional support for ASP.NET MVC projects.
 
 To get know how to use **Tellurium** check project's [Wiki page](https://github.com/cezarypiatek/Tellurium/wiki)
 
