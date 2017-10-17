@@ -100,9 +100,19 @@ function New-TempDirectory {
     [System.IO.Directory]::CreateDirectory($tempDirectoryPath) | Out-Null
     $tempDirectoryPath
 }
+
+function Get-InstallerConfigFilePath{
+    $currentPath = if(Test-VSContext){
+        $project = Get-Project
+        Split-Path $project.FullName -Parent
+    }else{
+        Get-Location
+    }
+    "$currentPath\SeleniumWebdrivers.json"
+}
 function  Save-InstalledDriverInfo {
     param($Browser, $DriverVersionInfo, $OutputDir, $DriverFileName)
-    $configFile = "SeleniumWebdrivers.json"
+    $configFile =  Get-InstallerConfigFilePath
     $config = if(Test-Path $configFile)
                 {
                     Get-Content $configFile -Raw | ConvertFrom-Json
@@ -118,10 +128,15 @@ function  Save-InstalledDriverInfo {
         file = $DriverFileName
     }
     $wasDriverDetailsFound = $false
+    $isInRestoreMode = $false
     for($i=0; $i -lt $config.drivers.length; $i++ )
     {
         if($config.drivers[$i].browser -eq $Browser)
         {
+            if(($config.drivers[$i].version -eq $driverDetails.version) -and ($config.drivers[$i].platform -eq $driverDetails.platform) -and ($config.drivers[$i].outputDir -eq $driverDetails.outputDir))
+            {
+                $isInRestoreMode = $true
+            }
             $config.drivers[$i] = $driverDetails
             $wasDriverDetailsFound = $true
             break
@@ -133,7 +148,10 @@ function  Save-InstalledDriverInfo {
         $config.drivers+=$driverDetails
     }
 
-    $config | ConvertTo-Json | Out-File -FilePath $configFile
+    if($isInRestoreMode -eq $false){
+        $config | ConvertTo-Json | Out-File -FilePath $configFile
+        $configFile | Add-FileToProject
+    }
 }
 
 
@@ -484,7 +502,7 @@ function Get-SeleniumWebDriverVersions {
 function Restore-SeleniumWebDriver{
     [CmdletBinding()]
     param($CheckAutoRestore=$false)
-    $configFile = "SeleniumWebdrivers.json"
+    $configFile = Get-InstallerConfigFilePath
     if((Test-Path $configFile) -eq $false)
     {
         return
