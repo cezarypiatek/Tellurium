@@ -163,7 +163,17 @@ function Select-DriverVersion {
     else {
         $Version
     }
-    $AvailableDrivers | Where-Object {$_.Version -eq $selectedVersion}
+    $AvailableDrivers | Where-Object {$_.Version -eq $selectedVersion} | Select-Object -First 1
+}
+
+function Get-VersionNumber{
+    param($VersionString)
+    $parts =   $VersionString -split "\." |ForEach-Object {$_ -replace "[^\d]", ""}
+    $versionNumber = 0;
+    for ($i = 0; $i -lt $parts.Count; $i++) {
+        $versionNumber+= [math]::Pow(10,$parts.Count-$i+3) *([int]$parts[$i])
+    }
+    $versionNumber 
 }
 function Get-VersionsFromGoogleapis {
     param($BaseUrl, $DriverName, $Platform)
@@ -172,11 +182,8 @@ function Get-VersionsFromGoogleapis {
     ($o.ListBucketResult.Contents) |? { $_.Key -like "*$DriverName*" }  | % {
         $parts = $_.Key -split "/";
         if (($parts.Length -eq 2) -and ($parts[1].EndsWith(".zip"))) {
-            $versionParts = $parts[0] -split "\."
-            $major = $versionParts[0] -replace "[^\d]", ""
-            $minor = $versionParts[1] -replace "[^\d]", ""
-            $elementPlatform = ($parts[1] -split "[_\.]")[1]
-            [PsCustomObject](@{VersionNumber = [int]$major * 100 + [int]$minor  ; File = "$BaseUrl/$($_.Key)"; Version = $parts[0]; Platform = $elementPlatform} )
+            $versionNumber = Get-VersionNumber -VersionString $parts[0]
+            [PsCustomObject](@{VersionNumber = $versionNumber ; File = "$BaseUrl/$($_.Key)"; Version = $parts[0]; Platform = $elementPlatform} )
         }
     } | Where-Object { ([string]::IsNullOrWhiteSpace($Platform) -eq $true) -or ($_.Platform -eq "$Platform")} | Sort-Object -Property VersionNumber
 }
@@ -397,7 +404,8 @@ function Get-FirefoxDriverAvailableFiles {
                     continue
                 }
                 $fileVersion = if ([string]::IsNullOrWhiteSpace($version)) {$nameParts[1]}else {$version}
-                [pscustomobject](@{Version = $fileVersion; Platform = $filePlatform; Url = $asset.browser_download_url })
+                $versionNumber = Get-VersionNumber -VersionString $fileVersion
+                [pscustomobject](@{Version = $fileVersion; VersionNumber = $versionNumber;  Platform = $filePlatform; Url = $asset.browser_download_url })
             }
         }
     }
