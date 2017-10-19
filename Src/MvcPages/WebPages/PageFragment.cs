@@ -61,14 +61,14 @@ namespace Tellurium.MvcPages.WebPages
             return new WebList(Driver, WebElement);
         }
 
-        public WebTree GetTreeWithId(string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        public WebTree GetTreeWithId(string id, WebTreeOptions options = null)
         {
-            return Driver.GetTreeWithId(id, isSelfItemsContainer, itemsContainerLocator);
+            return Driver.GetTreeWithId(id, options);
         }
 
-        public WebTree ToWebTree(bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        public WebTree ToWebTree(WebTreeOptions options=null)
         {
-            return new WebTree(Driver, WebElement,isSelfItemsContainer, itemsContainerLocator);
+            return new WebTree(this.Driver, this.WebElement, options);
         }
 
         public WebTable GetTableWithId(string id)
@@ -208,17 +208,15 @@ namespace Tellurium.MvcPages.WebPages
         /// Find tree like structure with given Id
         /// </summary>
         /// <param name="id">Value of id attribute</param>
-        /// <param name="isSelfItemsContainer">Set to true if given element is a direct container for tree nodes, otherwise set <paramref name="itemsContainerLocator"/></param>
-        /// <param name="itemsContainerLocator">Locator for direct tree (as also subtree) nodes container</param>
+        /// <param name="options"></param>
         /// <returns></returns>
-        WebTree GetTreeWithId(string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null);
-        
+        WebTree GetTreeWithId(string id, WebTreeOptions options = null);
+
         /// <summary>
         /// Convert current element to <see cref="WebTree"/> wrapper
         /// </summary>
-        /// <param name="isSelfItemsContainer">Set to true if current element is a direct container for tree nodes, otherwise set <paramref name="itemsContainerLocator"/></param>
-        /// <param name="itemsContainerLocator">Locator for direct tree (as also subtree) nodes container</param>
-        WebTree ToWebTree(bool isSelfItemsContainer = true, By itemsContainerLocator = null);
+        /// <param name="options"></param>
+        WebTree ToWebTree(WebTreeOptions options=null);
 
         /// <summary>
         /// Find table like structure with given Id

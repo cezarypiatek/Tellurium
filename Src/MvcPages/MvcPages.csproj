@@ -157,6 +157,7 @@
     <Compile Include="WebPages\WebTable.cs" />
     <Compile Include="WebPages\WebTableRow.cs" />
     <Compile Include="WebPages\WebTree.cs" />
+    <Compile Include="WebPages\WebTreeOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

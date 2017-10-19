@@ -274,10 +274,10 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return new WebList(driver, listElement);
         }
 
-        internal static WebTree GetTreeWithId(this RemoteWebDriver driver, string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        internal static WebTree GetTreeWithId(this RemoteWebDriver driver, string id, WebTreeOptions options)
         {
             var listElement = driver.GetStableAccessibleElementById(id);
-            return new WebTree(driver, listElement, isSelfItemsContainer, itemsContainerLocator);
+            return new WebTree(driver, listElement, options);
         }
 
         internal static WebTable GetTableWithId(this RemoteWebDriver driver, string id)

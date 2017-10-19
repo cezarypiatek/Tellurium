@@ -486,15 +486,10 @@ namespace Tellurium.Sample.UITests
                 var itemWithText = sampleTree.FindItemWithText("Level 1 item A");
                 Assert.IsNotNull(itemWithText);
 
-                void VisitTree(WebTree tree)
-                {
-                    foreach (var node in tree)
-                    {
-                        VisitTree(node);
-                    }
-                }
 
-                Assert.DoesNotThrow(()=> VisitTree(sampleTree));
+                var nodeCount = 0;
+                sampleTree.WalkTheTree(n => nodeCount++);
+                Assert.AreEqual(13, nodeCount);
             }
         }
     }
