@@ -109,23 +109,26 @@ namespace Tellurium.MvcPages.SeleniumUtils
         }
 
 
-        internal static bool IsElementClickable(this RemoteWebDriver driver, IWebElement element)
+        private static bool IsElementInteractable(this RemoteWebDriver driver, IWebElement element)
         {
             //INFO: There is a few case when the mouse click can ommit actual element
             // 1) Element has rounded corners
             // 2) In inline-element space between lines is not clickable
             // 3) Given element has child elements
-            return (bool)driver.ExecuteScript(@"
-                    window.__selenium__isElementClickable = window.__selenium__isElementClickable || function(element)
+            return (bool) driver.ExecuteScript(@"
+                    return (function(element)
                     {
+                        function belongsToElement(subElement)
+                        {
+                            return element == subElement || element.contains(subElement);
+                        }
                         var rec = element.getBoundingClientRect();
                         var elementAtPosition1 = document.elementFromPoint(rec.left, rec.top);
                         var elementAtPosition2 = document.elementFromPoint(rec.left+rec.width/2, rec.top+rec.height/2);
                         var elementAtPosition3 = document.elementFromPoint(rec.left+rec.width/3, rec.top+rec.height/3);
-                        return element == elementAtPosition1 || element.contains(elementAtPosition1) || element == elementAtPosition2 || element.contains(elementAtPosition2) || element == elementAtPosition3 || element.contains(elementAtPosition3);
-                    };
-                    return window.__selenium__isElementClickable(arguments[0]);
-            ", element);
+                        return belongsToElement(elementAtPosition1) || belongsToElement(elementAtPosition2) || belongsToElement(elementAtPosition3);
+                    })(arguments[0]);
+                ", element);
         }
 
         public static int GetPageHeight(this RemoteWebDriver driver)
@@ -224,7 +227,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 }
                 try
                 {
-                    driver.WaitUntil(SeleniumFinderExtensions.SearchElementDefaultTimeout, (d) => driver.IsElementClickable(expectedElement));
+                    driver.WaitUntil(SeleniumFinderExtensions.SearchElementDefaultTimeout, (d) => driver.IsElementInteractable(expectedElement));
                 }
                 catch (WebDriverTimeoutException)
                 {
