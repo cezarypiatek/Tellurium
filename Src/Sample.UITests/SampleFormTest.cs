@@ -20,7 +20,7 @@ namespace Tellurium.Sample.UITests
     [TestFixture, Explicit]
     public class SampleFormTest
     {
-      //  [TestCase(BrowserType.Firefox)]
+        //  [TestCase(BrowserType.Firefox)]
         [TestCase(BrowserType.Chrome)]
         //[TestCase(BrowserType.InternetExplorer)]
         public void should_be_able_to_fill_sample_form(BrowserType driverType)
@@ -59,14 +59,14 @@ namespace Tellurium.Sample.UITests
                 //Test
                 browserAdapter.NavigateTo<TestFormsController>(c => c.Index());
                 AssertView.EqualsToPattern(browserAdapter, "Sample11");
-                
+
                 var detinationForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormDst);
                 var sourcenForm = browserAdapter.GetForm<SampleFormViewModel>(FormsIds.TestFormSrc);
 
                 AssertView.EqualsToPattern(detinationForm, "Destination form");
                 AssertView.EqualsToPattern(sourcenForm, "Source form");
 
-                var textInputValue = sourcenForm.GetFieldValue(x=>x.TextInput);
+                var textInputValue = sourcenForm.GetFieldValue(x => x.TextInput);
                 detinationForm.SetFieldValue(x => x.TextInput, textInputValue);
 
                 var textAreaValue = sourcenForm.GetFieldValue(x => x.TextAreaInput);
@@ -76,26 +76,62 @@ namespace Tellurium.Sample.UITests
                 detinationForm.SetFieldValue(x => x.PasswordInput, passwordValue);
 
 
-                var checkboxValue = sourcenForm.GetFieldValue(x=>x.CheckboxInput);
+                var checkboxValue = sourcenForm.GetFieldValue(x => x.CheckboxInput);
                 detinationForm.SetFieldValue(x => x.CheckboxInput, checkboxValue);
 
-                var selectListValue = sourcenForm.GetFieldValue(x=>x.SelectListValue);
-                detinationForm.SetFieldValue(x=>x.SelectListValue, selectListValue); 
-                
-                var multiselectListValue = sourcenForm.GetFieldValue(x=>x.MultiSelectListValue);
-                detinationForm.SetFieldValue(x=>x.MultiSelectListValue, multiselectListValue);
+                var selectListValue = sourcenForm.GetFieldValue(x => x.SelectListValue);
+                detinationForm.SetFieldValue(x => x.SelectListValue, selectListValue);
+
+                var multiselectListValue = sourcenForm.GetFieldValue(x => x.MultiSelectListValue);
+                detinationForm.SetFieldValue(x => x.MultiSelectListValue, multiselectListValue);
 
                 AssertView.EqualsToPattern(browserAdapter, "Sample12");
-                
+
                 detinationForm.SetFieldValue("SingleFile", "SampleFileToUpload.docx");
             }
         }
+
+        [Test]
+        public void should_be_able_to_create_fullPage_screenshot_for_chrome_extended_browser_type()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+            browserAdapterConfig.BrowserType = BrowserType.ChromeExtended;
+            browserAdapterConfig.BrowserCameraConfig = new BrowserCameraConfig
+            {
+                LensType = LensType.ChromeFullPage
+
+            };
+
+
+
+            //Initialize VisualAssertions
+            AssertView.Init(new VisualAssertionsConfig
+            {
+                BrowserName = browserAdapterConfig.BrowserType.ToString(),
+                ProjectName = "Sample Project",
+                ScreenshotCategory = "Sample Form",
+                TestOutputWriter = TestContext.Progress.WriteLine,
+                ProcessScreenshotsAsynchronously = true
+            });
+
+
+            //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo("TestForms/Index/");
+                AssertView.EqualsToPattern(browserAdapter, "SampleFullPage");
+            }
+        }
+
 
         [Test]
         public void should_be_able_to_run_test_with_configuration_from_file_and_use_weakly_typed_form()
         {
             //Initialize MvcPages
             var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+
 
             //Initialize VisualAssertions
             AssertView.Init(new VisualAssertionsConfig
@@ -114,7 +150,7 @@ namespace Tellurium.Sample.UITests
                 //Test
                 browserAdapter.NavigateTo("TestForms/Index/");
                 AssertView.EqualsToPattern(browserAdapter, "Sample21");
-                
+
                 var detinationForm = browserAdapter.GetForm(FormsIds.TestFormDst);
                 var sourcenForm = browserAdapter.GetForm(FormsIds.TestFormSrc);
 
@@ -132,8 +168,8 @@ namespace Tellurium.Sample.UITests
                 detinationForm.SetFieldValue("CheckboxInput", checkboxValue);
 
                 var selectListValue = sourcenForm.GetFieldValue("SelectListValue");
-                detinationForm.SetFieldValue("SelectListValue", selectListValue);     
-                
+                detinationForm.SetFieldValue("SelectListValue", selectListValue);
+
                 var multiselectListValue = sourcenForm.GetFieldValue("MultiSelectListValue");
                 detinationForm.SetFieldValue("MultiSelectListValue", multiselectListValue);
 
@@ -164,7 +200,7 @@ namespace Tellurium.Sample.UITests
                 //Test
                 browserAdapter.NavigateTo("TestForms/Index/");
                 AssertView.EqualsToPattern(browserAdapter, "Sample31");
-                
+
                 var detinationForm = browserAdapter.GetForm(FormsIds.TestFormDst);
                 var sourcenForm = browserAdapter.GetForm(FormsIds.TestFormSrc);
 
@@ -182,8 +218,8 @@ namespace Tellurium.Sample.UITests
                 detinationForm.SetFieldValueByLabel("Checkbox input", checkboxValue);
 
                 var selectListValue = sourcenForm.GetFieldValueByLabel("Select input");
-                detinationForm.SetFieldValueByLabel("Select input", selectListValue);  
-                
+                detinationForm.SetFieldValueByLabel("Select input", selectListValue);
+
                 var multiselectListValue = sourcenForm.GetFieldValueByLabel("MultiSelect input");
                 detinationForm.SetFieldValueByLabel("MultiSelect input", multiselectListValue);
 
@@ -197,7 +233,7 @@ namespace Tellurium.Sample.UITests
             //Initialize MvcPages
             var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
 
-        //Prepare infrastructure for test
+            //Prepare infrastructure for test
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
             {
                 //Test
@@ -243,7 +279,7 @@ namespace Tellurium.Sample.UITests
             //Initialize MvcPages
             var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
 
-        //Prepare infrastructure for test
+            //Prepare infrastructure for test
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
             {
                 //Test
@@ -303,7 +339,7 @@ namespace Tellurium.Sample.UITests
             //Initialize MvcPages
             var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
 
-        //Prepare infrastructure for test
+            //Prepare infrastructure for test
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
             {
                 //Test
@@ -312,7 +348,7 @@ namespace Tellurium.Sample.UITests
 
                 var table = browserAdapter.GetTableWithId("TableWithoutHeaderAndBody");
 
-               
+
                 //Access cell using row index and column index
                 Assert.AreEqual(2, table.Count);
                 Assert.IsNotNull(table[0]);
@@ -357,11 +393,11 @@ namespace Tellurium.Sample.UITests
                 browserAdapter.NavigateTo<HomeController>(c => c.Index());
 
 
-                browserAdapter.ReloadPageWith(()=> browserAdapter.ClickOnElementWithText("Register"));
+                browserAdapter.ReloadPageWith(() => browserAdapter.ClickOnElementWithText("Register"));
 
                 var registerForm = browserAdapter.GetForm<RegisterViewModel>("RegisterForm");
                 registerForm.ClickOnElementWithText("Więcej");
-                Assert.DoesNotThrow(()=> registerForm.ClickOnElementWithText("Register"));
+                Assert.DoesNotThrow(() => registerForm.ClickOnElementWithText("Register"));
             }
         }
 
@@ -379,7 +415,7 @@ namespace Tellurium.Sample.UITests
 
 
                 var jumbo = browserAdapter.GetPageFragmentById("Jumbo");
-                browserAdapter.ReloadPageWith(()=> jumbo.ClickOnElementWithPartialText("Learn"));
+                browserAdapter.ReloadPageWith(() => jumbo.ClickOnElementWithPartialText("Learn"));
             }
         }
 
@@ -388,7 +424,7 @@ namespace Tellurium.Sample.UITests
         {
             //Initialize MvcPages
             var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
-  
+
             //Prepare infrastructure for test
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
             {
@@ -396,7 +432,7 @@ namespace Tellurium.Sample.UITests
                 browserAdapter.NavigateTo<AccountController>(c => c.Register());
 
                 var form = browserAdapter.GetForm("RegisterForm");
-                Assert.DoesNotThrow(()=> browserAdapter.AffectElementWith("RegisterForm", () => form.ClickOnElementWithText("Register")));
+                Assert.DoesNotThrow(() => browserAdapter.AffectElementWith("RegisterForm", () => form.ClickOnElementWithText("Register")));
             }
         }
 
@@ -405,7 +441,7 @@ namespace Tellurium.Sample.UITests
         {
             //Initialize MvcPages
             var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
-  
+
             //Prepare infrastructure for test
             using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
             {
@@ -413,7 +449,7 @@ namespace Tellurium.Sample.UITests
                 browserAdapter.NavigateTo<AccountController>(c => c.Register());
 
                 var form = browserAdapter.GetForm("RegisterForm");
-                Assert.DoesNotThrow(()=> form.AffectWith(() => form.ClickOnElementWithText("Register")));
+                Assert.DoesNotThrow(() => form.AffectWith(() => form.ClickOnElementWithText("Register")));
             }
         }
 

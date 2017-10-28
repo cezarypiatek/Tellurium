@@ -72,6 +72,7 @@
     <Compile Include="BrowserAdapterContext.cs" />
     <Compile Include="BrowserCamera\BrowserCameraFactory.cs" />
     <Compile Include="BrowserCamera\ErrorBrowserCamera.cs" />
+    <Compile Include="BrowserCamera\Lens\ChromeFullPageLens.cs" />
     <Compile Include="BrowserCamera\Storage\CompositeScreenshotStorage.cs" />
     <Compile Include="EndpointCoverage\EndpointExplorers\AspMvcEndpointExplorer.cs" />
     <Compile Include="EndpointCoverage\EndpointExplorers\CompositeEndpointExplorer.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\WindowLocator.cs" />
     <Compile Include="SeleniumUtils\SeleniumFinderExtensions.cs" />
     <Compile Include="SeleniumUtils\StableWebElement.cs" />
+    <Compile Include="SeleniumUtils\WebDrivers\ChromeDriverExtended.cs" />
     <Compile Include="SeleniumUtils\WebElementNotFoundException.cs" />
     <Compile Include="Utils\ExceptionHelper.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
