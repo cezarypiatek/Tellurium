@@ -327,15 +327,15 @@ namespace Tellurium.MvcPages
             return mainPageFragment.ToWebList();
         }
 
-        public WebTree GetTreeWithId(string id, bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        public WebTree GetTreeWithId(string id, WebTreeOptions options = null)
         {
-            return Driver.GetTreeWithId(id, isSelfItemsContainer, itemsContainerLocator);
+            return Driver.GetTreeWithId(id, options);
         }
 
-        public WebTree ToWebTree(bool isSelfItemsContainer = true, By itemsContainerLocator = null)
+        public WebTree ToWebTree(WebTreeOptions options=null)
         {
             var body = GetPageBody();
-            return new WebTree(Driver, body, isSelfItemsContainer, itemsContainerLocator);
+            return new WebTree(Driver, body, options);
         }
 
         private IWebElement GetPageBody()
