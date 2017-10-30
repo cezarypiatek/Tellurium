@@ -9,7 +9,6 @@ using OpenQA.Selenium.PhantomJS;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Safari;
 using Tellurium.MvcPages.Configuration;
-using Tellurium.MvcPages.SeleniumUtils.WebDrivers;
 
 namespace Tellurium.MvcPages.SeleniumUtils
 {
@@ -47,8 +46,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return new FirefoxDriver(firefoxGeckoSerice, firefoxGeckoOptions, BrowserLoadTimeout);
                 case BrowserType.Chrome:
                     return new ChromeDriver(driversPath);
-                case BrowserType.ChromeExtended:
-                    return new ChromeDriverExtended(driversPath);
                 case BrowserType.InternetExplorer:
                     return new InternetExplorerDriver(driversPath);
                 case BrowserType.Opera:
@@ -87,8 +84,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return DesiredCapabilities.Firefox();
                 case BrowserType.Chrome:
                     return DesiredCapabilities.Chrome();
-                case BrowserType.ChromeExtended:
-                    return DesiredCapabilities.Chrome();
                 case BrowserType.InternetExplorer:
                     return DesiredCapabilities.InternetExplorer();
                 case BrowserType.Opera:
@@ -114,7 +109,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
         Opera,
         Safari,
         Phantom,
-        Edge,
-        ChromeExtended
+        Edge
     }
 }
