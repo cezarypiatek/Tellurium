@@ -92,6 +92,40 @@ namespace Tellurium.Sample.UITests
         }
 
         [Test]
+        public void should_be_able_to_create_fullPage_screenshot_for_chrome_extended_browser_type()
+        {
+            //Initialize MvcPages
+            var browserAdapterConfig = BrowserAdapterConfig.FromAppConfig(TestContext.CurrentContext.TestDirectory);
+            browserAdapterConfig.BrowserType = BrowserType.Chrome;
+            browserAdapterConfig.BrowserCameraConfig = new BrowserCameraConfig
+            {
+                LensType = LensType.ChromeFullPage
+
+            };
+
+
+
+            //Initialize VisualAssertions
+            AssertView.Init(new VisualAssertionsConfig
+            {
+                BrowserName = browserAdapterConfig.BrowserType.ToString(),
+                ProjectName = "Sample Project",
+                ScreenshotCategory = "Sample Form",
+                TestOutputWriter = TestContext.Progress.WriteLine,
+                ProcessScreenshotsAsynchronously = true
+            });
+
+
+            //Prepare infrastructure for test
+            using (var browserAdapter = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                //Test
+                browserAdapter.NavigateTo("TestForms/Index/");
+                AssertView.EqualsToPattern(browserAdapter, "SampleFullPage");
+            }
+        }
+
+        [Test]
         public void should_be_able_to_run_test_with_configuration_from_file_and_use_weakly_typed_form()
         {
             //Initialize MvcPages
