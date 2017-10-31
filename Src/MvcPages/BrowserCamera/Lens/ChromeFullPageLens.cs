@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.SeleniumUtils.WebDriverWrappers;
@@ -10,11 +9,16 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
 {
     public class ChromeFullPageLens : IBrowserCameraLens
     {
-        private readonly ChromeDriver driver;
+        private readonly RemoteWebDriver driver;
 
         public ChromeFullPageLens(RemoteWebDriver driver)
         {
-            this.driver = driver as ChromeDriver ?? throw new Exception("ChromeFullPageLens works only with BrowserType: ChromeDriver");
+            Version.TryParse(driver.Capabilities.Version, out var version);
+            if (!string.Equals(driver.Capabilities.BrowserName, "chrome", StringComparison.OrdinalIgnoreCase) ||
+                !(version.Major >= 59))
+                throw new Exception("ChromeFullPageLens works only with Chrome version 59 or higher");
+
+            this.driver = driver;
 
             InitializeSendCommand();
         }
@@ -29,7 +33,7 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
             {
                 var captureScreenshotResponse = SendCommand("Page.captureScreenshot", new object());
 
-                var result = (Dictionary<string, object>)captureScreenshotResponse.Value;
+                var result = (Dictionary<string, object>) captureScreenshotResponse.Value;
                 var base64String = result["data"].ToString();
                 return new Screenshot(base64String).AsByteArray;
             }
@@ -37,7 +41,6 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
             {
                 ClearDeviceMetrics();
             }
-
         }
 
         private void InitializeSendCommand()
@@ -53,28 +56,27 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
             var bodySize = driver.FindElementByTagName("body").Size;
 
 
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("width", bodySize.Width);
-            parameters.Add("height", bodySize.Height);
-            parameters.Add("deviceScaleFactor", 1);
-            parameters.Add("mobile", false);
-            var result = SendCommand("Emulation.setDeviceMetricsOverride", parameters);
+            var parameters = new Dictionary<string, object>
+            {
+                {"width", bodySize.Width},
+                {"height", bodySize.Height},
+                {"deviceScaleFactor", 1},
+                {"mobile", false}
+            };
+            SendCommand("Emulation.setDeviceMetricsOverride", parameters);
         }
 
         private void ClearDeviceMetrics()
         {
-            var result = SendCommand("Emulation.clearDeviceMetricsOverride", new object());
+            SendCommand("Emulation.clearDeviceMetricsOverride", new object());
         }
 
 
         private Response SendCommand(string cmd, object parameters)
         {
-            var commandParams = new Dictionary<string, object>();
-            commandParams.Add("cmd", cmd);
-            commandParams.Add("params", parameters);
+            var commandParams = new Dictionary<string, object> {{"cmd", cmd}, {"params", parameters}};
 
-            return WebDriverCommandExecutor.Execute(driver,"sendCommand", commandParams);
-
+            return WebDriverCommandExecutor.Execute(driver, "sendCommand", commandParams);
         }
     }
 }
