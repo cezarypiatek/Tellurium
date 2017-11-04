@@ -37,6 +37,10 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     var firefoxGeckoOptions = CreateFirefoxGeckoOptions();
                     var firefoxGeckoSerice = FirefoxDriverService.CreateDefaultService(driversPath);
                     return new FirefoxDriver(firefoxGeckoSerice, firefoxGeckoOptions, BrowserLoadTimeout);
+                case BrowserType.FirefoxGeckoHeadless:
+                    var firefoxGeckoHeadlessOptions = CreateFirefoxGeckoHeadlessOptions();
+                    var firefoxGeckoHeadlessSerice = FirefoxDriverService.CreateDefaultService(driversPath);
+                    return new FirefoxDriver(firefoxGeckoHeadlessSerice, firefoxGeckoHeadlessOptions, BrowserLoadTimeout);
                 case BrowserType.Chrome:
                     var chromeOptions = CreateChromeOptions();
                     return new ChromeDriver(driversPath, chromeOptions);
@@ -120,6 +124,13 @@ namespace Tellurium.MvcPages.SeleniumUtils
             };
         }
 
+        private static FirefoxOptions CreateFirefoxGeckoHeadlessOptions()
+        {
+            var geckoOptions = CreateFirefoxGeckoOptions();
+            geckoOptions.AddArgument("--headless");
+            return geckoOptions;
+        }
+
         private static FirefoxOptions CreateFirefoxOptions()
         {
             return new FirefoxOptions
@@ -137,6 +148,8 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return CreateFirefoxOptions();
                 case BrowserType.FirefoxGecko:
                     return CreateFirefoxGeckoOptions();
+                case BrowserType.FirefoxGeckoHeadless:
+                    return CreateFirefoxGeckoHeadlessOptions();
                 case BrowserType.Chrome:
                     return CreateChromeOptions();
                 case BrowserType.InternetExplorer:
@@ -161,6 +174,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
     {
         Firefox = 1,
         FirefoxGecko,
+        FirefoxGeckoHeadless,
         Chrome,
         ChromeHeadless,
         InternetExplorer,
