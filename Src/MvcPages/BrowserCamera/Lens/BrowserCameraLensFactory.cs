@@ -17,6 +17,8 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
                     return new ResizeableLens(webDriver);
                 case LensType.Zoomable:
                     return new ZoomableLens(webDriver);
+                case LensType.ChromeFullPage:
+                    return new ChromeFullPageLens(webDriver);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
@@ -29,5 +31,6 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
         Scrollable,
         Resizeable,
         Zoomable,
+        ChromeFullPage
     }
 }
