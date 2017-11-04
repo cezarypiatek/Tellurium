@@ -129,7 +129,7 @@ namespace Tellurium.MvcPages.WebPages
                 var screenshot = ((ITakesScreenshot) WebElement).GetScreenshot();
                 return screenshot.AsByteArray;
             }
-            catch (WebDriverException)
+            catch
             {
                 IsPartialScreenshotNativelySupported = false;
                 return TakeSceenshotManually();
