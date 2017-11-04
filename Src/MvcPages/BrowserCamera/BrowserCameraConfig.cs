@@ -10,7 +10,7 @@ namespace Tellurium.MvcPages.BrowserCamera
         {
             return new BrowserCameraConfig
             {
-                LensType = LensType.Regular
+                LensType = LensType.Auto
             };
         }
     }

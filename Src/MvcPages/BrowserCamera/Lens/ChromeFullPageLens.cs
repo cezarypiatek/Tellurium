@@ -13,14 +13,23 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
 
         public ChromeFullPageLens(RemoteWebDriver driver)
         {
-            Version.TryParse(driver.Capabilities.Version, out var version);
-            if (!string.Equals(driver.Capabilities.BrowserName, "chrome", StringComparison.OrdinalIgnoreCase) ||
-                !(version.Major >= 59))
+            if (IsSupported(driver) == false)
+            {
                 throw new Exception("ChromeFullPageLens works only with Chrome version 59 or higher");
+            }
 
             this.driver = driver;
 
             InitializeSendCommand();
+        }
+
+        public static bool IsSupported(RemoteWebDriver driver)
+        {
+            if (Version.TryParse(driver.Capabilities.Version, out var version))
+            {
+                return string.Equals(driver.Capabilities.BrowserName, "chrome", StringComparison.OrdinalIgnoreCase) && version.Major >= 59;
+            }
+            return false;
         }
 
         public byte[] TakeScreenshot()
