@@ -30,38 +30,35 @@ namespace Tellurium.MvcPages.SeleniumUtils
             switch (driverType)
             {
                 case BrowserType.Firefox:
-                    var firefoxOptions = new FirefoxOptions
-                    {
-                        Profile = new FirefoxProfile {DeleteAfterUse = true},
-                        UseLegacyImplementation = true
-                    };
+                    var firefoxOptions = CreateFirefoxOptions();
                     var firefoxService = FirefoxDriverService.CreateDefaultService(driversPath);
                     return new FirefoxDriver(firefoxService, firefoxOptions, BrowserLoadTimeout);
                 case BrowserType.FirefoxGecko:
-                    var firefoxGeckoOptions = new FirefoxOptions
-                    {
-                        Profile = new FirefoxProfile {DeleteAfterUse = true}
-                    };
+                    var firefoxGeckoOptions = CreateFirefoxGeckoOptions();
                     var firefoxGeckoSerice = FirefoxDriverService.CreateDefaultService(driversPath);
                     return new FirefoxDriver(firefoxGeckoSerice, firefoxGeckoOptions, BrowserLoadTimeout);
                 case BrowserType.Chrome:
-                    return new ChromeDriver(driversPath);
-                case BrowserType.ChromeHeadless:
-                    var chromeOptions = new ChromeOptions();
-                    chromeOptions.AddArguments("headless");
-                    chromeOptions.AddArgument("disable-gpu");
+                    var chromeOptions = CreateChromeOptions();
                     return new ChromeDriver(driversPath, chromeOptions);
+                case BrowserType.ChromeHeadless:
+                    var chromeHeadlessOptions = CreateChromeHeadlessOptions();
+                    return new ChromeDriver(driversPath, chromeHeadlessOptions);
                 case BrowserType.InternetExplorer:
-                    return new InternetExplorerDriver(driversPath);
+                    var internetExplorerOptions = CreateInternetExplorerOptions();
+                    return new InternetExplorerDriver(driversPath, internetExplorerOptions);
                 case BrowserType.Opera:
-                    return new OperaDriver(driversPath);
+                    var operaOptions = CreateOperaOptions();
+                    return new OperaDriver(driversPath, operaOptions);
                 case BrowserType.Safari:
+                    var safariOptions = CreateSafariOptions();
                     var safariService = SafariDriverService.CreateDefaultService(driversPath);
-                    return new SafariDriver(safariService);
+                    return new SafariDriver(safariService, safariOptions);
                 case BrowserType.Phantom:
-                    return new PhantomJSDriver(driversPath);
+                    var phantomJsOptions = CreatePhantomJsOptions();
+                    return new PhantomJSDriver(driversPath, phantomJsOptions);
                 case BrowserType.Edge:
-                    return new EdgeDriver(driversPath);
+                    var edgeOptions = CreateEdgeOptions();
+                    return new EdgeDriver(driversPath, edgeOptions);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(driverType), driverType, null);
             }
@@ -73,37 +70,87 @@ namespace Tellurium.MvcPages.SeleniumUtils
             {
                 throw new ArgumentException("For remote driver selenium server url is required.");
             }
-            var browserCapabilities = GetBrowserCapabilities(driverType);
-            return new RemoteWebDriver(new Uri(seleniumServerUrl), browserCapabilities);
+            var remoteDriverOptions = CreateRemoteDriverOptions(driverType);
+            return new RemoteWebDriver(new Uri(seleniumServerUrl), remoteDriverOptions);
         }
 
-        private static ICapabilities GetBrowserCapabilities(BrowserType driverType)
+        private static EdgeOptions CreateEdgeOptions()
+        {
+            return new EdgeOptions();
+        }
+
+        private static PhantomJSOptions CreatePhantomJsOptions()
+        {
+            return new PhantomJSOptions();
+        }
+
+        private static SafariOptions CreateSafariOptions()
+        {
+            return new SafariOptions();
+        }
+
+        private static OperaOptions CreateOperaOptions()
+        {
+            return new OperaOptions();
+        }
+
+        private static InternetExplorerOptions CreateInternetExplorerOptions()
+        {
+            return new InternetExplorerOptions();
+        }
+
+        private static ChromeOptions CreateChromeOptions()
+        {
+            return new ChromeOptions();
+        }
+
+        private static ChromeOptions CreateChromeHeadlessOptions()
+        {
+            var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArguments("headless");
+            chromeOptions.AddArgument("disable-gpu");
+            return chromeOptions;
+        }
+
+        private static FirefoxOptions CreateFirefoxGeckoOptions()
+        {
+            return new FirefoxOptions
+            {
+                Profile = new FirefoxProfile {DeleteAfterUse = true}
+            };
+        }
+
+        private static FirefoxOptions CreateFirefoxOptions()
+        {
+            return new FirefoxOptions
+            {
+                Profile = new FirefoxProfile {DeleteAfterUse = true},
+                UseLegacyImplementation = true
+            };
+        }
+
+        private static DriverOptions CreateRemoteDriverOptions(BrowserType driverType)
         {
             switch (driverType)
             {
                 case BrowserType.Firefox:
-                    var desiredCapabilities = DesiredCapabilities.Firefox();
-                    desiredCapabilities.SetCapability("marionette", false);
-                    return desiredCapabilities;
+                    return CreateFirefoxOptions();
                 case BrowserType.FirefoxGecko:
-                    return DesiredCapabilities.Firefox();
+                    return CreateFirefoxGeckoOptions();
                 case BrowserType.Chrome:
-                    return DesiredCapabilities.Chrome();
+                    return CreateChromeOptions();
                 case BrowserType.InternetExplorer:
-                    return DesiredCapabilities.InternetExplorer();
+                    return CreateInternetExplorerOptions();
                 case BrowserType.Opera:
-                    return DesiredCapabilities.Opera();
+                    return CreateOperaOptions();
                 case BrowserType.Safari:
-                    return DesiredCapabilities.Safari();
+                    return CreateSafariOptions();
                 case BrowserType.Phantom:
-                    return DesiredCapabilities.PhantomJS();
+                    return CreatePhantomJsOptions();
                 case BrowserType.Edge:
-                    return DesiredCapabilities.Edge();
+                    return CreateEdgeOptions();
                 case BrowserType.ChromeHeadless:
-                    var chromeOptions = new ChromeOptions();
-                    chromeOptions.AddArguments("headless");
-                    chromeOptions.AddArgument("disable-gpu");
-                    return chromeOptions.ToCapabilities();
+                    return CreateChromeHeadlessOptions();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(driverType), driverType, null);
             }
