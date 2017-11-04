@@ -32,7 +32,17 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
             {
                 return new ChromeFullPageLens(webDriver);
             }
+
+            if (IsHeadlessFirefox(webDriver))
+            {
+                return new ResizeableLens(webDriver);
+            }
             return new RegularLens(webDriver);
+        }
+
+        private static bool IsHeadlessFirefox(RemoteWebDriver webDriver)
+        {
+            return webDriver.Capabilities.BrowserName == "firefox" && (bool) webDriver.Capabilities.GetCapability("moz:headless") == true;
         }
     }
 

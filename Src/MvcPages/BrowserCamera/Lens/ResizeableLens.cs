@@ -19,17 +19,23 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
             var viewPortHeight = driver.GetWindowHeight();
             var window = driver.Manage().Window;
             var originalSize = window.Size;
-            if (viewPortHeight < pageHeight)
+            try
             {
-                window.Size = new Size
+                if (viewPortHeight < pageHeight)
                 {
-                    Height = pageHeight,
-                    Width = originalSize.Width
-                };
+                    window.Size = new Size
+                    {
+                        Height = pageHeight,
+                        Width = originalSize.Width
+                    };
+                }
+                var screenshot = driver.GetScreenshot();
+                return screenshot.AsByteArray;
             }
-            var screenshot = driver.GetScreenshot();
-            window.Size = originalSize;
-            return screenshot.AsByteArray;
+            finally
+            {
+                window.Size = originalSize;    
+            }
         }
     }
 }
