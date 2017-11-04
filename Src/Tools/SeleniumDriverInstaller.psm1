@@ -183,6 +183,7 @@ function Get-VersionsFromGoogleapis {
         $parts = $_.Key -split "/";
         if (($parts.Length -eq 2) -and ($parts[1].EndsWith(".zip"))) {
             $versionNumber = Get-VersionNumber -VersionString $parts[0]
+            $elementPlatform = ($parts[1] -split "[_\.]")[1]
             [PsCustomObject](@{VersionNumber = $versionNumber ; File = "$BaseUrl/$($_.Key)"; Version = $parts[0]; Platform = $elementPlatform} )
         }
     } | Where-Object { ([string]::IsNullOrWhiteSpace($Platform) -eq $true) -or ($_.Platform -eq "$Platform")} | Sort-Object -Property VersionNumber
