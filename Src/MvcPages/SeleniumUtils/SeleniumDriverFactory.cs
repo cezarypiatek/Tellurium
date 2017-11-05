@@ -53,6 +53,9 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 case BrowserType.Opera:
                     var operaOptions = CreateOperaOptions();
                     return new OperaDriver(driversPath, operaOptions);
+                case BrowserType.OperaHeadless:
+                    var operaHeadlessOptions = CreateOperaHeadlessOptions();
+                    return new OperaDriver(driversPath, operaHeadlessOptions);
                 case BrowserType.Safari:
                     var safariOptions = CreateSafariOptions();
                     var safariService = SafariDriverService.CreateDefaultService(driversPath);
@@ -95,7 +98,16 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         private static OperaOptions CreateOperaOptions()
         {
-            return new OperaOptions();
+            var operaOptions = new OperaOptions();
+            return operaOptions;
+        }
+
+        private static OperaOptions CreateOperaHeadlessOptions()
+        {
+            var options = CreateOperaOptions();
+            options.AddArguments("headless");
+            options.AddArgument("disable-gpu");
+            return options;
         }
 
         private static InternetExplorerOptions CreateInternetExplorerOptions()
@@ -156,6 +168,8 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return CreateInternetExplorerOptions();
                 case BrowserType.Opera:
                     return CreateOperaOptions();
+                case BrowserType.OperaHeadless:
+                    return CreateOperaHeadlessOptions();
                 case BrowserType.Safari:
                     return CreateSafariOptions();
                 case BrowserType.Phantom:
@@ -179,6 +193,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         ChromeHeadless,
         InternetExplorer,
         Opera,
+        OperaHeadless,
         Safari,
         Phantom,
         Edge
