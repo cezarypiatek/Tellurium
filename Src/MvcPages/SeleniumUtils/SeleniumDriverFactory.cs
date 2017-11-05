@@ -99,6 +99,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         private static OperaOptions CreateOperaOptions()
         {
             var operaOptions = new OperaOptions();
+            operaOptions.BinaryLocation = ApplicationHelper.GetOperaBinaryLocation();
             return operaOptions;
         }
 

@@ -101,6 +101,7 @@
     <Compile Include="MvcEndpointsHelper.cs" />
     <Compile Include="Configuration\TelluriumConfigurationSection.cs" />
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
+    <Compile Include="SeleniumUtils\ApplicationHelper.cs" />
     <Compile Include="SeleniumUtils\ByText.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotFindElementByException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotInteractWithElementException.cs" />
