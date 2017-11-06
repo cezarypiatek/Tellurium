@@ -103,6 +103,7 @@
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
     <Compile Include="SeleniumUtils\ApplicationHelper.cs" />
     <Compile Include="SeleniumUtils\ByText.cs" />
+    <Compile Include="SeleniumUtils\ChromeRemoteInterface.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotFindElementByException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotInteractWithElementException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotReloadPageWithException.cs" />
