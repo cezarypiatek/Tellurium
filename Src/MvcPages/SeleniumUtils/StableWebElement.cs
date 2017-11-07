@@ -180,9 +180,21 @@ namespace Tellurium.MvcPages.SeleniumUtils
         }
 
         public IWebElement WrappedElement => Unwrap();
+
+        public IWebDriver WrappedDriver
+        {
+            get
+            {
+                if (element is IWrapsDriver driverWrapper)
+                {
+                    return driverWrapper.WrappedDriver;
+                }
+                throw new NotSupportedException($"Element {this.GetDescription()} does not have information about driver");
+            }
+        }
     }
 
-    public interface IStableWebElement : IWebElement, ILocatable, ITakesScreenshot, IWrapsElement
+    public interface IStableWebElement : IWebElement, ILocatable, ITakesScreenshot, IWrapsElement, IWrapsDriver
     {
         void RegenerateElement();
         bool IsStale();

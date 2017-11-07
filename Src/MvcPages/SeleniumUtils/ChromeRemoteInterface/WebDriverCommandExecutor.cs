@@ -3,16 +3,13 @@ using System.Reflection;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
-namespace Tellurium.MvcPages.SeleniumUtils.WebDriverWrappers
+namespace Tellurium.MvcPages.SeleniumUtils.ChromeRemoteInterface
 {
-    public static class WebDriverCommandExecutor
+    internal static class WebDriverCommandExecutor
     {
         public static bool TryAddCommand(RemoteWebDriver driver, string commandName, CommandInfo commandInfo)
         {
-            var commandExecutor =
-                driver.GetType().GetProperty("CommandExecutor", BindingFlags.Instance | BindingFlags.NonPublic)
-                    ?.GetValue(driver) as ICommandExecutor;
-
+            var commandExecutor = ReflectionHelper.GetProperty<ICommandExecutor>(driver, "CommandExecutor");
             if (commandExecutor == null)
                 throw new WebDriverException("Webdriver doesn't contain 'CommandExecutor' property.");
 

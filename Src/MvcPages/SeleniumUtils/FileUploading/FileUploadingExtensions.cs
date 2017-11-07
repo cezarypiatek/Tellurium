@@ -27,7 +27,7 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
             WindowsMethods.SendClick(confirmButton);
         }
 
-        private static string GetAbsoluteExistingPath(string filePath)
+        public static string GetAbsoluteExistingPath(string filePath)
         {
             if (filePath.Contains("\""))
             {

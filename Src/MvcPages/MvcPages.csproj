@@ -103,7 +103,8 @@
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
     <Compile Include="SeleniumUtils\ApplicationHelper.cs" />
     <Compile Include="SeleniumUtils\ByText.cs" />
-    <Compile Include="SeleniumUtils\ChromeRemoteInterface.cs" />
+    <Compile Include="SeleniumUtils\ChromeRemoteInterface\ChromeRemoteInterface.cs" />
+    <Compile Include="SeleniumUtils\ChromeRemoteInterface\ChromeRemoteInterfaceInvocationException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotFindElementByException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotInteractWithElementException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotReloadPageWithException.cs" />
@@ -114,9 +115,11 @@
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\WindowsMethods.cs" />
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\ControlHandle.cs" />
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\WindowLocator.cs" />
+    <Compile Include="SeleniumUtils\ChromeRemoteInterface\RemoteInterfaceResponseExtensions.cs" />
     <Compile Include="SeleniumUtils\SeleniumFinderExtensions.cs" />
     <Compile Include="SeleniumUtils\StableWebElement.cs" />
-    <Compile Include="SeleniumUtils\WebDriverWrappers\WebDriverCommandExecutor.cs" />
+    <Compile Include="SeleniumUtils\ChromeRemoteInterface\ReflectionHelper.cs" />
+    <Compile Include="SeleniumUtils\ChromeRemoteInterface\WebDriverCommandExecutor.cs" />
     <Compile Include="SeleniumUtils\WebElementNotFoundException.cs" />
     <Compile Include="Utils\ExceptionHelper.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
@@ -134,6 +137,7 @@
     </Compile>
     <Compile Include="WebPages\UrlHelper.cs" />
     <Compile Include="WebPages\WebElementCollection.cs" />
+    <Compile Include="WebPages\WebForms\DefaultInputAdapters\ChromeFileFormInputAdapter.cs" />
     <Compile Include="WebPages\WebForms\DefaultInputAdapters\FileFormInputAdapter.cs" />
     <Compile Include="WebPages\WebForms\FieldLocators\ByLabelTextLocator.cs" />
     <Compile Include="WebPages\WebForms\FieldValueWatcher.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.SeleniumUtils.ChromeRemoteInterface;
 
 namespace Tellurium.MvcPages.BrowserCamera.Lens
 {
