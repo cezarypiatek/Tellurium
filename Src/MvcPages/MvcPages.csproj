@@ -137,7 +137,6 @@
     </Compile>
     <Compile Include="WebPages\UrlHelper.cs" />
     <Compile Include="WebPages\WebElementCollection.cs" />
-    <Compile Include="WebPages\WebForms\DefaultInputAdapters\ChromeFileFormInputAdapter.cs" />
     <Compile Include="WebPages\WebForms\DefaultInputAdapters\FileFormInputAdapter.cs" />
     <Compile Include="WebPages\WebForms\FieldLocators\ByLabelTextLocator.cs" />
     <Compile Include="WebPages\WebForms\FieldValueWatcher.cs" />

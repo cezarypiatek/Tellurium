@@ -4,6 +4,7 @@ using OpenQA.Selenium.Remote;
 using System;
 using System.Diagnostics.Contracts;
 using System.Threading;
+using OpenQA.Selenium.Internal;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 using Tellurium.MvcPages.Utils;
 using Tellurium.MvcPages.WebPages;
@@ -299,6 +300,11 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             var stableElement = element as IStableWebElement;
             return stableElement?.GetDescription() ?? string.Empty;
+        }
+
+        internal static RemoteWebDriver GetWebDriver(this IWebElement webElement)
+        {
+            return  ((IWrapsDriver)webElement).WrappedDriver as RemoteWebDriver;
         }
     }
 }

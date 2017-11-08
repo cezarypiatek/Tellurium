@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
@@ -8,6 +9,11 @@ namespace Tellurium.MvcPages.SeleniumUtils.ChromeRemoteInterface
 {
     public class ChromeRemoteInterface
     {
+        public static bool IsSupported(RemoteWebDriver driver)
+        {
+            return driver.Capabilities.BrowserName.Equals("chrome", StringComparison.InvariantCultureIgnoreCase);
+        }
+
         private readonly RemoteWebDriver driver;
 
         public ChromeRemoteInterface(RemoteWebDriver driver)
