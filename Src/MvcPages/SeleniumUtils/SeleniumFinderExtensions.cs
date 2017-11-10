@@ -36,7 +36,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             var foundElement = scope.FindElements(locator).FirstAccessibleOrDefault();
             if (foundElement == null)
             {
-                throw new NoSuchElementException();
+                throw new CannotFindElementByException(locator, scope);
             }
             return foundElement;
         }

@@ -8,7 +8,6 @@ using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.MvcPages.BrowserCamera.Lens;
 using Tellurium.MvcPages.Configuration;
 using Tellurium.MvcPages.SeleniumUtils;
-using Tellurium.MvcPages.WebPages;
 using Tellurium.Sample.Website.Controllers;
 using Tellurium.Sample.Website.Models;
 using Tellurium.Sample.Website.Mvc;
@@ -524,6 +523,43 @@ namespace Tellurium.Sample.UITests
                 var nodeCount = 0;
                 sampleTree.WalkTheTree(n => nodeCount++);
                 Assert.AreEqual(13, nodeCount);
+            }
+        }
+
+        [TestCase(BrowserType.Chrome)]
+        [TestCase(BrowserType.ChromeHeadless)]
+        [TestCase(BrowserType.Firefox)]
+        [TestCase(BrowserType.FirefoxGecko)]
+        [TestCase(BrowserType.FirefoxGeckoHeadless)]
+        public void should_be_able_to_download_file(BrowserType browserType)
+        {
+            var browserAdapterConfig = new BrowserAdapterConfig()
+            {
+                BrowserType = browserType,
+                SeleniumDriversPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Drivers"),
+                PageUrl = "http://localhost:51767",
+                ErrorScreenshotsPath = @"c:\selenium\",
+                BrowserDimensions = new BrowserDimensionsConfig
+                {
+                    Width = 1200,
+                    Height = 768
+                }
+            };
+
+            using (var browser = BrowserAdapter.Create(browserAdapterConfig))
+            {
+                browser.NavigateTo<HomeController>(c => c.Index());
+                browser.DownloadFileWith(()=> browser.ClickOnElementWithText("Download manual"), filePath =>
+                {
+                    Assert.IsNotNull(filePath);
+                    Assert.True(File.Exists(filePath));
+                }); 
+                
+                browser.DownloadFileWith(()=> browser.ClickOnElementWithText("Download Large"), filePath =>
+                {
+                    Assert.IsNotNull(filePath);
+                    Assert.True(File.Exists(filePath));
+                });
             }
         }
     }

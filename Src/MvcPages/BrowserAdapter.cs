@@ -13,6 +13,7 @@ using Tellurium.MvcPages.Configuration;
 using Tellurium.MvcPages.EndpointCoverage;
 using Tellurium.MvcPages.Reports.ErrorReport;
 using Tellurium.MvcPages.SeleniumUtils;
+using Tellurium.MvcPages.SeleniumUtils.ChromeRemoteInterface;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 using Tellurium.MvcPages.Utils;
 using Tellurium.MvcPages.WebPages;
@@ -34,10 +35,12 @@ namespace Tellurium.MvcPages
         private TelluriumErrorReportBuilder errorReportBuilder;
         private EndpointCoverageReportBuilder endpointCoverageReportBuilder;
         private IScreenshotStorage errorScreenshotStorage;
-
+        private TemporaryDirectory downloaDirectory;
+        
         public BrowserAdapter()
         {
             BrowserAdapterContext.Current = this;
+            downloaDirectory = new TemporaryDirectory();
         }
 
         /// <summary>
@@ -48,7 +51,8 @@ namespace Tellurium.MvcPages
         public static BrowserAdapter Create(BrowserAdapterConfig config, RemoteWebDriver driver = null)
         {
             var browserAdapter = new BrowserAdapter();
-            browserAdapter.Driver = driver ?? SeleniumDriverFactory.CreateDriver(config);
+            config.DownloadDirPath = browserAdapter.downloaDirectory.Path;
+            browserAdapter.Driver = driver ?? new SeleniumDriverFactory(config).CreateDriver();
             var browserCameraConfig = config.BrowserCameraConfig ?? BrowserCameraConfig.CreateDefault();
             browserAdapter.browserCamera = BrowserCameraFactory.CreateNew(browserAdapter.Driver, browserCameraConfig);
             browserAdapter.errorBrowserCamera = BrowserCameraFactory.CreateErrorBrowserCamera(browserAdapter.Driver);
@@ -145,6 +149,23 @@ namespace Tellurium.MvcPages
             {
                 errorReportBuilder.ReportException(exception, this.Driver.Url);
             }
+        }
+
+        public void DownloadFileWith(Action action, Action<string> downloadCallback = null, int downloadTimeoutInSeconds = 60)
+        {
+            if (ChromeRemoteInterface.IsSupported(this.Driver))
+            {
+                new ChromeRemoteInterface(this.Driver).TryEnableFileDownloading(this.downloaDirectory.Path);
+            }
+            this.downloaDirectory.Clear();
+            action();
+            Driver.WaitUntil(downloadTimeoutInSeconds, (d) =>
+            {
+                var files = this.downloaDirectory.GetFiles();
+                return files.Length > 0 && files.Any(FileExtensions.IsFileLocked) == false;
+            });
+            var downloadedFile = this.downloaDirectory.GetFiles().First();
+            downloadCallback?.Invoke(downloadedFile);
         }
 
         public  MvcWebForm<TModel> GetForm<TModel>(string formId)
@@ -279,6 +300,7 @@ namespace Tellurium.MvcPages
         {
             endpointCoverageReportBuilder?.GenerateEndpointCoverageReport();
             BrowserAdapterContext.Current = null;
+            this.downloaDirectory.Dispose();
             Driver.Close();
             Driver.Quit();
         }
@@ -485,5 +507,13 @@ namespace Tellurium.MvcPages
         /// </summary>
         /// <param name="exception"></param>
         void ReportError(Exception exception);
+
+        /// <summary>
+        /// Dowload file as a resul of given action
+        /// </summary>
+        /// <param name="action">Action that should initiate downloading</param>
+        /// <param name="downloadCallback">Action to invoke when finish downloading. Action parameter is a path to downloaded file,</param>
+        /// <param name="downloadTimeoutInSeconds"></param>
+        void DownloadFileWith(Action action, Action<string> downloadCallback = null, int downloadTimeoutInSeconds = 60);
     }
 }

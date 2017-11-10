@@ -103,6 +103,7 @@
     <Compile Include="SeleniumUtils\AnimationExtensions.cs" />
     <Compile Include="SeleniumUtils\ApplicationHelper.cs" />
     <Compile Include="SeleniumUtils\ByText.cs" />
+    <Compile Include="SeleniumUtils\ChromeOptionsExtensions.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\ChromeRemoteInterface.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\ChromeRemoteInterfaceInvocationException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotFindElementByException.cs" />
@@ -116,6 +117,8 @@
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\ControlHandle.cs" />
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\WindowLocator.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\RemoteInterfaceResponseExtensions.cs" />
+    <Compile Include="SeleniumUtils\FirefoxOptionsExtensions.cs" />
+    <Compile Include="SeleniumUtils\OperaOptionsExtensions.cs" />
     <Compile Include="SeleniumUtils\SeleniumFinderExtensions.cs" />
     <Compile Include="SeleniumUtils\StableWebElement.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\ReflectionHelper.cs" />
@@ -127,6 +130,7 @@
     <Compile Include="MvcPagesAssemblyIdentity.cs" />
     <Compile Include="Utils\ImageExtensions.cs" />
     <Compile Include="Utils\RetryHelper.cs" />
+    <Compile Include="Utils\TemporaryDirectory.cs" />
     <Compile Include="Utils\XPathHelpers.cs" />
     <Compile Include="WebPages\EmptyWebElementCollectionException.cs" />
     <Compile Include="WebPages\Navigator.cs">

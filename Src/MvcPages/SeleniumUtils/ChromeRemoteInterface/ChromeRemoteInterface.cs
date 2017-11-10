@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils.FileUploading;
@@ -27,6 +28,19 @@ namespace Tellurium.MvcPages.SeleniumUtils.ChromeRemoteInterface
             var commandInfo = new CommandInfo(CommandInfo.PostCommand,
                 $"/session/{driver.SessionId}/chromium/send_command_and_get_result");
             WebDriverCommandExecutor.TryAddCommand(driver, "sendCommand", commandInfo);
+        }
+
+
+        private Response TrySendCommand(string cmd, object parameters = null)
+        {
+            try
+            {
+                return SendCommand(cmd, parameters);
+            }
+            catch (TargetInvocationException)
+            {
+                return null;
+            }
         }
 
         private Response SendCommand(string cmd, object parameters=null)
@@ -98,6 +112,15 @@ namespace Tellurium.MvcPages.SeleniumUtils.ChromeRemoteInterface
             });
 
             return rquestNodeResponse.GetValue<long>("nodeId");
+        }
+
+        public void TryEnableFileDownloading(string downloadPath)
+        {
+            TrySendCommand("Page.setDownloadBehavior", new Dictionary<string, object>()
+            {
+                ["behavior"] = "allow",
+                ["downloadPath"] = downloadPath
+            });
         }
     }
 }
