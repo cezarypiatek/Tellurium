@@ -45,7 +45,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             try
             {
-                return driver.WaitUntil(timeout, (a) => scope.FindFirstAccessibleElement(by));
+                return driver.WaitUntil(timeout, (a) => scope.FindElements(by).FirstAccessibleOrDefault());
             }
             catch (WebDriverTimeoutException ex)
             {
