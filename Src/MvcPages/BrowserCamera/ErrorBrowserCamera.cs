@@ -1,16 +1,15 @@
-﻿using OpenQA.Selenium.Remote;
-using Tellurium.MvcPages.BrowserCamera.Lens;
+﻿using Tellurium.MvcPages.BrowserCamera.Lens;
 using Tellurium.MvcPages.Utils;
 
 namespace Tellurium.MvcPages.BrowserCamera
 {
     internal class ErrorBrowserCamera:IBrowserCamera
     {
-        private readonly RegularLens lens;
+        private readonly IBrowserCameraLens lens;
 
-        public ErrorBrowserCamera(RemoteWebDriver driver)
+        public ErrorBrowserCamera(IBrowserCameraLens lens)
         {
-            this.lens =  new RegularLens(driver);
+            this.lens =  lens;
         }
 
         public byte[] TakeScreenshot()

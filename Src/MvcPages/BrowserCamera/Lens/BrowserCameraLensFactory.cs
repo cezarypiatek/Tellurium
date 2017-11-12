@@ -26,7 +26,7 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
             }
         }
 
-        private static IBrowserCameraLens CreateLensForAutoMode(RemoteWebDriver webDriver)
+        public static IBrowserCameraLens CreateLensForAutoMode(RemoteWebDriver webDriver)
         {
             if (ChromeFullPageLens.IsSupported(webDriver))
             {
