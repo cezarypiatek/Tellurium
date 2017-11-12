@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Tellurium.MvcPages.Utils;
 
 namespace Tellurium.MvcPages.Reports.ErrorReport
@@ -20,30 +22,36 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
             this.ciAdapter = ciAdapter;
         }
 
-        public void ReportException(Exception exception, byte[] errorScreenShot, string screnshotName, string url)
+        public void ReportException(Exception exception, byte[] errorScreenShot, string screnshotName, string url, StackTrace reportingStacktrace)
         {
             var storage = new TelluriumErrorReportScreenshotStorage(reportOutputDir, ciAdapter);
             var imgPath = storage.PersistErrorScreenshot(errorScreenShot, screnshotName);
-            AppendEntryToReport(exception, url, imgPath);
+            AppendEntryToReport(exception, url, reportingStacktrace, imgPath);
         }
 
-        public void ReportException(Exception exception, string url)
+        public void ReportException(Exception exception, string url, StackTrace reportingStacktrace)
         {
-            AppendEntryToReport(exception, url);
+            AppendEntryToReport(exception, url, reportingStacktrace);
         }
 
-        private void AppendEntryToReport(Exception exception, string url, string imagePath="")
+        private void AppendEntryToReport(Exception exception, string url, StackTrace reportingStacktrace, string imagePath = "")
         {
             CreateReportIfNotExists();
             var reportContent = File.ReadAllText(ReportFilePath);
-            var newEntry =
-                $"<figure><image src=\"{imagePath}\"/><figcaption><p>Error or page <a href=\"{url}\">{url}</a><br/>Reported on <b>{DateTime.Now:G}</b></p><pre>{exception}</pre></figcaption></figure>";
+            var exceptionDescription = GetFullExceptionDescription(exception, reportingStacktrace);
+            var newEntry = $"<figure><image src=\"{imagePath}\"/><figcaption><p>Error or page <a href=\"{url}\">{url}</a><br/>Reported on <b>{DateTime.Now:G}</b></p><pre>{exceptionDescription}</pre></figcaption></figure>";
             var newReportContent = reportContent.Replace(ImagePlaceholder, newEntry + ImagePlaceholder);
             File.WriteAllText(ReportFilePath, newReportContent);
             if (ciAdapter.IsAvailable())
             {
                 ciAdapter.UploadFileAsArtifact(ReportFilePath);
             }
+        }
+
+        private static string GetFullExceptionDescription(Exception exception, StackTrace reportingStacktrace)
+        {
+            var frames = $"{exception.GetFullExceptionMessage()}\r\n{reportingStacktrace}".Split('\n').Select(x=>x.Trim('\r')).Distinct();
+            return string.Join("\r\n", frames);
         }
 
         private static bool reportInitizlized = false;

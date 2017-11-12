@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
@@ -90,10 +91,12 @@ namespace Tellurium.MvcPages
             }
             catch (Exception ex)
             {
-                this.ReportError(ex);
+                this.ReportErrorInternal(ex, new StackTrace(true));
                 throw;
             }
         }
+
+     
 
         public  void SetupBrowserDimensions(BrowserDimensionsConfig dimensionsConfig)
         {
@@ -137,17 +140,22 @@ namespace Tellurium.MvcPages
 
         public void ReportError(Exception exception)
         {
+            ReportErrorInternal(exception);
+        }
+
+        private void ReportErrorInternal(Exception exception, StackTrace reportingStacktrace=null)
+        {
             string screenshotName = $"{BrowserName}_Error{DateTime.Now:yyyy_MM_dd__HH_mm_ss}";
             var screenshotRawData = errorBrowserCamera.TakeScreenshot();
-           
+
             if (screenshotRawData != null)
             {
                 errorScreenshotStorage?.Persist(screenshotRawData, screenshotName);
-                errorReportBuilder.ReportException(exception, screenshotRawData, screenshotName, this.Driver.Url);
+                errorReportBuilder.ReportException(exception, screenshotRawData, screenshotName, this.Driver.Url, reportingStacktrace);
             }
             else
             {
-                errorReportBuilder.ReportException(exception, this.Driver.Url);
+                errorReportBuilder.ReportException(exception, this.Driver.Url, reportingStacktrace);
             }
         }
 
