@@ -56,7 +56,7 @@ namespace Tellurium.MvcPages.SeleniumUtils.ChromeRemoteInterface
 
         public void SetDeviceMetricsForFullPage()
         {
-            var bodySize = driver.FindElementByTagName("body").Size;
+            var bodySize = driver.GetPageDimensions();
             var parameters = new Dictionary<string, object>
             {
                 {"width", bodySize.Width},

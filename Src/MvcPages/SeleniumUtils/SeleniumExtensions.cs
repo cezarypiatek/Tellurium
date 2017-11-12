@@ -2,7 +2,9 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Drawing;
 using System.Threading;
 using OpenQA.Selenium.Internal;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
@@ -136,6 +138,17 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             var scriptResult = driver.ExecuteScript("return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);");
             return (int)(long)scriptResult;
+        }
+
+
+        public static Size GetPageDimensions(this RemoteWebDriver driver)
+        {
+            var obj = (Dictionary<string, object>)driver.ExecuteScript(
+                @"return {
+                            width: Math.max(document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth), 
+                            height: Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight)
+                        };");
+            return new Size((int)(long)obj["width"], (int)(long)obj["height"]);
         }
 
         public static void ScrollToY(this RemoteWebDriver driver, int y)
