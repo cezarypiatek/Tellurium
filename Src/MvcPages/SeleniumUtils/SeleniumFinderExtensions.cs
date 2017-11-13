@@ -33,23 +33,29 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         internal static IWebElement FindFirstAccessibleElement(this ISearchContext scope, By locator)
         {
-            var foundElement = scope.FindElements(locator).FirstAccessibleOrDefault();
+            var candidates = scope.FindElements(locator);
+            var foundElement = candidates.FirstAccessibleOrDefault();
             if (foundElement == null)
             {
-                throw new CannotFindElementByException(locator, scope);
+                throw new CannotFindAccessibleElementByException(locator, scope, candidates);
             }
             return foundElement;
         }
 
-        private static IWebElement GetFirstAccessibleElement(RemoteWebDriver driver, By @by, ISearchContext scope, int timeout)
+        private static IWebElement GetFirstAccessibleElement(RemoteWebDriver driver, By by, ISearchContext scope, int timeout)
         {
+            ReadOnlyCollection<IWebElement> candidates = null;
             try
             {
-                return driver.WaitUntil(timeout, (a) => scope.FindElements(by).FirstAccessibleOrDefault());
+                return driver.WaitUntil(timeout, (a) =>
+                {
+                    candidates = scope.FindElements(by);
+                    return candidates.FirstAccessibleOrDefault();
+                });
             }
             catch (WebDriverTimeoutException ex)
             {
-                throw new CannotFindElementByException(@by, scope, ex);
+                throw new CannotFindAccessibleElementByException(by, scope, candidates,  ex);
             }
         }
 
