@@ -1,6 +1,8 @@
 ![Logo](https://raw.githubusercontent.com/cezarypiatek/Tellurium/master/Doc/TelluriumLogo128x128.png)
-# Tellurium (aka Maintainable Selenium)
+# Tellurium (aka Maintainable Selenium) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=A%20utility%20pack%20to%20create%20maintainanble%20UI%20tests%20using%20Selenium%20with%20additional%20support%20for%20ASP.NET%20MVC%20projects.&url=https://github.com/cezarypiatek/Tellurium)
 [![Build status](https://ci.appveyor.com/api/projects/status/t0jlwy833c7sqyte?svg=true)](https://ci.appveyor.com/project/cezarypiatek/maintainableselenium)
+
+
 
 A utility pack to create maintainanble UI tests using Selenium with additional support for ASP.NET MVC projects.
 
