@@ -3,7 +3,7 @@ using System.Linq;
 using Tellurium.VisualAssertions.Infrastructure;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase.Queries
+namespace Tellurium.VisualAssertion.Dashboard.Services.TestCases.Queries
 {
     public class FindTestCaseCategoriesFromProject:IQueryAll<TestCaseCategory>
     {

@@ -1,4 +1,4 @@
-namespace Tellurium.VisualAssertion.Dashboard.Models.TestCase
+namespace Tellurium.VisualAssertion.Dashboard.Models.TestCases
 {
     public class TestCaseCategoryListItem
     {

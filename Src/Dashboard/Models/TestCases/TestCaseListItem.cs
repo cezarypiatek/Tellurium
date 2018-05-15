@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Tellurium.VisualAssertion.Dashboard.Models.Home;
 
-namespace Tellurium.VisualAssertion.Dashboard.Models.TestCase
+namespace Tellurium.VisualAssertion.Dashboard.Models.TestCases
 {
     public class TestCaseListItem
     {

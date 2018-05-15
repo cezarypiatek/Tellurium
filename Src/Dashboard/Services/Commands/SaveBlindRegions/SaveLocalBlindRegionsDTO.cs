@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace Tellurium.VisualAssertion.Dashboard.Models.Home
+namespace Tellurium.VisualAssertion.Dashboard.Services.Commands.SaveBlindRegion
 {
     public class SaveLocalBlindRegionsDTO
     {
@@ -13,13 +13,5 @@ namespace Tellurium.VisualAssertion.Dashboard.Models.Home
         {
             LocalBlindRegions = new List<BlindRegion>();
         }
-    }
-
-
-    public class SaveBlindRegionsDTO
-    {
-        public SaveLocalBlindRegionsDTO Local { get; set; }
-        public SaveCategoryBlindRegionsDTO Category { get; set; }
-        public SaveGlobalBlindRegionsDTO Global { get; set; }
     }
 }

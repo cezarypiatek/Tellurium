@@ -14,50 +14,17 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
     public class TestResultService : ITestResultService
     {
         private readonly IRepository<TestResult> testRepository;
-        private readonly IRepository<TestSession> testSessionRepository;
-        private readonly IRepository<Project> projectRepository;
-        private readonly ISessionContext sessionContext;
+     
 
-        public TestResultService(IRepository<TestResult> testRepository, 
-            IRepository<TestSession>  testSessionRepository,
-            IRepository<Project>  projectRepository,
-            ISessionContext sessionContext
-        )
+        public TestResultService(IRepository<TestResult> testRepository)
         {
             this.testRepository = testRepository;
-            this.testSessionRepository = testSessionRepository;
-            this.projectRepository = projectRepository;
-            this.sessionContext = sessionContext;
         }
 
         public TestResultListItemDTO GetTestResult(long testResultId)
         {
             var testResult = this.testRepository.Get(testResultId);
             return MapToTestResultListItemDTO(testResult);
-        }
-
-        public void MarkAsPattern(long testResultId)
-        {
-            using (var tx = sessionContext.Session.BeginTransaction())
-            {
-                var testResult = this.testRepository.Get(testResultId);
-                testResult.MarkAsPattern();
-                tx.Commit();
-            }
-        }
-
-        public void MarkAllAsPattern(long testSessionId, string browserName)
-        {
-            using (var tx = sessionContext.Session.BeginTransaction())
-            {
-                var failedTestResultsQuery = new FindFailedTestFromSessionForBrowser(testSessionId, browserName);
-                var failedTestResults = this.testRepository.FindAll(failedTestResultsQuery);
-                foreach (var testResult in failedTestResults)
-                {
-                    testResult.MarkAsPattern();
-                }
-                tx.Commit();
-            }
         }
 
         public Bitmap GetScreenshot(long testId, ScreenshotType screenshotType)
@@ -77,67 +44,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
             }
         }
 
-        public TestResultListViewModel GetTestsFromSession(long sessionId, string browserName)
-        {
-            var query = new FindTestResultsFromSession(sessionId, browserName, TestResultStatusFilter.All);
-            var testResults = this.testRepository.FindAll(query);
-            var failedCount = testResults.Count(x => x.Status == TestResultStatus.Failed);
-            var passedCount = testResults.Count(x => x.Status == TestResultStatus.Passed);
-            var newCount = testResults.Count(x => x.Status == TestResultStatus.NewPattern);
-            return new TestResultListViewModel()
-            {
-                AllCount = testResults.Count,
-                FailedCount = failedCount,
-                PassedCount = passedCount,
-                NewCount = newCount,
-                TestSessionId = sessionId,
-                BrowserName = browserName,
-                TestResults = testResults.ConvertAll(MapToTestResultListItemDTO)
-            };
-        }
-
-        private static TestResultListItemDTO MapToTestResultListItemDTO(TestResult x)
-        {
-            return new TestResultListItemDTO()
-            {
-                TestResultId = x.Id,
-                TestCaseId = x.Pattern.TestCase.Id,
-                TestPatternId = x.Pattern.Id,
-                TestPassed = x.Status==TestResultStatus.Passed,
-                TestFailed = x.Status==TestResultStatus.Failed,
-                ScreenshotName = string.Format("{0} \\ {1}", x.Category, x.ScreenshotName),
-                CanShowMarkAsPattern = x.Status == TestResultStatus.Failed && x.Pattern.IsActive,
-            };
-        }
-
-
-        public TestSessionListViewModel GetTestSessionsFromProject(long projectId)
-        {
-            var query = new FindAllSessionFromProject(projectId);
-            var testSessions = this.testSessionRepository.FindAll(query);
-            return new TestSessionListViewModel
-            {
-                TestSessions = testSessions.Select(x=> new TestSessionListItemDTO
-                {
-                    SessionId = x.Id,
-                    StartDate = x.StartDate.ToString("g"),
-                    Browsers = x.Browsers.OrderBy(b=>b).ToList()
-                }).ToList()
-            };
-        }
-
-        public ProjectListViewModel GetProjectsList()
-        {
-            var projects = projectRepository.GetAll();
-            return new ProjectListViewModel()
-            {
-                Projects = projects.ConvertAll(x=> new ProjectListItemDTO
-                {
-                    ProjectName = x.Name,
-                    ProjectId = x.Id
-                })
-            };
-        }
+     
 
         public TestResultDetailsViewModel GetTestResultDetails(long testResultId)
         {
@@ -153,40 +60,15 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
             };
         }
 
-        public TestResultWithPreview GetTestResultPreview(long testSessionId, long patternId)
-        {
-            var query = new FindTestResultForPatternInSession(testSessionId, patternId);
-            var testResult = this.testRepository.FindOne(query);
-            return new TestResultWithPreview()
-            {
-                ListItem = MapToTestResultListItemDTO(testResult),
-                Preview = this.GetTestResultDetails(testResult.Id)
-            };
-        }
-
-        public TestResultsInStatusViewModel GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatusFilter status)
-        {
-            var query = new FindTestResultsFromSession(sessionId, browserName, status);
-            var testResults = this.testRepository.FindAll(query);
-            return new TestResultsInStatusViewModel()
-            {
-                TestResults = testResults.ConvertAll(MapToTestResultListItemDTO)
-            };
-        }
+       
     }
 
     public interface ITestResultService
     {
         Bitmap GetScreenshot(long testId, ScreenshotType screenshotType);
         TestResultListItemDTO GetTestResult(long testResultId);
-        void MarkAsPattern(long testResultId);
-        void MarkAllAsPattern(long testSessionId, string browserName);
-        TestResultListViewModel GetTestsFromSession(long sessionId, string browserName);
-        TestSessionListViewModel GetTestSessionsFromProject(long projectId);
-        ProjectListViewModel GetProjectsList();
         TestResultDetailsViewModel GetTestResultDetails(long testResultId);
-        TestResultWithPreview GetTestResultPreview(long testSessionId, long patternId);
-        TestResultsInStatusViewModel GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatusFilter status);
+        
     }
 
     public enum ScreenshotType
@@ -204,35 +86,12 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
         public long TestCaseId { get; set; }
     }
 
-    public enum TestResultStatusFilter
-    {
-        All,
-        Passed,
-        Failed,
-        New
-    }
-
-    public class TestResultListViewModel
-    {
-        public List<TestResultListItemDTO> TestResults { get; set; }
-        public long TestSessionId { get; set; }
-        public string BrowserName { get; set; }
-        public int AllCount { get; set; }
-        public int PassedCount { get; set; }
-        public int FailedCount { get; set; }
-        public int NewCount { get; set; }
-    }
-
     public class TestResultsInStatusViewModel
     {
         public List<TestResultListItemDTO> TestResults { get; set; }
     }
 
-    public class TestResultWithPreview
-    {
-        public TestResultListItemDTO ListItem { get; set; }
-        public TestResultDetailsViewModel Preview { get; set; }
-    }
+  
 
     public class TestResultListItemDTO
     {

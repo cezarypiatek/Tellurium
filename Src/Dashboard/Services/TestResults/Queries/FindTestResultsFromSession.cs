@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Linq;
+using Tellurium.VisualAssertion.Dashboard.Services.Queries;
 using Tellurium.VisualAssertions.Infrastructure;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 

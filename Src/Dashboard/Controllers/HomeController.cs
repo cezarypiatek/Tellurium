@@ -1,40 +1,60 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tellurium.VisualAssertion.Dashboard.Mvc;
+using Tellurium.VisualAssertion.Dashboard.Services.Commands.MarkAllAsPattern;
+using Tellurium.VisualAssertion.Dashboard.Services.Commands.MarkAsPattern;
+using Tellurium.VisualAssertion.Dashboard.Services.Queries;
 using Tellurium.VisualAssertion.Dashboard.Services.TestResults;
+using Tellurium.VisualAssertion.Dashboard.Services.WorkSeed;
 
 namespace Tellurium.VisualAssertion.Dashboard.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ITestResultService testResultService;
+        private readonly ICommandDispatcher commandDispatcher;
+        private readonly IQueryDispatcher queryDispatcher;
 
-        public HomeController(ITestResultService testResultService)
+        public HomeController(ITestResultService testResultService, ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
         {
             this.testResultService = testResultService;
+            this.commandDispatcher = commandDispatcher;
+            this.queryDispatcher = queryDispatcher;
         }
 
         // GET: Home
         public ActionResult Index()
         {
-            var testSessions = this.testResultService.GetProjectsList();
-            return View("ProjectList", testSessions);
+            var projects = this.queryDispatcher.Execute<GetProjectListQuery, ProjectListViewModel>(new GetProjectListQuery());
+            return View("ProjectList", projects);
         }
 
-        public ActionResult GetTestSessionFromProject(long projectId)
+        public ActionResult GetTestSessionFromProject(GetTestSessionFromProjectQuery query)
         {
-            var testSessions = this.testResultService.GetTestSessionsFromProject(projectId);
+            var testSessions = this.queryDispatcher.Execute<GetTestSessionFromProjectQuery, TestSessionListViewModel>(query);
             return PartialView("TestSessionList", testSessions);
         }
 
         public ActionResult GetTestsFromSessionSession(long sessionId, string browserName)
         {
-            var tests = this.testResultService.GetTestsFromSession(sessionId, browserName);
+            var query = new GetTestsFromSessionQuery()
+            {
+                SessionId = sessionId,
+                BrowserName = browserName,
+                TestStatus = TestResultStatusFilter.All
+            };
+            var tests = this.queryDispatcher.Execute<GetTestsFromSessionQuery,GetTestsFromSessionViewModel>(query);
             return View("TestResultList", tests);
         }
 
         public ActionResult GetTestsFromSessionInStatus(long sessionId, string browserName, TestResultStatusFilter status)
         {
-            var tests = this.testResultService.GetTestsFromSessionInStatus(sessionId, browserName, status);
+            var query = new GetTestsFromSessionQuery()
+            {
+                SessionId = sessionId,
+                BrowserName = browserName,
+                TestStatus = status
+            };
+            var tests = this.queryDispatcher.Execute<GetTestsFromSessionQuery,GetTestsFromSessionViewModel>(query);
             return View("TestResultsInStatus", tests);
         }
 
@@ -59,14 +79,14 @@ namespace Tellurium.VisualAssertion.Dashboard.Controllers
         [HttpPost]
         public ActionResult MarkAsPattern(long testResultId)
         {
-            this.testResultService.MarkAsPattern(testResultId);
+            this.commandDispatcher.Execute(new MarkAsPatternCommand(testResultId));
             return this.RedirectToAction("GetTestResult", new { testId= testResultId});
         }
 
         [HttpPost]
         public ActionResult MarkAllAsPattern(long testSessionId, string browserName)
         {
-            this.testResultService.MarkAllAsPattern(testSessionId, browserName);
+            this.commandDispatcher.Execute(new MarkAllAsPatternCommand(testSessionId, browserName));
             return ActionResultFactory.AjaxSuccess();
         }
 

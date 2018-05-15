@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tellurium.VisualAssertion.Dashboard.Models.Home;
 using Tellurium.VisualAssertion.Dashboard.Mvc;
-using Tellurium.VisualAssertion.Dashboard.Services.TestCase;
+using Tellurium.VisualAssertion.Dashboard.Services.Commands.SaveBlindRegion;
+using Tellurium.VisualAssertion.Dashboard.Services.TestCases;
+using Tellurium.VisualAssertion.Dashboard.Services.WorkSeed;
 
 namespace Tellurium.VisualAssertion.Dashboard.Controllers
 {
     public class TestCaseController : Controller
     {
         private readonly ITestCaseService testCaseService;
+        private readonly ICommandDispatcher commandDispatcher;
 
-        public TestCaseController(ITestCaseService testCaseService)
+        public TestCaseController(ITestCaseService testCaseService, ICommandDispatcher commandDispatcher)
         {
             this.testCaseService = testCaseService;
+            this.commandDispatcher = commandDispatcher;
         }
 
         public ActionResult Index()
@@ -46,9 +49,9 @@ namespace Tellurium.VisualAssertion.Dashboard.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveBlindRegions([FromBody]SaveBlindRegionsDTO dto)
+        public ActionResult SaveBlindRegions([FromBody]SaveBlindRegionsCommand command)
         {
-            this.testCaseService.SaveBlindRegions(dto);
+            this.commandDispatcher.Execute(command);
             return ActionResultFactory.AjaxSuccess();
         }
 

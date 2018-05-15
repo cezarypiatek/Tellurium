@@ -13,7 +13,10 @@ using Microsoft.Extensions.Logging;
 using NHibernate;
 using Tellurium.MvcPages;
 using Tellurium.VisualAssertion.Dashboard.Mvc.Utils;
+using Tellurium.VisualAssertion.Dashboard.Services.WorkSeed;
+using Tellurium.VisualAssertion.Dashboard.Services.WorkSeed.CommandDispathers;
 using Tellurium.VisualAssertions;
+using Tellurium.VisualAssertions.Infrastructure;
 using Tellurium.VisualAssertions.Infrastructure.Persistence;
 using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
@@ -49,6 +52,11 @@ namespace Tellurium.VisualAssertion.Dashboard
 
             var container = new WindsorContainer();
             container.Register(
+                Component.For<ICommandDispatcher>()
+                    .UsingFactoryMethod(kernel => new TransactionalCommandDispather(new CommandDispather(kernel), kernel.Resolve<ISessionContext>() )),
+                
+                Component.For<IQueryDispatcher>()
+                    .UsingFactoryMethod(kernel => new TransactionalQueryDispatcher(new QueryDispatcher(kernel), kernel.Resolve<ISessionContext>() )),
                Classes.FromAssemblyContaining<WebAssemblyIdentity>()
                     .Where(type => type.GetInterfaces().Any())
                     .WithServiceAllInterfaces()
@@ -64,7 +72,7 @@ namespace Tellurium.VisualAssertion.Dashboard
                 Component.For<ISessionFactory>()
                     .UsingFactoryMethod(kernel => PersistanceEngine.CreateSessionFactory<AspCoreSessionContext>())
                     .LifestyleSingleton()
-                    );
+                );
             ServiceLocator.Init(container);
             return WindsorRegistrationHelper.CreateServiceProvider(container, services);
         }
