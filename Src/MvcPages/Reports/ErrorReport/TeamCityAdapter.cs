@@ -7,11 +7,10 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
     {
         private readonly Action<string> writeOutput;
         private const string TeamcityProjectName = "TEAMCITY_PROJECT_NAME";
-        private const string TeamcityBuilNumber = "BUILD_NUMBER";
         private const string TeamcityConfigurationFile = "TEAMCITY_BUILD_PROPERTIES_FILE";
-        private static readonly Lazy<string> BuildId = new Lazy<string>(GetBuildExtId);
-        private static string BuildNumber => GetTeamcityVariable(TeamcityBuilNumber);
-
+        private static readonly Lazy<string> BuildExtId = new Lazy<string>(GetBuildExtId);
+        private static readonly Lazy<string> BuildId = new Lazy<string>(GetBuildId);
+        
         public TeamCityAdapter(Action<string> writeOutput)
         {
             this.writeOutput = writeOutput;
@@ -44,6 +43,11 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
             return GetBuildProperty("teamcity.buildType.id");
         }
 
+        private static string GetBuildId()
+        {
+            return GetBuildProperty("teamcity.build.id");
+        }
+
         private static string GetTeamcityVariable(string variableName)
         {
             return Environment.GetEnvironmentVariable(variableName);
@@ -64,7 +68,12 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
 
         private static string GetArtifactPath(string fileName)
         {
-            return $"/repository/download/{BuildId.Value}/{BuildNumber}/{fileName}";
+            var customArtifactPrefix = Environment.GetEnvironmentVariable("Tellurium_ARTIFACTPATHPREFIX");
+            if (string.IsNullOrWhiteSpace(customArtifactPrefix) == false)
+            {
+                return $"{customArtifactPrefix}/{fileName}";
+            }
+            return $"/repository/download/{BuildExtId.Value}/{BuildId.Value}:id/{fileName}";
         }
     }
 }
