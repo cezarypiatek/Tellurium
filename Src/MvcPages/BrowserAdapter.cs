@@ -189,6 +189,12 @@ namespace Tellurium.MvcPages
             return new WebForm(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
         }
 
+        public WebForm GetForm()
+        {
+            var formElement = this.Driver.GetStableAccessibleElementByInScope(By.TagName("form"), Driver);
+            return new WebForm(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
+        }
+
         public  void ClickOn(string elementId)
         {
             var elementToClick = this.Driver.GetStableAccessibleElementById(elementId);
@@ -503,7 +509,7 @@ namespace Tellurium.MvcPages
         void ReportError(Exception exception);
 
         /// <summary>
-        /// Dowload file as a resul of given action
+        /// Download file as a result of given action
         /// </summary>
         /// <param name="action">Action that should initiate downloading</param>
         /// <param name="downloadCallback">Action to invoke when finish downloading. Action parameter is a path to downloaded file,</param>
