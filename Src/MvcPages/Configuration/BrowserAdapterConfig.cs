@@ -50,6 +50,8 @@ namespace Tellurium.MvcPages.Configuration
 
         public List<string> AllowedMimeTypes { get; set; }
 
+        public IPageReloadDetector PageReloadDetector { get; set; }
+
         internal string DownloadDirPath { get; set; }
 
         public BrowserAdapterConfig()

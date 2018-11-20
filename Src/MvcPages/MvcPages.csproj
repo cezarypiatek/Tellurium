@@ -106,6 +106,7 @@
     <Compile Include="SeleniumUtils\ChromeOptionsExtensions.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\ChromeRemoteInterface.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\ChromeRemoteInterfaceInvocationException.cs" />
+    <Compile Include="SeleniumUtils\DefaultPageReloadDetector.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotFindElementByException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotInteractWithElementException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotReloadPageWithException.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="SeleniumUtils\FileUploading\WindowsInternals\WindowLocator.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\RemoteInterfaceResponseExtensions.cs" />
     <Compile Include="SeleniumUtils\FirefoxOptionsExtensions.cs" />
+    <Compile Include="SeleniumUtils\IPageReloadDetector.cs" />
     <Compile Include="SeleniumUtils\OperaOptionsExtensions.cs" />
     <Compile Include="SeleniumUtils\SeleniumFinderExtensions.cs" />
     <Compile Include="SeleniumUtils\StableWebElement.cs" />

@@ -37,11 +37,13 @@ namespace Tellurium.MvcPages
         private EndpointCoverageReportBuilder endpointCoverageReportBuilder;
         private IScreenshotStorage errorScreenshotStorage;
         private TemporaryDirectory downloaDirectory;
-        
+        private IPageReloadDetector pageReloadDetector;
+
         public BrowserAdapter()
         {
             BrowserAdapterContext.Current = this;
             downloaDirectory = new TemporaryDirectory();
+            pageReloadDetector = new DefaultPageReloadDetector();
         }
 
         /// <summary>
@@ -67,6 +69,7 @@ namespace Tellurium.MvcPages
             browserAdapter.errorReportBuilder = TelluriumErrorReportBuilderFactory.Create(config);
             browserAdapter.endpointCoverageReportBuilder = EndpointCoverageReportBuilderFactory.Create(config, navigator);
             browserAdapter.errorScreenshotStorage = ScreenshotStorageFactory.CreateForErrorScreenshot(config);
+            browserAdapter.pageReloadDetector = config.PageReloadDetector ?? new DefaultPageReloadDetector();
             if (config.AnimationsDisabled)
             {
                 browserAdapter.navigator.PageReload += (sender, args) => browserAdapter.Driver.DisableAnimations();
@@ -95,8 +98,6 @@ namespace Tellurium.MvcPages
                 throw;
             }
         }
-
-     
 
         public  void SetupBrowserDimensions(BrowserDimensionsConfig dimensionsConfig)
         {
@@ -265,33 +266,18 @@ namespace Tellurium.MvcPages
 
         public void ReloadPageWith(Action action)
         {
-            MarkPageAsVisited();
+            pageReloadDetector.RememberPage(this.Driver);
             navigator.OnBeforePageReload();
             action();
             try
             {
-                Driver.WaitUntil(SeleniumExtensions.PageLoadTimeout, driver => ExceptionHelper.SwallowException(IsNewlyLoadedPage, false));
+                Driver.WaitUntil(SeleniumExtensions.PageLoadTimeout, driver => ExceptionHelper.SwallowException(()=> pageReloadDetector.WasReloaded(this.Driver), false));
                 navigator.OnPageReload();
             }
             catch (WebDriverTimeoutException)
             {
                 throw new CannotReloadPageWithException();
             }
-        }
-
-        private bool IsNewlyLoadedPage()
-        {
-            return Driver.IsPageLoaded() && HasVisitedPageMark() == false;
-        }
-
-        private bool HasVisitedPageMark()
-        {
-            return (bool) Driver.ExecuteScript("return window.__selenium_visited__ === true;");
-        }
-
-        private void MarkPageAsVisited()
-        {
-            Driver.ExecuteScript("window.__selenium_visited__ = true;");
         }
 
         public void DisableAnimations()
