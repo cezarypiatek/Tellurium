@@ -42,12 +42,12 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return new FirefoxDriver(firefoxService, firefoxOptions, BrowserLoadTimeout);
                 case BrowserType.FirefoxGecko:
                     var firefoxGeckoOptions = CreateFirefoxGeckoOptions();
-                    var firefoxGeckoSerice = FirefoxDriverService.CreateDefaultService(this.config.SeleniumDriversPath);
-                    return new FirefoxDriver(firefoxGeckoSerice, firefoxGeckoOptions, BrowserLoadTimeout);
+                    var firefoxGeckoService = FirefoxDriverService.CreateDefaultService(this.config.SeleniumDriversPath);
+                    return new FirefoxDriver(firefoxGeckoService, firefoxGeckoOptions, BrowserLoadTimeout);
                 case BrowserType.FirefoxGeckoHeadless:
                     var firefoxGeckoHeadlessOptions = CreateFirefoxGeckoHeadlessOptions();
-                    var firefoxGeckoHeadlessSerice = FirefoxDriverService.CreateDefaultService(this.config.SeleniumDriversPath);
-                    return new FirefoxDriver(firefoxGeckoHeadlessSerice, firefoxGeckoHeadlessOptions, BrowserLoadTimeout);
+                    var firefoxGeckoHeadlessService = FirefoxDriverService.CreateDefaultService(this.config.SeleniumDriversPath);
+                    return new FirefoxDriver(firefoxGeckoHeadlessService, firefoxGeckoHeadlessOptions, BrowserLoadTimeout);
                 case BrowserType.Chrome:
                     var chromeOptions = CreateChromeOptions();
                     return new ChromeDriver(this.config.SeleniumDriversPath, chromeOptions);
@@ -127,6 +127,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             var options = new ChromeOptions();
             options.EnableFileDownloading(this.config.DownloadDirPath);
+            options.DisableSpellCheck();
             return options;
         }
 
@@ -134,6 +135,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             var chromeOptions = CreateChromeOptions();
             chromeOptions.EnableHeadless();
+            chromeOptions.DisableSpellCheck();
             return chromeOptions;
         }
 

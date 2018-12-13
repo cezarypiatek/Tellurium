@@ -17,5 +17,15 @@ namespace Tellurium.MvcPages.SeleniumUtils
             options.AddUserProfilePreference("download.default_directory", downloadDir);
             options.AddUserProfilePreference("plugins.plugins_disabled", new[]{"Chrome PDF Viewer"});
         }
+
+        public static void DisableSpellCheck(this ChromeOptions options)
+        {
+            options.AddUserProfilePreference("browser.enable_spellchecking", "false");
+            options.AddUserProfilePreference("browser.enable_autospellcorrect", "false");
+            options.AddUserProfilePreference("spellcheck.use_spelling_service", "");
+            options.AddUserProfilePreference("spellcheck.dictionary", "");
+            options.AddUserProfilePreference("translate.enabled", "false");
+            
+        }
     }
 }
