@@ -18,6 +18,11 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         {
         }
 
+        public MvcWebForm()
+        {
+        }
+
+
         /// <summary>
         /// Set value for field indicated by expression
         /// </summary>
