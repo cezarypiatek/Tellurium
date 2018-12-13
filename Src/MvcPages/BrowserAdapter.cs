@@ -183,10 +183,26 @@ namespace Tellurium.MvcPages
             return new MvcWebForm<TModel>(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
         }
 
+        public TCustomForm GetCustomMvcForm<TCustomForm, TModel>(string formId) where TCustomForm : MvcWebForm<TModel>, new()
+        {
+            var form = new TCustomForm();
+            var formElement = this.Driver.GetStableAccessibleElementById(formId);
+            form.Init(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
+            return form;
+        }
+
         public WebForm GetForm(string formId)
         {
             var formElement = this.Driver.GetStableAccessibleElementById(formId);
             return new WebForm(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
+        }
+
+        public TCustomForm GetCustomForm<TCustomForm>(string formId) where TCustomForm : WebForm, new()
+        {
+            var formElement = this.Driver.GetStableAccessibleElementByInScope(By.TagName("form"), Driver);
+            var form = new TCustomForm();
+            form.Init(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
+            return form;
         }
 
         public WebForm GetForm()
@@ -211,6 +227,15 @@ namespace Tellurium.MvcPages
         {
             var pageFragment = Driver.GetStableAccessibleElementById(elementId);
             return new PageFragment(Driver, pageFragment);
+        }
+
+        public TCustomPageFragment GetCustomPageFragmentById<TCustomPageFragment>(string elementId) 
+            where TCustomPageFragment : PageFragment, new()
+        {
+            var element = Driver.GetStableAccessibleElementById(elementId);
+            var pageFragment = new TCustomPageFragment();
+            pageFragment.Init(Driver, element);
+            return pageFragment;
         }
 
         public void RefreshPage()
@@ -405,10 +430,32 @@ namespace Tellurium.MvcPages
 
 
         /// <summary>
+        /// Return object that inherits from  strongly typed adapter for web form with given id
+        /// </summary>
+        /// <typeparam name="TCustomForm">Inherited object type</typeparam>
+        /// <typeparam name="TModel">Model connected with form</typeparam>
+        /// <param name="formId">Id of expected form</param>
+        ///<remarks>
+        /// This method allows to create custom objects that inherit from <see cref="MvcWebForm{T}"/>
+        /// </remarks>
+        TCustomForm GetCustomMvcForm<TCustomForm, TModel>(string formId) where TCustomForm : MvcWebForm<TModel>, new();
+
+        /// <summary>
         /// Return weakly typed adapter for web form with given id
         /// </summary>
         /// <param name="formId">Id of expected form</param>
         WebForm GetForm(string formId);
+
+
+        /// <summary>
+        /// Return object that inherits from weakly typed adapter for web form with given id
+        /// </summary>
+        /// <typeparam name="TCustomForm">Class that derive from WebForm</typeparam>
+        /// <param name="formId">Id of expected form</param>
+        /// <remarks>
+        /// This method allows to create custom objects that inherit from <see cref="WebForm"/>
+        /// </remarks>
+        TCustomForm GetCustomForm<TCustomForm>(string formId) where TCustomForm : WebForm, new();
 
         /// <summary>
         /// Refresh page
@@ -433,6 +480,13 @@ namespace Tellurium.MvcPages
         /// </summary>
         /// <param name="elementId">Id of expected element</param>
         IPageFragment GetPageFragmentById(string elementId);
+
+
+        /// <summary>
+        /// Return page fragment with given id
+        /// </summary>
+        /// <param name="elementId">Id of expected element</param>
+        TCustomPageFragment GetCustomPageFragmentById<TCustomPageFragment>(string elementId) where  TCustomPageFragment:PageFragment, new();
 
         /// <summary>
         /// Stop execution until element with given id appear
@@ -515,5 +569,7 @@ namespace Tellurium.MvcPages
         /// <param name="downloadCallback">Action to invoke when finish downloading. Action parameter is a path to downloaded file,</param>
         /// <param name="downloadTimeoutInSeconds"></param>
         void DownloadFileWith(Action action, Action<string> downloadCallback = null, int downloadTimeoutInSeconds = 60);
+
+        WebForm GetForm();
     }
 }

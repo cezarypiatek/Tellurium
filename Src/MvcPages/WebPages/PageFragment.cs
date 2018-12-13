@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.IO;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
@@ -12,10 +11,20 @@ namespace Tellurium.MvcPages.WebPages
 {
     public class PageFragment : IPageFragment
     {
-        protected readonly RemoteWebDriver Driver;
-        protected readonly IWebElement WebElement;
+        protected RemoteWebDriver Driver;
+        protected IWebElement WebElement;
 
         public PageFragment(RemoteWebDriver driver, IWebElement webElement)
+        {
+            this.Driver = driver;
+            this.WebElement = webElement;
+        }
+
+        protected PageFragment()
+        {
+        }
+
+        public void Init(RemoteWebDriver driver, IWebElement webElement)
         {
             this.Driver = driver;
             this.WebElement = webElement;
@@ -141,11 +150,11 @@ namespace Tellurium.MvcPages.WebPages
         {
             var wholePageScreenshot = Driver.GetScreenshot();
             var imageScreen = wholePageScreenshot.AsByteArray.ToBitmap();
-            var webElementArea = GetWebElementAreaContrainedTo(imageScreen);
+            var webElementArea = GetWebElementAreaConstrainedTo(imageScreen);
             return imageScreen.Clone(webElementArea, imageScreen.PixelFormat).ToBytes();
         }
 
-        private Rectangle GetWebElementAreaContrainedTo(Bitmap imageScreen)
+        private Rectangle GetWebElementAreaConstrainedTo(Bitmap imageScreen)
         {
             var originalLocation = this.WebElement.Location;
             var originalSize = this.WebElement.Size;

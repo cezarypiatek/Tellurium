@@ -13,8 +13,8 @@ namespace Tellurium.MvcPages.WebPages.WebForms
     /// </summary>
     public class WebForm : PageFragment
     {
-        private readonly int numberOfSetRetries;
-        private readonly AfterFieldValueSet afterFieldValueSet;
+        private int numberOfSetRetries;
+        private AfterFieldValueSet afterFieldValueSet;
         private List<IFormInputAdapter> SupportedInputs { get; set; }
 
         public WebForm(IWebElement webElement, RemoteWebDriver driver, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries, AfterFieldValueSet afterFieldValueSet = AfterFieldValueSet.Nothing) : base(driver, webElement)
@@ -22,6 +22,18 @@ namespace Tellurium.MvcPages.WebPages.WebForms
             this.numberOfSetRetries = numberOfSetRetries;
             this.afterFieldValueSet = afterFieldValueSet;
             SupportedInputs = supportedInputs;
+        }
+
+        public WebForm()
+        {
+        }
+
+        public void Init(IWebElement webElement, RemoteWebDriver driver, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries, AfterFieldValueSet afterFieldValueSet = AfterFieldValueSet.Nothing)
+        {
+            this.numberOfSetRetries = numberOfSetRetries;
+            this.afterFieldValueSet = afterFieldValueSet;
+            SupportedInputs = supportedInputs;
+            base.Init(driver, webElement);
         }
 
         /// <summary>
