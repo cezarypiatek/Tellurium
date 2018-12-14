@@ -12,8 +12,8 @@ namespace Tellurium.MvcPages.WebPages
 {
     public abstract class WebElementCollection<TItem> : PageFragment,  IReadOnlyList<TItem> where TItem: IPageFragment
     {
-        protected WebElementCollection(RemoteWebDriver driver, IWebElement webElement)
-            :base(driver, webElement)
+        protected WebElementCollection(IBrowserAdapter browserAdapter, IWebElement webElement)
+            :base(browserAdapter, webElement)
         {
         }
 

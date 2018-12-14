@@ -5,7 +5,7 @@ namespace Tellurium.MvcPages.WebPages
 {
     public class WebList:WebElementCollection<PageFragment>
     {
-        public WebList(RemoteWebDriver driver, IWebElement webElement):base(driver, webElement)
+        public WebList(IBrowserAdapter browserAdapter, IWebElement webElement):base(browserAdapter, webElement)
         {
         }
 
@@ -16,7 +16,7 @@ namespace Tellurium.MvcPages.WebPages
 
         protected override PageFragment MapToItem(IWebElement webElementItem)
         {
-            return new PageFragment(Driver, webElementItem);
+            return new PageFragment(this.Browser, webElementItem);
         }
     }
 }

@@ -19,7 +19,8 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         private AfterFieldValueSet afterFieldValueSet;
         private List<IFormInputAdapter> SupportedInputs { get; set; }
 
-        public WebForm(IWebElement webElement, RemoteWebDriver driver, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries, AfterFieldValueSet afterFieldValueSet = AfterFieldValueSet.Nothing) : base(driver, webElement)
+        public WebForm(IWebElement webElement, IBrowserAdapter browserAdapter, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries, AfterFieldValueSet afterFieldValueSet = AfterFieldValueSet.Nothing) 
+            : base(browserAdapter, webElement)
         {
             this.numberOfSetRetries = numberOfSetRetries;
             this.afterFieldValueSet = afterFieldValueSet;

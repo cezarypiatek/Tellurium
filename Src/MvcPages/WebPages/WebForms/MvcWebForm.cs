@@ -15,7 +15,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
     /// <typeparam name="TModel">Type of model connected with given web form</typeparam>
     public class MvcWebForm<TModel>: WebForm
     {
-        public MvcWebForm(IWebElement webElement, RemoteWebDriver driver, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries, AfterFieldValueSet afterFieldValueSet = AfterFieldValueSet.Nothing) 
+        public MvcWebForm(IWebElement webElement, IBrowserAdapter driver, List<IFormInputAdapter> supportedInputs, int numberOfSetRetries, AfterFieldValueSet afterFieldValueSet = AfterFieldValueSet.Nothing) 
             :base(webElement, driver, supportedInputs, numberOfSetRetries, afterFieldValueSet)
         {
         }

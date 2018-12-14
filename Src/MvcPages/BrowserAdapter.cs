@@ -180,7 +180,7 @@ namespace Tellurium.MvcPages
         public  MvcWebForm<TModel> GetForm<TModel>(string formId)
         {
             var formElement = this.Driver.GetStableAccessibleElementById(formId);
-            return new MvcWebForm<TModel>(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
+            return new MvcWebForm<TModel>(formElement, this, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
         }
 
         public TCustomForm GetCustomMvcForm<TCustomForm, TModel>(string formId) where TCustomForm : MvcWebForm<TModel>, new()
@@ -194,7 +194,7 @@ namespace Tellurium.MvcPages
         public WebForm GetForm(string formId)
         {
             var formElement = this.Driver.GetStableAccessibleElementById(formId);
-            return new WebForm(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
+            return new WebForm(formElement, this, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
         }
 
         public TCustomForm GetCustomForm<TCustomForm>(string formId) where TCustomForm : WebForm, new()
@@ -208,7 +208,7 @@ namespace Tellurium.MvcPages
         public WebForm GetForm()
         {
             var formElement = this.Driver.GetStableAccessibleElementByInScope(By.TagName("form"), Driver);
-            return new WebForm(formElement, Driver, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
+            return new WebForm(formElement, this, supportedInputsAdapters, this.NumberOfInputSetRetries, this.AfterFieldValueSetAction);
         }
 
         public  void ClickOn(string elementId)
@@ -226,7 +226,7 @@ namespace Tellurium.MvcPages
         public IPageFragment GetPageFragmentById(string elementId)
         {
             var pageFragment = Driver.GetStableAccessibleElementById(elementId);
-            return new PageFragment(Driver, pageFragment);
+            return new PageFragment(this, pageFragment);
         }
 
         public TCustomPageFragment GetCustomPageFragmentById<TCustomPageFragment>(string elementId) 
@@ -265,6 +265,8 @@ namespace Tellurium.MvcPages
             watcher.WaitForChange();
         }
 
+        public IBrowserAdapter Browser => this;
+
         public void AffectWith(Action action, bool watchSubtree=true)
         {
             var body = GetPageBody();
@@ -302,7 +304,7 @@ namespace Tellurium.MvcPages
         private IPageFragment GetElementWithText(string text, bool isPartialText)
         {
             var element = this.Driver.GetStableElementWithText(this.Driver, text, isPartialText);
-            return new PageFragment(this.Driver, element);
+            return new PageFragment(this, element);
         }
 
         public void ReloadPageWith(Action action)
@@ -372,27 +374,35 @@ namespace Tellurium.MvcPages
             Driver.HoverOnElementWithText(Driver, text, true);
         }
 
-        public WebList GetListWithId(string id)
-        {
-            return Driver.GetListWithId(id);
-        }
-
         public WebList ToWebList()
         {
             var body = GetPageBody();
-            var mainPageFragment = new PageFragment(Driver, body);
+            var mainPageFragment = new PageFragment(this, body);
             return mainPageFragment.ToWebList();
         }
 
-        public WebTree GetTreeWithId(string id, WebTreeOptions options = null)
+        public WebList GetListWithId(string id)
         {
-            return Driver.GetTreeWithId(id, options);
+            var listElement = Driver.GetStableAccessibleElementById(id);
+            return new WebList(this, listElement);
+        }
+
+        public WebTree GetTreeWithId(string id, WebTreeOptions options=null)
+        {
+            var listElement = Driver.GetStableAccessibleElementById(id);
+            return new WebTree(this, listElement, options);
+        }
+
+        public WebTable GetTableWithId(string id)
+        {
+            var listElement = Driver.GetStableAccessibleElementById(id);
+            return new WebTable(this, listElement);
         }
 
         public WebTree ToWebTree(WebTreeOptions options=null)
         {
             var body = GetPageBody();
-            return new WebTree(Driver, body, options);
+            return new WebTree(this, body, options);
         }
 
         private IWebElement GetPageBody()
@@ -400,15 +410,10 @@ namespace Tellurium.MvcPages
             return Driver.FindElementByTagName("body");
         }
 
-        public WebTable GetTableWithId(string id)
-        {
-            return Driver.GetTableWithId(id);
-        }
-
         public WebTable ToWebTable()
         {
             var body = GetPageBody();
-            return new WebTable(Driver, body);
+            return new WebTable(this, body);
         }
 
         public void AcceptAlert()
@@ -582,5 +587,25 @@ namespace Tellurium.MvcPages
 
         WebForm GetForm();
         void ReplaceContentWith(string elementId,  Action action);
+
+        /// <summary>
+        /// Find list like structure with given Id
+        /// </summary>
+        /// <param name="id">Value of id attribute</param>
+        WebList GetListWithId(string id);
+
+        /// <summary>
+        /// Find tree like structure with given Id
+        /// </summary>
+        /// <param name="id">Value of id attribute</param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        WebTree GetTreeWithId(string id, WebTreeOptions options = null);
+
+        /// <summary>
+        /// Find table like structure with given Id
+        /// </summary>
+        /// <param name="id">Value of id attribute</param>
+        WebTable GetTableWithId(string id);
     }
 }

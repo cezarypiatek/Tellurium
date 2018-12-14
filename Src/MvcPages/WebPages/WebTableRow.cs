@@ -11,7 +11,7 @@ namespace Tellurium.MvcPages.WebPages
         private Dictionary<string, int> columnsMap;
 
 
-        public WebTableRow(RemoteWebDriver driver, IWebElement webElement, Dictionary<string, int> columnsMap) : base(driver, webElement)
+        public WebTableRow(IBrowserAdapter browserAdapter, IWebElement webElement, Dictionary<string, int> columnsMap) : base(browserAdapter, webElement)
         {
             this.webElement = webElement;
             this.columnsMap = columnsMap;
@@ -24,7 +24,7 @@ namespace Tellurium.MvcPages.WebPages
 
         protected override PageFragment MapToItem(IWebElement webElementItem)
         {
-            return new PageFragment(Driver, webElementItem);
+            return new PageFragment(this.Browser, webElementItem);
         }
 
         public IPageFragment this[string columnName]
