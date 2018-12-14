@@ -36,13 +36,13 @@ namespace Tellurium.MvcPages
         private TelluriumErrorReportBuilder errorReportBuilder;
         private EndpointCoverageReportBuilder endpointCoverageReportBuilder;
         private IScreenshotStorage errorScreenshotStorage;
-        private TemporaryDirectory downloaDirectory;
+        private TemporaryDirectory downloadDirectory;
         private IPageReloadDetector pageReloadDetector;
 
         public BrowserAdapter()
         {
             BrowserAdapterContext.Current = this;
-            downloaDirectory = new TemporaryDirectory();
+            downloadDirectory = new TemporaryDirectory();
             pageReloadDetector = new DefaultPageReloadDetector();
         }
 
@@ -54,7 +54,7 @@ namespace Tellurium.MvcPages
         public static BrowserAdapter Create(BrowserAdapterConfig config, RemoteWebDriver driver = null)
         {
             var browserAdapter = new BrowserAdapter();
-            config.DownloadDirPath = browserAdapter.downloaDirectory.Path;
+            config.DownloadDirPath = browserAdapter.downloadDirectory.Path;
             browserAdapter.Driver = driver ?? new SeleniumDriverFactory(config).CreateDriver();
             var browserCameraConfig = config.BrowserCameraConfig ?? BrowserCameraConfig.CreateDefault();
             browserAdapter.browserCamera = BrowserCameraFactory.CreateNew(browserAdapter.Driver, browserCameraConfig);
@@ -164,16 +164,16 @@ namespace Tellurium.MvcPages
         {
             if (ChromeRemoteInterface.IsSupported(this.Driver))
             {
-                new ChromeRemoteInterface(this.Driver).TryEnableFileDownloading(this.downloaDirectory.Path);
+                new ChromeRemoteInterface(this.Driver).TryEnableFileDownloading(this.downloadDirectory.Path);
             }
-            this.downloaDirectory.Clear();
+            this.downloadDirectory.Clear();
             action();
             Driver.WaitUntil(downloadTimeoutInSeconds, (d) =>
             {
-                var files = this.downloaDirectory.GetFiles();
+                var files = this.downloadDirectory.GetFiles();
                 return files.Length > 0 && files.Any(FileExtensions.IsFileLocked) == false;
             });
-            var downloadedFile = this.downloaDirectory.GetFiles().First();
+            var downloadedFile = this.downloadDirectory.GetFiles().First();
             downloadCallback?.Invoke(downloadedFile);
         }
 
@@ -274,6 +274,16 @@ namespace Tellurium.MvcPages
             watcher.WaitForChange();
         }
 
+        public void ReplaceContentWith(string elementId,  Action action)
+        {
+            this.AffectElementWith(elementId, action, watchSubtree: false);
+        }
+
+        public void ReplaceContentWith(Action action)
+        {
+           this.AffectWith(action, watchSubtree: false);
+        }
+
         public IPageFragment GetParent()
         {
             return null;
@@ -325,7 +335,7 @@ namespace Tellurium.MvcPages
         {
             endpointCoverageReportBuilder?.GenerateEndpointCoverageReport();
             BrowserAdapterContext.Current = null;
-            this.downloaDirectory.Dispose();
+            this.downloadDirectory.Dispose();
             Driver.Close();
             Driver.Quit();
         }
@@ -516,10 +526,10 @@ namespace Tellurium.MvcPages
         void Wait(int seconds);
 
         /// <summary>
-        /// Start obserwing container with given id for contnet change
+        /// Start observing container with given id for content change
         /// </summary>
         /// <param name="containerId">Container id</param>
-        /// <param name="watchSubtree">Set true if changes in subtree shuld also be observed</param>
+        /// <param name="watchSubtree">Set true if changes in subtree should also be observed</param>
         PageFragmentWatcher WatchForContentChange(string containerId, bool watchSubtree=true);
 
         /// <summary>
@@ -527,11 +537,11 @@ namespace Tellurium.MvcPages
         /// </summary>
         /// <param name="elementId">Id of observed element</param>
         /// <param name="action">Action that should have impact on observed element</param>
-        /// <param name="watchSubtree">Set true if changes in subtree shuld also be observed</param>
+        /// <param name="watchSubtree">Set true if changes in subtree should also be observed</param>
         void AffectElementWith(string elementId, Action action, bool watchSubtree=true);
 
         /// <summary>
-        /// Perform action and wait until page will reaload
+        /// Perform action and wait until page will reload
         /// </summary>
         /// <param name="action">Action that should cause page reload</param>
         void ReloadPageWith(Action action);
@@ -571,5 +581,6 @@ namespace Tellurium.MvcPages
         void DownloadFileWith(Action action, Action<string> downloadCallback = null, int downloadTimeoutInSeconds = 60);
 
         WebForm GetForm();
+        void ReplaceContentWith(string elementId,  Action action);
     }
 }
