@@ -1,6 +1,5 @@
 using System;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.BrowserCamera.Lens;
 using Tellurium.MvcPages.SeleniumUtils;
