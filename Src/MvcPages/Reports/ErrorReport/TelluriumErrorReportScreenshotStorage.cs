@@ -1,5 +1,4 @@
 using Tellurium.MvcPages.BrowserCamera.Storage;
-using Tellurium.MvcPages.Utils;
 
 namespace Tellurium.MvcPages.Reports.ErrorReport
 {
