@@ -164,6 +164,11 @@ namespace Tellurium.MvcPages.WebPages
             var h = Math.Min(originalSize.Height, imageScreen.Height-y);
             return new Rectangle(x,y,w,h);
         }
+
+        public void ReplaceContentWith(Action action)
+        {
+            this.AffectWith(action, watchSubtree: false);
+        }
     }
 
     public interface IPageFragment: IWrapsElement, IBrowserCamera
@@ -266,5 +271,7 @@ namespace Tellurium.MvcPages.WebPages
         /// </summary>
         /// <param name="text">Partial text inside element</param>
         IPageFragment GetElementWithPartialText(string text);
+
+        void ReplaceContentWith(Action action);
     }
 }
