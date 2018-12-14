@@ -7,6 +7,8 @@ using OpenQA.Selenium.Remote;
 
 namespace Tellurium.MvcPages.WebPages.WebForms
 {
+    public delegate void FillFormAction<TModel>(MvcWebForm<TModel> form);
+
     /// <summary>
     /// Strongly typed adapter for web form
     /// </summary>
