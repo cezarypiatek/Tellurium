@@ -1,6 +1,5 @@
 ﻿using System;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
 
 namespace Tellurium.MvcPages.WebPages
