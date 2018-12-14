@@ -8,6 +8,8 @@ using Tellurium.MvcPages.WebPages.WebForms.FieldLocators;
 
 namespace Tellurium.MvcPages.WebPages.WebForms
 {
+    public delegate void FillFormAction(WebForm form);
+
     /// <summary>
     /// Weakly typed adapter for web form
     /// </summary>
