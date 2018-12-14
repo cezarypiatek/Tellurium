@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.Utils;
 
@@ -11,7 +10,7 @@ namespace Tellurium.MvcPages.WebPages
     {
         private Dictionary<string, int> columnsMap;
 
-        public WebTable(RemoteWebDriver driver, IWebElement webElement):base(driver, webElement)
+        public WebTable(IBrowserAdapter browserAdapter, IWebElement webElement):base(browserAdapter, webElement)
         {
             this.columnsMap = GetColumnsMap();
         }
@@ -59,7 +58,7 @@ namespace Tellurium.MvcPages.WebPages
 
         protected override WebTableRow MapToItem(IWebElement webElementItem)
         {
-            return new WebTableRow(Driver, webElementItem, columnsMap);
+            return new WebTableRow(this.Browser, webElementItem, columnsMap);
         }
     }
 }

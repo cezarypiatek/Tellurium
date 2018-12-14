@@ -285,24 +285,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
             driver.WaitUntil(PageLoadTimeout, _ => driver.IsPageLoaded());
         }
 
-        internal static WebList GetListWithId(this RemoteWebDriver driver, string id)
-        {
-            var listElement = driver.GetStableAccessibleElementById(id);
-            return new WebList(driver, listElement);
-        }
-
-        internal static WebTree GetTreeWithId(this RemoteWebDriver driver, string id, WebTreeOptions options)
-        {
-            var listElement = driver.GetStableAccessibleElementById(id);
-            return new WebTree(driver, listElement, options);
-        }
-
-        internal static WebTable GetTableWithId(this RemoteWebDriver driver, string id)
-        {
-            var listElement = driver.GetStableAccessibleElementById(id);
-            return new WebTable(driver, listElement);
-        }
-
         internal static IWebElement GetActiveElement(this RemoteWebDriver driver)
         {
             return (IWebElement) driver.ExecuteScript("return document.activeElement;");

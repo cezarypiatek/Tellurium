@@ -11,12 +11,14 @@ namespace Tellurium.MvcPages.WebPages
 {
     public class PageFragment : IPageFragment
     {
+        public IBrowserAdapter Browser { get; }
         protected RemoteWebDriver Driver;
         protected IWebElement WebElement;
 
-        public PageFragment(RemoteWebDriver driver, IWebElement webElement)
+        public PageFragment(IBrowserAdapter browserAdapter, IWebElement webElement)
         {
-            this.Driver = driver;
+            Browser = browserAdapter;
+            this.Driver = browserAdapter.WrappedDriver as RemoteWebDriver;
             this.WebElement = webElement;
         }
 
@@ -59,35 +61,20 @@ namespace Tellurium.MvcPages.WebPages
         {
             Driver.HoverOnElementWithText(WebElement, text, true);
         }
-
-        public WebList GetListWithId(string id)
-        {
-            return Driver.GetListWithId(id);
-        }
-
+        
         public WebList ToWebList()
         {
-            return new WebList(Driver, WebElement);
-        }
-
-        public WebTree GetTreeWithId(string id, WebTreeOptions options = null)
-        {
-            return Driver.GetTreeWithId(id, options);
+            return new WebList(this.Browser, WebElement);
         }
 
         public WebTree ToWebTree(WebTreeOptions options=null)
         {
-            return new WebTree(this.Driver, this.WebElement, options);
+            return new WebTree(this.Browser, this.WebElement, options);
         }
-
-        public WebTable GetTableWithId(string id)
-        {
-            return Driver.GetTableWithId(id);
-        }
-
+      
         public WebTable ToWebTable()
         {
-            return new WebTable(Driver, WebElement);
+            return new WebTable(this.Browser, WebElement);
         }
 
         public string Text => WebElement.Text;
@@ -103,7 +90,7 @@ namespace Tellurium.MvcPages.WebPages
         public IPageFragment GetParent()
         {
             var parent = this.Driver.GetStableElementByInScope(this.WebElement, SeleniumExtensions.ParentSelector);
-            return new PageFragment(this.Driver, parent);
+            return new PageFragment(this.Browser, parent);
         }
 
         public IPageFragment GetElementWithText(string text)
@@ -119,7 +106,7 @@ namespace Tellurium.MvcPages.WebPages
         private IPageFragment FindElementWithText(string text, bool isPartialText)
         {
             var element = this.Driver.GetStableElementWithText(this.WebElement, text, isPartialText);
-            return new PageFragment(this.Driver, element);
+            return new PageFragment(this.Browser, element);
         }
 
         public IWebElement WrappedElement => WebElement;
@@ -206,12 +193,6 @@ namespace Tellurium.MvcPages.WebPages
         /// </summary>
         /// <param name="text">Partial text inside element</param>
         void HoverOnElementWithPartialText(string text);
-        
-        /// <summary>
-        /// Find list like structure with given Id
-        /// </summary>
-        /// <param name="id">Value of id attribute</param>
-        WebList GetListWithId(string id);
 
         /// <summary>
         /// Convert current element to <see cref="WebList"/> wrapper
@@ -219,24 +200,10 @@ namespace Tellurium.MvcPages.WebPages
         WebList ToWebList();
 
         /// <summary>
-        /// Find tree like structure with given Id
-        /// </summary>
-        /// <param name="id">Value of id attribute</param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        WebTree GetTreeWithId(string id, WebTreeOptions options = null);
-
-        /// <summary>
         /// Convert current element to <see cref="WebTree"/> wrapper
         /// </summary>
         /// <param name="options"></param>
         WebTree ToWebTree(WebTreeOptions options=null);
-
-        /// <summary>
-        /// Find table like structure with given Id
-        /// </summary>
-        /// <param name="id">Value of id attribute</param>
-        WebTable GetTableWithId(string id);
 
         /// <summary>
         /// Convert current element to <see cref="WebTable"/> wrapper
@@ -247,7 +214,9 @@ namespace Tellurium.MvcPages.WebPages
         /// Returns value of <see cref="IWebElement.Text"/> of underlying element
         /// </summary>
         string Text { get; }
-        
+
+        IBrowserAdapter Browser { get; }
+
         /// <summary>
         /// Perform given action and wait until current element changes
         /// </summary>

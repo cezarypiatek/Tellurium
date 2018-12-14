@@ -13,8 +13,8 @@ namespace Tellurium.MvcPages.WebPages
         private readonly By itemsContainerLocator;
 
 
-        public WebTree(RemoteWebDriver driver, IWebElement webElement, WebTreeOptions customOptions=null) 
-            : base(driver, webElement)
+        public WebTree(IBrowserAdapter browserAdapter, IWebElement webElement, WebTreeOptions customOptions=null) 
+            : base(browserAdapter, webElement)
         {
             var options = customOptions ?? new WebTreeOptions();
             this.expanderLocator = options.GetEffectiveExpanderLocator();
@@ -34,7 +34,7 @@ namespace Tellurium.MvcPages.WebPages
 
         protected override WebTree MapToItem(IWebElement webElementItem)
         {
-            return new WebTree(this.Driver, webElementItem, new WebTreeOptions
+            return new WebTree(this.Browser, webElementItem, new WebTreeOptions
             {
                 IsSelfItemsContainer = false, 
                 ItemsContainerLocator = this.itemsContainerLocator, 
