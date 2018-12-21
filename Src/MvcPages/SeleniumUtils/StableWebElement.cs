@@ -83,7 +83,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return element;
         }
 
-        private T Execute<T>(Func<T> function)
+        internal T Execute<T>(Func<T> function)
         {
             T result = default (T);
             Execute(() => { result = function(); });
@@ -208,7 +208,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             var typed = element as TInterface;
             if (typed == null)
             {
-                var errorMessage = $"Underlying element does not support this opperation. It should implement {typeof(TInterface).FullName} interface";
+                var errorMessage = $"Underlying element does not support this operation. It should implement {typeof(TInterface).FullName} interface";
                 throw new NotSupportedException(errorMessage);
             }
             return typed;
