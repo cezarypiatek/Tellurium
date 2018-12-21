@@ -112,9 +112,9 @@ namespace Tellurium.MvcPages.SeleniumUtils
         }
 
 
-        private static bool IsElementInteractable(this RemoteWebDriver driver, IWebElement element)
+        private static bool IsElementInteractable(RemoteWebDriver driver, IWebElement element)
         {
-            //INFO: There is a few case when the mouse click can ommit actual element
+            //INFO: There is a few case when the mouse click can omit actual element
             // 1) Element has rounded corners
             // 2) In inline-element space between lines is not clickable
             // 3) Given element has child elements
@@ -241,7 +241,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 }
                 try
                 {
-                    driver.WaitUntil(SeleniumFinderExtensions.SearchElementDefaultTimeout, (d) => driver.IsElementInteractable(expectedElement));
+                    driver.WaitUntil(SeleniumFinderExtensions.SearchElementDefaultTimeout, (d) => IsStableElementInteractable(driver, expectedElement));
                 }
                 catch (WebDriverTimeoutException)
                 {
@@ -254,6 +254,15 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     driver.ScrollToY(originalScrollPosition.Value);
                 }
             }
+        }
+
+        private static bool IsStableElementInteractable(RemoteWebDriver driver, IWebElement expectedElement)
+        {
+            if (expectedElement is StableWebElement stableElement)
+            {
+                return stableElement.Execute(()=> IsElementInteractable(driver, expectedElement));
+            }
+            return IsElementInteractable(driver, expectedElement);
         }
 
         public static void HoverOn(this RemoteWebDriver driver, IWebElement elementToHover)
