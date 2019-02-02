@@ -66,7 +66,9 @@ namespace Tellurium.VisualAssertion.Dashboard.Mvc.TagHelpers
 
         private static string GetControllerName(TagHelperContext context)
         {
-            return context.AllAttributes["asp-controller"].Value.ToString();
+            if(context.AllAttributes.ContainsName("asp-controller"))
+                return context.AllAttributes["asp-controller"].Value.ToString();
+            return string.Empty;
         }
 
         private string GetCurrentActionName()
