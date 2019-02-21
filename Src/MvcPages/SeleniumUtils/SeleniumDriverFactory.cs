@@ -145,6 +145,9 @@ namespace Tellurium.MvcPages.SeleniumUtils
             {
                 Profile = new FirefoxProfile {DeleteAfterUse = true}
             };
+
+            firefoxGeckoOptions.AddAdditionalCapability("acceptInsecureCerts", true, true);
+
             firefoxGeckoOptions.Profile.EnableFileDownloading(this.config.DownloadDirPath, config.AllowedMimeTypes);
             return firefoxGeckoOptions;
         }
@@ -163,6 +166,9 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 Profile = new FirefoxProfile {DeleteAfterUse = true},
                 UseLegacyImplementation = true
             };
+
+            firefoxOptions.AddAdditionalCapability("acceptInsecureCerts", true, true);
+
             firefoxOptions.Profile.EnableFileDownloading(this.config.DownloadDirPath, this.config.AllowedMimeTypes);
             return firefoxOptions;
         }
