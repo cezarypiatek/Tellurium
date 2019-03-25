@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using NHibernate.Linq;
 
 namespace Tellurium.VisualAssertions.Infrastructure.Persistence
 {

@@ -5,7 +5,7 @@ using Tellurium.VisualAssertions.Infrastructure;
 
 namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase.Queries
 {
-    public class FindTestCasesFromCategory:IQueryAll<Tellurium.VisualAssertions.Screenshots.Domain.TestCase>
+    public class FindTestCasesFromCategory:IQueryAll<VisualAssertions.Screenshots.Domain.TestCase>
     {
         private readonly long categoryId;
 
@@ -14,7 +14,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase.Queries
             this.categoryId = categoryId;
         }
 
-        public List<Tellurium.VisualAssertions.Screenshots.Domain.TestCase> GetQuery(IQueryable<Tellurium.VisualAssertions.Screenshots.Domain.TestCase> query)
+        public List<VisualAssertions.Screenshots.Domain.TestCase> GetQuery(IQueryable<VisualAssertions.Screenshots.Domain.TestCase> query)
         {
             return query.Where(x => x.Category.Id == categoryId)
                 .FetchMany(x=>x.Patterns)
