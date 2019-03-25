@@ -80,7 +80,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
-    <PackageReference Include="NHibernate" Version="4.1.1.4000" />
+    <PackageReference Include="NHibernate" Version="5.2.4" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.0.0" />
     <PackageReference Include="Topshelf" Version="4.0.3" />
   </ItemGroup>
