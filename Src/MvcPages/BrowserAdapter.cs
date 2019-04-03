@@ -258,32 +258,32 @@ namespace Tellurium.MvcPages
             return Driver.WatchForContentChanges(containerId, watchSubtree);
         }
 
-        public void AffectElementWith(string elementId, Action action, bool watchSubtree=true)
+        public void AffectElementWith(string elementId, Action action, bool watchSubtree=true, int timeOut = 30)
         {
             var watcher = WatchForContentChange(elementId, watchSubtree);
             action();
-            watcher.WaitForChange();
+            watcher.WaitForChange(timeOut);
         }
 
         public IBrowserAdapter Browser => this;
 
-        public void AffectWith(Action action, bool watchSubtree=true)
+        public void AffectWith(Action action, bool watchSubtree=true, int timeOut = 30)
         {
             var body = GetPageBody();
             var watcher = new PageFragmentWatcher(Driver, body);
             watcher.StartWatching(watchSubtree);
             action();
-            watcher.WaitForChange();
+            watcher.WaitForChange(timeOut);
         }
 
-        public void ReplaceContentWith(string elementId,  Action action)
+        public void ReplaceContentWith(string elementId,  Action action, int timeOut = 30)
         {
-            this.AffectElementWith(elementId, action, watchSubtree: false);
+            this.AffectElementWith(elementId, action, watchSubtree: false, timeOut);
         }
 
-        public void ReplaceContentWith(Action action)
+        public void ReplaceContentWith(Action action, int timeOut = 30)
         {
-           this.AffectWith(action, watchSubtree: false);
+           this.AffectWith(action, watchSubtree: false, timeOut);
         }
 
         public IPageFragment GetParent()
@@ -543,7 +543,8 @@ namespace Tellurium.MvcPages
         /// <param name="elementId">Id of observed element</param>
         /// <param name="action">Action that should have impact on observed element</param>
         /// <param name="watchSubtree">Set true if changes in subtree should also be observed</param>
-        void AffectElementWith(string elementId, Action action, bool watchSubtree=true);
+        /// <param name="timeOut">Max time in seconds to wait</param>
+        void AffectElementWith(string elementId, Action action, bool watchSubtree=true, int timeOut = 30);
 
         /// <summary>
         /// Perform action and wait until page will reload
@@ -586,7 +587,7 @@ namespace Tellurium.MvcPages
         void DownloadFileWith(Action action, Action<string> downloadCallback = null, int downloadTimeoutInSeconds = 60);
 
         WebForm GetForm();
-        void ReplaceContentWith(string elementId,  Action action);
+        void ReplaceContentWith(string elementId,  Action action, int timeOut = 30);
 
         /// <summary>
         /// Find list like structure with given Id
