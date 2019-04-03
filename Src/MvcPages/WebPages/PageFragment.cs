@@ -79,12 +79,12 @@ namespace Tellurium.MvcPages.WebPages
 
         public string Text => WebElement.Text;
 
-        public void AffectWith(Action action, bool watchSubtree=true)
+        public void AffectWith(Action action, bool watchSubtree=true, int timeOut = 30)
         {
             var watcher = new PageFragmentWatcher(Driver, WebElement);
             watcher.StartWatching(watchSubtree);
             action();
-            watcher.WaitForChange();
+            watcher.WaitForChange(timeOut);
         }
 
         public IPageFragment GetParent()
@@ -152,9 +152,9 @@ namespace Tellurium.MvcPages.WebPages
             return new Rectangle(x,y,w,h);
         }
 
-        public void ReplaceContentWith(Action action)
+        public void ReplaceContentWith(Action action, int timeOut = 30)
         {
-            this.AffectWith(action, watchSubtree: false);
+            this.AffectWith(action, watchSubtree: false, timeOut);
         }
     }
 
@@ -222,7 +222,8 @@ namespace Tellurium.MvcPages.WebPages
         /// </summary>
         /// <param name="action">Action to perform</param>
         /// <param name="watchSubtree">Set true if changes in subtree shuld also be observed</param>
-        void AffectWith(Action action, bool watchSubtree=true);
+        /// <param name="timeOut">Max time in seconds to wait</param>
+        void AffectWith(Action action, bool watchSubtree=true, int timeOut = 30);
 
         /// <summary>
         /// Get parent of current element
@@ -241,6 +242,6 @@ namespace Tellurium.MvcPages.WebPages
         /// <param name="text">Partial text inside element</param>
         IPageFragment GetElementWithPartialText(string text);
 
-        void ReplaceContentWith(Action action);
+        void ReplaceContentWith(Action action, int timeOut = 30);
     }
 }
