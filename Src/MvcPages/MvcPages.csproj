@@ -133,6 +133,7 @@
     <Compile Include="Utils\ImageExtensions.cs" />
     <Compile Include="Utils\RetryHelper.cs" />
     <Compile Include="Utils\TemporaryDirectory.cs" />
+    <Compile Include="Utils\Timeouts.cs" />
     <Compile Include="Utils\XPathHelpers.cs" />
     <Compile Include="WebPages\EmptyWebElementCollectionException.cs" />
     <Compile Include="WebPages\Navigator.cs">
