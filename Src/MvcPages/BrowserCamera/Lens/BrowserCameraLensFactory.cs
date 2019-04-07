@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenQA.Selenium.Remote;
+using Tellurium.MvcPages.SeleniumUtils;
 
 namespace Tellurium.MvcPages.BrowserCamera.Lens
 {
@@ -42,7 +43,7 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
 
         private static bool IsHeadlessFirefox(RemoteWebDriver webDriver)
         {
-            return webDriver.Capabilities.BrowserName == "firefox" && (bool?) webDriver.Capabilities.GetCapability("moz:headless") == true;
+            return webDriver.Capabilities.GetBrowserName() == "firefox" && (bool?) webDriver.Capabilities.GetCapability("moz:headless") == true;
         }
     }
 

@@ -394,6 +394,7 @@ function Install-OperaDriver {
 }
 function Get-FirefoxDriverAvailableFiles {
     param([string]$Platform)
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
     $relases = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/mozilla/geckodriver/releases
     foreach ($release in $relases) {
         $version = $release.name
@@ -527,4 +528,4 @@ function Restore-SeleniumWebDriver{
            Install-SeleniumWebDriver -Browser $_.browser -Platform $_.platform -Version $_.version -OutputDir $_.driverOutputPath
          }
 }
-Export-ModuleMember -Function Install-SeleniumWebDriver, Get-SeleniumWebDriverVersions, Restore-SeleniumWebDriver
+#Export-ModuleMember -Function Install-SeleniumWebDriver, Get-SeleniumWebDriverVersions, Restore-SeleniumWebDriver

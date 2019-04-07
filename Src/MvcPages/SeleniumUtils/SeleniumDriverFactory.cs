@@ -5,7 +5,6 @@ using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Opera;
-using OpenQA.Selenium.PhantomJS;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Safari;
 using Tellurium.MvcPages.Configuration;
@@ -67,9 +66,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     var safariOptions = CreateSafariOptions();
                     var safariService = SafariDriverService.CreateDefaultService(this.config.SeleniumDriversPath);
                     return new SafariDriver(safariService, safariOptions);
-                case BrowserType.Phantom:
-                    var phantomJsOptions = CreatePhantomJsOptions();
-                    return new PhantomJSDriver(this.config.SeleniumDriversPath, phantomJsOptions);
                 case BrowserType.Edge:
                     var edgeOptions = CreateEdgeOptions();
                     return new EdgeDriver(this.config.SeleniumDriversPath, edgeOptions);
@@ -91,11 +87,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
         private static EdgeOptions CreateEdgeOptions()
         {
             return new EdgeOptions();
-        }
-
-        private static PhantomJSOptions CreatePhantomJsOptions()
-        {
-            return new PhantomJSOptions();
         }
 
         private static SafariOptions CreateSafariOptions()
@@ -193,8 +184,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return CreateOperaHeadlessOptions();
                 case BrowserType.Safari:
                     return CreateSafariOptions();
-                case BrowserType.Phantom:
-                    return CreatePhantomJsOptions();
                 case BrowserType.Edge:
                     return CreateEdgeOptions();
                 case BrowserType.ChromeHeadless:
@@ -208,15 +197,15 @@ namespace Tellurium.MvcPages.SeleniumUtils
     public enum BrowserType
     {
         Firefox = 1,
-        FirefoxGecko,
-        FirefoxGeckoHeadless,
-        Chrome,
-        ChromeHeadless,
-        InternetExplorer,
-        Opera,
-        OperaHeadless,
-        Safari,
-        Phantom,
-        Edge
+        FirefoxGecko=2,
+        FirefoxGeckoHeadless=3,
+        Chrome=4,
+        ChromeHeadless=5,
+        InternetExplorer=6,
+        Opera=7,
+        OperaHeadless=8,
+        Safari=9,
+
+        Edge=11
     }
 }

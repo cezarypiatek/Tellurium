@@ -12,7 +12,7 @@ namespace Tellurium.MvcPages.SeleniumUtils.ChromeRemoteInterface
     {
         public static bool IsSupported(RemoteWebDriver driver)
         {
-            return driver.Capabilities.BrowserName.Equals("chrome", StringComparison.InvariantCultureIgnoreCase);
+            return driver.Capabilities.GetBrowserName().Equals("chrome", StringComparison.InvariantCultureIgnoreCase);
         }
 
         private readonly RemoteWebDriver driver;
