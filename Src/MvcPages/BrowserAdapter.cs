@@ -160,7 +160,7 @@ namespace Tellurium.MvcPages
             }
         }
 
-        public void DownloadFileWith(Action action, Action<string> downloadCallback = null, int downloadTimeoutInSeconds = 60)
+        public void DownloadFileWith(Action action, Action<string> downloadCallback = null, int downloadTimeoutInSeconds = Timeouts.DefaultPageLoad)
         {
             if (ChromeRemoteInterface.IsSupported(this.Driver))
             {
@@ -243,7 +243,7 @@ namespace Tellurium.MvcPages
             this.navigator.RefreshPage();
         }
         
-        public void WaitForElementWithId(string elementId, int timeOut = 30)
+        public void WaitForElementWithId(string elementId, int timeOut = Timeouts.DefaultChangeExpectation)
         {
             Driver.GetStableAccessibleElementById(elementId, timeOut);
         }
@@ -258,7 +258,7 @@ namespace Tellurium.MvcPages
             return Driver.WatchForContentChanges(containerId, watchSubtree);
         }
 
-        public void AffectElementWith(string elementId, Action action, bool watchSubtree=true, int timeOut = 30)
+        public void AffectElementWith(string elementId, Action action, bool watchSubtree=true, int timeOut = Timeouts.DefaultChangeExpectation)
         {
             var watcher = WatchForContentChange(elementId, watchSubtree);
             action();
@@ -267,7 +267,7 @@ namespace Tellurium.MvcPages
 
         public IBrowserAdapter Browser => this;
 
-        public void AffectWith(Action action, bool watchSubtree=true, int timeOut = 30)
+        public void AffectWith(Action action, bool watchSubtree=true, int timeOut = Timeouts.DefaultChangeExpectation)
         {
             var body = GetPageBody();
             var watcher = new PageFragmentWatcher(Driver, body);
@@ -276,14 +276,14 @@ namespace Tellurium.MvcPages
             watcher.WaitForChange(timeOut);
         }
 
-        public void ReplaceContentWith(string elementId,  Action action, int timeOut = 30)
+        public void ReplaceContentWith(string elementId,  Action action, int timeOut = Timeouts.DefaultChangeExpectation)
         {
-            this.AffectElementWith(elementId, action, watchSubtree: false, timeOut);
+            this.AffectElementWith(elementId, action, watchSubtree: false, timeOut: timeOut);
         }
 
-        public void ReplaceContentWith(Action action, int timeOut = 30)
+        public void ReplaceContentWith(Action action, int timeOut = Timeouts.DefaultChangeExpectation)
         {
-           this.AffectWith(action, watchSubtree: false, timeOut);
+           this.AffectWith(action, watchSubtree: false, timeOut: timeOut);
         }
 
         public IPageFragment GetParent()
@@ -508,7 +508,7 @@ namespace Tellurium.MvcPages
         /// </summary>
         /// <param name="elementId">Id of expected element</param>
         /// <param name="timeOut">Max time in seconds to wait</param>
-        void WaitForElementWithId(string elementId, int timeOut = 30);
+        void WaitForElementWithId(string elementId, int timeOut = Timeouts.DefaultChangeExpectation);
 
         /// <summary>
         /// Navigate to page represented by given controller's action
@@ -544,7 +544,7 @@ namespace Tellurium.MvcPages
         /// <param name="action">Action that should have impact on observed element</param>
         /// <param name="watchSubtree">Set true if changes in subtree should also be observed</param>
         /// <param name="timeOut">Max time in seconds to wait</param>
-        void AffectElementWith(string elementId, Action action, bool watchSubtree=true, int timeOut = 30);
+        void AffectElementWith(string elementId, Action action, bool watchSubtree=true, int timeOut = Timeouts.DefaultChangeExpectation);
 
         /// <summary>
         /// Perform action and wait until page will reload
@@ -584,10 +584,10 @@ namespace Tellurium.MvcPages
         /// <param name="action">Action that should initiate downloading</param>
         /// <param name="downloadCallback">Action to invoke when finish downloading. Action parameter is a path to downloaded file,</param>
         /// <param name="downloadTimeoutInSeconds"></param>
-        void DownloadFileWith(Action action, Action<string> downloadCallback = null, int downloadTimeoutInSeconds = 60);
+        void DownloadFileWith(Action action, Action<string> downloadCallback = null, int downloadTimeoutInSeconds = Timeouts.DefaultPageLoad);
 
         WebForm GetForm();
-        void ReplaceContentWith(string elementId,  Action action, int timeOut = 30);
+        void ReplaceContentWith(string elementId,  Action action, int timeOut = Timeouts.DefaultChangeExpectation);
 
         /// <summary>
         /// Find list like structure with given Id
