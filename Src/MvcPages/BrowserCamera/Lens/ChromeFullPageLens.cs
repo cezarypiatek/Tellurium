@@ -23,9 +23,9 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
 
         public static bool IsSupported(RemoteWebDriver driver)
         {
-            if (Version.TryParse(driver.Capabilities.Version, out var version))
+            if (Version.TryParse(driver.Capabilities.GetVersion(), out var version))
             {
-                return string.Equals(driver.Capabilities.BrowserName, "chrome", StringComparison.OrdinalIgnoreCase) && version.Major >= 59;
+                return string.Equals(driver.Capabilities.GetBrowserName(), "chrome", StringComparison.OrdinalIgnoreCase) && version.Major >= 59;
             }
             return false;
         }

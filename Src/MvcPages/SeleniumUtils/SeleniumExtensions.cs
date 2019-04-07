@@ -310,5 +310,26 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             return  ((IWrapsDriver)webElement).WrappedDriver as RemoteWebDriver;
         }
+
+
+        internal static string GetBrowserName(this ICapabilities capabilities)
+        {
+            return GetSaveCapability(capabilities, "browserName");
+        }
+
+        private static string GetSaveCapability(ICapabilities capabilities, string browsername)
+        {
+            if (capabilities.HasCapability(browsername))
+            {
+                return capabilities.GetCapability(browsername)?.ToString() ?? string.Empty;
+            }
+
+            return string.Empty;
+        }
+
+        internal static string GetVersion(this ICapabilities capabilities)
+        {
+            return GetSaveCapability(capabilities, "version");
+        }
     }
 }
