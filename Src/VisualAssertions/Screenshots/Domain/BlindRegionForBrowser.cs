@@ -3,7 +3,7 @@ using Tellurium.VisualAssertions.Infrastructure;
 
 namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
-    public class BlindRegionForBrowser:Entity
+    public class BlindRegionForBrowser : Entity
     {
         public virtual IList<BlindRegion> BlindRegions { get; set; }
         public virtual string BrowserName { get; set; }

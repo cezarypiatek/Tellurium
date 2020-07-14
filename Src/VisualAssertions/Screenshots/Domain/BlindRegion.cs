@@ -6,7 +6,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
     /// <summary>
     /// Represents regions ignored by <see cref="BrowserCamera"/> when comparing images
     /// </summary>
-    public class BlindRegion:Entity
+    public class BlindRegion : Entity
     {
         public virtual float Left { get; set; }
         public virtual float Top { get; set; }

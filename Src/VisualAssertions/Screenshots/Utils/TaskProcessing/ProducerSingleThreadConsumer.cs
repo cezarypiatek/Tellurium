@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing
 {
-    internal class ProducerSingleThreadConsumer<T>:IDisposable
+    internal class ProducerSingleThreadConsumer<T> : IDisposable
     {
         readonly BlockingCollection<T> dataToProcess = new BlockingCollection<T>();
         

@@ -13,16 +13,16 @@ namespace Tellurium.VisualAssertion.Dashboard.Mvc.Utils
         public static RouteValueDictionary GetRouteValuesFromExpression<TController>(Expression<Action<TController>> action) where TController : Controller
         {
             if (action == null)
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             MethodCallExpression body = action.Body as MethodCallExpression;
             if (body == null)
-                throw new ArgumentException("Expression must be a method call", "action");
+                throw new ArgumentException("Expression must be a method call", nameof(action));
             string name = typeof(TController).Name;
             if (!name.EndsWith("Controller", StringComparison.OrdinalIgnoreCase))
-                throw new ArgumentException("Target object must end with 'Controller'", "action");
+                throw new ArgumentException("Target object must end with 'Controller'", nameof(action));
             string str = name.Substring(0, name.Length - "Controller".Length);
             if (str.Length == 0)
-                throw new ArgumentException("Invalid controller name", "action");
+                throw new ArgumentException("Invalid controller name", nameof(action));
             string targetActionName = GetTargetActionName(body.Method);
             RouteValueDictionary rvd = new RouteValueDictionary();
             rvd.Add("Controller", (object)str);
@@ -66,7 +66,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Mvc.Utils
         {
             if (arg == null)
             {
-                throw new ArgumentNullException("arg");
+                throw new ArgumentNullException(nameof(arg));
             }
 
             Func<object, object> func = Wrap(arg);

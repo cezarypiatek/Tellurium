@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.IO;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;

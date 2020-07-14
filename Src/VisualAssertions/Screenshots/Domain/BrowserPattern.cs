@@ -5,7 +5,7 @@ using Tellurium.VisualAssertions.Infrastructure;
 
 namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
-    public class BrowserPattern:Entity
+    public class BrowserPattern : Entity
     {
         public virtual string BrowserName { get; set; }
         public virtual IList<BlindRegion> BlindRegions { get; set; }

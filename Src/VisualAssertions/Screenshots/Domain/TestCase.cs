@@ -5,7 +5,7 @@ using Tellurium.VisualAssertions.Infrastructure;
 
 namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
-    public class TestCase:Entity
+    public class TestCase : Entity
     {
         public virtual string PatternScreenshotName { get; set; }
         public virtual TestCaseCategory Category { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing
 {
-    public class AsynchronousTaskProcessor<T>: ITaskProcessor<T>
+    public class AsynchronousTaskProcessor<T> : ITaskProcessor<T>
     {
         private ProducerSingleThreadConsumer<T> producerConsumer;
 
