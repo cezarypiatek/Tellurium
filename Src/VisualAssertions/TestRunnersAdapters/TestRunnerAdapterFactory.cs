@@ -1,8 +1,7 @@
 ﻿using System;
+using Tellurium.VisualAssertions.TestRunnersAdapters.Providers;
 
-using Tellurium.VisualAssertions.TestRunersAdapters.Providers;
-
-namespace Tellurium.VisualAssertions.TestRunersAdapters
+namespace Tellurium.VisualAssertions.TestRunnersAdapters
 {
     internal static class TestRunnerAdapterFactory
     {
