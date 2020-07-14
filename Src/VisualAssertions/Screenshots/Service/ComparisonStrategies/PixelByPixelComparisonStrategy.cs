@@ -27,6 +27,9 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
             var percentOfUnmatchedPixels = (double) numberOfUnmatchedPixels / pattern.Length / numberOfChannels;
             var areMatched = numberOfUnmatchedPixels < ComparisonParameters.PixelToleranceCount && percentOfUnmatchedPixels < ComparisonParameters.MaxPercentOfUnmatchedPixels;
 
+            resultMessage = $"\r\n+---Pattern size: {pattern.Length} bytes" +
+                            $"\r\n+---Screenshot size: {screenshot.Length} bytes" +
+                            $"\r\n+---Unmatched pixels: {numberOfUnmatchedPixels}/{pattern.Length / numberOfChannels} {percentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}%";
 
             return areMatched;
         }
@@ -45,13 +48,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
                 var green = k + 2;
                 var blue = k + 3;
 
-                var colorDifference = Math.Abs(imageA[alpha] - imageB[alpha]) +
-                                      Math.Abs(imageA[red] - imageB[red]) +
-                                      Math.Abs(imageA[green] - imageB[green]) +
-                                      Math.Abs(imageA[blue] - imageB[blue]);
-
-                if (colorDifference > ComparisonParameters.PixelColorToleranceCount || 
-                    imageA[alpha] != imageB[alpha] ||
+                if (imageA[alpha] != imageB[alpha] ||
                     imageA[red] != imageB[red] ||
                     imageA[green] != imageB[green] ||
                     imageA[blue] != imageB[blue])
