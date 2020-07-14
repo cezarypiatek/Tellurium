@@ -2,7 +2,7 @@
 using Tellurium.MvcPages.Utils;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
+namespace Tellurium.VisualAssertions.TestRunnersAdapters.Providers
 {
     public class ConsoleTestRunnerAdapter : ITestRunnerAdapter
     {
@@ -13,17 +13,19 @@ namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
             this.testOutputWriter = testOutputWriter;
         }
 
-        public void NotifyAboutTestSuccess(string testName, TestSession session, BrowserPattern pattern)
+        public void NotifyAboutTestSuccess(string testName, TestSession session, BrowserPattern pattern,
+            string testResultMessage)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            testOutputWriter($"Test passed: {testName}");
+            testOutputWriter($"Test passed: {testName} {testResultMessage}");
             Console.ResetColor();
         }
 
-        public void NotifyAboutTestFail(string testName, TestSession session, BrowserPattern pattern)
+        public void NotifyAboutTestFail(string testName, TestSession session, BrowserPattern pattern,
+            string testResultMessage)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            testOutputWriter($"Test failed: {testName}");
+            testOutputWriter($"Test failed: {testName} {testResultMessage}");
             Console.ResetColor();
         }
 

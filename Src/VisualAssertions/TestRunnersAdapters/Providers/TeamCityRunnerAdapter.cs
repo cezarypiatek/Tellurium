@@ -5,7 +5,7 @@ using JetBrains.TeamCity.ServiceMessages.Write.Special;
 using Tellurium.MvcPages.Utils;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 
-namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
+namespace Tellurium.VisualAssertions.TestRunnersAdapters.Providers
 {
     internal class TeamCityRunnerAdapter : ITestRunnerAdapter
     {
@@ -13,9 +13,9 @@ namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
         private const string VisualAssertionWebPathVariableName = "Tellurium_VisualAssertions_Web";
         private readonly ITeamCityWriter serviceMessage;
 
-        public TeamCityRunnerAdapter(Action<string> testOuputWriter)
+        public TeamCityRunnerAdapter(Action<string> testOutputWriter)
         {
-            serviceMessage = new TeamCityServiceMessages().CreateWriter(testOuputWriter);
+            serviceMessage = new TeamCityServiceMessages().CreateWriter(testOutputWriter);
         }
 
         public static bool IsAvailable()
@@ -23,20 +23,22 @@ namespace Tellurium.VisualAssertions.TestRunersAdapters.Providers
             return Environment.GetEnvironmentVariable(TeamcityVariableName) != null;
         }
 
-        public void NotifyAboutTestSuccess(string testName, TestSession session, BrowserPattern pattern)
+        public void NotifyAboutTestSuccess(string testName, TestSession session, BrowserPattern pattern,
+            string testResultMessage)
         {
             var escapedTestName = ServiceMessageReplacements.Encode(testName);
-            var testWriter =  serviceMessage.OpenTest(escapedTestName);
+            var testWriter = serviceMessage.OpenTest(escapedTestName);
             testWriter.Dispose();
             UploadReportTabToCI(session, pattern.BrowserName);
         }
 
-        public void NotifyAboutTestFail(string testName, TestSession session, BrowserPattern pattern)
+        public void NotifyAboutTestFail(string testName, TestSession session, BrowserPattern pattern,
+            string testResultMessage)
         {
             var escapedTestName = ServiceMessageReplacements.Encode(testName);
             var detailsMessage = GetDetailsMessage(session, pattern);
             var testWriter = serviceMessage.OpenTest(escapedTestName);
-            testWriter.WriteFailed("Screenshots are different", detailsMessage);
+            testWriter.WriteFailed($"Screenshots are different {testResultMessage}", detailsMessage);
             testWriter.Dispose();
             UploadReportTabToCI(session, pattern.BrowserName);
         }
