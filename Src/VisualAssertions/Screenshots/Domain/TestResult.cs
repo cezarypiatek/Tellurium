@@ -3,7 +3,7 @@ using Tellurium.VisualAssertions.Infrastructure;
 
 namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
-    public class TestResult: Entity
+    public class TestResult : Entity
     {
         public virtual string ScreenshotName { get; set; }
         public virtual string Category { get; set; }

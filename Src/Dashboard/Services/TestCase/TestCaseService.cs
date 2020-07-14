@@ -89,7 +89,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestCase
                 BlindRegions = bp.GetAllBlindRegions()
             }).AsParallel().ForAll(bp =>
             {
-                bp.Screenshot.UpdateTestCaseHash(bp.BlindRegions);
+                bp.Screenshot.UpdateHash(bp.BlindRegions);
             });
         }
 

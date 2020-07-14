@@ -8,19 +8,12 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
     {
         public virtual string Name { get; set; }
         public virtual Project Project { get; set; }
-        public virtual IList<TestCase> TestCases { get; set; }
-        public virtual IList<BlindRegionForBrowser> CategoryBlindRegionsForBrowsers { get; set; }
-
-
-        public TestCaseCategory()
-        {
-            TestCases = new List<TestCase>();
-            CategoryBlindRegionsForBrowsers = new List<BlindRegionForBrowser>();
-        }
+        public virtual IList<TestCase> TestCases { get; set; } = new List<TestCase>();
+        public virtual IList<BlindRegionForBrowser> CategoryBlindRegionsForBrowsers { get; set; } = new List<BlindRegionForBrowser>();
 
         public virtual TestCase AddTestCase(string testCaseName)
         {
-            var newTestCase = new TestCase
+            var newTestCase = new TestCase()
             {
                 PatternScreenshotName = testCaseName,
                 Category = this,

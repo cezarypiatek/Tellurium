@@ -5,13 +5,12 @@ using Tellurium.VisualAssertions.Infrastructure;
 
 namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
-    public class Project:Entity, IBlindRegionForBrowserOwner
+    public class Project : Entity, IBlindRegionForBrowserOwner
     {
         public virtual string Name { get; set; }
         public virtual IList<TestSession> Sessions { get; set; }
         public virtual IList<BlindRegionForBrowser> GlobalBlindRegionsForBrowsers { get; set; }
         public virtual IList<TestCaseCategory> TestCaseCategories { get; set; }
-
 
         public Project()
         {

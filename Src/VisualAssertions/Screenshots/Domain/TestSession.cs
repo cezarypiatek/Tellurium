@@ -4,7 +4,7 @@ using Tellurium.VisualAssertions.Infrastructure;
 
 namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
-    public class TestSession:Entity
+    public class TestSession : Entity
     {
         public virtual DateTime StartDate { get; set; }
         public virtual IList<TestResult> TestResults { get; set; }

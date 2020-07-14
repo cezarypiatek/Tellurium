@@ -24,8 +24,8 @@ namespace Tellurium.MvcPages.EndpointCoverage
             var coveragedEndpoints = availableEndpoints.Intersect(visitedEndpoints).ToList();
             var uncoverageEndpoints = availableEndpoints.Except(visitedEndpoints).ToList();
             Console.WriteLine($"Endpoints coverage: {coveragedEndpoints.Count()}/{availableEndpoints.Count}");
-            PrintoutEndpointsList("Coveraged endpoints", coveragedEndpoints);
-            PrintoutEndpointsList("Uncoveraged endpoints", uncoverageEndpoints);
+            PrintoutEndpointsList("Covered endpoints", coveragedEndpoints);
+            PrintoutEndpointsList("Uncovered endpoints", uncoverageEndpoints);
         }
 
         private void PrintoutEndpointsList(string label, IReadOnlyList<string> endpoints)
