@@ -5,11 +5,11 @@ using Tellurium.VisualAssertions.Infrastructure;
 
 namespace Tellurium.VisualAssertions.Screenshots.Domain
 {
-    public class TestCase:Entity
+    public class TestCase : Entity
     {
         public virtual string PatternScreenshotName { get; set; }
         public virtual TestCaseCategory Category { get; set; }
-        public virtual IList<BrowserPattern> Patterns { get; set; }
+        public virtual IList<BrowserPattern> Patterns { get; set; } = new List<BrowserPattern>();
         public virtual Project Project { get; set; }
 
         public virtual BrowserPattern AddNewPattern(byte[] screenshot, string browserName, IList<BlindRegion> blindRegions =null)
@@ -36,12 +36,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
 
         public virtual List<BrowserPattern> GetActivePatterns()
         {
-            return this.Patterns.Where(x=>x.IsActive).ToList();
-        }
-
-        public TestCase()
-        {
-            Patterns = new List<BrowserPattern>();
+            return this.Patterns.Where(x => x.IsActive).ToList();
         }
 
         public virtual BrowserPattern GetActivePatternForBrowser(string browserName)
@@ -49,16 +44,16 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
             var activePatterns = Patterns.Where(x => x.BrowserName == browserName && x.IsActive).ToList();
             if (activePatterns.Count > 1)
             {
-                throw new DuplicatedActivePattern(Project.Name, Category.Name, PatternScreenshotName, browserName);
+                throw new DuplicatedActivePatternException(Project.Name, Category.Name, PatternScreenshotName, browserName);
             }
             return activePatterns.FirstOrDefault();
         }
     }
 
-    public class DuplicatedActivePattern:ApplicationException
+    public class DuplicatedActivePatternException : ApplicationException
     {
-        public DuplicatedActivePattern(string project, string category, string test, string browser) 
-            : base($"Duplicated active patter {project} / {category} / {test} for browser {browser}")
+        public DuplicatedActivePatternException(string project, string category, string test, string browser) 
+            : base($"Duplicated active pattern {project} / {category} / {test} for browser {browser}")
         {
         }
     }

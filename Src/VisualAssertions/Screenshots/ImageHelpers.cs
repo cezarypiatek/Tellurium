@@ -21,7 +21,7 @@ namespace Tellurium.VisualAssertions.Screenshots
 
         public static Bitmap CreateImageDiff(Bitmap a, Bitmap b, IReadOnlyList<BlindRegion> globalBlindRegions)
         {
-            var unified = UnifiImagesDimensions(a, b);
+            var unified = UnifyImagesDimensions(a, b);
             var filter = new ThresholdedDifference(0) {OverlayImage = unified.Item1};
             var imageDiff = filter.Apply(unified.Item2);
             DilatationFilter.ApplyInPlace(imageDiff);
@@ -32,7 +32,7 @@ namespace Tellurium.VisualAssertions.Screenshots
             return result;
         }
 
-        private static Tuple<Bitmap, Bitmap> UnifiImagesDimensions(Bitmap a, Bitmap b)
+        private static Tuple<Bitmap, Bitmap> UnifyImagesDimensions(Bitmap a, Bitmap b)
         {
             if (a.Width == b.Width && a.Height == b.Height)
             {
@@ -85,9 +85,9 @@ namespace Tellurium.VisualAssertions.Screenshots
         {
             using (var resultGraphics = Graphics.FromImage(bitmapToDrawOverlay))
             {
-                foreach (var boundingRecangle in GetBoundingRecangles(bitmapWithPoints))
+                foreach (var boundingRectangle in GetBoundingRectangles(bitmapWithPoints))
                 {
-                    resultGraphics.DrawRectangle(DiffPen, boundingRecangle);
+                    resultGraphics.DrawRectangle(DiffPen, boundingRectangle);
                 }
             }
         }
@@ -100,7 +100,7 @@ namespace Tellurium.VisualAssertions.Screenshots
         /// <param name="blindRegions">List of squares to ignore</param>
         public static Bitmap CreateImagesXor(Bitmap a, Bitmap b, IReadOnlyList<BlindRegion> blindRegions)
         {
-            var unified = UnifiImagesDimensions(a, b);
+            var unified = UnifyImagesDimensions(a, b);
             var pixelBufferA = GetPixelBuffer(unified.Item1);
             var pixelBufferB = GetPixelBuffer(unified.Item2);
             var resultBuffer = new byte[pixelBufferB.Length];
@@ -156,7 +156,7 @@ namespace Tellurium.VisualAssertions.Screenshots
         /// <summary>
         /// Get rectangles surrounding point clumps
         /// </summary>
-        private static List<Rectangle> GetBoundingRecangles(Bitmap bitmapWithPoints)
+        private static List<Rectangle> GetBoundingRectangles(Bitmap bitmapWithPoints)
         {
             var bitmapData = bitmapWithPoints.LockBits(
                 new Rectangle(0, 0, bitmapWithPoints.Width, bitmapWithPoints.Height),
