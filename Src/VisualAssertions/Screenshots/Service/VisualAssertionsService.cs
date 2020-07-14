@@ -8,7 +8,7 @@ using Tellurium.VisualAssertions.Screenshots.Domain;
 using Tellurium.VisualAssertions.Screenshots.Queries;
 using Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies;
 using Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing;
-using Tellurium.VisualAssertions.TestRunnersAdapters;
+using Tellurium.VisualAssertions.TestRunersAdapters;
 
 namespace Tellurium.VisualAssertions.Screenshots.Service
 {
