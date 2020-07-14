@@ -34,25 +34,15 @@ namespace Tellurium.VisualAssertions.Screenshots
         /// <remarks>Only applicable if ComparisonStrategy is PixelByPixel</remarks>
         public uint PixelToleranceCount { get; }
 
-        /// <summary>
-        /// Maximimum difference by which sum of values from all channels (alpha, red, green, blue) can differ
-        /// If the sum is greater than the specified value then the images are considered unmatched 
-        /// </summary>
-        /// <remarks>Only applicable if ComparisonStrategy is PixelByPixel</remarks>
-        public uint PixelColorToleranceCount { get; }
-
-        public PixelByPixelComparisonParameters(double maxPercentOfUnmatchedPixels, uint pixelColorToleranceCount = 0)
+        public PixelByPixelComparisonParameters(double maxPercentOfUnmatchedPixels)
         {
-            PixelColorToleranceCount = uint.MaxValue;
             MaxPercentOfUnmatchedPixels = maxPercentOfUnmatchedPixels;
-            PixelColorToleranceCount = pixelColorToleranceCount;
         }
 
-        public PixelByPixelComparisonParameters(uint pixelToleranceCount, uint pixelColorToleranceCount = 0)
+        public PixelByPixelComparisonParameters(uint pixelToleranceCount)
         {
             PixelToleranceCount = pixelToleranceCount;
             MaxPercentOfUnmatchedPixels = 100.0;
-            PixelColorToleranceCount = pixelColorToleranceCount;
         }
     }
 
