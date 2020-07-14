@@ -54,7 +54,7 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
             return string.Join("\r\n", frames);
         }
 
-        private static bool reportInitizlized = false;
+        private static bool reportInitialized = false;
 
         private void CreateReportIfNotExists()
         {
@@ -62,7 +62,7 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
             {
                 File.WriteAllText(ReportFilePath, $"<html><head></head><body><style>img{{max-width:100%}}</style>{ImagePlaceholder}</body></html>");
                 writeOutput($"Report created at: {ReportFilePath}");
-                reportInitizlized = true;
+                reportInitialized = true;
                 if (ciAdapter.IsAvailable())
                 {
                     ciAdapter.SetEnvironmentVariable(ReportVariableName, ReportyVariableVal);
@@ -80,7 +80,7 @@ namespace Tellurium.MvcPages.Reports.ErrorReport
             {
                 return false;
             }
-            return File.Exists(ReportFilePath) == false || reportInitizlized == false;
+            return File.Exists(ReportFilePath) == false || reportInitialized == false;
         }
     }
 
