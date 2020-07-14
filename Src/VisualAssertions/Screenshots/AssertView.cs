@@ -23,7 +23,7 @@ namespace Tellurium.VisualAssertions.Screenshots
             switch (config.ComparisonStrategy)
             {
                 case ComparisonStrategy.PixelByPixel:
-                    comparisonStrategy = new PixelByPixelComparisonStrategy(config.PixelByPixelComparisonOptions);
+                    comparisonStrategy = new PixelByPixelComparisonStrategy(config.PixelByPixelComparisonParameters);
                     break;
                 case ComparisonStrategy.Hash:
                     comparisonStrategy = new HashComparisonStrategy();
