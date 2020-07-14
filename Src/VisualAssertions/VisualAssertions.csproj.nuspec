@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An extension to Tellurium.MvcPages pack that allows to create test assertions based on webpage screenshots</description>
     <releaseNotes>Prerelase version</releaseNotes>
-    <copyright>Copyright 2016</copyright>
+    <copyright>Copyright 2020</copyright>
     <tags>UITest Selenium ASP.NET MVC</tags>
     <dependencies>
 	  <dependency id="AForge.Imaging" version="2.2.5"/>	
