@@ -231,13 +231,19 @@ namespace Tellurium.VisualAssertions.Screenshots
         /// <param name="blindRegions">Global Regions to ignore</param>
         public static string ComputeHash(byte[] screenshot, IReadOnlyList<BlindRegion> blindRegions)
         {
-            var image = screenshot.ToBitmap();
-            MarkBlindRegions(image, blindRegions);
-            var imageBytes = image.ToBytes();
+            var imageBytes = ApplyBlindRegions(screenshot, blindRegions);
             using (var md5 = MD5.Create())
             {
                 return BitConverter.ToString(md5.ComputeHash(imageBytes)).Replace("-", "");
             }
+        }
+
+        public static byte[] ApplyBlindRegions(byte[] screenshot, IReadOnlyList<BlindRegion> blindRegions)
+        {
+            var image = screenshot.ToBitmap();
+            MarkBlindRegions(image, blindRegions);
+            var imageBytes = image.ToBytes();
+            return imageBytes;
         }
     }
 }
