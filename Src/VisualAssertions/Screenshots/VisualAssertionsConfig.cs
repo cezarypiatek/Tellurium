@@ -12,10 +12,10 @@ namespace Tellurium.VisualAssertions.Screenshots
 
         public ComparisonStrategy ComparisonStrategy { get; set; }
 
-        public PixelByPixelComparisonOptions PixelByPixelComparisonOptions { get; set; }
+        public PixelByPixelComparisonParameters PixelByPixelComparisonParameters { get; set; }
     }
 
-    public class PixelByPixelComparisonOptions
+    public class PixelByPixelComparisonParameters
     {
         /// <summary>
         /// Percentage of pixels that can be different when matching two images.
@@ -41,17 +41,17 @@ namespace Tellurium.VisualAssertions.Screenshots
         /// <remarks>Only applicable if ComparisonStrategy is PixelByPixel</remarks>
         public uint PixelColorToleranceCount { get; }
 
-        public PixelByPixelComparisonOptions(double maxPercentOfUnmatchedPixels, uint pixelColorToleranceCount)
+        public PixelByPixelComparisonParameters(double maxPercentOfUnmatchedPixels, uint pixelColorToleranceCount = 0)
         {
             PixelColorToleranceCount = uint.MaxValue;
             MaxPercentOfUnmatchedPixels = maxPercentOfUnmatchedPixels;
             PixelColorToleranceCount = pixelColorToleranceCount;
         }
 
-        public PixelByPixelComparisonOptions(uint pixelToleranceCount, uint pixelColorToleranceCount)
+        public PixelByPixelComparisonParameters(uint pixelToleranceCount, uint pixelColorToleranceCount = 0)
         {
-            PixelColorToleranceCount = pixelToleranceCount;
-            MaxPercentOfUnmatchedPixels = double.MaxValue;
+            PixelToleranceCount = pixelToleranceCount;
+            MaxPercentOfUnmatchedPixels = 100.0;
             PixelColorToleranceCount = pixelColorToleranceCount;
         }
     }
