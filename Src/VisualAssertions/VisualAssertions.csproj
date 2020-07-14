@@ -115,7 +115,11 @@
     <Compile Include="Infrastructure\Persistence\PersistanceEngine.cs" />
     <Compile Include="Infrastructure\Persistence\Repository.cs" />
     <Compile Include="Infrastructure\SessionContext.cs" />
+    <Compile Include="Screenshots\Service\ComparisonStrategies\HashComparisonStrategy.cs" />
+    <Compile Include="Screenshots\Service\ComparisonStrategies\IScreenshotComparisonStrategy.cs" />
+    <Compile Include="Screenshots\Service\ComparisonStrategies\PixelByPixelComparisonStrategy.cs" />
     <Compile Include="Screenshots\Domain\ScreenshotIdentity.cs" />
+    <Compile Include="Screenshots\Service\Screenshot.cs" />
     <Compile Include="Screenshots\Utils\DateTimeExtensions.cs" />
     <Compile Include="Screenshots\Utils\TaskProcessing\AsynchronousTaskProcessor.cs" />
     <Compile Include="Screenshots\Utils\TaskProcessing\ITaskProcessor.cs" />
@@ -147,7 +151,7 @@
     <Compile Include="Screenshots\Queries\FindPatternsForBrowserInProject.cs" />
     <Compile Include="Screenshots\Queries\FindProjectByName.cs" />
     <Compile Include="Screenshots\Queries\FindTestCaseForBrowser.cs" />
-    <Compile Include="Screenshots\VisualAssertionsService.cs" />
+    <Compile Include="Screenshots\Service\VisualAssertionsService.cs" />
     <Compile Include="Screenshots\AssertView.cs" />
   </ItemGroup>
   <ItemGroup>

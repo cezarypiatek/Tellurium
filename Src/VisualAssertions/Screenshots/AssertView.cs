@@ -2,13 +2,15 @@
 using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.VisualAssertions.Infrastructure.Persistence;
 using Tellurium.VisualAssertions.Screenshots.Domain;
+using Tellurium.VisualAssertions.Screenshots.Service;
+using Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies;
 using Tellurium.VisualAssertions.TestRunersAdapters;
 
 namespace Tellurium.VisualAssertions.Screenshots
 {
     public static class AssertView
     {
-        private static VisualAssertionsService visualAssertionsService;
+        private static VisualAssertionsService _visualAssertionsService;
 
         public static void Init(VisualAssertionsConfig config)
         {
@@ -16,8 +18,23 @@ namespace Tellurium.VisualAssertions.Screenshots
             var testRunnerAdapter = TestRunnerAdapterFactory.CreateForCurrentEnvironment(testOutputWriter);
             var sessionContext = PersistanceEngine.GetSessionContext();
             var projectRepository = new Repository<Project>(sessionContext);
-            visualAssertionsService?.Dispose();
-            visualAssertionsService = new VisualAssertionsService(projectRepository,testRunnerAdapter, config.ProcessScreenshotsAsynchronously)
+
+            IScreenshotComparisonStrategy comparisonStrategy;
+            switch (config.ComparisonStrategy)
+            {
+                case ComparisonStrategy.PixelByPixel:
+                    comparisonStrategy = new PixelByPixelComparisonStrategy(config.PixelTolerance, config.PixelColorTolerance);
+                    break;
+                case ComparisonStrategy.Hash:
+                    comparisonStrategy = new HashComparisonStrategy();
+                    break;
+                default:
+                    comparisonStrategy = new HashComparisonStrategy();
+                    break;
+            }
+
+            _visualAssertionsService?.Dispose();
+            _visualAssertionsService = new VisualAssertionsService(projectRepository, testRunnerAdapter, config.ProcessScreenshotsAsynchronously, comparisonStrategy)
             {
                 ProjectName = config.ProjectName,
                 ScreenshotCategory = config.ScreenshotCategory,
@@ -27,7 +44,7 @@ namespace Tellurium.VisualAssertions.Screenshots
 
         public static void EqualsToPattern(IBrowserCamera browserCamera, string viewName)
         {
-            visualAssertionsService.CheckViewWithPattern(browserCamera, viewName);
+            _visualAssertionsService.CheckViewWithPattern(browserCamera, viewName);
         }
     }
 }

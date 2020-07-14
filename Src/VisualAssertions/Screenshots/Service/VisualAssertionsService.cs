@@ -6,55 +6,36 @@ using Tellurium.VisualAssertions.Infrastructure;
 using Tellurium.VisualAssertions.Infrastructure.Persistence;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 using Tellurium.VisualAssertions.Screenshots.Queries;
+using Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies;
 using Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing;
 using Tellurium.VisualAssertions.TestRunersAdapters;
 
-namespace Tellurium.VisualAssertions.Screenshots
+namespace Tellurium.VisualAssertions.Screenshots.Service
 {
-    public class VisualAssertionsService:IDisposable
+    public class VisualAssertionsService : IDisposable
     {
-        private readonly IRepository<Project> projectRepository;
-        private readonly ITestRunnerAdapter testRunnerAdapter;
-        private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
         public string ProjectName { get; set; }
         public string ScreenshotCategory { get; set; }
         public string BrowserName { get; set; }
 
-        private ITaskProcessor<Screenshot> ScreenshotProcessor; 
+        private ITaskProcessor<Screenshot> ScreenshotProcessor;
+        private readonly IRepository<Project> projectRepository;
+        private readonly ITestRunnerAdapter testRunnerAdapter;
+        private readonly IScreenshotComparisonStrategy screenshotComparisonStrategy;
+        private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
+        private static readonly Dictionary<string, long> ProjectNameIdCache = new Dictionary<string, long>();
+
 
         public VisualAssertionsService(
             IRepository<Project> projectRepository, 
             ITestRunnerAdapter testRunnerAdapter,
-            bool processAsynchronously) 
+            bool processAsynchronously,
+            IScreenshotComparisonStrategy screenshotComparisonStrategy) 
         {
             this.projectRepository = projectRepository;
             this.testRunnerAdapter = testRunnerAdapter;
+            this.screenshotComparisonStrategy = screenshotComparisonStrategy;
             InitScreenshotProcessor(processAsynchronously);
-        }
-
-        private void InitScreenshotProcessor(bool processAsynchronously)
-        {
-            var processorType = processAsynchronously ? TaskProcessorType.Async : TaskProcessorType.Sync;
-            this.ScreenshotProcessor = TaskProcessorFactory.Create<Screenshot>(processorType, this.CheckScreenshotWithPattern);
-        }
-
-        private TestSession GetCurrentTestSession(Project project)
-        {
-            if (project.Sessions == null)
-            {
-                throw new ApplicationException("Sessions cannot be null");
-            }
-            var currentStartDate = TestSessionContext.Current.StartDate;
-            var testSession = project.Sessions.FirstOrDefault(x => x.StartDate == currentStartDate);
-            if (testSession == null)
-            {
-                testSession = new TestSession
-                {
-                    StartDate = currentStartDate
-                };
-                project.AddSession(testSession);
-            }
-            return testSession;
         }
 
         public void CheckViewWithPattern(IBrowserCamera browserCamera, string viewName)
@@ -73,10 +54,34 @@ namespace Tellurium.VisualAssertions.Screenshots
             });
         }
 
-        public class Screenshot
+        public void Dispose()
         {
-            public ScreenshotIdentity Identity { get; set; }
-            public byte[] Data { get; set; }
+            ScreenshotProcessor?.Dispose();
+        }
+
+        private void InitScreenshotProcessor(bool processAsynchronously)
+        {
+            var processorType = processAsynchronously ? TaskProcessorType.Async : TaskProcessorType.Sync;
+            this.ScreenshotProcessor = TaskProcessorFactory.Create<Screenshot>(processorType, this.CheckScreenshotWithPattern);
+        }
+
+        private TestSession GetCurrentTestSession(Project project)
+        {
+            if (project.Sessions == null)
+            {
+                throw new InvalidOperationException("Sessions cannot be null");
+            }
+            var currentStartDate = TestSessionContext.Current.StartDate;
+            var testSession = project.Sessions.FirstOrDefault(x => x.StartDate == currentStartDate);
+            if (testSession == null)
+            {
+                testSession = new TestSession
+                {
+                    StartDate = currentStartDate
+                };
+                project.AddSession(testSession);
+            }
+            return testSession;
         }
 
         private void CheckScreenshotWithPattern(Screenshot screenshot)
@@ -86,7 +91,7 @@ namespace Tellurium.VisualAssertions.Screenshots
             try
             {
                 Action finishNotification;
-                using (var tx = PersistanceEngine.GetSession().BeginTransaction())
+                using (var transaction = PersistanceEngine.GetSession().BeginTransaction())
                 {
                     var project = this.GetProject(screenshotIdentity.ProjectName);
                     var testCase = GetTestCase(project, screenshotIdentity);
@@ -115,7 +120,7 @@ namespace Tellurium.VisualAssertions.Screenshots
                         }
                     };
 
-                    tx.Commit();
+                    transaction.Commit();
                 }
                 finishNotification.Invoke();
             }
@@ -139,7 +144,7 @@ namespace Tellurium.VisualAssertions.Screenshots
             {
                 testResult.Status = TestResultStatus.NewPattern;
             }
-            else if (browserPattern.MatchTo(image))
+            else if (screenshotComparisonStrategy.Compare(browserPattern, image))
             {
                 testResult.Status = TestResultStatus.Passed;
             }
@@ -167,8 +172,6 @@ namespace Tellurium.VisualAssertions.Screenshots
             return testCase;
         }
 
-        private static readonly Dictionary<string, long> ProjectNameIdCache = new Dictionary<string, long>();
-
         private Project GetProject(string projectName)
         {
             if (ProjectNameIdCache.ContainsKey(projectName))
@@ -180,7 +183,7 @@ namespace Tellurium.VisualAssertions.Screenshots
             var project = projectRepository.FindOne(new FindProjectByName(projectName));
             if (project == null)
             {
-                project = new Project
+                project = new Project()
                 {
                     Name = projectName
                 };
@@ -188,11 +191,6 @@ namespace Tellurium.VisualAssertions.Screenshots
             }
             ProjectNameIdCache[projectName] = project.Id;
             return project;
-        }
-
-        public void Dispose()
-        {
-            ScreenshotProcessor?.Dispose();
         }
     }
 }
