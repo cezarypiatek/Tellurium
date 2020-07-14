@@ -1,34 +1,35 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 
 namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
 {
     public class PixelByPixelComparisonStrategy : IScreenshotComparisonStrategy
     {
-        public int PixelTolerance { get; }
-        public byte PixelColorTolerance { get; }
+        public PixelByPixelComparisonOptions ComparisonOptions { get; }
 
-        public PixelByPixelComparisonStrategy(int pixelTolerance = 0, byte pixelColorTolerance = 0)
+        public PixelByPixelComparisonStrategy(PixelByPixelComparisonOptions comparisonOptions)
         {
-            PixelTolerance = pixelTolerance;
-            PixelColorTolerance = pixelColorTolerance;
-        }
-
-        public bool Compare(BrowserPattern browserPattern, byte[] screenshot)
-        {
-            var pattern = browserPattern.PatternScreenshot.Image;
-            var blindRegions = browserPattern.GetAllBlindRegions();
-            return ComparePixelByPixel(pattern, screenshot, blindRegions);
+            ComparisonOptions = comparisonOptions;
         }
 
         /// <summary>
-        /// Compares images pixel by pixel with a specified tolerance defined by PixelTolerance and PixelColorTolerance
+        /// Compares images pixel by pixel with a specified tolerance defined by PixelToleranceCount and PixelColorToleranceCount
         /// </summary>
-        /// <param name="screenshot"></param>
-        /// <param name="blindRegions"></param>
-        /// <returns>true if images match</returns>
-        public bool ComparePixelByPixel(byte[] pattern, byte[] screenshot,
-            IReadOnlyList<BlindRegion> blindRegions)
+        public bool Compare(BrowserPattern browserPattern, byte[] screenshot, out string resultMessage)
+        {
+            var pattern = browserPattern.PatternScreenshot.Image;
+            var blindRegions = browserPattern.GetAllBlindRegions();
+            var numberOfUnmatchedPixels = CountUnmatchedPixels(pattern, screenshot, blindRegions);
+
+            var percentOfUnmatchedPixels = (double)numberOfUnmatchedPixels / (pattern.Length / 4.0) * 100;
+            var areMatched = numberOfUnmatchedPixels < ComparisonOptions.PixelToleranceCount && percentOfUnmatchedPixels < ComparisonOptions.MaxPercentOfUnmatchedPixels;
+
+
+            return areMatched;
+        }
+
+        private static int CountUnmatchedPixels(byte[] pattern, byte[] screenshot, IReadOnlyList<BlindRegion> blindRegions)
         {
             var numberOfUnmatchedPixels = 0;
             var imageA = ImageHelpers.ApplyBlindRegions(pattern, blindRegions);
@@ -45,11 +46,11 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
                 }
             }
 
-            return numberOfUnmatchedPixels < PixelTolerance;
+            return numberOfUnmatchedPixels;
         }
 
         ///// <summary>
-        ///// Compares images pixel by pixel with a specified tolerance defined by PixelTolerance and PixelColorTolerance
+        ///// Compares images pixel by pixel with a specified tolerance defined by PixelToleranceCount and PixelColorToleranceCount
         ///// </summary>
         ///// <param name="screenshot"></param>
         ///// <param name="blindRegions"></param>
@@ -74,17 +75,17 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
         //            imageA[blue] != imageB[blue])
         //        {
 
-        //            if (PixelColorTolerance == 0 || Math.Abs(imageA[alpha] - imageB[alpha]) > PixelColorTolerance ||
-        //                Math.Abs(imageA[red] - imageB[red]) > PixelColorTolerance ||
-        //                Math.Abs(imageA[green] - imageB[green]) > PixelColorTolerance ||
-        //                Math.Abs(imageA[blue] - imageB[blue]) > PixelColorTolerance)
+        //            if (PixelColorToleranceCount == 0 || Math.Abs(imageA[alpha] - imageB[alpha]) > PixelColorToleranceCount ||
+        //                Math.Abs(imageA[red] - imageB[red]) > PixelColorToleranceCount ||
+        //                Math.Abs(imageA[green] - imageB[green]) > PixelColorToleranceCount ||
+        //                Math.Abs(imageA[blue] - imageB[blue]) > PixelColorToleranceCount)
         //            {
         //                numberOfUnmatchedPixels++;
         //            }
         //        }
         //    }
 
-        //    return numberOfUnmatchedPixels < PixelTolerance;
+        //    return numberOfUnmatchedPixels < PixelToleranceCount;
         //}
     }
 }
