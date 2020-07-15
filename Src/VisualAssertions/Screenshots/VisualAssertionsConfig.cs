@@ -9,9 +9,7 @@ namespace Tellurium.VisualAssertions.Screenshots
         public string ScreenshotCategory { get; set; }
         public Action<string> TestOutputWriter { get; set; }
         public bool ProcessScreenshotsAsynchronously { get; set; }
-
         public ComparisonStrategy ComparisonStrategy { get; set; }
-
         public PixelByPixelComparisonParameters PixelByPixelComparisonParameters { get; set; }
     }
 
@@ -37,6 +35,7 @@ namespace Tellurium.VisualAssertions.Screenshots
         public PixelByPixelComparisonParameters(double maxPercentOfUnmatchedPixels)
         {
             MaxPercentOfUnmatchedPixels = maxPercentOfUnmatchedPixels;
+            PixelToleranceCount = uint.MaxValue;
         }
 
         public PixelByPixelComparisonParameters(uint pixelToleranceCount)
