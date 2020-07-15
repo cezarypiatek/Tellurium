@@ -107,13 +107,13 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
                         switch (testResult.Status)
                         {
                             case TestResultStatus.Failed:
-                                testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName, testSession, activePattern);
+                                testRunnerAdapter.NotifyAboutTestFail(screenshotIdentity.FullName, testSession, activePattern, testResult.TestResultMessage);
                                 break;
                             case TestResultStatus.Passed:
-                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, activePattern);
+                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, activePattern, testResult.TestResultMessage);
                                 break;
                             case TestResultStatus.NewPattern:
-                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, newPattern);
+                                testRunnerAdapter.NotifyAboutTestSuccess(screenshotIdentity.FullName, testSession, newPattern, testResult.TestResultMessage);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -144,7 +144,11 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
             {
                 testResult.Status = TestResultStatus.NewPattern;
             }
-            else if (screenshotComparisonStrategy.Compare(browserPattern, image))
+
+            var comparisonResult = screenshotComparisonStrategy.Compare(browserPattern, image, out var message);
+            testResult.TestResultMessage = message;
+
+            if (comparisonResult)
             {
                 testResult.Status = TestResultStatus.Passed;
             }
