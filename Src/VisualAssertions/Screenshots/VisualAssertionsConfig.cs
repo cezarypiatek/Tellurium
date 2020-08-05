@@ -1,4 +1,5 @@
 ﻿using System;
+using Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies;
 
 namespace Tellurium.VisualAssertions.Screenshots
 {
@@ -9,8 +10,11 @@ namespace Tellurium.VisualAssertions.Screenshots
         public string ScreenshotCategory { get; set; }
         public Action<string> TestOutputWriter { get; set; }
         public bool ProcessScreenshotsAsynchronously { get; set; }
-        public ComparisonStrategy ComparisonStrategy { get; set; }
-        public PixelByPixelComparisonParameters PixelByPixelComparisonParameters { get; set; }
+
+        /// <summary>
+        /// It is possible to implement custom comparison strategy by supplying a class implementing IScreenshotComparisonStrategy interface
+        /// </summary>
+        public IScreenshotComparisonStrategy ScreenshotComparisonStrategy { get; set; }
     }
 
     public class PixelByPixelComparisonParameters
@@ -43,11 +47,5 @@ namespace Tellurium.VisualAssertions.Screenshots
             PixelToleranceCount = pixelToleranceCount;
             MaxPercentOfUnmatchedPixels = 100.0;
         }
-    }
-
-    public enum ComparisonStrategy
-    {
-        Hash = 0,
-        PixelByPixel = 1
     }
 }
