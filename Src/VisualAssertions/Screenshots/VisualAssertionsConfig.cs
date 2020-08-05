@@ -25,7 +25,6 @@ namespace Tellurium.VisualAssertions.Screenshots
         /// </summary>
         /// <remarks>
         /// Accepted values: <0.0, 100.0>
-        /// Only applicable if ComparisonStrategy is PixelByPixel
         /// </remarks>
         public double MaxPercentOfUnmatchedPixels { get; }
 
@@ -33,7 +32,6 @@ namespace Tellurium.VisualAssertions.Screenshots
         /// Number of pixels that can be different when matching two images.
         /// If number of pixels that are different is greater than this value then the images are considered unmatched
         /// </summary>
-        /// <remarks>Only applicable if ComparisonStrategy is PixelByPixel</remarks>
         public uint PixelToleranceCount { get; }
 
         public PixelByPixelComparisonParameters(double maxPercentOfUnmatchedPixels)
