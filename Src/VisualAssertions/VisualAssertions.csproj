@@ -129,10 +129,10 @@
     <Compile Include="Screenshots\Utils\TaskProcessing\SynchronousTaskProcess.cs" />
     <Compile Include="Screenshots\Utils\TaskProcessing\TaskProcessorFactory.cs" />
     <Compile Include="Screenshots\VisualAssertionsConfig.cs" />
-    <Compile Include="TestRunersAdapters\ITestRunnerAdapter.cs" />
-    <Compile Include="TestRunersAdapters\Providers\ConsoleTestRunnerAdapter.cs" />
-    <Compile Include="TestRunersAdapters\Providers\TeamCityRunnerAdapter.cs" />
-    <Compile Include="TestRunersAdapters\TestRunnerAdapterFactory.cs" />
+    <Compile Include="TestRunnersAdapters\ITestRunnerAdapter.cs" />
+    <Compile Include="TestRunnersAdapters\Providers\ConsoleTestRunnerAdapter.cs" />
+    <Compile Include="TestRunnersAdapters\Providers\TeamCityRunnerAdapter.cs" />
+    <Compile Include="TestRunnersAdapters\TestRunnerAdapterFactory.cs" />
     <Compile Include="VisualAssertionsAssemblyIdentity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screenshots\Domain\BlindRegion.cs" />

@@ -3,8 +3,7 @@ using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.VisualAssertions.Infrastructure.Persistence;
 using Tellurium.VisualAssertions.Screenshots.Domain;
 using Tellurium.VisualAssertions.Screenshots.Service;
-using Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies;
-using Tellurium.VisualAssertions.TestRunersAdapters;
+using Tellurium.VisualAssertions.TestRunnersAdapters;
 
 namespace Tellurium.VisualAssertions.Screenshots
 {
