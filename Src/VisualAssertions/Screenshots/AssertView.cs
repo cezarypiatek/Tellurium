@@ -14,24 +14,17 @@ namespace Tellurium.VisualAssertions.Screenshots
 
         public static void Init(VisualAssertionsConfig config)
         {
+            if (config == null)
+                throw new ArgumentNullException(nameof(config));
+
+            if (config.ScreenshotComparisonStrategy == null)
+                throw new InvalidOperationException($"{nameof(config.ScreenshotComparisonStrategy)} must be specified");
+
             var testOutputWriter = config.TestOutputWriter ?? Console.WriteLine;
             var testRunnerAdapter = TestRunnerAdapterFactory.CreateForCurrentEnvironment(testOutputWriter);
             var sessionContext = PersistanceEngine.GetSessionContext();
             var projectRepository = new Repository<Project>(sessionContext);
-
-            IScreenshotComparisonStrategy comparisonStrategy;
-            switch (config.ComparisonStrategy)
-            {
-                case ComparisonStrategy.PixelByPixel:
-                    comparisonStrategy = new PixelByPixelComparisonStrategy(config.PixelByPixelComparisonParameters);
-                    break;
-                case ComparisonStrategy.Hash:
-                    comparisonStrategy = new HashComparisonStrategy();
-                    break;
-                default:
-                    comparisonStrategy = new HashComparisonStrategy();
-                    break;
-            }
+            var comparisonStrategy = config.ScreenshotComparisonStrategy;
 
             _visualAssertionsService?.Dispose();
             _visualAssertionsService = new VisualAssertionsService(projectRepository, testRunnerAdapter, config.ProcessScreenshotsAsynchronously, comparisonStrategy)
