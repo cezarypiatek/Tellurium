@@ -25,6 +25,18 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
             var patternBitmap = ImageHelpers.ApplyBlindRegions(pattern, blindRegions);
             var screenshotBitmap = ImageHelpers.ApplyBlindRegions(screenshot, blindRegions);
 
+            if (patternBitmap == null)
+            {
+                resultMessage = "\r\n+---patternBitmap is null";
+                return false;
+            }
+
+            if (screenshotBitmap == null)
+            {
+                resultMessage = "\r\n+---screenshotBitmap is null";
+                return false;
+            }
+
             if (!AreBitmapsOfEqualSize(patternBitmap, screenshotBitmap))
             {
                 resultMessage = "\r\n+---Different sizes of bitmaps" +
@@ -36,10 +48,10 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
 
             var numberOfUnmatchedPixels = CountUnmatchedPixels(patternBitmap, screenshotBitmap);
 
-            var percentOfUnmatchedPixels = (double)numberOfUnmatchedPixels / pattern.Length * 100;
+            var percentOfUnmatchedPixels = (numberOfUnmatchedPixels * 100.0) / (patternBitmap.Width * patternBitmap.Height) ;
             bool areMatched = numberOfUnmatchedPixels <= ComparisonParameters.PixelToleranceCount && percentOfUnmatchedPixels <= ComparisonParameters.MaxPercentOfUnmatchedPixels;
 
-            resultMessage = $"\r\n+---Unmatched pixels: {numberOfUnmatchedPixels}px/{patternBitmap.Height * patternBitmap.Width}px {percentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}% | (tolerance: {ComparisonParameters.PixelToleranceCount}px, {ComparisonParameters.MaxPercentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}%)";
+            resultMessage = $"\r\n+---Unmatched pixels: {numberOfUnmatchedPixels}px/{patternBitmap.Height * patternBitmap.Width}px {percentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}% | (tolerance: MinOf({ComparisonParameters.PixelToleranceCount}px, {ComparisonParameters.MaxPercentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}%) )";
 
             return areMatched;
         }
@@ -47,24 +59,6 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
         private static bool AreBitmapsOfEqualSize(Bitmap patternBitmap, Bitmap screenshotBitmap)
         {
             return patternBitmap.Height == screenshotBitmap.Height && patternBitmap.Width == screenshotBitmap.Width;
-        }
-
-        private int CountUnmatchedPixelsSlow(Bitmap pattern, Bitmap screenshot)
-        {
-            var numberOfUnmatchedPixels = 0;
-
-            for (int x = 0; x < pattern.Width; x++)
-            {
-                for (int y = 0; y < pattern.Height; y++)
-                {
-                    if (pattern.GetPixel(x, y) != screenshot.GetPixel(x, y))
-                    {
-                        numberOfUnmatchedPixels++;
-                    }
-                }
-            }
-
-            return numberOfUnmatchedPixels;
         }
 
         /// <summary>
