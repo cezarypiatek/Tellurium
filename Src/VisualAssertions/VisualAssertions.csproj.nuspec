@@ -7,7 +7,7 @@
     <owners>Cezary Piatek</owners>
     <license type="expression">MIT</license>
     <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/cezarypiatek/Tellurium/</projectUrl>  
     <iconUrl>https://raw.githubusercontent.com/cezarypiatek/Tellurium/master/Doc/TelluriumLogo128x128.png</iconUrl>
     <description>An extension to Tellurium.MvcPages pack that allows to create test assertions based on webpage screenshots</description>
