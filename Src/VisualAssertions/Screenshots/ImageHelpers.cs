@@ -231,6 +231,9 @@ namespace Tellurium.VisualAssertions.Screenshots
         /// <param name="blindRegions">Global Regions to ignore</param>
         public static string ComputeHash(byte[] screenshot, IReadOnlyList<BlindRegion> blindRegions)
         {
+            if (screenshot == null)
+                throw new ArgumentNullException(nameof(screenshot));
+
             var bitmap = ApplyBlindRegions(screenshot, blindRegions);
             var imageBytes = bitmap.ToBytes();
             using (var md5 = MD5.Create())
@@ -241,6 +244,9 @@ namespace Tellurium.VisualAssertions.Screenshots
 
         public static Bitmap ApplyBlindRegions(byte[] img, IReadOnlyList<BlindRegion> blindRegions)
         {
+            if (img == null)
+                throw new ArgumentNullException(nameof(img));
+
             var image = img.ToBitmap();
             MarkBlindRegions(image, blindRegions);
             return image;

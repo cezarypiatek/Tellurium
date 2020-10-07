@@ -20,6 +20,12 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
         /// </summary>
         public bool Compare(BrowserPattern browserPattern, byte[] screenshot, out string resultMessage)
         {
+            if (browserPattern == null)
+                throw new ArgumentNullException(nameof(browserPattern));
+
+            if (screenshot == null)
+                throw new ArgumentNullException(nameof(screenshot));
+
             var pattern = browserPattern.PatternScreenshot.Image;
             var blindRegions = browserPattern.GetAllBlindRegions();
             var patternBitmap = ImageHelpers.ApplyBlindRegions(pattern, blindRegions);
@@ -69,6 +75,12 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
         /// <returns></returns>
         public int CountUnmatchedPixels(Bitmap pattern, Bitmap screenshot)
         {
+            if (pattern == null)
+                throw new ArgumentNullException(nameof(pattern));
+
+            if (screenshot == null)
+                throw new ArgumentNullException(nameof(screenshot));
+
             if (!AreBitmapsOfEqualSize(pattern, screenshot))
                 throw new ArgumentException("Bitmaps have different sizes");
 
