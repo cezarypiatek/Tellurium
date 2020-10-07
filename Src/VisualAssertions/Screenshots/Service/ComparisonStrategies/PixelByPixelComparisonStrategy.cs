@@ -55,11 +55,20 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
             var numberOfUnmatchedPixels = CountUnmatchedPixels(patternBitmap, screenshotBitmap);
 
             var percentOfUnmatchedPixels = (numberOfUnmatchedPixels * 100.0) / (patternBitmap.Width * patternBitmap.Height) ;
-            bool areMatched = numberOfUnmatchedPixels <= ComparisonParameters.PixelToleranceCount && percentOfUnmatchedPixels <= ComparisonParameters.MaxPercentOfUnmatchedPixels;
+            var areMatchedByPixelCount = numberOfUnmatchedPixels <= ComparisonParameters.PixelToleranceCount;
+            var areMatchedByAllowedMaximumDifferenceInPercent = percentOfUnmatchedPixels <= ComparisonParameters.MaxPercentOfUnmatchedPixels;
 
-            resultMessage = $"\r\n+---Unmatched pixels: {numberOfUnmatchedPixels}px/{patternBitmap.Height * patternBitmap.Width}px {percentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}% | (tolerance: MinOf({ComparisonParameters.PixelToleranceCount}px, {ComparisonParameters.MaxPercentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}%) )";
+            resultMessage = "\r\n+---" + (areMatchedByPixelCount ? "[PASS] Images match" : "[FAIL] Images do not match") +
+                            $" within specified pixel tolerance: {numberOfUnmatchedPixels}" +
+                            $" <= {ComparisonParameters.PixelToleranceCount}";
 
-            return areMatched;
+            resultMessage += $"\r\n+---" + (areMatchedByAllowedMaximumDifferenceInPercent ? "[PASS] Images match" : "[FAIL] Images do not match") +
+                            " within specified percent of tolerance: " +
+                            $"{percentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}%" +
+                            " <= " +
+                            $"{ComparisonParameters.MaxPercentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}%";
+
+            return areMatchedByPixelCount && areMatchedByAllowedMaximumDifferenceInPercent;
         }
 
         private static bool AreBitmapsOfEqualSize(Bitmap patternBitmap, Bitmap screenshotBitmap)
