@@ -89,7 +89,7 @@ namespace Tellurium.MvcPages.WebPages
 
         public IPageFragment GetParent()
         {
-            var parent = this.Driver.GetStableElementByInScope(this.WebElement, SeleniumExtensions.ParentSelector);
+            var parent = this.WebElement.GetStableElementBy(SeleniumExtensions.ParentSelector);
             return new PageFragment(this.Browser, parent);
         }
 

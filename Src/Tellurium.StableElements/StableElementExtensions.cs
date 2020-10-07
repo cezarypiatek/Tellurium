@@ -3,44 +3,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Support.UI;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 
 namespace Tellurium.MvcPages.SeleniumUtils
 {
-
-    public static class PublicExtensions
-    {
-
-        public static IStableWebElement FindStableElement(this ISearchContext context, By by)
-        {
-            var element = context.FindElement(by);
-            return new StableWebElement(context, element, by, SearchApproachType.First);
-        }
-
-        public static IStableWebElement TryFindStableElement(this ISearchContext context, By by)
-        {
-            var element = context.TryFindElement(by);
-            if (element == null)
-            {
-                return null;
-            }
-            return new StableWebElement(context, element, by, SearchApproachType.First);
-        }
-
-        public static IStableWebElement GetStableElementById(this RemoteWebDriver driver, string elementId, int timeout = 30)
-        {
-            By @by = By.Id(elementId);
-            return GetStableElementByInScope(driver, driver, @by, timeout);
-        }
-
-        public static IStableWebElement GetStableElementByInScope(this RemoteWebDriver driver, ISearchContext scope, By by, int timeout = 30)
-        {
-            var foundElement = StableElementExtensions.GetFirstElement(driver, scope, @by, timeout);
-            return new StableWebElement(scope, foundElement, @by, SearchApproachType.First);
-        }
-    }
-
     internal static class StableElementExtensions
     {
         internal static string GetElementDescription(this ISearchContext element)
@@ -95,11 +61,11 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
 
 
-        internal static IWebElement GetFirstElement(RemoteWebDriver driver, ISearchContext scope, By @by, int timeout)
+        internal static IWebElement GetFirstElement(ISearchContext scope, By @by, int timeout)
         {
             try
             {
-                return driver.WaitUntil(timeout, d => scope.FindElement(@by));
+                return WaitUntil(timeout, d => scope.FindElement(@by));
             }
             catch (WebDriverTimeoutException ex)
             {
@@ -107,9 +73,9 @@ namespace Tellurium.MvcPages.SeleniumUtils
             }
         }
 
-        private static TResult WaitUntil<TResult>(this RemoteWebDriver driver, int timeout, Func<IWebDriver, TResult> waitPredictor)
+        private static TResult WaitUntil<TResult>(int timeout, Func<object, TResult> waitPredictor)
         {
-            var waiter = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+            var waiter = new StatelessWait(TimeSpan.FromSeconds(timeout));
             return waiter.Until(waitPredictor);
         }
     }

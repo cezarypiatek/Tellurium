@@ -149,7 +149,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
 
         private WebFormField CreateFieldWrapper(IWebFormFieldLocator fieldLocator)
         {
-            return new WebFormField(WebElement, fieldLocator, SupportedInputs, Driver);
+            return new WebFormField(WebElement, fieldLocator, SupportedInputs);
         }
     }
 }

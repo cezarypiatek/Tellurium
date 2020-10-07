@@ -15,18 +15,18 @@ namespace Tellurium.MvcPages.WebPages.WebForms.FieldLocators
             this.labelText = labelText;
         }
 
-        public IStableWebElement FindFieldElement(RemoteWebDriver driver, IWebElement form)
+        public IStableWebElement FindFieldElement(IWebElement form)
         {
             var labelTextLiteral = XPathHelpers.ToXPathLiteral(labelText.Trim());
             var byLabelText = By.XPath($".//label[normalize-space(text()) = {labelTextLiteral}]");
-            var labelElement = driver.GetStableElementByInScope(form, byLabelText);
+            var labelElement = form.GetStableElementBy(byLabelText);
             var inputId = labelElement.GetAttribute("for");
             if(string.IsNullOrWhiteSpace(inputId))
             {
                 throw new ArgumentException($"Label with text '{labelText}' has empty 'for' attribute");
             }
             var byInputId = By.Id(inputId);
-            return driver.GetStableElementByInScope(form, byInputId);
+            return form.GetStableElementBy(byInputId);
         }
 
         public string GetFieldDescription()

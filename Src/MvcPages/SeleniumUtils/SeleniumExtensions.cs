@@ -105,7 +105,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         
         internal static PageFragmentWatcher WatchForContentChanges(this RemoteWebDriver driver, string containerId, bool watchSubtree=true)
         {
-            var element = driver.GetStableElementById(containerId);
+            var element = driver.GetStableElementBy(By.Id(containerId));
             var watcher = new PageFragmentWatcher(driver, element);
             watcher.StartWatching(watchSubtree);
             return watcher;

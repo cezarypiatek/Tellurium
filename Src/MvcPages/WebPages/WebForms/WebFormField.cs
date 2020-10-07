@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils;
 using Tellurium.MvcPages.WebPages.WebForms.FieldLocators;
 
@@ -22,15 +21,13 @@ namespace Tellurium.MvcPages.WebPages.WebForms
         public IFormInputAdapter FieldAdapter { get; private set; }
 
         private readonly List<IFormInputAdapter> supportedImputAdapters;
-        private readonly RemoteWebDriver driver;
         
 
-        public WebFormField(IWebElement form, IWebFormFieldLocator fieldLocator, List<IFormInputAdapter> supportedImputAdapters, RemoteWebDriver driver)
+        public WebFormField(IWebElement form, IWebFormFieldLocator fieldLocator, List<IFormInputAdapter> supportedImputAdapters)
         {
             this.form = form;
             this.fieldLocator = fieldLocator;
             this.supportedImputAdapters = supportedImputAdapters;
-            this.driver = driver;
             BuildFieldAccessFacility();
         }
 
@@ -46,7 +43,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms
 
         private IStableWebElement FindFieldElement()
         {
-            return fieldLocator.FindFieldElement(driver, form);
+            return fieldLocator.FindFieldElement(form);
         }
 
         public void SetValue(string value)

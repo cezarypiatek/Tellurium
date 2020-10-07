@@ -13,9 +13,9 @@ namespace Tellurium.MvcPages.WebPages.WebForms.FieldLocators
             this.fieldName = fieldName;
         }
 
-        public IStableWebElement FindFieldElement(RemoteWebDriver driver, IWebElement form)
+        public IStableWebElement FindFieldElement(IWebElement form)
         {
-            return driver.GetStableElementByInScope(form, By.Name(fieldName));
+            return form.GetStableElementBy(By.Name(fieldName));
         }
 
         public string GetFieldDescription()
@@ -26,7 +26,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms.FieldLocators
 
     public interface IWebFormFieldLocator
     {
-        IStableWebElement FindFieldElement(RemoteWebDriver driver, IWebElement form);
+        IStableWebElement FindFieldElement(IWebElement form);
         string GetFieldDescription();
     }
 }

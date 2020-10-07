@@ -1,5 +1,4 @@
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 
 namespace Tellurium.MvcPages.SeleniumUtils
 {
@@ -21,15 +20,9 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return new StableWebElement(context, element, by, SearchApproachType.First);
         }
 
-        public static IStableWebElement GetStableElementById(this RemoteWebDriver driver, string elementId, int timeout = 30)
+        public static IStableWebElement GetStableElementBy(this ISearchContext scope, By @by, int timeout = 30)
         {
-            var @by = By.Id(elementId);
-            return GetStableElementByInScope(driver, driver, @by, timeout);
-        }
-
-        public static IStableWebElement GetStableElementByInScope(this RemoteWebDriver driver, ISearchContext scope, By by, int timeout = 30)
-        {
-            var foundElement = StableElementExtensions.GetFirstElement(driver, scope, @by, timeout);
+            var foundElement = StableElementExtensions.GetFirstElement(scope, @by, timeout);
             return new StableWebElement(scope, foundElement, @by, SearchApproachType.First);
         }
     }
