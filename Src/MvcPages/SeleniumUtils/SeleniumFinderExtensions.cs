@@ -18,7 +18,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         /// </summary>
         /// <param name="driver">Selenium driver</param>
         /// <param name="elementId">Id of expected element</param>
-        /// <param name="timeout">Timout for element serch</param>
+        /// <param name="timeout">Timeout for element search</param>
         public static IStableWebElement GetStableAccessibleElementById(this RemoteWebDriver driver, string elementId, int timeout = SearchElementDefaultTimeout)
         {
             By @by = By.Id(elementId);
@@ -31,16 +31,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return new StableWebElement(scope, foundElement, @by, SearchApproachType.FirstAccessible);
         }
 
-        internal static IWebElement FindFirstAccessibleElement(this ISearchContext scope, By locator)
-        {
-            var candidates = scope.FindElements(locator);
-            var foundElement = candidates.FirstAccessibleOrDefault();
-            if (foundElement == null)
-            {
-                throw new CannotFindAccessibleElementByException(locator, scope, candidates);
-            }
-            return foundElement;
-        }
+        
 
         private static IWebElement GetFirstAccessibleElement(RemoteWebDriver driver, By by, ISearchContext scope, int timeout)
         {
@@ -77,30 +68,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return false;
                 }
             });
-        }
-
-        public static IStableWebElement GetStableElementById(this RemoteWebDriver driver, string elementId, int timeout = SearchElementDefaultTimeout)
-        {
-            By @by = By.Id(elementId);
-            return GetStableElementByInScope(driver, driver, @by, timeout);
-        }
-
-        public static IStableWebElement GetStableElementByInScope(this RemoteWebDriver driver, ISearchContext scope, By by, int timeout = 30)
-        {
-            var foundElement = GetFirstElement(driver, scope, @by, timeout);
-            return new StableWebElement(scope,foundElement,@by, SearchApproachType.First);
-        }
-
-        private static IWebElement GetFirstElement(RemoteWebDriver driver, ISearchContext scope, By @by, int timeout)
-        {
-            try
-            {
-                return driver.WaitUntil(timeout, d => scope.FindElement(@by));
-            }
-            catch (WebDriverTimeoutException ex)
-            {
-                throw new CannotFindElementByException(@by, scope, ex);
-            }
         }
 
         public static TResult WaitUntil<TResult>(this RemoteWebDriver driver, int timeout, Func<IWebDriver, TResult> waitPredictor)

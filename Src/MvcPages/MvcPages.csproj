@@ -107,7 +107,6 @@
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\ChromeRemoteInterface.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\ChromeRemoteInterfaceInvocationException.cs" />
     <Compile Include="SeleniumUtils\DefaultPageReloadDetector.cs" />
-    <Compile Include="SeleniumUtils\Exceptions\CannotFindElementByException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotInteractWithElementException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\CannotReloadPageWithException.cs" />
     <Compile Include="SeleniumUtils\Exceptions\ElementIsNotClickableException.cs" />
@@ -122,10 +121,8 @@
     <Compile Include="SeleniumUtils\IPageReloadDetector.cs" />
     <Compile Include="SeleniumUtils\OperaOptionsExtensions.cs" />
     <Compile Include="SeleniumUtils\SeleniumFinderExtensions.cs" />
-    <Compile Include="SeleniumUtils\StableWebElement.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\ReflectionHelper.cs" />
     <Compile Include="SeleniumUtils\ChromeRemoteInterface\WebDriverCommandExecutor.cs" />
-    <Compile Include="SeleniumUtils\WebElementNotFoundException.cs" />
     <Compile Include="Utils\ExceptionHelper.cs" />
     <Compile Include="SeleniumUtils\SeleniumDriverFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -176,6 +173,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tellurium.StableElements\Tellurium.StableElements.csproj">
+      <Project>{64027637-73eb-4188-a5fa-945b112e3719}</Project>
+      <Name>Tellurium.StableElements</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

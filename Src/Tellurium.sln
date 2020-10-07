@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{34917168-5797-4557-86A8-B7BE41F78112}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,6 +23,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualAssertions", "VisualAssertions", "{C65CF928-CE52-4336-AB21-FB40D96C345A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard", "Dashboard\Dashboard.csproj", "{854BC63A-2EDD-4288-A03D-5032CA40C67D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tellurium.StableElements", "Tellurium.StableElements\Tellurium.StableElements.csproj", "{64027637-73EB-4188-A5FA-945B112E3719}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +74,14 @@ Global
 		{854BC63A-2EDD-4288-A03D-5032CA40C67D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{854BC63A-2EDD-4288-A03D-5032CA40C67D}.Release|x64.ActiveCfg = Release|Any CPU
 		{854BC63A-2EDD-4288-A03D-5032CA40C67D}.Release|x64.Build.0 = Release|Any CPU
+		{64027637-73EB-4188-A5FA-945B112E3719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64027637-73EB-4188-A5FA-945B112E3719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64027637-73EB-4188-A5FA-945B112E3719}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{64027637-73EB-4188-A5FA-945B112E3719}.Debug|x64.Build.0 = Debug|Any CPU
+		{64027637-73EB-4188-A5FA-945B112E3719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64027637-73EB-4188-A5FA-945B112E3719}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64027637-73EB-4188-A5FA-945B112E3719}.Release|x64.ActiveCfg = Release|Any CPU
+		{64027637-73EB-4188-A5FA-945B112E3719}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

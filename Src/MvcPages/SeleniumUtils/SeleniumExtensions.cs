@@ -260,7 +260,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
         {
             if (expectedElement is StableWebElement stableElement)
             {
-                return stableElement.Execute(()=> IsElementInteractable(driver, expectedElement));
+                return stableElement.ExecuteSafe((el)=> IsElementInteractable(driver, el));
             }
             return IsElementInteractable(driver, expectedElement);
         }

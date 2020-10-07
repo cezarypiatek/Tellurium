@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
-using Tellurium.MvcPages.Utils;
+using Tellurium.StableElements;
 
 namespace Tellurium.MvcPages.SeleniumUtils
 {
@@ -26,8 +26,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         public void RegenerateElement()
         {
-            var stableParent = parent as IStableWebElement;
-            if (stableParent != null && stableParent.IsStale())
+            if (parent is IStableWebElement stableParent && stableParent.IsStale())
             {
                 stableParent.RegenerateElement();
             }
@@ -68,8 +67,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         public string GetDescription()
         {
-            var stableParent = parent as IStableWebElement;
-            var parentDescription = stableParent != null ? stableParent.GetDescription() : null;
+            var parentDescription = parent is IStableWebElement stableParent ? stableParent.GetDescription() : null;
             var thisDescription = $"'{this.locator}'";
             return parentDescription == null ? thisDescription : $"{thisDescription} inside {parentDescription}";
         }
@@ -83,7 +81,14 @@ namespace Tellurium.MvcPages.SeleniumUtils
             return element;
         }
 
-        internal T Execute<T>(Func<T> function)
+        public T ExecuteSafe<T>(Func<IWebElement, T> action)
+        {
+            T result = default(T);
+            Execute(() => result =  action(element));
+            return result;
+        }
+
+        private T Execute<T>(Func<T> function)
         {
             T result = default (T);
             Execute(() => { result = function(); });
@@ -191,46 +196,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
                 }
                 throw new NotSupportedException($"Element {this.GetDescription()} does not have information about driver");
             }
-        }
-    }
-
-    public interface IStableWebElement : IWebElement, ILocatable, ITakesScreenshot, IWrapsElement, IWrapsDriver
-    {
-        void RegenerateElement();
-        bool IsStale();
-        string GetDescription();
-    }
-
-    internal static class GenericHelpers
-    {
-        public static TInterface As<TInterface>(this IWebElement element) where TInterface : class
-        {
-            var typed = element as TInterface;
-            if (typed == null)
-            {
-                var errorMessage = $"Underlying element does not support this operation. It should implement {typeof(TInterface).FullName} interface";
-                throw new NotSupportedException(errorMessage);
-            }
-            return typed;
-        }
-    }
-
-    internal static class StableElementExtensions
-    {
-        public static IStableWebElement FindStableElement(this ISearchContext context, By by)
-        {
-            var element = context.FindElement(by);
-            return new StableWebElement(context, element, by, SearchApproachType.First);
-        } 
-        
-        public static IStableWebElement TryFindStableElement(this ISearchContext context, By by)
-        {
-            var element = context.TryFindElement(by);
-            if (element == null)
-            {
-                return null;
-            }
-            return new StableWebElement(context, element, by, SearchApproachType.First);
         }
     }
 
