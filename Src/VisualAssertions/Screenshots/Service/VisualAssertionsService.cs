@@ -139,6 +139,12 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
 
         private TestResult GetTestResult(byte[] image, ScreenshotIdentity screenshotIdentity, BrowserPattern browserPattern, BrowserPattern newPattern)
         {
+            if (image == null)
+                throw new ArgumentNullException(nameof(image));
+
+            if (screenshotIdentity == null)
+                throw new ArgumentNullException(nameof(screenshotIdentity));
+
             var testResult = new TestResult
             {
                 Pattern = newPattern ?? browserPattern,
