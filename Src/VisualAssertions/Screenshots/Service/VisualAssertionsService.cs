@@ -68,6 +68,9 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
 
         private TestSession GetCurrentTestSession(Project project)
         {
+            if (project == null)
+                throw new ArgumentNullException(nameof(project));
+
             if (project.Sessions == null)
             {
                 throw new InvalidOperationException("Sessions cannot be null");
@@ -87,6 +90,9 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
 
         private void CheckScreenshotWithPattern(Screenshot screenshot)
         {
+            if (screenshot == null)
+                throw new ArgumentNullException(nameof(screenshot));
+
             byte[] image = screenshot.Data;
             ScreenshotIdentity screenshotIdentity = screenshot.Identity;
             try
