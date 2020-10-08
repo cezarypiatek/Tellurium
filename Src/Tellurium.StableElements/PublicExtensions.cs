@@ -20,7 +20,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
 
         /// <summary>
         ///     Search for a given element in the current DOM tree fragment.
-        ///     Return null if expected element doesn't exist.
+        ///     Returns null if expected element doesn't exist.
         /// </summary>
         /// <param name="scope">Searching scope</param>
         /// <param name="locator">Expected element locator</param>

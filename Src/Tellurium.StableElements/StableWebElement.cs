@@ -111,7 +111,12 @@ namespace Tellurium.MvcPages.SeleniumUtils
             }
         }
 
-        public IWebElement FindElement(By by) => Execute(() => element.FindElement(@by));
+        public IWebElement FindElement(By by)
+        {
+            var foundElement = Execute(() => element.FindElement(@by));
+            return new StableWebElement(this,  foundElement, by, SearchApproachType.First);
+        }
+
         public ReadOnlyCollection<IWebElement> FindElements(By by) => Execute(() => element.FindElements(@by));
         public void Clear() => Execute(() => element.Clear());
         public void SendKeys(string text) => Execute(() => element.SendKeys(text));
