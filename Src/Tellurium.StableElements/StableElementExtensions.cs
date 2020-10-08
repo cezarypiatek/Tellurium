@@ -2,21 +2,20 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 
 namespace Tellurium.MvcPages.SeleniumUtils
 {
     internal static class StableElementExtensions
     {
-        internal static string GetElementDescription(this ISearchContext element)
+        public static string GetElementDescription(this ISearchContext element)
         {
             var stableElement = element as IStableWebElement;
             return stableElement?.GetDescription() ?? string.Empty;
         }
 
 
-        internal static IWebElement TryFindElement(this ISearchContext context, By by)
+        public static IWebElement TryFindElement(this ISearchContext context, By by)
         {
             try
             {
@@ -28,7 +27,7 @@ namespace Tellurium.MvcPages.SeleniumUtils
             }
         }
 
-        internal static IWebElement FindFirstAccessibleElement(this ISearchContext scope, By locator)
+        public static IWebElement FindFirstAccessibleElement(this ISearchContext scope, By locator)
         {
             var candidates = scope.FindElements(locator);
             var foundElement = candidates.FirstAccessibleOrDefault();
@@ -57,26 +56,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
                     return false;
                 }
             });
-        }
-
-
-
-        internal static IWebElement GetFirstElement(ISearchContext scope, By @by, int timeout)
-        {
-            try
-            {
-                return WaitUntil(timeout, d => scope.FindElement(@by));
-            }
-            catch (WebDriverTimeoutException ex)
-            {
-                throw new CannotFindElementByException(@by, scope, ex);
-            }
-        }
-
-        private static TResult WaitUntil<TResult>(int timeout, Func<object, TResult> waitPredictor)
-        {
-            var waiter = new StatelessWait(TimeSpan.FromSeconds(timeout));
-            return waiter.Until(waitPredictor);
         }
     }
 }

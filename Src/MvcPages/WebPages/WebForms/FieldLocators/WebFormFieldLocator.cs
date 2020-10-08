@@ -15,7 +15,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms.FieldLocators
 
         public IStableWebElement FindFieldElement(IWebElement form)
         {
-            return form.GetStableElementBy(By.Name(fieldName));
+            return form.GetStableElement(By.Name(fieldName));
         }
 
         public string GetFieldDescription()

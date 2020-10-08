@@ -1,29 +1,66 @@
+using System;
 using OpenQA.Selenium;
+using Tellurium.MvcPages.SeleniumUtils.Exceptions;
 
 namespace Tellurium.MvcPages.SeleniumUtils
 {
     public static class PublicExtensions
     {
-        public static IStableWebElement FindStableElement(this ISearchContext context, By by)
+        /// <summary>
+        ///     Search for a given element in the current DOM tree fragment.
+        ///     Fail if expected element doesn't exist.
+        /// </summary>
+        /// <param name="scope">Searching scope</param>
+        /// <param name="locator">Expected element locator</param>
+        public static IStableWebElement FindStableElement(this ISearchContext scope, By locator)
         {
-            var element = context.FindElement(by);
-            return new StableWebElement(context, element, by, SearchApproachType.First);
+            var element = scope.FindElement(locator);
+            return new StableWebElement(scope, element, locator, SearchApproachType.First);
         }
 
-        public static IStableWebElement TryFindStableElement(this ISearchContext context, By by)
+        /// <summary>
+        ///     Search for a given element in the current DOM tree fragment.
+        ///     Return null if expected element doesn't exist.
+        /// </summary>
+        /// <param name="scope">Searching scope</param>
+        /// <param name="locator">Expected element locator</param>
+        public static IStableWebElement TryFindStableElement(this ISearchContext scope, By locator)
         {
-            var element = context.TryFindElement(by);
-            if (element == null)
+            var element = scope.TryFindElement(locator);
+            if (element == null) return null;
+            return new StableWebElement(scope, element, locator, SearchApproachType.First);
+        }
+
+        /// <summary>
+        ///     Search for a given element in the DOM tree fragment.
+        ///     Fail if expected element is not found withing a given time period.
+        /// </summary>
+        /// <param name="scope">Searching scope</param>
+        /// <param name="locator">Expected element locator</param>
+        /// <param name="timeout"></param>
+        public static IStableWebElement GetStableElement(this ISearchContext scope, By locator, int timeout = 30)
+        {
+            var foundElement = AwaitElement(scope, locator, timeout);
+            return new StableWebElement(scope, foundElement, locator, SearchApproachType.First);
+        }
+
+
+        private static IWebElement AwaitElement(ISearchContext scope, By @by, int timeout)
+        {
+            try
             {
-                return null;
+                return WaitUntil(timeout, d => scope.FindElement(@by));
             }
-            return new StableWebElement(context, element, by, SearchApproachType.First);
+            catch (WebDriverTimeoutException ex)
+            {
+                throw new CannotFindElementByException(@by, scope, ex);
+            }
         }
 
-        public static IStableWebElement GetStableElementBy(this ISearchContext scope, By @by, int timeout = 30)
+        private static TResult WaitUntil<TResult>(int timeout, Func<object, TResult> waitPredictor)
         {
-            var foundElement = StableElementExtensions.GetFirstElement(scope, @by, timeout);
-            return new StableWebElement(scope, foundElement, @by, SearchApproachType.First);
+            var waiter = new StatelessWait(TimeSpan.FromSeconds(timeout));
+            return waiter.Until(waitPredictor);
         }
     }
 }

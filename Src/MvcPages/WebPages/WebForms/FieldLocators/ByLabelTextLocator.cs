@@ -19,14 +19,14 @@ namespace Tellurium.MvcPages.WebPages.WebForms.FieldLocators
         {
             var labelTextLiteral = XPathHelpers.ToXPathLiteral(labelText.Trim());
             var byLabelText = By.XPath($".//label[normalize-space(text()) = {labelTextLiteral}]");
-            var labelElement = form.GetStableElementBy(byLabelText);
+            var labelElement = form.GetStableElement(byLabelText);
             var inputId = labelElement.GetAttribute("for");
             if(string.IsNullOrWhiteSpace(inputId))
             {
                 throw new ArgumentException($"Label with text '{labelText}' has empty 'for' attribute");
             }
             var byInputId = By.Id(inputId);
-            return form.GetStableElementBy(byInputId);
+            return form.GetStableElement(byInputId);
         }
 
         public string GetFieldDescription()

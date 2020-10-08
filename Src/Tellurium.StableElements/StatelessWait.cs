@@ -6,11 +6,6 @@ namespace Tellurium.MvcPages.SeleniumUtils
 {
     internal class StatelessWait : DefaultWait<object>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:OpenQA.Selenium.Support.UI.WebDriverWait" /> class.
-        /// </summary>
-        /// <param name="driver">The WebDriver instance used to wait.</param>
-        /// <param name="timeout">The timeout value indicating how long to wait for the condition.</param>
         public StatelessWait(TimeSpan timeout)
             : this((IClock)new SystemClock(), timeout, DefaultSleepTimeout)
         {

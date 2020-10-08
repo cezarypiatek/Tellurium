@@ -32,17 +32,12 @@ namespace Tellurium.MvcPages.SeleniumUtils
             }
             try
             {
-                switch (searchApproach)
+                this.element = searchApproach switch
                 {
-                    case SearchApproachType.First:
-                        this.element = this.parent.FindElement(locator);
-                        break;
-                    case SearchApproachType.FirstAccessible:
-                        this.element = this.parent.FindFirstAccessibleElement(locator);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(searchApproach));
-                }
+                    SearchApproachType.First => this.parent.FindElement(locator),
+                    SearchApproachType.FirstAccessible => this.parent.FindFirstAccessibleElement(locator),
+                    _ => throw new NotSupportedException($"Value '{searchApproach}' for '{nameof(searchApproach)}' is not supported.")
+                };
             }
             catch(Exception ex)
             {
@@ -112,78 +107,29 @@ namespace Tellurium.MvcPages.SeleniumUtils
             });
             if (success == false)
             {
-                throw new WebElementNotFoundException("Element is no longer accessible");
+                throw new CannotFindElementByException(this.locator, this.parent);
             }
         }
 
-        public IWebElement FindElement(By by)
-        {
-            return Execute(() => element.FindElement(by));
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElements(By by)
-        {
-            return Execute(() => element.FindElements(by));
-        }
-
-        public void Clear()
-        {
-            Execute(() => element.Clear());
-        }
-
-        public void SendKeys(string text)
-        {
-            Execute(() => element.SendKeys(text));
-        }
-
-        public void Submit()
-        {
-            Execute(() => element.Submit());
-        }
-
-        public void Click()
-        {
-            Execute(() => element.Click());
-        }
-
-        public string GetAttribute(string attributeName)
-        {
-            return Execute(() => element.GetAttribute(attributeName));
-        }
-
-        public string GetProperty(string propertyName)
-        {
-            return Execute(() => element.GetProperty(propertyName));
-        }
-
-        public string GetCssValue(string propertyName)
-        {
-            return Execute(() => element.GetCssValue(propertyName));
-        }
-
-        public string TagName { get { return Execute(() => element.TagName); } }
-        public string Text { get { return Execute(() => element.Text); } }
-        public bool Enabled { get { return Execute(() => element.Enabled); } }
-        public bool Selected { get { return Execute(() => element.Selected); } }
-        public Point Location { get { return Execute(() => element.Location); } }
-        public Size Size { get { return Execute(() => element.Size); } }
-        public bool Displayed { get { return Execute(() => element.Displayed); } }
-
-        public Point LocationOnScreenOnceScrolledIntoView
-        {
-            get { return Execute(() => element.As<ILocatable>().LocationOnScreenOnceScrolledIntoView); }
-        }
-
-        public ICoordinates Coordinates
-        {
-            get { return Execute(() => element.As<ILocatable>().Coordinates); }
-        }
-
-        public Screenshot GetScreenshot()
-        {
-            return Execute(() => element.As<ITakesScreenshot>().GetScreenshot());
-        }
-
+        public IWebElement FindElement(By by) => Execute(() => element.FindElement(@by));
+        public ReadOnlyCollection<IWebElement> FindElements(By by) => Execute(() => element.FindElements(@by));
+        public void Clear() => Execute(() => element.Clear());
+        public void SendKeys(string text) => Execute(() => element.SendKeys(text));
+        public void Submit() => Execute(() => element.Submit());
+        public void Click() => Execute(() => element.Click());
+        public string GetAttribute(string attributeName) => Execute(() => element.GetAttribute(attributeName));
+        public string GetProperty(string propertyName) => Execute(() => element.GetProperty(propertyName));
+        public string GetCssValue(string propertyName) => Execute(() => element.GetCssValue(propertyName));
+        public string TagName => Execute(() => element.TagName);
+        public string Text => Execute(() => element.Text);
+        public bool Enabled => Execute(() => element.Enabled);
+        public bool Selected => Execute(() => element.Selected);
+        public Point Location => Execute(() => element.Location);
+        public Size Size => Execute(() => element.Size);
+        public bool Displayed => Execute(() => element.Displayed);
+        public Point LocationOnScreenOnceScrolledIntoView => Execute(() => element.As<ILocatable>().LocationOnScreenOnceScrolledIntoView);
+        public ICoordinates Coordinates => Execute(() => element.As<ILocatable>().Coordinates);
+        public Screenshot GetScreenshot() => Execute(() => element.As<ITakesScreenshot>().GetScreenshot());
         public IWebElement WrappedElement => Unwrap();
 
         public IWebDriver WrappedDriver
