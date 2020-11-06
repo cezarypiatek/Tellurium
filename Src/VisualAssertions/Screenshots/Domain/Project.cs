@@ -19,7 +19,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
             TestCaseCategories = new List<TestCaseCategory>();
         }
 
-        public virtual  void AddSession(TestSession session)
+        public virtual void AddSession(TestSession session)
         {
             session.Project = this;
             Sessions.Add(session);

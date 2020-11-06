@@ -19,8 +19,8 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
         private readonly ISessionContext sessionContext;
 
         public TestResultService(IRepository<TestResult> testRepository, 
-            IRepository<TestSession>  testSessionRepository,
-            IRepository<Project>  projectRepository,
+            IRepository<TestSession> testSessionRepository,
+            IRepository<Project> projectRepository,
             ISessionContext sessionContext
         )
         {
@@ -103,13 +103,12 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
                 TestResultId = x.Id,
                 TestCaseId = x.Pattern.TestCase.Id,
                 TestPatternId = x.Pattern.Id,
-                TestPassed = x.Status==TestResultStatus.Passed,
-                TestFailed = x.Status==TestResultStatus.Failed,
-                ScreenshotName = string.Format("{0} \\ {1}", x.Category, x.ScreenshotName),
+                TestPassed = x.Status == TestResultStatus.Passed,
+                TestFailed = x.Status == TestResultStatus.Failed,
+                ScreenshotName = $"{x.Category} \\ {x.ScreenshotName}",
                 CanShowMarkAsPattern = x.Status == TestResultStatus.Failed && x.Pattern.IsActive,
             };
         }
-
 
         public TestSessionListViewModel GetTestSessionsFromProject(long projectId)
         {
