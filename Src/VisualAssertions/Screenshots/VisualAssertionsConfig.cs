@@ -1,5 +1,6 @@
 ﻿using System;
 using Tellurium.VisualAssertions.Screenshots.Service;
+using Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies;
 
 namespace Tellurium.VisualAssertions.Screenshots
 {
