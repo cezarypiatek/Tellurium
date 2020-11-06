@@ -13,7 +13,23 @@
     {
         <tr>
             <td>
-                @sessionInfo.StartDate
+                <p>@sessionInfo.StartDate</p>
+                @if (sessionInfo.ContinousIntegration != null)
+                {
+                    var ci = sessionInfo.ContinousIntegration;
+                    @if (ci.BranchName != null)
+                    {
+                        <p>Branch: @ci.BranchName</p>
+                    }
+                    @if (ci.CommitTitle != null)
+                    {
+                        <p>Commit title: @ci.CommitTitle</p>
+                    }
+                    @if (ci.CommitHash != null)
+                    {
+                        <p>Commit hash: @ci.CommitHash</p>
+                    }
+                }
             </td>
             <td>
                 <div class="btn-toolbar">
