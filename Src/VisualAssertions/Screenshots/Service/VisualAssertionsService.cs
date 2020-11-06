@@ -129,6 +129,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
 
                     transaction.Commit();
                 }
+
                 finishNotification.Invoke();
             }
             catch (Exception ex)
