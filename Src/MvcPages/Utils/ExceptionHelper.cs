@@ -26,6 +26,7 @@ namespace Tellurium.MvcPages.Utils
                 return defaultValue;
             }
         }
+
         public static void SwallowException(Action func)
         {
             try
@@ -34,7 +35,7 @@ namespace Tellurium.MvcPages.Utils
             }
             catch
             {
-                
+                // Code block intentionally empty
             }
         }
     }

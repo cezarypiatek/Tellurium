@@ -30,7 +30,7 @@ namespace Tellurium.VisualAssertion.Dashboard.Mvc.Widgets
         protected void SetOption(string optionName, object value)
         {
             var dashedOptionName = CamelCaseToDashSeparated(optionName).ToLower();
-            var optionKey = string.Format("data-ui-{0}-{1}", widgetName, dashedOptionName);
+            var optionKey = $"data-ui-{widgetName}-{dashedOptionName}";
             options[optionKey] = value == null?"": value.ToString();
         }
 
