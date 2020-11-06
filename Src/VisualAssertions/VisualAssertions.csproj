@@ -120,6 +120,7 @@
     <Compile Include="Screenshots\Service\ComparisonStrategies\PixelByPixelComparisonStrategy.cs" />
     <Compile Include="Screenshots\Domain\ScreenshotIdentity.cs" />
     <Compile Include="Screenshots\Service\Screenshot.cs" />
+    <Compile Include="Screenshots\Service\ContinousIntegration.cs" />
     <Compile Include="Screenshots\Utils\DateTimeExtensions.cs" />
     <Compile Include="Screenshots\Utils\TaskProcessing\AsynchronousTaskProcessor.cs" />
     <Compile Include="Screenshots\Utils\TaskProcessing\ITaskProcessor.cs" />

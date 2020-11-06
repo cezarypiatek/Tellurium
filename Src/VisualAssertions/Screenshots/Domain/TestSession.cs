@@ -10,6 +10,9 @@ namespace Tellurium.VisualAssertions.Screenshots.Domain
         public virtual IList<TestResult> TestResults { get; set; }
         public virtual ISet<string> Browsers { get; set; }
         public virtual Project Project { get; set; }
+        public virtual string BranchName { get; set; }
+        public virtual string CommitHash { get; set; }
+        public virtual string CommitTitle { get; set; }
 
         public TestSession()
         {
