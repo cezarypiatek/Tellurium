@@ -120,7 +120,13 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
                 {
                     SessionId = x.Id,
                     StartDate = x.StartDate.ToString("g"),
-                    Browsers = x.Browsers.OrderBy(b=>b).ToList()
+                    Browsers = x.Browsers.OrderBy(b=>b).ToList(),
+                    ContinousIntegration = new ContinousIntegrationDTO()
+                    {
+                        BranchName = x.BranchName,
+                        CommitHash = x.CommitHash,
+                        CommitTitle = x.CommitTitle
+                    }
                 }).ToList()
             };
         }
@@ -266,5 +272,13 @@ namespace Tellurium.VisualAssertion.Dashboard.Services.TestResults
         public string StartDate { get; set; }
         public long  SessionId { get; set; }
         public List<string> Browsers { get; set; }
+        public ContinousIntegrationDTO ContinousIntegration { get; set; }
+    }
+
+    public class ContinousIntegrationDTO
+    {
+        public string BranchName { get; set; }
+        public string CommitTitle { get; set; }
+        public string CommitHash { get; set; }
     }
 }

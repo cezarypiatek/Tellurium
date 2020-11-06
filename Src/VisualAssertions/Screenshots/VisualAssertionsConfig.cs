@@ -1,5 +1,5 @@
 ﻿using System;
-using Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies;
+using Tellurium.VisualAssertions.Screenshots.Service;
 
 namespace Tellurium.VisualAssertions.Screenshots
 {
@@ -11,7 +11,7 @@ namespace Tellurium.VisualAssertions.Screenshots
         public Action<string> TestOutputWriter { get; set; }
         public bool ProcessScreenshotsAsynchronously { get; set; }
 
-        /// <summary>
+        public ContinousIntegration ContinousIntegration { get; set; }
         /// It is possible to implement custom comparison strategy by supplying a class implementing IScreenshotComparisonStrategy interface
         /// </summary>
         public IScreenshotComparisonStrategy ScreenshotComparisonStrategy { get; set; }

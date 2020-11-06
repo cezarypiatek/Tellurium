@@ -10,7 +10,6 @@ using Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies;
 using Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing;
 using Tellurium.VisualAssertions.TestRunnersAdapters;
 
-
 namespace Tellurium.VisualAssertions.Screenshots.Service
 {
     public class VisualAssertionsService : IDisposable
@@ -18,6 +17,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
         public string ProjectName { get; set; }
         public string ScreenshotCategory { get; set; }
         public string BrowserName { get; set; }
+        public ContinousIntegration ContinousIntegration { get; set; }
 
         private ITaskProcessor<Screenshot> ScreenshotProcessor;
         private readonly IRepository<Project> projectRepository;
@@ -81,7 +81,10 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
             {
                 testSession = new TestSession
                 {
-                    StartDate = currentStartDate
+                    StartDate = currentStartDate,
+                    CommitHash = this.ContinousIntegration?.CommitHash,
+                    CommitTitle = this.ContinousIntegration?.CommitTitle,
+                    BranchName = this.ContinousIntegration?.BranchName
                 };
                 project.AddSession(testSession);
             }
