@@ -125,12 +125,10 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
             {
                 case PixelFormat.Format24bppRgb:
                     return 24;
-                    break;
                 case PixelFormat.Format32bppArgb:
                 case PixelFormat.Format32bppPArgb:
                 case PixelFormat.Format32bppRgb:
                     return 32;
-                    break;
                 default:
                     throw new ArgumentException("Only 24 and 32 bit images are supported");
 
