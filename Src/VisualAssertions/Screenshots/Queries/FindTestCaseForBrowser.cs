@@ -4,7 +4,7 @@ using Tellurium.VisualAssertions.Screenshots.Domain;
 
 namespace Tellurium.VisualAssertions.Screenshots.Queries
 {
-    public class FindTestCaseForBrowser:IQueryOne<TestCase>
+    public class FindTestCaseForBrowser : IQueryOne<TestCase>
     {
         private string screenshotName;
         private string browserName;
