@@ -62,9 +62,11 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
 
         private static string ToAbsolutePath(string filePath)
         {
-            if (AppDomain.CurrentDomain.SetupInformation.PrivateBinPath != null)
+			// TODO: This needs to be reworked if we want to target .NET Core (however it will work on .NET 5.0)
+            string privateBinPath = AppDomain.CurrentDomain.SetupInformation.PrivateBinPath;
+            if (privateBinPath != null)
             {
-                foreach (var rootPath in AppDomain.CurrentDomain.SetupInformation.PrivateBinPath.Split(';'))
+                foreach (var rootPath in privateBinPath.Split(';'))
                 {
                     var absolutePath = Path.Combine(System.AppContext.BaseDirectory, rootPath, filePath);
                     if (File.Exists(absolutePath))
