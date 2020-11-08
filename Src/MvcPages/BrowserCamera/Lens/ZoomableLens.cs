@@ -3,7 +3,7 @@ using OpenQA.Selenium.Remote;
 
 namespace Tellurium.MvcPages.BrowserCamera.Lens
 {
-    public class ZoomableLens:IBrowserCameraLens
+    public class ZoomableLens : IBrowserCameraLens
     {
         private readonly RemoteWebDriver driver;
 

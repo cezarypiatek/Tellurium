@@ -2,7 +2,7 @@ using Castle.Windsor;
 
 namespace Tellurium.VisualAssertion.Dashboard.Mvc.Utils
 {
-    public class ServiceLocator
+    public static class ServiceLocator
     {
         private static IWindsorContainer _container;
 

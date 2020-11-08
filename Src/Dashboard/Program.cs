@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using Topshelf;
 
 namespace Tellurium.VisualAssertion.Dashboard
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Tellurium.MvcPages.EndpointCoverage.EndpointExplorers
 {
-    public class CompositeEndpointExplorer:IEndpointExplorer
+    public class CompositeEndpointExplorer : IEndpointExplorer
     {
         private readonly IEndpointExplorer[] endpointsExplorers;
 

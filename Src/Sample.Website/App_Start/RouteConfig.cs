@@ -3,7 +3,7 @@ using System.Web.Routing;
 
 namespace Tellurium.Sample.Website
 {
-    public class RouteConfig
+    public static class RouteConfig
     {
         public static void RegisterRoutes(RouteCollection routes)
         {

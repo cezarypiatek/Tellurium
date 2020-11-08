@@ -48,7 +48,7 @@ namespace Tellurium.MvcPages.EndpointCoverage.EndpointExplorers
             return assembly.GetTypes().Where(InheritFromController).ToList();
         }
 
-        const string AspControllerNamespace = "System.Web.Mvc.Controller";
+        private const string AspControllerNamespace = "System.Web.Mvc.Controller";
         private const string AspCoreControllerNamespace = "Microsoft.AspNetCore.Mvc";
 
         private static bool InheritFromController(Type t)
