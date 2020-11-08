@@ -7,7 +7,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms.DefaultInputAdapters
     {
         public bool CanHandle(IWebElement webElement)
         {
-            if (webElement.TagName.ToLower() == "textarea")
+            if (string.Equals(webElement.TagName, "textarea", System.StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
