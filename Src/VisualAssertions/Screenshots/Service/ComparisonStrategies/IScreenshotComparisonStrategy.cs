@@ -5,7 +5,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
     public interface IScreenshotComparisonStrategy
     {
         /// <summary>
-        /// 
+        /// It is possible to implement custom comparison strategy by supplying a class implementing IScreenshotComparisonStrategy interface
         /// </summary>
         /// <param name="browserPattern"></param>
         /// <param name="screenshot"></param>

@@ -8,15 +8,45 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
 {
     public class PixelByPixelComparisonStrategy : IScreenshotComparisonStrategy
     {
-        public PixelByPixelComparisonParameters ComparisonParameters { get; }
+        /// <summary>
+        /// Percentage of pixels that can be different when matching two images.
+        /// If percentage of pixels that are different is greater than this value then the images are considered unmatched
+        /// </summary>
+        /// <remarks>
+        /// Accepted values: <0.0, 100.0>
+        /// </remarks>
+        public decimal? MaxPercentOfUnmatchedPixels { get; }
 
-        public PixelByPixelComparisonStrategy(PixelByPixelComparisonParameters comparisonParameters)
+        /// <summary>
+        /// Number of pixels that can be different when matching two images.
+        /// If number of pixels that are different is greater than this value then the images are considered unmatched
+        /// </summary>
+        public uint? PixelToleranceCount { get; }
+
+        public PixelByPixelComparisonStrategy(decimal maxPercentOfUnmatchedPixels)
         {
-            ComparisonParameters = comparisonParameters;
+            if (maxPercentOfUnmatchedPixels < 0)
+                throw new ArgumentOutOfRangeException($"{nameof(maxPercentOfUnmatchedPixels)} cannot be less than zero");
+
+            if (maxPercentOfUnmatchedPixels > 100)
+                throw new ArgumentOutOfRangeException($"{nameof(maxPercentOfUnmatchedPixels)} cannot be higher than 100");
+
+            MaxPercentOfUnmatchedPixels = maxPercentOfUnmatchedPixels;
+        }
+
+        public PixelByPixelComparisonStrategy(uint pixelToleranceCount)
+        {
+            PixelToleranceCount = pixelToleranceCount;
+        }
+
+        public PixelByPixelComparisonStrategy(decimal maxPercentOfUnmatchedPixels, uint pixelToleranceCount)
+        {
+            MaxPercentOfUnmatchedPixels = maxPercentOfUnmatchedPixels;
+            PixelToleranceCount = pixelToleranceCount;
         }
 
         /// <summary>
-        /// Compares images pixel by pixel with a specified tolerance defined by PixelToleranceCount and PixelColorToleranceCount
+        /// Compares images pixel by pixel with a specified tolerance defined by PixelToleranceCount and/or PixelColorToleranceCount
         /// </summary>
         public bool Compare(BrowserPattern browserPattern, byte[] screenshot, out string resultMessage)
         {
@@ -52,23 +82,35 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
                 return false;
             }
 
-            var numberOfUnmatchedPixels = CountUnmatchedPixels(patternBitmap, screenshotBitmap);
+            var umatchedPixelsCount = CountUnmatchedPixels(patternBitmap, screenshotBitmap);
 
-            var percentOfUnmatchedPixels = (numberOfUnmatchedPixels * 100.0) / (patternBitmap.Width * patternBitmap.Height) ;
-            var areMatchedByPixelCount = numberOfUnmatchedPixels <= ComparisonParameters.PixelToleranceCount;
-            var areMatchedByAllowedMaximumDifferenceInPercent = percentOfUnmatchedPixels <= ComparisonParameters.MaxPercentOfUnmatchedPixels;
+            resultMessage = "";
 
-            resultMessage = "\r\n+---" + (areMatchedByPixelCount ? "[PASS] Images match" : "[FAIL] Images do not match") +
-                            $" within specified pixel tolerance: {numberOfUnmatchedPixels}" +
-                            $" <= {ComparisonParameters.PixelToleranceCount}";
+            bool areMatched = false;
+            if (PixelToleranceCount != null)
+            {
+                var areMatchedByPixelCount = umatchedPixelsCount <= PixelToleranceCount;
+                resultMessage += "\r\n+---" + (areMatchedByPixelCount ? "[PASS] Images match" : "[FAIL] Images do not match") +
+                                $" within specified pixel tolerance: {umatchedPixelsCount} <= {PixelToleranceCount}";
+                areMatched = areMatchedByPixelCount;
+            }
 
-            resultMessage += $"\r\n+---" + (areMatchedByAllowedMaximumDifferenceInPercent ? "[PASS] Images match" : "[FAIL] Images do not match") +
-                            " within specified percent of tolerance: " +
-                            $"{percentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}%" +
-                            " <= " +
-                            $"{ComparisonParameters.MaxPercentOfUnmatchedPixels.ToString("0.######", CultureInfo.InvariantCulture)}%";
+            if (MaxPercentOfUnmatchedPixels != null)
+            {
+                int pixelsTotalCount = patternBitmap.Width * patternBitmap.Height;
+                var unmatchedPixelsPercent = (umatchedPixelsCount * 100.0m) / pixelsTotalCount;
+                unmatchedPixelsPercent = Math.Round(unmatchedPixelsPercent, 2);
+                var areMatchedByAllowedMaximumDifferenceInPercent = unmatchedPixelsPercent <= MaxPercentOfUnmatchedPixels;
 
-            return areMatchedByPixelCount && areMatchedByAllowedMaximumDifferenceInPercent;
+                resultMessage += $"\r\n+---" + (areMatchedByAllowedMaximumDifferenceInPercent ? "[PASS] Images match" : "[FAIL] Images do not match") +
+                                " within specified percent of tolerance: " +
+                                $"{unmatchedPixelsPercent.ToString(CultureInfo.InvariantCulture)}%" +
+                                " <= " +
+                                $"{((decimal) MaxPercentOfUnmatchedPixels).ToString(CultureInfo.InvariantCulture)}% ({umatchedPixelsCount}px/{pixelsTotalCount}px)";
+                areMatched = areMatched || areMatchedByAllowedMaximumDifferenceInPercent;
+            }
+
+            return areMatched;
         }
 
         private static bool AreBitmapsOfEqualSize(Bitmap patternBitmap, Bitmap screenshotBitmap)
@@ -82,7 +124,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
         /// <param name="pattern"></param>
         /// <param name="screenshot"></param>
         /// <returns></returns>
-        public int CountUnmatchedPixels(Bitmap pattern, Bitmap screenshot)
+        private int CountUnmatchedPixels(Bitmap pattern, Bitmap screenshot)
         {
             if (pattern == null)
                 throw new ArgumentNullException(nameof(pattern));
