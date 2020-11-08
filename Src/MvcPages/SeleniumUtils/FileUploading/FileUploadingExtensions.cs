@@ -62,23 +62,25 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
 
         private static string ToAbsolutePath(string filePath)
         {
-            if (AppDomain.CurrentDomain.SetupInformation.PrivateBinPath != null)
+			// TODO: This needs to be reworked if we want to target .NET Core (however it will work on .NET 5.0)
+            string privateBinPath = AppDomain.CurrentDomain.SetupInformation.PrivateBinPath;
+            if (privateBinPath != null)
             {
-                foreach (var rootPath in AppDomain.CurrentDomain.SetupInformation.PrivateBinPath.Split(';'))
+                foreach (var rootPath in privateBinPath.Split(';'))
                 {
-                    var absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, rootPath, filePath);
+                    var absolutePath = Path.Combine(System.AppContext.BaseDirectory, rootPath, filePath);
                     if (File.Exists(absolutePath))
                     {
                         return absolutePath;
                     }
                 }
             }
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
+            return Path.Combine(System.AppContext.BaseDirectory, filePath);
         }
 
-        private static string ReadFileContentFromEmbededResource(string fileName)
+        private static string ReadFileContentFromEmbeddedResource(string fileName)
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = typeof(FileUploadingExtensions).GetTypeInfo().Assembly;
             var currentNamespace = typeof(FileUploadingExtensions).Namespace;
             using (Stream stream = assembly.GetManifestResourceStream($"{currentNamespace}.{fileName}"))
             {

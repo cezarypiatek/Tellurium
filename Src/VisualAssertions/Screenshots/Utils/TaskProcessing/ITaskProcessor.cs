@@ -2,7 +2,7 @@
 
 namespace Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing
 {
-    public interface ITaskProcessor<T>: IDisposable
+    public interface ITaskProcessor<T> : IDisposable
     {
         void Post(T data);
     }

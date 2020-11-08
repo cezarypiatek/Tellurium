@@ -20,7 +20,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing
 
     enum TaskProcessorType
     {
-        Sync=1,
+        Sync = 1,
         Async
     }
 }

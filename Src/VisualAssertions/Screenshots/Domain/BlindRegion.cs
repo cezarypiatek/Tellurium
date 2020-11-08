@@ -1,4 +1,3 @@
-using Tellurium.MvcPages.BrowserCamera;
 using Tellurium.VisualAssertions.Infrastructure;
 
 namespace Tellurium.VisualAssertions.Screenshots.Domain

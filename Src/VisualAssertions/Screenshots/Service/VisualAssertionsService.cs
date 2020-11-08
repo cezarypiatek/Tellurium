@@ -42,10 +42,12 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
         public void CheckViewWithPattern(IBrowserCamera browserCamera, string viewName)
         {
             var screenshotIdentity = new ScreenshotIdentity(ProjectName, BrowserName, ScreenshotCategory, viewName);
+
             if (takenScreenshots.Contains(screenshotIdentity))
             {
                 throw new DuplicatedScreenshotInSession(screenshotIdentity);
             }
+
             var screenshot = browserCamera.TakeScreenshot();
             takenScreenshots.Add(screenshotIdentity);
             ScreenshotProcessor.Post(new Screenshot

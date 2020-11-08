@@ -38,6 +38,7 @@ namespace Tellurium.MvcPages.BrowserCamera.Lens
             {
                 return new ResizeableLens(webDriver);
             }
+
             return new RegularLens(webDriver);
         }
 

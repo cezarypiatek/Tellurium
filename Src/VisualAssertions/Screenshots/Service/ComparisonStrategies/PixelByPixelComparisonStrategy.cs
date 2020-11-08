@@ -133,7 +133,6 @@ namespace Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies
                     break;
                 default:
                     throw new ArgumentException("Only 24 and 32 bit images are supported");
-
             }
         }
     }

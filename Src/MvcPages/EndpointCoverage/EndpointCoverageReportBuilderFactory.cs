@@ -3,7 +3,7 @@ using Tellurium.MvcPages.EndpointCoverage.EndpointExplorers;
 
 namespace Tellurium.MvcPages.EndpointCoverage
 {
-    public class EndpointCoverageReportBuilderFactory
+    public static class EndpointCoverageReportBuilderFactory
     {
         public static EndpointCoverageReportBuilder Create(BrowserAdapterConfig config, IEndpointCollector endpointCollector)
         {

@@ -10,7 +10,7 @@ namespace Tellurium.MvcPages.WebPages.WebForms.DefaultInputAdapters
 
         public bool CanHandle(IWebElement webElement)
         {
-            return webElement.TagName.ToLower() == "select";
+            return string.Equals(webElement.TagName, "select", System.StringComparison.OrdinalIgnoreCase);
         }
 
         public void SetValue(IWebElement webElement, string value)
