@@ -66,19 +66,19 @@ namespace Tellurium.MvcPages.SeleniumUtils.FileUploading
             {
                 foreach (var rootPath in AppDomain.CurrentDomain.SetupInformation.PrivateBinPath.Split(';'))
                 {
-                    var absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, rootPath, filePath);
+                    var absolutePath = Path.Combine(System.AppContext.BaseDirectory, rootPath, filePath);
                     if (File.Exists(absolutePath))
                     {
                         return absolutePath;
                     }
                 }
             }
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
+            return Path.Combine(System.AppContext.BaseDirectory, filePath);
         }
 
-        private static string ReadFileContentFromEmbededResource(string fileName)
+        private static string ReadFileContentFromEmbeddedResource(string fileName)
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = typeof(FileUploadingExtensions).GetTypeInfo().Assembly;
             var currentNamespace = typeof(FileUploadingExtensions).Namespace;
             using (Stream stream = assembly.GetManifestResourceStream($"{currentNamespace}.{fileName}"))
             {

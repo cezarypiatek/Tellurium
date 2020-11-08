@@ -21,8 +21,8 @@ namespace Tellurium.VisualAssertion.Dashboard.Mvc
 
         public static HtmlString GetAppVersion()
         {
-            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            return new  HtmlString(version);
+            var version = typeof(HtmlExtensions).GetTypeInfo().Assembly.GetName().Version.ToString();
+            return new HtmlString(version);
         }
 
         [Pure]

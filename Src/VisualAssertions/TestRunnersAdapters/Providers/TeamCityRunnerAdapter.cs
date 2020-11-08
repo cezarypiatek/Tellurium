@@ -91,7 +91,7 @@ window.location = ""{visaulAssertionsDashboardUrl}/Home/GetTestsFromSessionSessi
 </script>
 </head><body></body>
 </html> ";
-            var fullFilePath = Path.Combine(Environment.CurrentDirectory, "VisualAssertions.html");
+            var fullFilePath = Path.Combine(Directory.GetCurrentDirectory(), "VisualAssertions.html");
             File.WriteAllText(fullFilePath, reportContent);
             serviceMessage.PublishArtifact(fullFilePath);
             reportUploaded = true;

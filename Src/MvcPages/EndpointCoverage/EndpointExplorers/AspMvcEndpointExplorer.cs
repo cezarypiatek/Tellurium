@@ -6,10 +6,10 @@ using Tellurium.MvcPages.WebPages;
 
 namespace Tellurium.MvcPages.EndpointCoverage.EndpointExplorers
 {
-    public class AspMvcEndpointExplorer:IEndpointExplorer
+    public class AspMvcEndpointExplorer : IEndpointExplorer
     {
         private readonly IReadOnlyList<Assembly> availableEndpointsAssemblies;
-        
+
 
         public AspMvcEndpointExplorer(IReadOnlyList<Assembly> availableEndpointsAssemblies)
         {
@@ -44,7 +44,7 @@ namespace Tellurium.MvcPages.EndpointCoverage.EndpointExplorers
 
         static IReadOnlyList<Type> GetAllControllers(Assembly assembly)
         {
-            
+
             return assembly.GetTypes().Where(InheritFromController).ToList();
         }
 
@@ -53,16 +53,23 @@ namespace Tellurium.MvcPages.EndpointCoverage.EndpointExplorers
 
         private static bool InheritFromController(Type t)
         {
-            if (t == typeof(object) || t.BaseType == null)
+            if (t == typeof(object))
+            {
+                return false;
+            }
+
+            var baseType = t.GetTypeInfo().BaseType;
+
+            if (baseType == null)
             {
                 return false;
             }
             
-            if (t.BaseType.Namespace == AspControllerNamespace || t.BaseType.Namespace == AspCoreControllerNamespace)
+            if (baseType.Namespace == AspControllerNamespace || baseType.Namespace == AspCoreControllerNamespace)
             {
                 return true;
             }
-            return InheritFromController(t.BaseType);
+            return InheritFromController(baseType);
         }
 
         private static IReadOnlyList<string> GetAllActionsUrlForController(Type controller)
