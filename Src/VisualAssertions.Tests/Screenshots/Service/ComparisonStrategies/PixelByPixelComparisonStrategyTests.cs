@@ -169,35 +169,5 @@ namespace VisualAssertions.Tests.Screenshots.Service.ComparisonStrategies
             var sut = new PixelByPixelComparisonStrategy(0.1m);
             Assert.Throws<ArgumentNullException>(() => sut.Compare(new BrowserPattern(), default(byte[]), out _));
         }
-
-        //[Fact]
-        //public void CanCallCountUnmatchedPixels()
-        //{
-        //    var pattern = new Bitmap(2, 2);
-        //    var screenshot = new Bitmap(2, 2);
-
-        //    var result = _sut.CountUnmatchedPixels(pattern, screenshot);
-
-        //    Assert.True(false, "Create or modify test");
-        //}
-
-        //[Fact]
-        //public void CountUnmatchedPixels_ShouldThrowArgumentException_ForNullValues1()
-        //{
-        //    Assert.Throws<ArgumentNullException>(() => _sut.CountUnmatchedPixels(default(Bitmap), new Bitmap(2, 2)));
-        //}
-
-        //[Fact]
-        //public void CountUnmatchedPixels_ShouldThrowArgumentException_ForNullValues2()
-        //{
-        //    Assert.Throws<ArgumentNullException>(() => _sut.CountUnmatchedPixels(new Bitmap(2, 2), default(Bitmap)));
-        //}
-
-        //[Fact]
-        //public void CountUnmatchedPixels_ShouldThrowArgumentException_ForBitmapsWithDifferentSizes()
-        //{
-        //    var ex = Assert.Throws<ArgumentException>(() => _sut.CountUnmatchedPixels(new Bitmap(2, 3), new Bitmap(2, 2)));
-        //    Assert.Contains("Bitmaps have different sizes", ex.Message);
-        //}
     }
 }
