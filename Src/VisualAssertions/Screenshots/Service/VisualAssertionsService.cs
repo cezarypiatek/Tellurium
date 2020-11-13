@@ -26,6 +26,8 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
         private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
         private static readonly Dictionary<string, long> ProjectNameIdCache = new Dictionary<string, long>();
 
+        private VisualAssertionsService() { }
+
 
         public VisualAssertionsService(
             IRepository<Project> projectRepository, 
