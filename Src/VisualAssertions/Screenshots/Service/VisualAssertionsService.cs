@@ -10,14 +10,14 @@ using Tellurium.VisualAssertions.Screenshots.Service.ComparisonStrategies;
 using Tellurium.VisualAssertions.Screenshots.Utils.TaskProcessing;
 using Tellurium.VisualAssertions.TestRunnersAdapters;
 
-
 namespace Tellurium.VisualAssertions.Screenshots.Service
 {
     public class VisualAssertionsService : IDisposable
     {
-        public string ProjectName { get; set; }
-        public string ScreenshotCategory { get; set; }
-        public string BrowserName { get; set; }
+        public string ProjectName { get; }
+        public string ScreenshotCategory { get; }
+        public string BrowserName { get; }
+        public ContinousIntegration ContinousIntegration { get; set; }
 
         private ITaskProcessor<Screenshot> ScreenshotProcessor;
         private readonly IRepository<Project> projectRepository;
@@ -26,16 +26,24 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
         private readonly ISet<ScreenshotIdentity> takenScreenshots = new HashSet<ScreenshotIdentity>();
         private static readonly Dictionary<string, long> ProjectNameIdCache = new Dictionary<string, long>();
 
+        private VisualAssertionsService() { }
+
 
         public VisualAssertionsService(
             IRepository<Project> projectRepository, 
             ITestRunnerAdapter testRunnerAdapter,
             bool processAsynchronously,
+            string projectName,
+            string screenshotCategory,
+            string browserName,
             IScreenshotComparisonStrategy screenshotComparisonStrategy) 
         {
             this.projectRepository = projectRepository;
             this.testRunnerAdapter = testRunnerAdapter;
             this.screenshotComparisonStrategy = screenshotComparisonStrategy;
+            ProjectName = projectName;
+            ScreenshotCategory = screenshotCategory;
+            BrowserName = browserName;
             InitScreenshotProcessor(processAsynchronously);
         }
 
@@ -129,6 +137,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
 
                     transaction.Commit();
                 }
+
                 finishNotification.Invoke();
             }
             catch (Exception ex)
@@ -156,10 +165,12 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
             if (newPattern != null)
             {
                 testResult.Status = TestResultStatus.NewPattern;
+                testResult.TestResultMessage = "\r\n+---New pattern";
+                return testResult;
             }
 
-            var comparisonResult = screenshotComparisonStrategy.Compare(browserPattern, image, out var message);
-            testResult.TestResultMessage = message;
+            var comparisonResult = screenshotComparisonStrategy.Compare(browserPattern, image, out var resultMessage);
+            testResult.TestResultMessage = resultMessage;
 
             if (comparisonResult)
             {
@@ -171,6 +182,7 @@ namespace Tellurium.VisualAssertions.Screenshots.Service
                 testResult.ErrorScreenshot = image;
                 testResult.BlindRegionsSnapshot = browserPattern.GetCopyOfAllBlindRegions();
             }
+
             return testResult;
         }
 

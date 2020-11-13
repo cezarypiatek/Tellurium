@@ -26,11 +26,15 @@ namespace Tellurium.VisualAssertions.Screenshots
             var comparisonStrategy = config.ScreenshotComparisonStrategy;
 
             _visualAssertionsService?.Dispose();
-            _visualAssertionsService = new VisualAssertionsService(projectRepository, testRunnerAdapter, config.ProcessScreenshotsAsynchronously, comparisonStrategy)
+            _visualAssertionsService = new VisualAssertionsService(
+                projectRepository,
+                testRunnerAdapter,
+                config.ProcessScreenshotsAsynchronously,
+                config.ProjectName,
+                config.ScreenshotCategory,
+                config.BrowserName,
+                comparisonStrategy)
             {
-                ProjectName = config.ProjectName,
-                ScreenshotCategory = config.ScreenshotCategory,
-                BrowserName = config.BrowserName
             };
         }
 
