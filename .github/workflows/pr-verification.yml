@@ -1,0 +1,48 @@
+name: pr-verification
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  build:
+    runs-on: windows-latest
+    env: 
+        DOTNET_NOLOGO: true
+        DOTNET_CLI_TELEMETRY_OPTOUT: true
+        RepositoryUrl: 'https://github.com/${{ github.repository }}'
+        RepositoryBranch: '${{ github.ref }}'
+        SourceRevisionId: '${{ github.sha }}'
+        VersionSuffix: 'pr-${{github.event.number}}.${{ github.run_number }}'
+        Configuration: Release
+        SolutionPath: Src\Tellurium.sln
+    steps:
+    - uses: actions/checkout@v2   
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '2.0.x'
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Restore NuGet Packages
+      run: nuget restore $env:SolutionPath
+    - name: Calculate next version
+      uses: cezarypiatek/NextVersionGeneratorAction@0.4
+      with:
+        minor-pattern: '\bAdd\b'
+        patch-pattern: '.*'
+        output-to-env-variable: 'VersionPrefix'
+    - name: Build solution
+      run: msbuild $env:SolutionPath /t:Rebuild
+    - name: Generate nuget packages
+      run: |
+        nuget pack Src\MvcPages\MvcPages.csproj.nuspec -NoPackageAnalysis -verbosity detailed -OutputDirectory ./dist -Version $env:VersionPrefix -Suffix $env:VersionSuffix -Properties Configuration=$env:Configuration
+        nuget pack Src\VisualAssertions\VisualAssertions.csproj.nuspec -NoPackageAnalysis -verbosity detailed -OutputDirectory ./dist -Version $env:VersionPrefix -Suffix $env:VersionSuffix -Properties Configuration=$env:Configuration
+    - name: Collect artifacts - MvcPages
+      uses: actions/upload-artifact@v2
+      with:
+        name: MvcPages-Nuget
+        path: './dist/Tellurium.MvcPages.*.nupkg'
+    - name: Collect artifacts - VisualAssertions
+      uses: actions/upload-artifact@v2
+      with:
+        name: VisualAssertions-Nuget
+        path: './dist/Tellurium.VisualAssertions.*.nupkg'
