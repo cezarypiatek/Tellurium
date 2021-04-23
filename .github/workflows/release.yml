@@ -3,8 +3,8 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'Src/**'
+    # paths:
+    #   - 'Src/**'
 jobs:
   build-extension:
     runs-on: windows-latest
@@ -75,4 +75,5 @@ jobs:
         asset_content_type: binary/octet-stream    
     - name: Publish extension to Nuget
       run: |
-        dotnet nuget push ./dist/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+        dotnet nuget push ./dist/Tellurium.MvcPages.${{ env.Version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+        dotnet nuget push ./dist/Tellurium.VisualAssertions.${{ env.Version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
