@@ -3,8 +3,8 @@ on:
   push:
     branches:
       - master
-    # paths:
-    #   - 'Src/**'
+    paths:
+      - 'Src/**'
 jobs:
   build-extension:
     runs-on: windows-latest
